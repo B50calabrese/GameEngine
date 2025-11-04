@@ -1,0 +1,64 @@
+# General build artifacts
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+/*.ninja
+/*.rules
+
+# Visual Studio specific
+*.vcxproj*
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.pdb
+*.idb
+*.ipch
+*.obj
+*.tlog
+*.lastbuildstate
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+
+# Generated files
+*.out
+*.exe
+*.dll
+*.lib
+*.so
+*.a
+*.o
+*.lo
+*.la
+
+# Ninja-specific
+.ninja_deps
+.ninja_log
+
+# CMake testing
+Testing/
+CTestTestfile.cmake
+_deps/
+
+# Ignore user-specific configuration
+*.user
+*.userprefs
+*.local
+/.vs
+/out/build/x64-Debug
