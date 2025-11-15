@@ -17,15 +17,15 @@ int main(void) {
   while (true) {
     window.PollEvents();
 
-    if (input_manager.IsKeyPressed(engine::KeyCode::KC_W)) {
+    if (input_manager.IsKeyPressed(engine::KeyCode::kW)) {
       std::cout << "W was pressed\n";
     }
 
-    if (input_manager.IsKeyDown(engine::KeyCode::KC_S)) {
+    if (input_manager.IsKeyDown(engine::KeyCode::kS)) {
       std::cout << "S is down\n";
     }
 
-    if (input_manager.IsKeyReleased(engine::KeyCode::KC_A)) {
+    if (input_manager.IsKeyReleased(engine::KeyCode::kA)) {
       std::cout << "A was released\n";
     }
   }
