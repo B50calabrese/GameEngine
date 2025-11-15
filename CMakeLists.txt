@@ -18,9 +18,15 @@ link_directories(${GLFW_LIBRARY_DIR})
 
 # 3. Executable and Sources
 # ------------------------
-file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
+set(SOURCE_FILES
+	"src/window.cpp"
+	"src/input_manager.cpp"
+	"src/engine.cpp"
+	"third_party/libs/glad.c"
+)
+file(GLOB_RECURSE INCLUDE_FILES "src/*.h" "include/*.h")
 
-add_library(GameEngine STATIC ${SOURCE_FILES} "include/engine.h")
+add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 
 # 4. Linking Dependencies
 # -----------------------
