@@ -3,28 +3,16 @@
 
 namespace engine {
 
-/**
- * @brief A class that represents the game engine.
- *
- * This class provides the core functionality of the game engine.
- */
+// A class that represents the game engine.
 class Engine {
  public:
-  /**
-   * @brief Default constructor.
-   */
+  // Default constructor.
   Engine();
 
-  /**
-   * @brief Default destructor.
-   */
+  // Default destructor.
   ~Engine();
 
-  /**
-   * @brief Initializes the game engine.
-   *
-   * This function performs the necessary setup for the game engine to run.
-   */
+  // Initializes the game engine.
   static void Init();
 };
 
