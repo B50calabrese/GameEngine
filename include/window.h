@@ -1,5 +1,4 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#pragma once
 
 #include <string>
 
@@ -7,18 +6,26 @@
 struct GLFWwindow;
 
 namespace engine {
+
+// The Window class is responsible for creating and managing the main
+// application window.
 class Window {
  public:
-  Window(int width, int height, std::string name);
+  // @brief Creates a new window.
+  // @param width The width of the window.
+  // @param height The height of the window.
+  // @param name The title of the window.
+  Window(int width, int height, const std::string& name);
 
-  GLFWwindow* GetNativeHandle() const { return this->internal_window; }
+  // @brief Returns the native handle to the window.
+  // @return The native handle to the window.
+  GLFWwindow* GetNativeHandle() const { return window_; }
 
+  // @brief Polls for events.
   void PollEvents();
 
  private:
-  GLFWwindow* internal_window;
-
-  float last_frame_time;
+  GLFWwindow* window_ = nullptr;
 
   void SetupCallbacks();
 
@@ -26,6 +33,5 @@ class Window {
   Window(const Window&) = delete;
   Window& operator=(const Window&) = delete;
 };
-}  // namespace engine
 
-#endif  // WINDOW_H
+}  // namespace engine

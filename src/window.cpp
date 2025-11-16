@@ -8,16 +8,13 @@
 
 namespace engine {
 
-Window::Window(int width, int height, std::string name) {
-  this->internal_window =
-      glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
+Window::Window(const int width, const int height, const std::string& name) {
+  window_ = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 
-  glfwMakeContextCurrent(this->internal_window);
+  glfwMakeContextCurrent(window_);
   glfwSwapInterval(1);  // Enable V-Sync (swap interval 1)
 
-  this->last_frame_time = static_cast<float>(glfwGetTime());
-
-  this->SetupCallbacks();
+  SetupCallbacks();
 }
 
 void Window::PollEvents() {
@@ -30,7 +27,7 @@ void Window::PollEvents() {
 void Window::SetupCallbacks() {
   // 1. GLFW Key Callback
   glfwSetKeyCallback(
-      this->internal_window,
+      window_,
       [](GLFWwindow* window, int key, int scancode, int action, int mods) {
         // Forward the raw event to the InputManager singleton
         InputManager::Get().HandleKey(key, action);
@@ -38,16 +35,15 @@ void Window::SetupCallbacks() {
 
   // 2. GLFW Mouse Button Callback
   glfwSetMouseButtonCallback(
-      this->internal_window,
-      [](GLFWwindow* window, int button, int action, int mods) {
+      window_, [](GLFWwindow* window, int button, int action, int mods) {
         InputManager::Get().HandleMouseButton(button, action);
       });
 
   // 3. GLFW Cursor Position Callback
-  glfwSetCursorPosCallback(
-      this->internal_window, [](GLFWwindow* window, double xpos, double ypos) {
-        InputManager::Get().HandleCursorPosition(xpos, ypos);
-      });
+  glfwSetCursorPosCallback(window_,
+                           [](GLFWwindow* window, double xpos, double ypos) {
+                             InputManager::Get().HandleCursorPosition(xpos, ypos);
+                           });
 }
 
 }  // namespace engine
