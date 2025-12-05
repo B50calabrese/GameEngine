@@ -13,12 +13,17 @@ class Window {
 
   GLFWwindow* GetNativeHandle() const { return this->internal_window; }
 
+  // TODO: Implement
+  bool IsRunning() const { return true; }
+
   void PollEvents();
+
+  double GetDeltaTime() const;
 
  private:
   GLFWwindow* internal_window;
 
-  float last_frame_time;
+  double last_frame_time;
 
   void SetupCallbacks();
 

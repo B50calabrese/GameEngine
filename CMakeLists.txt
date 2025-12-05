@@ -19,9 +19,10 @@ link_directories(${GLFW_LIBRARY_DIR})
 # 3. Executable and Sources
 # ------------------------
 set(SOURCE_FILES
-	"src/window.cpp"
-	"src/input_manager.cpp"
+    "src/application.cpp"
 	"src/engine.cpp"
+	"src/input_manager.cpp"
+    "src/window.cpp"	
 	"third_party/libs/glad.c"
 )
 file(GLOB_RECURSE INCLUDE_FILES "src/*.h" "include/*.h")
@@ -43,4 +44,5 @@ target_link_libraries(GameEngine PRIVATE glfw3 opengl32 gdi32 shell32 user32)
 
 # --- 5. Add Demos ---
 # Instruct CMake to process the CMakeLists.txt files in the specified subdirectories.
+add_subdirectory(demos/applicationdemo)
 add_subdirectory(demos/windowdemo)

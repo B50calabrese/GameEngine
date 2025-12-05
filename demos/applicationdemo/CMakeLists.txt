@@ -1,0 +1,3 @@
+add_executable(ApplicationDemo main.cpp)
+
+target_link_libraries(ApplicationDemo PRIVATE GameEngine)

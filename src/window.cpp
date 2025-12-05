@@ -15,7 +15,7 @@ Window::Window(int width, int height, std::string name) {
   glfwMakeContextCurrent(this->internal_window);
   glfwSwapInterval(1);  // Enable V-Sync (swap interval 1)
 
-  this->last_frame_time = static_cast<float>(glfwGetTime());
+  this->last_frame_time = glfwGetTime();
 
   this->SetupCallbacks();
 }
@@ -23,6 +23,11 @@ Window::Window(int width, int height, std::string name) {
 void Window::PollEvents() {
   InputManager::Get().UpdateState();
   glfwPollEvents();
+  this->last_frame_time = glfwGetTime();
+}
+
+double Window::GetDeltaTime() const {
+  return glfwGetTime() - this->last_frame_time;
 }
 
 // Private functions
