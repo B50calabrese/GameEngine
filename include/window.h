@@ -7,6 +7,9 @@
 struct GLFWwindow;
 
 namespace engine {
+// Forward declaration
+class Application;
+
 class Window {
  public:
   Window(int width, int height, std::string name);
@@ -21,11 +24,15 @@ class Window {
   double GetDeltaTime() const;
 
  private:
+  friend class Application;
+
   GLFWwindow* internal_window;
 
   double last_frame_time;
 
   void SetupCallbacks();
+
+  void SwapBuffers() const;
 
   // Prevent copy/move to enforce a single instance handled by Engine
   Window(const Window&) = delete;

@@ -22,10 +22,11 @@ set(SOURCE_FILES
     "src/application.cpp"
 	"src/engine.cpp"
 	"src/input_manager.cpp"
-    "src/window.cpp"	
+    "src/window.cpp"
+    "src/graphics/renderer.cpp"
 	"third_party/libs/glad.c"
 )
-file(GLOB_RECURSE INCLUDE_FILES "src/*.h" "include/*.h")
+file(GLOB_RECURSE INCLUDE_FILES "src/*.h" "include/*.h" "include/graphics/*.h")
 
 add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 
@@ -46,3 +47,4 @@ target_link_libraries(GameEngine PRIVATE glfw3 opengl32 gdi32 shell32 user32)
 # Instruct CMake to process the CMakeLists.txt files in the specified subdirectories.
 add_subdirectory(demos/applicationdemo)
 add_subdirectory(demos/windowdemo)
+add_subdirectory(demos/rendererdemo)

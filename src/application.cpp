@@ -1,5 +1,6 @@
 #include "application.h"
 
+#include "graphics/renderer.h"
 #include "input_manager.h"
 #include "window.h"
 
@@ -10,7 +11,6 @@ void Application::Run() {
 
   Window& window = GetWindow();
   InputManager& input = GetInputManager();
-  // GameContext& context = GetContext(); // Assuming context access
 
   while (window.IsRunning()) {
     double delta_time = window.GetDeltaTime();  // Get time since last frame
@@ -24,9 +24,8 @@ void Application::Run() {
     this->OnUpdate(delta_time - window.GetDeltaTime());
 
     // 4. RENDERING
-    // Renderer::Get().Clear();
-    // context.GetScreenManager().Render();
-    // window.SwapBuffers();
+    graphics::Renderer::Get().Clear();
+    window.SwapBuffers();
   }
 
   // 5. Shutdown

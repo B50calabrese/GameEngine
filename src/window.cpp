@@ -55,4 +55,6 @@ void Window::SetupCallbacks() {
       });
 }
 
+void Window::SwapBuffers() const { glfwSwapBuffers(this->internal_window); }
+
 }  // namespace engine
