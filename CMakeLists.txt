@@ -24,6 +24,7 @@ set(SOURCE_FILES
 	"src/input_manager.cpp"
     "src/window.cpp"
     "src/graphics/renderer.cpp"
+	"src/graphics/shader.cpp"
 	"third_party/libs/glad.c"
 )
 file(GLOB_RECURSE INCLUDE_FILES "src/*.h" "include/*.h" "include/graphics/*.h")
