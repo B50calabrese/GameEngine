@@ -1,6 +1,5 @@
 #include "graphics/shader.h"
 
-#include <GL/GL.h>
 #include <glad/glad.h>
 
 #include <glm/ext/vector_float3.hpp>

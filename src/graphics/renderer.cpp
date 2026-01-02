@@ -5,7 +5,31 @@
 
 #include <iostream>
 
+#include "primitive_renderer.h"
+
 namespace engine::graphics {
+
+void Renderer::Clear() const {
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::BeginFrame() const {
+  // Instruct renders to reset themselves for the frame.
+  graphics::PrimitiveRenderer::StartBatch();
+}
+
+void Renderer::EndFrame() const {
+  // Flush all renderers.
+  graphics::PrimitiveRenderer::FinalizeBatch();
+  graphics::PrimitiveRenderer::RenderBatch();
+}
+
+void Renderer::DrawRect(float x, float y, float width, float height) {
+  // Default white color for basic DrawRect call
+  float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+  PrimitiveRenderer::SubmitQuad(x, y, width, height, color);
+}
 
 // Retrieve the native handle from the window
 void Renderer::Init(Window& window) {
@@ -24,10 +48,14 @@ void Renderer::Init(Window& window) {
   int width, height;
   glfwGetWindowSize(window.GetNativeHandle(), &width, &height);
   SetViewport(width, height);
+
+  // Initialize renderers.
+  graphics::PrimitiveRenderer::Init();
 }
 
 void Renderer::Shutdown() {
-  // Perform any necessary cleanup for the renderer
+  // Shutdown renderers.
+  graphics::PrimitiveRenderer::Shutdown();
 }
 
 void Renderer::SetViewport(int width, int height) const {
@@ -36,11 +64,6 @@ void Renderer::SetViewport(int width, int height) const {
 
 void Renderer::HandleResize(int& width, int& height) const {
   this->SetViewport(width, height);
-}
-
-void Renderer::Clear() const {
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 }  // namespace engine::graphics

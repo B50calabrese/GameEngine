@@ -26,6 +26,18 @@ class Renderer {
    */
   void Clear() const;
 
+  /**
+   * Begins the start of the frame for rendering purposes.
+   */
+  void BeginFrame() const;
+
+  /**
+   * Ends the frame and flushes all buffers to be rendered.
+   */
+  void EndFrame() const;
+
+  void DrawRect(float x, float y, float width, float height);
+
  private:
   Renderer() = default;
   ~Renderer() = default;

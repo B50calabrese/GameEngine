@@ -1,5 +1,6 @@
 #include "application.h"
 #include "engine.h"
+#include "graphics/renderer.h"
 
 class RendererApp : public engine::Application {
  public:
@@ -7,7 +8,9 @@ class RendererApp : public engine::Application {
 
   void OnShutdown() override {}
 
-  void OnUpdate(double deltaTimeSeconds) override {}
+  void OnUpdate(double deltaTimeSeconds) override {
+    engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, 100.0f, 100.0f);
+  }
 };
 
 /**

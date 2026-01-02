@@ -14,17 +14,21 @@ void Application::Run() {
 
   while (window.IsRunning()) {
     double delta_time = window.GetDeltaTime();  // Get time since last frame
-    // 1. INPUT STATE TRANSITION (Engine handles this)
+    // 1. Update input states.
     input.UpdateState();
 
-    // 2. PLATFORM EVENT POLLING (Engine handles this)
+    // 2. Poll for events.
     window.PollEvents();
+
+    // 3. Pre-rendering calls.
+    graphics::Renderer::Get().Clear();
+    graphics::Renderer::Get().BeginFrame();
 
     // 3. SCENE/GAME LOGIC UPDATE (Client's responsibility, called
     this->OnUpdate(delta_time - window.GetDeltaTime());
 
     // 4. RENDERING
-    graphics::Renderer::Get().Clear();
+    graphics::Renderer::Get().EndFrame();
     window.SwapBuffers();
   }
 

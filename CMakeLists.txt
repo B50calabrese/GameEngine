@@ -23,6 +23,8 @@ set(SOURCE_FILES
 	"src/engine.cpp"
 	"src/input_manager.cpp"
     "src/window.cpp"
+	"src/graphics/buffer_utils.cpp"
+	"src/graphics/primitive_renderer.cpp"
     "src/graphics/renderer.cpp"
 	"src/graphics/shader.cpp"
 	"third_party/libs/glad.c"
