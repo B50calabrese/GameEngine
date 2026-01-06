@@ -10,17 +10,32 @@ namespace engine {
 // Forward declaration
 class Application;
 
+// Manages the application window and its associated context. This class is a
+// wrapper around the underlying GLFW windowing library.
 class Window {
  public:
+  // Constructs a new `Window` with the specified dimensions and title.
+  //
+  // @param width The width of the window in pixels.
+  // @param height The height of the window in pixels.
+  // @param name The title of the window.
   Window(int width, int height, std::string name);
 
+  // Returns a pointer to the native GLFW window handle.
   GLFWwindow* GetNativeHandle() const { return this->internal_window; }
 
   // TODO: Implement
+  // Checks if the window should remain open.
+  //
+  // @return `true` if the window should stay open, `false` otherwise.
   bool IsRunning() const { return true; }
 
+  // Processes all pending events, such as keyboard and mouse input.
   void PollEvents();
 
+  // Calculates and returns the time elapsed since the last frame.
+  //
+  // @return The delta time in seconds.
   double GetDeltaTime() const;
 
  private:

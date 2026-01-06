@@ -1,6 +1,8 @@
 #ifndef BUFFER_UTILS_H
 #define BUFFER_UTILS_H
 
+#include <cstddef>
+
 namespace engine::graphics {
 
 /**
