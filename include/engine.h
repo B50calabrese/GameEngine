@@ -8,21 +8,31 @@
 
 namespace engine {
 
+// Holds the configuration for the engine's initialization.
 struct EngineConfig {
+  // The height of the main application window.
   int window_height = 720;
+  // The width of the main application window.
   int window_width = 1280;
+  // The title of the main application window.
   std::string window_title = "Title";
 };
 
+// The static `Engine` class provides the core functionality of the game engine,
+// including initialization, shutdown, and access to engine-managed systems.
 class Engine {
  public:
-  // Initializes the engine itself, including OpenGL init, hints, etc.
+  // Initializes the engine, including the window, graphics context, and other
+  // core systems. This must be called before any other engine functions.
+  //
+  // @param config The `EngineConfig` struct containing initialization
+  // settings.
   static void Init(const EngineConfig& config);
 
-  // Gracefully shutsdown the engine.
+  // Gracefully shuts down the engine and releases all resources.
   static void Shutdown();
 
-  // Access to the Window instance that the Engine creates on Init.
+  // Provides access to the main application window.
   static Window& GetWindow() { return *internal_window; }
 
  private:

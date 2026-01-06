@@ -7,6 +7,7 @@ class Window;
 
 namespace engine {
 
+// An enumeration of all supported keyboard and mouse button codes.
 enum class KeyCode {
   // --- Mouse Buttons ---
   KC_MOUSE_LEFT = 0,
@@ -91,20 +92,41 @@ enum class KeyCode {
   KC_PAGE_DOWN,
 };
 
+// A singleton class that manages all keyboard and mouse input. It provides a
+// simple interface for checking the state of keys and the mouse.
 class InputManager {
  public:
+  // Returns a reference to the singleton `InputManager` instance.
   static InputManager& Get();
 
+  // Checks if a key is currently being held down.
+  //
+  // @param key_code The `KeyCode` to check.
+  // @return `true` if the key is currently pressed, `false` otherwise.
   bool IsKeyDown(KeyCode key_code) const;
 
+  // Checks if a key was pressed during the current frame. This is a single-frame
+  // event.
+  //
+  // @param key_code The `KeyCode` to check.
+  // @return `true` if the key was pressed in this frame, `false` otherwise.
   bool IsKeyPressed(KeyCode key_code) const;
 
+  // Checks if a key was released during the current frame. This is a
+  // single-frame event.
+  //
+  // @param key_code The `KeyCode` to check.
+  // @return `true` if the key was released in this frame, `false` otherwise.
   bool IsKeyReleased(KeyCode key_code) const;
 
+  // Returns the current x-coordinate of the mouse cursor.
   float GetMouseX() const { return this->mouse_x; }
 
+  // Returns the current y-coordinate of the mouse cursor.
   float GetMouseY() const { return this->mouse_y; }
 
+  // Updates the key states for the current frame. This should be called once
+  // per frame by the main application loop.
   void UpdateState();
 
   friend class Window;

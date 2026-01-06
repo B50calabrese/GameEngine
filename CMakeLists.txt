@@ -36,15 +36,20 @@ add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 # 4. Linking Dependencies
 # -----------------------
 
+# Use pkg-config to find and link GLFW3
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GLFW3 REQUIRED glfw3)
+
 # Add the include path for GLFW headers (e.g., allows #include <GLFW/glfw3.h>)
 # We use PRIVATE because only the MyApp source files need these headers.
 target_include_directories(GameEngine 
 	PUBLIC "${CMAKE_SOURCE_DIR}/include"
 	PRIVATE "${CMAKE_SOURCE_DIR}/src"
-	PRIVATE ${GLFW_INCLUDE_DIR})
+	PRIVATE ${GLFW_INCLUDE_DIR}
+	PRIVATE ${GLFW3_INCLUDE_DIRS})
 
 # Link the GLFW library and all necessary system libraries.
-target_link_libraries(GameEngine PRIVATE glfw3 opengl32 gdi32 shell32 user32)
+target_link_libraries(GameEngine PRIVATE ${GLFW3_LIBRARIES})
 
 # --- 5. Add Demos ---
 # Instruct CMake to process the CMakeLists.txt files in the specified subdirectories.
