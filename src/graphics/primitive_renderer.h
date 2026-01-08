@@ -2,20 +2,12 @@
 #define PRIMITIVE_RENDERER_H
 
 #include <graphics/shader.h>
+#include <graphics/vertex2d.h>
 
 #include <memory>
 #include <vector>
 
 namespace engine::graphics {
-
-/**
- * Internal vertex structure for 2D batching.
- */
-struct Vertex2D {
-  float position[2];
-  float color[4];
-  float texCoords[2];
-};
 
 /**
  * Handles basic drawing of 'primitives' or geometric 2D objects.
