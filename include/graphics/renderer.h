@@ -39,6 +39,20 @@ class Renderer {
   // @param height The height of the rectangle.
   void DrawRect(float x, float y, float width, float height);
 
+  // Draws a texturedrectangle to the screen.
+  //
+  // @param x The x-coordinate of the top-left corner.
+  // @param y The y-coordinate of the top-left corner.
+  // @param width The width of the rectangle.
+  // @param height The height of the rectangle.
+  // @param textureID The OpenGL ID of the texture.
+  // @param tint Optional RGBA tint (defaults to white).
+  void DrawTexturedRect(float x, float y, float w, float h,
+                        unsigned int textureID, const float tint[4] = nullptr);
+
+  // Takes a relative path and resolves to the full path.
+  std::string ResolveAssetPath(const std::string& relativePath) const;
+
  private:
   Renderer() = default;
   ~Renderer() = default;
@@ -62,6 +76,11 @@ class Renderer {
 
   // Callback function for window resize events to adjust the viewport.
   void HandleResize(int& width, int& height) const;
+
+  // Used to set the asset root path.
+  void SetAssetRoot(const std::string& path);
+
+  std::string asset_root_path = "";
 };
 
 }  // namespace engine::graphics

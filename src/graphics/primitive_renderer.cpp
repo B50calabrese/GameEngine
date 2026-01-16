@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
@@ -9,6 +10,7 @@
 
 #include "buffer_utils.h"
 #include "graphics/shader.h"
+#include "vertex2d.h"
 
 namespace engine::graphics {
 
@@ -17,6 +19,9 @@ unsigned int PrimitiveRenderer::vbo = 0;
 unsigned int PrimitiveRenderer::ebo = 0;
 std::unique_ptr<Shader> PrimitiveRenderer::default_shader = nullptr;
 std::vector<Vertex2D> PrimitiveRenderer::vertex_batch;
+std::array<unsigned int, 32> PrimitiveRenderer::texture_slots;
+uint32_t PrimitiveRenderer::texture_slot_index =
+    1;  // Slot 0 is reserved for the white texture
 
 // --- Built-in GLSL Shaders ---
 static const char* vertexSource = R"(
@@ -24,13 +29,16 @@ static const char* vertexSource = R"(
         layout (location = 0) in vec2 aPos;
         layout (location = 1) in vec4 aColor;
         layout (location = 2) in vec2 aTexCoord;
+        layout (location = 3) in float aTexIndex;
 
         out vec4 vColor;
         out vec2 vTexCoord;
+        out float vTexIndex;
 
         void main() {
             vColor = aColor;
             vTexCoord = aTexCoord;
+            vTexIndex = aTexIndex;
             gl_Position = vec4(aPos, 0.0, 1.0);
         }
     )";
@@ -39,10 +47,16 @@ static const char* fragmentSource = R"(
         #version 330 core
         in vec4 vColor;
         in vec2 vTexCoord;
+        in float vTexIndex;
+
+        uniform sampler2D uTextures[32];
+
         out vec4 FragColor;
 
         void main() {
-            FragColor = vColor;
+            // Adding 0.5 before casting to int prevents 0.9999 becoming 0
+            int index = int(vTexIndex + 0.5); 
+            FragColor = texture(uTextures[index], vTexCoord) * vColor;
         }
     )";
 
@@ -60,6 +74,9 @@ void PrimitiveRenderer::Init() {
   // TexCoords: index 2, 2 floats
   BufferUtils::SetAttribute(2, 2, sizeof(Vertex2D),
                             offsetof(Vertex2D, texCoords));
+  // TexIndex: index 3, 1 float
+  BufferUtils::SetAttribute(3, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, texIndex));
 
   // Pre-populate Index Buffer (static pattern: 0,1,2, 2,3,0)
   std::vector<unsigned int> indices(MAX_INDICES);
@@ -79,9 +96,25 @@ void PrimitiveRenderer::Init() {
 
   glBindVertexArray(0);
 
+  // Create 1x1 White Texture for Slot 0
+  unsigned int whiteTex;
+  glGenTextures(1, &whiteTex);
+  glBindTexture(GL_TEXTURE_2D, whiteTex);
+  uint32_t whiteData = 0xffffffff;
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+               &whiteData);
+  texture_slots[0] = whiteTex;
+
   // Compile Built-in Shaders
   default_shader = std::unique_ptr<Shader>(
       Shader::CreateFromSource(vertexSource, fragmentSource));
+
+  default_shader->Bind();
+  int samplers[32];
+  for (int i = 0; i < 32; i++) samplers[i] = i;
+
+  int location = glGetUniformLocation(default_shader->GetId(), "uTextures");
+  glUniform1iv(location, 32, samplers);
 
   // Reserve CPU Batch Memory
   vertex_batch.reserve(MAX_VERTICES);
@@ -91,13 +124,17 @@ void PrimitiveRenderer::Shutdown() {
   glDeleteVertexArrays(1, &vao);
   glDeleteBuffers(1, &vbo);
   glDeleteBuffers(1, &ebo);
+  glDeleteTextures(1, &texture_slots[0]);
   default_shader.reset();
   vertex_batch.clear();
 }
 
 // --- Batch Control ---
 
-void PrimitiveRenderer::StartBatch() { vertex_batch.clear(); }
+void PrimitiveRenderer::StartBatch() {
+  vertex_batch.clear();
+  texture_slot_index = 1;  // Reset to 1, preserving the white texture at 0
+}
 
 void PrimitiveRenderer::FinalizeBatch() {
   if (vertex_batch.empty()) return;
@@ -112,6 +149,13 @@ void PrimitiveRenderer::RenderBatch() {
   if (vertex_batch.empty()) return;
 
   default_shader->Bind();
+
+  // Bind all textures currently active in this batch
+  for (uint32_t i = 0; i < texture_slot_index; i++) {
+    glActiveTexture(GL_TEXTURE0 + i);
+    glBindTexture(GL_TEXTURE_2D, texture_slots[i]);
+  }
+
   glBindVertexArray(vao);
 
   // 6 indices per 4 vertices (1 quad)
@@ -120,6 +164,23 @@ void PrimitiveRenderer::RenderBatch() {
 
   glBindVertexArray(0);
   default_shader->Unbind();
+}
+
+int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
+  // Search if texture is already in a slot
+  for (uint32_t i = 0; i < texture_slot_index; i++) {
+    if (texture_slots[i] == texture_id) return (int)i;
+  }
+
+  // If slots are full, flush the batch and start fresh
+  if (texture_slot_index >= 32) {
+    FinalizeBatch();
+    RenderBatch();
+    StartBatch();
+  }
+
+  texture_slots[texture_slot_index] = texture_id;
+  return (int)texture_slot_index++;
 }
 
 // --- Submission API ---
@@ -133,19 +194,63 @@ void PrimitiveRenderer::SubmitQuad(float x, float y, float w, float h,
     StartBatch();
   }
 
+  float texIndex = 0.0f;  // Use the white texture
   // Add vertices for a single quad (Counter-Clockwise)
   // Bottom-Left
-  vertex_batch.push_back(
-      {{x, y}, {color[0], color[1], color[2], color[3]}, {0.0f, 0.0f}});
+  vertex_batch.push_back({{x, y},
+                          {color[0], color[1], color[2], color[3]},
+                          {0.0f, 0.0f},
+                          texIndex});
   // Bottom-Right
-  vertex_batch.push_back(
-      {{x + w, y}, {color[0], color[1], color[2], color[3]}, {1.0f, 0.0f}});
+  vertex_batch.push_back({{x + w, y},
+                          {color[0], color[1], color[2], color[3]},
+                          {1.0f, 0.0f},
+                          texIndex});
   // Top-Right
-  vertex_batch.push_back(
-      {{x + w, y + h}, {color[0], color[1], color[2], color[3]}, {1.0f, 1.0f}});
+  vertex_batch.push_back({{x + w, y + h},
+                          {color[0], color[1], color[2], color[3]},
+                          {1.0f, 1.0f},
+                          texIndex});
   // Top-Left
-  vertex_batch.push_back(
-      {{x, y + h}, {color[0], color[1], color[2], color[3]}, {0.0f, 1.0f}});
+  vertex_batch.push_back({{x, y + h},
+                          {color[0], color[1], color[2], color[3]},
+                          {0.0f, 1.0f},
+                          texIndex});
+}
+
+void PrimitiveRenderer::SubmitTexturedQuad(float x, float y, float w, float h,
+                                           unsigned int texture_id,
+                                           const float color[4]) {
+  // Handle batch overflow
+  if (vertex_batch.size() + 4 > MAX_VERTICES) {
+    FinalizeBatch();
+    RenderBatch();
+    StartBatch();
+  }
+
+  float texIndex = (float)GetTextureSlot(texture_id);
+
+  // Add vertices for a single quad (Counter-Clockwise)
+  // Bottom-Left
+  vertex_batch.push_back({{x, y},
+                          {color[0], color[1], color[2], color[3]},
+                          {0.0f, 0.0f},
+                          texIndex});
+  // Bottom-Right
+  vertex_batch.push_back({{x + w, y},
+                          {color[0], color[1], color[2], color[3]},
+                          {1.0f, 0.0f},
+                          texIndex});
+  // Top-Right
+  vertex_batch.push_back({{x + w, y + h},
+                          {color[0], color[1], color[2], color[3]},
+                          {1.0f, 1.0f},
+                          texIndex});
+  // Top-Left
+  vertex_batch.push_back({{x, y + h},
+                          {color[0], color[1], color[2], color[3]},
+                          {0.0f, 1.0f},
+                          texIndex});
 }
 
 }  // namespace engine::graphics

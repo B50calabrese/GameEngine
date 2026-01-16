@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <filesystem>
 #include <iostream>
 
 #include "primitive_renderer.h"
@@ -29,6 +30,20 @@ void Renderer::DrawRect(float x, float y, float width, float height) {
   // Default white color for basic DrawRect call
   float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
   PrimitiveRenderer::SubmitQuad(x, y, width, height, color);
+}
+
+void Renderer::DrawTexturedRect(float x, float y, float w, float h,
+                                unsigned int textureID, const float tint[4]) {
+  static float defaultTint[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+  const float* color = tint ? tint : defaultTint;
+
+  PrimitiveRenderer::SubmitTexturedQuad(x, y, w, h, textureID, color);
+}
+
+std::string Renderer::ResolveAssetPath(const std::string& relativePath) const {
+  std::filesystem::path p(relativePath);
+  if (p.is_absolute()) return relativePath;
+  return asset_root_path + relativePath;
 }
 
 // Retrieve the native handle from the window
@@ -66,4 +81,12 @@ void Renderer::HandleResize(int& width, int& height) const {
   this->SetViewport(width, height);
 }
 
+void Renderer::SetAssetRoot(const std::string& path) {
+  asset_root_path = std::filesystem::absolute(path).string();
+  // Ensure trailing slash for consistent concatenation
+  if (!asset_root_path.empty() && asset_root_path.back() != '/' &&
+      asset_root_path.back() != '\\') {
+    asset_root_path += "/";
+  }
+}
 }  // namespace engine::graphics

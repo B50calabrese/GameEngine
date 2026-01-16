@@ -25,7 +25,7 @@ void Application::Run() {
     graphics::Renderer::Get().BeginFrame();
 
     // 3. SCENE/GAME LOGIC UPDATE (Client's responsibility, called
-    this->OnUpdate(delta_time - window.GetDeltaTime());
+    this->OnUpdate(delta_time);
 
     // 4. RENDERING
     graphics::Renderer::Get().EndFrame();

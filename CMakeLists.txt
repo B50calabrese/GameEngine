@@ -27,6 +27,7 @@ set(SOURCE_FILES
 	"src/graphics/primitive_renderer.cpp"
     "src/graphics/renderer.cpp"
 	"src/graphics/shader.cpp"
+	"src/graphics/texture.cpp"
 	"third_party/libs/glad.c"
 )
 file(GLOB_RECURSE INCLUDE_FILES "src/*.h" "include/*.h" "include/graphics/*.h")
@@ -35,10 +36,6 @@ add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 
 # 4. Linking Dependencies
 # -----------------------
-
-# Use pkg-config to find and link GLFW3
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GLFW3 REQUIRED glfw3)
 
 # Add the include path for GLFW headers (e.g., allows #include <GLFW/glfw3.h>)
 # We use PRIVATE because only the MyApp source files need these headers.
@@ -49,7 +46,7 @@ target_include_directories(GameEngine
 	PRIVATE ${GLFW3_INCLUDE_DIRS})
 
 # Link the GLFW library and all necessary system libraries.
-target_link_libraries(GameEngine PRIVATE ${GLFW3_LIBRARIES})
+target_link_libraries(GameEngine PRIVATE glfw3 opengl32 gdi32 shell32 user32)
 
 # --- 5. Add Demos ---
 # Instruct CMake to process the CMakeLists.txt files in the specified subdirectories.

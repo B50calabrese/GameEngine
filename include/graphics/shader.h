@@ -24,6 +24,8 @@ class Shader {
   // Deletes the shader program from the GPU.
   ~Shader();
 
+  unsigned int GetId() const { return shader_id_; }
+
   // Activates this shader program for subsequent rendering calls.
   void Bind() const;
 

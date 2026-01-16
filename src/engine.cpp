@@ -29,6 +29,7 @@ void Engine::Init(const EngineConfig& engine_config) {
       engine_config.window_width, engine_config.window_height,
       engine_config.window_title);
   (graphics::Renderer::Get()).Init(*(Engine::internal_window));
+  (graphics::Renderer::Get()).SetAssetRoot(engine_config.asset_path);
 }
 
 void Engine::Shutdown() {}

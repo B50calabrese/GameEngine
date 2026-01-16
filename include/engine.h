@@ -16,6 +16,8 @@ struct EngineConfig {
   int window_width = 1280;
   // The title of the main application window.
   std::string window_title = "Title";
+  // The default path for assets.
+  std::string asset_path = "";
 };
 
 // The static `Engine` class provides the core functionality of the game engine,

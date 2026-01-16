@@ -1,6 +1,4 @@
-#include <chrono>
 #include <iostream>
-#include <thread>
 
 #include "application.h"
 #include "engine.h"
@@ -21,9 +19,6 @@ class MyApp : public engine::Application {
       std::cout << "1 second has passed in the application." << std::endl;
       this->totalTime_ = 0.0;
     }
-
-    // Sleep to simulate 'work'.
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 
  private:
