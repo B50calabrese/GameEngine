@@ -39,6 +39,18 @@ class Renderer {
   // @param height The height of the rectangle.
   void DrawRect(float x, float y, float width, float height);
 
+  // Draws a rectangle to the screen using the RGB colors.
+  //
+  // @param x The x-coordinate of the top-left corner.
+  // @param y The y-coordinate of the top-left corner.
+  // @param width The width of the rectangle.
+  // @param height The height of the rectangle.
+  // @param r The r component of the color.
+  // @param g The g component of the color.
+  // @param b The b component of the color.
+  void DrawRect(float x, float y, float width, float height, float r, float g,
+                float b);
+
   // Draws a texturedrectangle to the screen.
   //
   // @param x The x-coordinate of the top-left corner.

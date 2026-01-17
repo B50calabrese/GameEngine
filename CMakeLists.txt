@@ -22,6 +22,7 @@ set(SOURCE_FILES
     "src/application.cpp"
 	"src/engine.cpp"
 	"src/input_manager.cpp"
+	"src/scene_manager.cpp"
     "src/window.cpp"
 	"src/graphics/buffer_utils.cpp"
 	"src/graphics/primitive_renderer.cpp"
@@ -53,3 +54,4 @@ target_link_libraries(GameEngine PRIVATE glfw3 opengl32 gdi32 shell32 user32)
 add_subdirectory(demos/applicationdemo)
 add_subdirectory(demos/windowdemo)
 add_subdirectory(demos/rendererdemo)
+add_subdirectory(demos/scenedemo)

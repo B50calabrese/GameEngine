@@ -32,6 +32,12 @@ void Renderer::DrawRect(float x, float y, float width, float height) {
   PrimitiveRenderer::SubmitQuad(x, y, width, height, color);
 }
 
+void Renderer::DrawRect(float x, float y, float width, float height, float r,
+                        float g, float b) {
+  float color[4] = {r, g, b, 1.0f};
+  PrimitiveRenderer::SubmitQuad(x, y, width, height, color);
+}
+
 void Renderer::DrawTexturedRect(float x, float y, float w, float h,
                                 unsigned int textureID, const float tint[4]) {
   static float defaultTint[4] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -57,7 +63,12 @@ void Renderer::Init(Window& window) {
   // Set default OpenGL state.
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_DEPTH_TEST);
+
+  // Note we disable the depth test for 2D games. If we don't then the painter's
+  // algorithm doesn't work.
+  // As a future improvement we could make this something we automatically
+  // enable and disable per frame for different parts of the game.
+  glDisable(GL_DEPTH_TEST);
 
   // Set viewport to window dimensions
   int width, height;

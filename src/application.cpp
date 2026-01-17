@@ -2,6 +2,7 @@
 
 #include "graphics/renderer.h"
 #include "input_manager.h"
+#include "scene_manager.h"
 #include "window.h"
 
 namespace engine {
@@ -14,20 +15,26 @@ void Application::Run() {
 
   while (window.IsRunning()) {
     double delta_time = window.GetDeltaTime();  // Get time since last frame
-    // 1. Update input states.
-    input.UpdateState();
 
-    // 2. Poll for events.
+    // Update the input manager's state and poll for events.
+    input.UpdateState();
     window.PollEvents();
 
-    // 3. Pre-rendering calls.
+    // Dispatch the new input to the appropriate scenes.
+    bool inputHandled = SceneManager::Get().DispatchInput();
+
+    // Pre-rendering calls to prepare the renderer prior to drawing anything.
     graphics::Renderer::Get().Clear();
     graphics::Renderer::Get().BeginFrame();
 
-    // 3. SCENE/GAME LOGIC UPDATE (Client's responsibility, called
+    // Run scene specific update and rendering logic.
+    SceneManager::Get().UpdateActiveScene(delta_time);
+    SceneManager::Get().RenderActiveScene();
+
+    // Run application wide update logic.
     this->OnUpdate(delta_time);
 
-    // 4. RENDERING
+    // End the frame rendering and flush the renderer
     graphics::Renderer::Get().EndFrame();
     window.SwapBuffers();
   }
