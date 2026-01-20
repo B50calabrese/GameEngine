@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <iostream>
 
+#include "graphics/camera.h"
 #include "primitive_renderer.h"
 
 namespace engine::graphics {
@@ -15,9 +16,9 @@ void Renderer::Clear() const {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::BeginFrame() const {
+void Renderer::BeginFrame(Camera& camera) const {
   // Instruct renders to reset themselves for the frame.
-  graphics::PrimitiveRenderer::StartBatch();
+  graphics::PrimitiveRenderer::StartBatch(camera.GetViewProjectionMatrix());
 }
 
 void Renderer::EndFrame() const {

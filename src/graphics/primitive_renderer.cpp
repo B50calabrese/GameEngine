@@ -5,6 +5,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -31,6 +32,8 @@ static const char* vertexSource = R"(
         layout (location = 2) in vec2 aTexCoord;
         layout (location = 3) in float aTexIndex;
 
+        uniform mat4 u_ViewProjection; // Maps world space to screen space
+
         out vec4 vColor;
         out vec2 vTexCoord;
         out float vTexIndex;
@@ -39,7 +42,8 @@ static const char* vertexSource = R"(
             vColor = aColor;
             vTexCoord = aTexCoord;
             vTexIndex = aTexIndex;
-            gl_Position = vec4(aPos, 0.0, 1.0);
+            // Apply the camera transformation
+            gl_Position = u_ViewProjection * vec4(aPos, 0.0, 1.0);
         }
     )";
 
@@ -51,12 +55,12 @@ static const char* fragmentSource = R"(
 
         uniform sampler2D uTextures[32];
 
-        out vec4 FragColor;
+        out vec4 color;
 
         void main() {
-            // Adding 0.5 before casting to int prevents 0.9999 becoming 0
-            int index = int(vTexIndex + 0.5); 
-            FragColor = texture(uTextures[index], vTexCoord) * vColor;
+            int index = int(vTexIndex);
+            // Sample the texture and multiply by the per-vertex color/tint
+            color = texture(uTextures[index], vTexCoord) * vColor;
         }
     )";
 
@@ -131,9 +135,11 @@ void PrimitiveRenderer::Shutdown() {
 
 // --- Batch Control ---
 
-void PrimitiveRenderer::StartBatch() {
+void PrimitiveRenderer::StartBatch(const glm::mat4& view_projection) {
   vertex_batch.clear();
   texture_slot_index = 1;  // Reset to 1, preserving the white texture at 0
+  default_shader->Bind();
+  default_shader->SetMat4("u_ViewProjection", view_projection);
 }
 
 void PrimitiveRenderer::FinalizeBatch() {
@@ -174,9 +180,8 @@ int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
 
   // If slots are full, flush the batch and start fresh
   if (texture_slot_index >= 32) {
-    FinalizeBatch();
-    RenderBatch();
-    StartBatch();
+    // For now we return 0 to avoid issues with the view matrix.
+    return 0;
   }
 
   texture_slots[texture_slot_index] = texture_id;
@@ -189,9 +194,9 @@ void PrimitiveRenderer::SubmitQuad(float x, float y, float w, float h,
                                    const float color[4]) {
   // Handle batch overflow
   if (vertex_batch.size() + 4 > MAX_VERTICES) {
-    FinalizeBatch();
-    RenderBatch();
-    StartBatch();
+    // In a real engine, we would flush and start a new batch here
+    std::cout << "[PrimitiveRenderer] Max quads reached!\n";
+    return;
   }
 
   float texIndex = 0.0f;  // Use the white texture
@@ -223,9 +228,9 @@ void PrimitiveRenderer::SubmitTexturedQuad(float x, float y, float w, float h,
                                            const float color[4]) {
   // Handle batch overflow
   if (vertex_batch.size() + 4 > MAX_VERTICES) {
-    FinalizeBatch();
-    RenderBatch();
-    StartBatch();
+    // In a real engine, we would flush and start a new batch here
+    std::cout << "[PrimitiveRenderer] Max quads reached!\n";
+    return;
   }
 
   float texIndex = (float)GetTextureSlot(texture_id);

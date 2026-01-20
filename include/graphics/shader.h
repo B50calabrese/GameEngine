@@ -3,6 +3,7 @@
 
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
+#include <glm/mat4x4.hpp>
 #include <string>
 #include <unordered_map>
 
@@ -49,6 +50,12 @@ class Shader {
   // @param name The name of the uniform variable in the GLSL code.
   // @param value The `glm::vec4` value to set.
   void SetVec4(const std::string& name, glm::vec4 value);
+
+  // Sets a 4x4 matrix uniform variable in the shader.
+  //
+  // @param name The name of the uniform variable in the GLSL code.
+  // @param value The `glm::mat4` value to set.
+  void SetMat4(const std::string& name, glm::mat4 value);
 
  private:
   Shader(unsigned int shader_id);

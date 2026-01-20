@@ -1,6 +1,7 @@
 #ifndef GRAPHICS_RENDERER_H
 #define GRAPHICS_RENDERER_H
 
+#include "camera.h"
 #include "window.h"
 
 namespace engine {
@@ -25,7 +26,7 @@ class Renderer {
 
   // Prepares the renderer for a new frame. This should be called at the
   // beginning of each frame's rendering phase.
-  void BeginFrame() const;
+  void BeginFrame(Camera& camera) const;
 
   // Finalizes the frame and presents the rendered image to the screen. This
   // should be called at the end of each frame's rendering phase.

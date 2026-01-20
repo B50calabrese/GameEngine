@@ -6,6 +6,7 @@
 
 #include <array>
 #include <cstdint>
+#include <glm/mat4x4.hpp>
 #include <memory>
 #include <vector>
 
@@ -29,7 +30,7 @@ class PrimitiveRenderer {
    * Starts a batch for submitting primitives to be drawn (called at the
    * beginning of a frame).
    */
-  static void StartBatch();
+  static void StartBatch(const glm::mat4& view_projection);
 
   /**
    * 'Finishes' the batch of primitives to be drawn preparing the data for

@@ -1,5 +1,6 @@
 #include "application.h"
 
+#include "graphics/camera.h"
 #include "graphics/renderer.h"
 #include "input_manager.h"
 #include "scene_manager.h"
@@ -12,6 +13,8 @@ void Application::Run() {
 
   Window& window = GetWindow();
   InputManager& input = GetInputManager();
+  main_camera = std::make_unique<engine::graphics::Camera>(
+      0.0f, window.GetWidth(), 0.0f, window.GetHeight());
 
   while (window.IsRunning()) {
     double delta_time = window.GetDeltaTime();  // Get time since last frame
@@ -25,7 +28,7 @@ void Application::Run() {
 
     // Pre-rendering calls to prepare the renderer prior to drawing anything.
     graphics::Renderer::Get().Clear();
-    graphics::Renderer::Get().BeginFrame();
+    graphics::Renderer::Get().BeginFrame(*main_camera);
 
     // Run scene specific update and rendering logic.
     SceneManager::Get().UpdateActiveScene(delta_time);

@@ -11,10 +11,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Use CMAKE_SOURCE_DIR for relative pathing from the root CMakeLists.txt
 set(THIRD_PARTY_DIR "${CMAKE_SOURCE_DIR}/third_party")
 set(GLFW_INCLUDE_DIR "${THIRD_PARTY_DIR}/include")
-set(GLFW_LIBRARY_DIR "${THIRD_PARTY_DIR}/libs")
+set(THIRD_PARTY_LIBS "${THIRD_PARTY_DIR}/libs")
+set(GLM_INCLUDE_DIR  "${THIRD_PARTY_DIR}/include/")
 
 # Inform the linker where to find the library files (e.g., glfw3.lib)
-link_directories(${GLFW_LIBRARY_DIR})
+link_directories(${THIRD_PARTY_LIBS})
 
 # 3. Executable and Sources
 # ------------------------
@@ -25,6 +26,7 @@ set(SOURCE_FILES
 	"src/scene_manager.cpp"
     "src/window.cpp"
 	"src/graphics/buffer_utils.cpp"
+	"src/graphics/camera.cpp"
 	"src/graphics/primitive_renderer.cpp"
     "src/graphics/renderer.cpp"
 	"src/graphics/shader.cpp"
@@ -41,10 +43,10 @@ add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 # Add the include path for GLFW headers (e.g., allows #include <GLFW/glfw3.h>)
 # We use PRIVATE because only the MyApp source files need these headers.
 target_include_directories(GameEngine 
+	PRIVATE "${GLFW_INCLUDE_DIR}"	
 	PUBLIC "${CMAKE_SOURCE_DIR}/include"
 	PRIVATE "${CMAKE_SOURCE_DIR}/src"
-	PRIVATE ${GLFW_INCLUDE_DIR}
-	PRIVATE ${GLFW3_INCLUDE_DIRS})
+	PUBLIC  "${GLM_INCLUDE_DIR}")
 
 # Link the GLFW library and all necessary system libraries.
 target_link_libraries(GameEngine PRIVATE glfw3 opengl32 gdi32 shell32 user32)

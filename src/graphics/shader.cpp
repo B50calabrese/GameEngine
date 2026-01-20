@@ -4,6 +4,8 @@
 
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
 #include <iostream>
 #include <string>
 
@@ -81,6 +83,10 @@ void Shader::SetVec3(const std::string& name, glm::vec3 value) {
 
 void Shader::SetVec4(const std::string& name, glm::vec4 value) {
   glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
+}
+
+void Shader::SetMat4(const std::string& name, glm::mat4 value) {
+  glUniformMatrix4fv(GetUniformLocation(name), 1, false, glm::value_ptr(value));
 }
 
 // Private functions

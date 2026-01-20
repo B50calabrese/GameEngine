@@ -8,7 +8,8 @@
 
 namespace engine {
 
-Window::Window(int width, int height, std::string name) {
+Window::Window(int width, int height, std::string name)
+    : width(width), height(height) {
   this->internal_window =
       glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 

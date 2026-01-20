@@ -38,10 +38,15 @@ class Window {
   // @return The delta time in seconds.
   double GetDeltaTime() const;
 
+  int GetWidth() const { return this->width; }
+
+  int GetHeight() const { return this->height; }
+
  private:
   friend class Application;
 
   GLFWwindow* internal_window;
+  int width, height;
 
   double last_frame_time;
 

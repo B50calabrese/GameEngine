@@ -1,7 +1,10 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include <memory>
+
 #include "engine.h"
+#include "graphics/camera.h"
 #include "input_manager.h"
 #include "window.h"
 
@@ -40,6 +43,13 @@ class Application {
   // Provides access to the input manager for handling keyboard and mouse
   // events.
   InputManager& GetInputManager() { return InputManager::Get(); }
+
+  // Provides access to the primary camera used for rendering the scene.
+  engine::graphics::Camera& GetMainCamera() { return *main_camera; }
+
+ private:
+  // The Application owns the primary camera
+  std::unique_ptr<engine::graphics::Camera> main_camera;
 };
 
 }  // namespace engine
