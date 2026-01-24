@@ -88,6 +88,9 @@ class PrimitiveRenderer {
   static std::array<unsigned int, 32> texture_slots;
   static uint32_t texture_slot_index;
 
+  // Cached view matrix at the start of a batch.
+  static glm::mat4 current_view_projection;
+
   static constexpr size_t MAX_QUADS = 1000;
   static constexpr size_t MAX_VERTICES = MAX_QUADS * 4;
   static constexpr size_t MAX_INDICES = MAX_QUADS * 6;

@@ -23,6 +23,7 @@ std::vector<Vertex2D> PrimitiveRenderer::vertex_batch;
 std::array<unsigned int, 32> PrimitiveRenderer::texture_slots;
 uint32_t PrimitiveRenderer::texture_slot_index =
     1;  // Slot 0 is reserved for the white texture
+glm::mat4 PrimitiveRenderer::current_view_projection = glm::mat4(1.0f);
 
 // --- Built-in GLSL Shaders ---
 static const char* vertexSource = R"(
@@ -136,6 +137,7 @@ void PrimitiveRenderer::Shutdown() {
 // --- Batch Control ---
 
 void PrimitiveRenderer::StartBatch(const glm::mat4& view_projection) {
+  current_view_projection = view_projection;
   vertex_batch.clear();
   texture_slot_index = 1;  // Reset to 1, preserving the white texture at 0
   default_shader->Bind();
@@ -178,12 +180,6 @@ int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
     if (texture_slots[i] == texture_id) return (int)i;
   }
 
-  // If slots are full, flush the batch and start fresh
-  if (texture_slot_index >= 32) {
-    // For now we return 0 to avoid issues with the view matrix.
-    return 0;
-  }
-
   texture_slots[texture_slot_index] = texture_id;
   return (int)texture_slot_index++;
 }
@@ -194,9 +190,8 @@ void PrimitiveRenderer::SubmitQuad(float x, float y, float w, float h,
                                    const float color[4]) {
   // Handle batch overflow
   if (vertex_batch.size() + 4 > MAX_VERTICES) {
-    // In a real engine, we would flush and start a new batch here
-    std::cout << "[PrimitiveRenderer] Max quads reached!\n";
-    return;
+    RenderBatch();
+    StartBatch(current_view_projection);
   }
 
   float texIndex = 0.0f;  // Use the white texture
@@ -226,11 +221,10 @@ void PrimitiveRenderer::SubmitQuad(float x, float y, float w, float h,
 void PrimitiveRenderer::SubmitTexturedQuad(float x, float y, float w, float h,
                                            unsigned int texture_id,
                                            const float color[4]) {
-  // Handle batch overflow
-  if (vertex_batch.size() + 4 > MAX_VERTICES) {
-    // In a real engine, we would flush and start a new batch here
-    std::cout << "[PrimitiveRenderer] Max quads reached!\n";
-    return;
+  // Handle batch overflow or when we have too many textures.
+  if (vertex_batch.size() + 4 > MAX_VERTICES || texture_slot_index >= 32) {
+    RenderBatch();
+    StartBatch(current_view_projection);
   }
 
   float texIndex = (float)GetTextureSlot(texture_id);
