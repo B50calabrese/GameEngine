@@ -27,6 +27,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/input_manager.cpp"
     "${ENGINE_ROOT}/src/scene_manager.cpp"
     "${ENGINE_ROOT}/src/window.cpp"
+    "${ENGINE_ROOT}/src/ecs/entity_manager.cpp"
     "${ENGINE_ROOT}/src/graphics/buffer_utils.cpp"
     "${ENGINE_ROOT}/src/graphics/camera.cpp"
     "${ENGINE_ROOT}/src/graphics/primitive_renderer.cpp"
@@ -40,6 +41,8 @@ set(SOURCE_FILES
 file(GLOB_RECURSE INCLUDE_FILES 
     "${ENGINE_ROOT}/src/*.h" 
     "${ENGINE_ROOT}/include/*.h"
+    "${ENGINE_ROOT}/include/ecs/*.h"
+    "${ENGINE_ROOT}/include/graphics/*.h"
 )
 
 # 4. Create Library
@@ -69,7 +72,8 @@ target_link_libraries(GameEngine PRIVATE
 # We wrap this in a check so the game doesn't build engine demos by default
 if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/applicationdemo)
-    add_subdirectory(demos/windowdemo)
+    add_subdirectory(demos/ecsdemo)
     add_subdirectory(demos/rendererdemo)
     add_subdirectory(demos/scenedemo)
+    add_subdirectory(demos/windowdemo)
 endif()
