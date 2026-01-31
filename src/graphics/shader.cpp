@@ -67,9 +67,9 @@ Shader* Shader::CreateFromSource(const std::string& vertexSource,
   return new Shader(program);
 }
 
-Shader::~Shader() { glDeleteProgram(this->shader_id_); }
+Shader::~Shader() { glDeleteProgram(shader_id_); }
 
-void Shader::Bind() const { glUseProgram(this->shader_id_); }
+void Shader::Bind() const { glUseProgram(shader_id_); }
 
 void Shader::Unbind() const { glUseProgram(0); }
 
@@ -94,17 +94,16 @@ void Shader::SetMat4(const std::string& name, glm::mat4 value) {
 Shader::Shader(unsigned int shader_id) : shader_id_(shader_id) {}
 
 int Shader::GetUniformLocation(const std::string& name) const {
-  if (this->uniform_location_cache.find(name) !=
-      this->uniform_location_cache.end())
-    return this->uniform_location_cache[name];
+  if (uniform_location_cache_.find(name) != uniform_location_cache_.end())
+    return uniform_location_cache_[name];
 
-  int location = glGetUniformLocation(this->shader_id_, name.c_str());
+  int location = glGetUniformLocation(shader_id_, name.c_str());
   if (location == -1) {
     std::cout << "Warning: uniform '" << name
               << "' doesn't exist or is not used in shader!" << std::endl;
     return 0;
   }
-  this->uniform_location_cache[name] = location;
+  uniform_location_cache_[name] = location;
   return location;
 }
 

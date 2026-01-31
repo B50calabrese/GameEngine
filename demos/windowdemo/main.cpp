@@ -5,14 +5,14 @@
 #include "window.h"
 
 /**
- * Simple demo to show off creating a window, accessing the input manager, and
- * polling for events.
+ * @brief Simple demo to show off creating a window, accessing the input
+ * manager, and polling for events.
  */
 
 int main(void) {
   engine::EngineConfig engine_config;
   engine::Engine::Init(engine_config);
-  engine::Window& window = engine::Engine::GetWindow();
+  engine::Window& window = engine::Engine::window();
   engine::InputManager& input_manager = engine::InputManager::Get();
   while (true) {
     window.PollEvents();

@@ -11,27 +11,27 @@ namespace engine {
 void Application::Run() {
   OnInit();
 
-  Window& window = GetWindow();
-  InputManager& input = GetInputManager();
-  main_camera = std::make_unique<engine::graphics::Camera>(
-      0.0f, window.GetWidth(), 0.0f, window.GetHeight());
+  Window& win = window();
+  InputManager& input = input_manager();
+  main_camera_ = std::make_unique<engine::graphics::Camera>(
+      0.0f, (float)win.width(), 0.0f, (float)win.height());
 
-  while (window.IsRunning()) {
-    double delta_time = window.GetDeltaTime();  // Get time since last frame
+  while (win.IsRunning()) {
+    double delta_time = win.delta_time();  // Get time since last frame
 
     // Update the input manager's state and poll for events.
     input.UpdateState();
-    window.PollEvents();
+    win.PollEvents();
 
     // Dispatch the new input to the appropriate scenes.
-    bool inputHandled = SceneManager::Get().DispatchInput();
+    bool input_handled = SceneManager::Get().DispatchInput();
 
     // Pre-rendering calls to prepare the renderer prior to drawing anything.
     graphics::Renderer::Get().Clear();
-    graphics::Renderer::Get().BeginFrame(*main_camera);
+    graphics::Renderer::Get().BeginFrame(*main_camera_);
 
     // Run scene specific update and rendering logic.
-    SceneManager::Get().UpdateActiveScene(delta_time);
+    SceneManager::Get().UpdateActiveScene((float)delta_time);
     SceneManager::Get().RenderActiveScene();
 
     // Run application wide update logic.
@@ -39,7 +39,7 @@ void Application::Run() {
 
     // End the frame rendering and flush the renderer
     graphics::Renderer::Get().EndFrame();
-    window.SwapBuffers();
+    win.SwapBuffers();
   }
 
   // 5. Shutdown

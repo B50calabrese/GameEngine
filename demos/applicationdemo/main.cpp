@@ -26,12 +26,12 @@ class MyApp : public engine::Application {
 };
 
 /**
- * Demo showing the full end-to-end management of an application.
+ * @brief Demo showing the full end-to-end management of an application.
  */
 int main(void) {
   engine::EngineConfig engine_config;
   engine::Engine::Init(engine_config);
-  MyApp myApp;
-  myApp.Run();
+  MyApp my_app;
+  my_app.Run();
   return 0;
 }
