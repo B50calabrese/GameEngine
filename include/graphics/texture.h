@@ -1,13 +1,14 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#ifndef INCLUDE_GRAPHICS_TEXTURE_H_
+#define INCLUDE_GRAPHICS_TEXTURE_H_
 
 #include <string>
 
 namespace engine::graphics {
 
 /**
- * High-level wrapper for OpenGL Texture resources. Manages loading, GPU upload,
- * and automatic memory cleanup.
+ * @brief High-level wrapper for OpenGL Texture resources.
+ *
+ * Manages loading, GPU upload, and automatic memory cleanup.
  */
 class Texture {
  public:
@@ -18,25 +19,43 @@ class Texture {
    */
   static Texture* Create(const std::string& path);
 
+  /** @brief Destructor deletes the OpenGL texture. */
   ~Texture();
 
+  /**
+   * @brief Binds the texture to a specific texture slot.
+   * @param slot The texture slot to bind to (default is 0).
+   */
   void Bind(unsigned int slot = 0) const;
 
-  inline unsigned int GetID() const { return renderer_id; }
+  /**
+   * @brief Gets the OpenGL ID of the texture.
+   * @return The renderer ID.
+   */
+  inline unsigned int id() const { return renderer_id_; }
 
-  inline int GetWidth() const { return width; }
+  /**
+   * @brief Gets the width of the texture.
+   * @return Width in pixels.
+   */
+  inline int width() const { return width_; }
 
-  inline int GetHeight() const { return height; }
+  /**
+   * @brief Gets the height of the texture.
+   * @return Height in pixels.
+   */
+  inline int height() const { return height_; }
 
  private:
   Texture(unsigned int id, int w, int h, const std::string& p)
-      : renderer_id(id), width(w), height(h), path(p) {}
+      : renderer_id_(id), width_(w), height_(h), path_(p) {}
 
-  unsigned int renderer_id;
-  int width, height;
-  std::string path;
+  unsigned int renderer_id_;
+  int width_;
+  int height_;
+  std::string path_;
 };
 
 }  // namespace engine::graphics
 
-#endif  // TEXTURE_H
+#endif  // INCLUDE_GRAPHICS_TEXTURE_H_

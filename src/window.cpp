@@ -1,6 +1,9 @@
 #include "window.h"
 
+// clang-format off
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+// clang-format on
 
 #include <string>
 
@@ -9,53 +12,50 @@
 namespace engine {
 
 Window::Window(int width, int height, std::string name)
-    : width(width), height(height) {
-  this->internal_window =
+    : width_(width), height_(height) {
+  internal_window_ =
       glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 
-  glfwMakeContextCurrent(this->internal_window);
+  glfwMakeContextCurrent(internal_window_);
   glfwSwapInterval(1);  // Enable V-Sync (swap interval 1)
 
-  this->last_frame_time = glfwGetTime();
+  last_frame_time_ = glfwGetTime();
 
-  this->SetupCallbacks();
+  SetupCallbacks();
 }
 
 void Window::PollEvents() {
   InputManager::Get().UpdateState();
   glfwPollEvents();
-  this->last_frame_time = glfwGetTime();
+  last_frame_time_ = glfwGetTime();
 }
 
-double Window::GetDeltaTime() const {
-  return glfwGetTime() - this->last_frame_time;
-}
+double Window::delta_time() const { return glfwGetTime() - last_frame_time_; }
 
 // Private functions
 
 void Window::SetupCallbacks() {
   // 1. GLFW Key Callback
-  glfwSetKeyCallback(
-      this->internal_window,
-      [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-        // Forward the raw event to the InputManager singleton
-        InputManager::Get().HandleKey(key, action);
-      });
+  glfwSetKeyCallback(internal_window_, [](GLFWwindow* window, int key,
+                                          int scancode, int action, int mods) {
+    // Forward the raw event to the InputManager singleton
+    InputManager::Get().HandleKey(key, action);
+  });
 
   // 2. GLFW Mouse Button Callback
   glfwSetMouseButtonCallback(
-      this->internal_window,
+      internal_window_,
       [](GLFWwindow* window, int button, int action, int mods) {
         InputManager::Get().HandleMouseButton(button, action);
       });
 
   // 3. GLFW Cursor Position Callback
   glfwSetCursorPosCallback(
-      this->internal_window, [](GLFWwindow* window, double xpos, double ypos) {
+      internal_window_, [](GLFWwindow* window, double xpos, double ypos) {
         InputManager::Get().HandleCursorPosition(xpos, ypos);
       });
 }
 
-void Window::SwapBuffers() const { glfwSwapBuffers(this->internal_window); }
+void Window::SwapBuffers() const { glfwSwapBuffers(internal_window_); }
 
 }  // namespace engine

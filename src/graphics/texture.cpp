@@ -1,7 +1,9 @@
 #include "graphics/texture.h"
 
+// clang-format off
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+// clang-format on
 
 #include <iostream>
 
@@ -51,11 +53,11 @@ Texture* Texture::Create(const std::string& path) {
   return new Texture(id, width, height, path);
 }
 
-Texture::~Texture() { glDeleteTextures(1, &renderer_id); }
+Texture::~Texture() { glDeleteTextures(1, &renderer_id_); }
 
 void Texture::Bind(unsigned int slot) const {
   glActiveTexture(GL_TEXTURE0 + slot);
-  glBindTexture(GL_TEXTURE_2D, renderer_id);
+  glBindTexture(GL_TEXTURE_2D, renderer_id_);
 }
 
 }  // namespace engine::graphics

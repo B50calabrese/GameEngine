@@ -1,5 +1,5 @@
-#ifndef INPUT_MANAGER_H
-#define INPUT_MANAGER_H
+#ifndef INCLUDE_INPUT_MANAGER_H_
+#define INCLUDE_INPUT_MANAGER_H_
 
 #include <map>
 
@@ -7,7 +7,9 @@ class Window;
 
 namespace engine {
 
-// An enumeration of all supported keyboard and mouse button codes.
+/**
+ * @brief An enumeration of all supported keyboard and mouse button codes.
+ */
 enum class KeyCode {
   // --- Mouse Buttons ---
   KC_MOUSE_LEFT = 0,
@@ -92,41 +94,64 @@ enum class KeyCode {
   KC_PAGE_DOWN,
 };
 
-// A singleton class that manages all keyboard and mouse input. It provides a
-// simple interface for checking the state of keys and the mouse.
+/**
+ * @brief A singleton class that manages all keyboard and mouse input.
+ *
+ * It provides a simple interface for checking the state of keys and the mouse.
+ */
 class InputManager {
  public:
-  // Returns a reference to the singleton `InputManager` instance.
+  /**
+   * @brief Returns a reference to the singleton `InputManager` instance.
+   * @return Reference to the InputManager.
+   */
   static InputManager& Get();
 
-  // Checks if a key is currently being held down.
-  //
-  // @param key_code The `KeyCode` to check.
-  // @return `true` if the key is currently pressed, `false` otherwise.
+  /**
+   * @brief Checks if a key is currently being held down.
+   *
+   * @param key_code The `KeyCode` to check.
+   * @return `true` if the key is currently pressed, `false` otherwise.
+   */
   bool IsKeyDown(KeyCode key_code) const;
 
-  // Checks if a key was pressed during the current frame. This is a single-frame
-  // event.
-  //
-  // @param key_code The `KeyCode` to check.
-  // @return `true` if the key was pressed in this frame, `false` otherwise.
+  /**
+   * @brief Checks if a key was pressed during the current frame.
+   *
+   * This is a single-frame event.
+   *
+   * @param key_code The `KeyCode` to check.
+   * @return `true` if the key was pressed in this frame, `false` otherwise.
+   */
   bool IsKeyPressed(KeyCode key_code) const;
 
-  // Checks if a key was released during the current frame. This is a
-  // single-frame event.
-  //
-  // @param key_code The `KeyCode` to check.
-  // @return `true` if the key was released in this frame, `false` otherwise.
+  /**
+   * @brief Checks if a key was released during the current frame.
+   *
+   * This is a single-frame event.
+   *
+   * @param key_code The `KeyCode` to check.
+   * @return `true` if the key was released in this frame, `false` otherwise.
+   */
   bool IsKeyReleased(KeyCode key_code) const;
 
-  // Returns the current x-coordinate of the mouse cursor.
-  float GetMouseX() const { return this->mouse_x; }
+  /**
+   * @brief Returns the current x-coordinate of the mouse cursor.
+   * @return Mouse x-coordinate.
+   */
+  float mouse_x() const { return mouse_x_; }
 
-  // Returns the current y-coordinate of the mouse cursor.
-  float GetMouseY() const { return this->mouse_y; }
+  /**
+   * @brief Returns the current y-coordinate of the mouse cursor.
+   * @return Mouse y-coordinate.
+   */
+  float mouse_y() const { return mouse_y_; }
 
-  // Updates the key states for the current frame. This should be called once
-  // per frame by the main application loop.
+  /**
+   * @brief Updates the key states for the current frame.
+   *
+   * This should be called once per frame by the main application loop.
+   */
   void UpdateState();
 
   friend class Window;
@@ -138,19 +163,31 @@ class InputManager {
   InputManager(const InputManager&) = delete;
   InputManager& operator=(const InputManager&) = delete;
 
-  // Raw event handlers called by GLFW callbacks
+  /**
+   * @brief Raw event handler called by GLFW callbacks for key events.
+   */
   void HandleKey(int raw_key_code, int action);
+  /**
+   * @brief Raw event handler called by GLFW callbacks for mouse button events.
+   */
   void HandleMouseButton(int raw_button_code, int action);
+  /**
+   * @brief Raw event handler called by GLFW callbacks for cursor position
+   * events.
+   */
   void HandleCursorPosition(double xpos, double ypos);
 
-  float mouse_x, mouse_y;
-  std::map<KeyCode, bool> current_key_state;
-  std::map<KeyCode, bool> previous_key_state;
+  float mouse_x_ = 0.0f;
+  float mouse_y_ = 0.0f;
+  std::map<KeyCode, bool> current_key_state_;
+  std::map<KeyCode, bool> previous_key_state_;
 
-  // Utility function to map GLFW codes to our internal KeyCode
+  /**
+   * @brief Utility function to map GLFW codes to our internal KeyCode.
+   */
   KeyCode MapRawCode(int raw_code) const;
 };
 
 }  // namespace engine
 
-#endif  // INPUT_MANAGER_H
+#endif  // INCLUDE_INPUT_MANAGER_H_

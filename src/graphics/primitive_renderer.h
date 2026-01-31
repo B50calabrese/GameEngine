@@ -1,5 +1,5 @@
-#ifndef PRIMITIVE_RENDERER_H
-#define PRIMITIVE_RENDERER_H
+#ifndef SRC_GRAPHICS_PRIMITIVE_RENDERER_H_
+#define SRC_GRAPHICS_PRIMITIVE_RENDERER_H_
 
 #include <graphics/shader.h>
 #include <graphics/vertex2d.h>
@@ -13,41 +13,44 @@
 namespace engine::graphics {
 
 /**
- * Handles basic drawing of 'primitives' or geometric 2D objects.
+ * @brief Handles basic drawing of 'primitives' or geometric 2D objects.
  */
 class PrimitiveRenderer {
  public:
-  /**
-   * Initializes the renderer to be ready for use.
-   */
+  /** @brief Initializes the renderer to be ready for use. */
   static void Init();
-  /**
-   * Shuts down the renderer and frees any allocated resources.
-   */
+  /** @brief Shuts down the renderer and frees any allocated resources. */
   static void Shutdown();
 
   /**
-   * Starts a batch for submitting primitives to be drawn (called at the
+   * @brief Starts a batch for submitting primitives to be drawn (called at the
    * beginning of a frame).
+   * @param view_projection The view-projection matrix for the batch.
    */
   static void StartBatch(const glm::mat4& view_projection);
 
   /**
-   * 'Finishes' the batch of primitives to be drawn preparing the data for
-   * rendering.
+   * @brief 'Finishes' the batch of primitives to be drawn preparing the data
+   * for rendering.
    */
   static void FinalizeBatch();
 
   /**
-   * Makes the actual GL calls to render the submitted primitives to the screen.
+   * @brief Makes the actual GL calls to render the submitted primitives to the
+   * screen.
    */
   static void RenderBatch();
 
+  /**
+   * @brief Gets the texture slot for a given texture ID.
+   * @param texture_id The OpenGL texture ID.
+   * @return The slot index.
+   */
   static int GetTextureSlot(unsigned int texture_id);
 
   /**
-   * Submits a colored rectangle (quad) to be drawn at the specified position
-   * and size.
+   * @brief Submits a colored rectangle (quad) to be drawn at the specified
+   * position and size.
    *
    * @param x The x-coordinate of the rectangle's top-left corner.
    * @param y The y-coordinate of the rectangle's top-left corner.
@@ -60,8 +63,8 @@ class PrimitiveRenderer {
                          const float color[4]);
 
   /**
-   * Submits a textured rectangle (quad) to be drawn at the specified position
-   * and size.
+   * @brief Submits a textured rectangle (quad) to be drawn at the specified
+   * position and size.
    *
    * @param x The x-coordinate of the rectangle's top-left corner.
    * @param y The y-coordinate of the rectangle's top-left corner.
@@ -76,26 +79,26 @@ class PrimitiveRenderer {
 
  private:
   // OpenGL buffers.
-  static unsigned int vao, vbo, ebo;
+  static unsigned int vao_, vbo_, ebo_;
 
   // Default Shader used for rendering
-  static std::unique_ptr<Shader> default_shader;
+  static std::unique_ptr<Shader> default_shader_;
 
   // Batch of vertices to draw.
-  static std::vector<Vertex2D> vertex_batch;
+  static std::vector<Vertex2D> vertex_batch_;
 
   // Texture Batching State
-  static std::array<unsigned int, 32> texture_slots;
-  static uint32_t texture_slot_index;
+  static std::array<unsigned int, 32> texture_slots_;
+  static uint32_t texture_slot_index_;
 
   // Cached view matrix at the start of a batch.
-  static glm::mat4 current_view_projection;
+  static glm::mat4 current_view_projection_;
 
-  static constexpr size_t MAX_QUADS = 1000;
-  static constexpr size_t MAX_VERTICES = MAX_QUADS * 4;
-  static constexpr size_t MAX_INDICES = MAX_QUADS * 6;
+  static constexpr size_t kMaxQuads = 1000;
+  static constexpr size_t kMaxVertices = kMaxQuads * 4;
+  static constexpr size_t kMaxIndices = kMaxQuads * 6;
 };
 
 }  // namespace engine::graphics
 
-#endif  // PRIMITIVE_RENDERER_H
+#endif  // SRC_GRAPHICS_PRIMITIVE_RENDERER_H_

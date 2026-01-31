@@ -102,54 +102,48 @@ InputManager& InputManager::Get() {
 }
 
 bool InputManager::IsKeyDown(KeyCode key_code) const {
-  if (this->current_key_state.find(key_code) == this->current_key_state.end()) {
+  if (current_key_state_.find(key_code) == current_key_state_.end()) {
     return false;
   }
-  return this->current_key_state.at(key_code);
+  return current_key_state_.at(key_code);
 }
 
 bool InputManager::IsKeyPressed(KeyCode key_code) const {
   // True if key is DOWN now (Current) AND was UP last frame (Previous)
   // Assumes keys are initialized to false in the map.
-  auto current_it = this->current_key_state.find(key_code);
-  auto previous_it = this->previous_key_state.find(key_code);
+  auto current_it = current_key_state_.find(key_code);
+  auto previous_it = previous_key_state_.find(key_code);
 
-  bool is_current_down = (current_it != this->current_key_state.end())
-                             ? current_it->second
-                             : false;
-  bool was_previous_down = (previous_it != this->previous_key_state.end())
-                               ? previous_it->second
-                               : false;
+  bool is_current_down =
+      (current_it != current_key_state_.end()) ? current_it->second : false;
+  bool was_previous_down =
+      (previous_it != previous_key_state_.end()) ? previous_it->second : false;
   return is_current_down && !was_previous_down;
 }
 
 bool InputManager::IsKeyReleased(KeyCode key_code) const {
   // True if key is UP now (Current) AND was DOWN last frame (Previous)
-  auto current_it = this->current_key_state.find(key_code);
-  auto previous_it = this->previous_key_state.find(key_code);
+  auto current_it = current_key_state_.find(key_code);
+  auto previous_it = previous_key_state_.find(key_code);
 
-  bool is_current_down = (current_it != this->current_key_state.end())
-                             ? current_it->second
-                             : false;
-  bool was_previous_down = (previous_it != this->previous_key_state.end())
-                               ? previous_it->second
-                               : false;
+  bool is_current_down =
+      (current_it != current_key_state_.end()) ? current_it->second : false;
+  bool was_previous_down =
+      (previous_it != previous_key_state_.end()) ? previous_it->second : false;
 
   return !is_current_down && was_previous_down;
 }
 
-void InputManager::UpdateState() {
-  this->previous_key_state = this->current_key_state;
-}
+void InputManager::UpdateState() { previous_key_state_ = current_key_state_; }
 
 // Private functions
 
 void InputManager::HandleKey(int raw_key_code, int action) {
   KeyCode key = MapRawCode(raw_key_code);
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-    this->current_key_state[key] = true;
+    current_key_state_[key] = true;
   } else if (action == GLFW_RELEASE) {
-    this->current_key_state[key] = false;
+    current_key_state_[key] = false;
   }
 }
 
@@ -158,8 +152,8 @@ void InputManager::HandleMouseButton(int raw_button_code, int action) {
 }
 
 void InputManager::HandleCursorPosition(double xpos, double ypos) {
-  this->mouse_x = static_cast<float>(xpos);
-  this->mouse_y = static_cast<float>(ypos);
+  mouse_x_ = static_cast<float>(xpos);
+  mouse_y_ = static_cast<float>(ypos);
 }
 
 // The function that performs the mapping lookup

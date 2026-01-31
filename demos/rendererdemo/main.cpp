@@ -13,8 +13,8 @@ class RendererApp : public engine::Application {
 
   void OnUpdate(double deltaTimeSeconds) override {
     engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, 400.0f, 300.0f);
-    engine::graphics::Renderer::Get().DrawTexturedRect(
-        400.0f, 300.0f, 400.0f, 300.0f, texture->GetID());
+    engine::graphics::Renderer::Get().DrawTexturedRect(400.0f, 300.0f, 400.0f,
+                                                       300.0f, texture->id());
   }
 
  private:
@@ -22,7 +22,7 @@ class RendererApp : public engine::Application {
 };
 
 /**
- * Demo showing how to do basic drawing commands in the engine.
+ * @brief Demo showing how to do basic drawing commands in the engine.
  */
 int main(void) {
   engine::EngineConfig engine_config;
