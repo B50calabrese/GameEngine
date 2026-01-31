@@ -13,7 +13,7 @@ constexpr float HEIGHT = 600.0f;
 
 class SceneBOverlay : public engine::Scene {
  public:
-  SceneBOverlay(const std::string& name) : Scene(name) {}
+  explicit SceneBOverlay(const std::string& name) : Scene(name) {}
 
   void OnRender() override {
     // Draw a green rectangle on some of the screen.
@@ -33,7 +33,7 @@ class SceneBOverlay : public engine::Scene {
 
 class SceneB : public engine::Scene {
  public:
-  SceneB(const std::string& name) : Scene(name) {}
+  explicit SceneB(const std::string& name) : Scene(name) {}
 
   void OnRender() override {
     // Draw a blue rectangle on the whole screen.
@@ -53,7 +53,7 @@ class SceneB : public engine::Scene {
 
 class SceneA : public engine::Scene {
  public:
-  SceneA(const std::string& name) : Scene(name) {}
+  explicit SceneA(const std::string& name) : Scene(name) {}
 
   void OnRender() override {
     // Draw a red rectangle on the whole screen.
@@ -87,14 +87,14 @@ class MyApp : public engine::Application {
 };
 
 /**
- * Demo showing the full end-to-end management of an application.
+ * @brief Demo showing the full end-to-end management of an application.
  */
 int main(void) {
   engine::EngineConfig engine_config;
   engine_config.window_height = HEIGHT;
   engine_config.window_width = WIDTH;
   engine::Engine::Init(engine_config);
-  MyApp myApp;
-  myApp.Run();
+  MyApp my_app;
+  my_app.Run();
   return 0;
 }

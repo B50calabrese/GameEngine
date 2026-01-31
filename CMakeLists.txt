@@ -56,14 +56,20 @@ target_include_directories(GameEngine
 )
 
 # Link the GLFW library and all necessary system libraries.
-# On Windows, these are standard system libs.
-target_link_libraries(GameEngine PRIVATE 
-    "${THIRD_PARTY_LIBS}/glfw3.lib" 
-    opengl32 
-    gdi32 
-    shell32 
-    user32
-)
+if(WIN32)
+    target_link_libraries(GameEngine PRIVATE
+        "${THIRD_PARTY_LIBS}/glfw3.lib"
+        opengl32
+        gdi32
+        shell32
+        user32
+    )
+else()
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GLFW REQUIRED glfw3)
+    target_link_libraries(GameEngine PRIVATE ${GLFW_LIBRARIES} GL dl)
+    target_include_directories(GameEngine PRIVATE ${GLFW_INCLUDE_DIRS})
+endif()
 
 # --- 6. Add Demos (Optional when building as a library) ---
 # We wrap this in a check so the game doesn't build engine demos by default

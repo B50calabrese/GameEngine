@@ -1,44 +1,63 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef INCLUDE_SCENE_H_
+#define INCLUDE_SCENE_H_
 
 #include <string>
 
 namespace engine {
 
 /**
- * Abstract base class for all scenes in a game. The client inherits from this
- * to create specific screens (Menu, Levels, etc).
+ * @brief Abstract base class for all scenes in a game.
+ *
+ * The client inherits from this to create specific screens (Menu, Levels, etc).
  */
 class Scene {
  public:
-  Scene(const std::string& name) : debug_name(name) {}
+  /**
+   * @brief Constructs a new Scene.
+   * @param name The debug name of the scene.
+   */
+  Scene(const std::string& name) : debug_name_(name) {}
+
+  /** @brief Virtual destructor. */
   virtual ~Scene() = default;
 
-  /** Called when the scene is added to the manager (e.g., loading assets) */
+  /**
+   * @brief Called when the scene is added to the manager (e.g., loading
+   * assets).
+   */
   virtual void OnAttach() {}
 
   /**
-   * Called when the scene is removed from the manager (e.g., clearing assets)
+   * @brief Called when the scene is removed from the manager (e.g., clearing
+   * assets).
    */
   virtual void OnDetach() {}
 
-  /** Called every frame for logic updates */
+  /**
+   * @brief Called every frame for logic updates.
+   * @param deltaTimeSeconds The time elapsed since the last frame, in seconds.
+   */
   virtual void OnUpdate(float deltaTimeSeconds) {}
 
-  /** Called every frame for drawing calls */
+  /** @brief Called every frame for drawing calls. */
   virtual void OnRender() {}
 
   /**
-   * Called by the application when an input event occurs. Returning 'true' can
-   * signal the Engine that the event was "handled" and shouldn't propagate.
+   * @brief Called by the application when an input event occurs.
+   * @return `true` if the event was "handled" and shouldn't propagate.
    */
   virtual bool OnInput() { return false; }
 
-  inline const std::string& GetName() const { return debug_name; }
+  /**
+   * @brief Gets the debug name of the scene.
+   * @return The debug name.
+   */
+  inline const std::string& name() const { return debug_name_; }
 
  protected:
-  std::string debug_name;
+  /** @brief The debug name of the scene. */
+  std::string debug_name_;
 };
 }  // namespace engine
 
-#endif  // SCENE_H
+#endif  // INCLUDE_SCENE_H_

@@ -1,5 +1,5 @@
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef INCLUDE_ENGINE_H_
+#define INCLUDE_ENGINE_H_
 
 #include <memory>
 #include <string>
@@ -8,38 +8,50 @@
 
 namespace engine {
 
-// Holds the configuration for the engine's initialization.
+/**
+ * @brief Holds the configuration for the engine's initialization.
+ */
 struct EngineConfig {
-  // The height of the main application window.
+  /** @brief The height of the main application window. */
   int window_height = 720;
-  // The width of the main application window.
+  /** @brief The width of the main application window. */
   int window_width = 1280;
-  // The title of the main application window.
+  /** @brief The title of the main application window. */
   std::string window_title = "Title";
-  // The default path for assets.
+  /** @brief The default path for assets. */
   std::string asset_path = "";
 };
 
-// The static `Engine` class provides the core functionality of the game engine,
-// including initialization, shutdown, and access to engine-managed systems.
+/**
+ * @brief The static `Engine` class provides the core functionality of the game
+ * engine, including initialization, shutdown, and access to engine-managed
+ * systems.
+ */
 class Engine {
  public:
-  // Initializes the engine, including the window, graphics context, and other
-  // core systems. This must be called before any other engine functions.
-  //
-  // @param config The `EngineConfig` struct containing initialization
-  // settings.
+  /**
+   * @brief Initializes the engine, including the window, graphics context, and
+   * other core systems. This must be called before any other engine functions.
+   *
+   * @param config The `EngineConfig` struct containing initialization
+   * settings.
+   */
   static void Init(const EngineConfig& config);
 
-  // Gracefully shuts down the engine and releases all resources.
+  /**
+   * @brief Gracefully shuts down the engine and releases all resources.
+   */
   static void Shutdown();
 
-  // Provides access to the main application window.
-  static Window& GetWindow() { return *internal_window; }
+  /**
+   * @brief Provides access to the main application window.
+   * @return Reference to the main Window.
+   */
+  static Window& window() { return *internal_window_; }
 
  private:
-  static std::unique_ptr<Window> internal_window;
+  static std::unique_ptr<Window> internal_window_;
 };
 }  // namespace engine
 
-#endif  // ENGINE_H
+#endif  // INCLUDE_ENGINE_H_

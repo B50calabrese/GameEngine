@@ -1,7 +1,9 @@
 #include "graphics/renderer.h"
 
+// clang-format off
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+// clang-format on
 
 #include <filesystem>
 #include <iostream>
@@ -18,7 +20,7 @@ void Renderer::Clear() const {
 
 void Renderer::BeginFrame(Camera& camera) const {
   // Instruct renders to reset themselves for the frame.
-  graphics::PrimitiveRenderer::StartBatch(camera.GetViewProjectionMatrix());
+  graphics::PrimitiveRenderer::StartBatch(camera.view_projection_matrix());
 }
 
 void Renderer::EndFrame() const {
@@ -40,17 +42,17 @@ void Renderer::DrawRect(float x, float y, float width, float height, float r,
 }
 
 void Renderer::DrawTexturedRect(float x, float y, float w, float h,
-                                unsigned int textureID, const float tint[4]) {
-  static float defaultTint[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-  const float* color = tint ? tint : defaultTint;
+                                unsigned int texture_id, const float tint[4]) {
+  static float default_tint[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+  const float* color = tint ? tint : default_tint;
 
-  PrimitiveRenderer::SubmitTexturedQuad(x, y, w, h, textureID, color);
+  PrimitiveRenderer::SubmitTexturedQuad(x, y, w, h, texture_id, color);
 }
 
-std::string Renderer::ResolveAssetPath(const std::string& relativePath) const {
-  std::filesystem::path p(relativePath);
-  if (p.is_absolute()) return relativePath;
-  return asset_root_path + relativePath;
+std::string Renderer::ResolveAssetPath(const std::string& relative_path) const {
+  std::filesystem::path p(relative_path);
+  if (p.is_absolute()) return relative_path;
+  return asset_root_path_ + relative_path;
 }
 
 // Retrieve the native handle from the window
@@ -73,7 +75,7 @@ void Renderer::Init(Window& window) {
 
   // Set viewport to window dimensions
   int width, height;
-  glfwGetWindowSize(window.GetNativeHandle(), &width, &height);
+  glfwGetWindowSize(window.native_handle(), &width, &height);
   SetViewport(width, height);
 
   // Initialize renderers.
@@ -94,11 +96,11 @@ void Renderer::HandleResize(int& width, int& height) const {
 }
 
 void Renderer::SetAssetRoot(const std::string& path) {
-  asset_root_path = std::filesystem::absolute(path).string();
+  asset_root_path_ = std::filesystem::absolute(path).string();
   // Ensure trailing slash for consistent concatenation
-  if (!asset_root_path.empty() && asset_root_path.back() != '/' &&
-      asset_root_path.back() != '\\') {
-    asset_root_path += "/";
+  if (!asset_root_path_.empty() && asset_root_path_.back() != '/' &&
+      asset_root_path_.back() != '\\') {
+    asset_root_path_ += "/";
   }
 }
 }  // namespace engine::graphics

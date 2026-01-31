@@ -1,5 +1,5 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#ifndef INCLUDE_GRAPHICS_CAMERA_H_
+#define INCLUDE_GRAPHICS_CAMERA_H_
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -7,7 +7,8 @@
 namespace engine::graphics {
 
 /**
- * Simple 2D Camera that manages the Orthographic projection.
+ * @brief Simple 2D Camera that manages the Orthographic projection.
+ *
  * It manages three matrices internally:
  * 1. Projection Matrix: Maps world coordinates (e.g., 0 to 1920) to GPU space
  * (-1 to 1). This defines your "Resolution" or "Aspect Ratio".
@@ -19,42 +20,62 @@ namespace engine::graphics {
 class Camera {
  public:
   /**
-   * Create a camera by defining the view boundaries.
+   * @brief Create a camera by defining the view boundaries.
+   *
    * Note: Flipping 'bottom' and 'top' determines if (0,0) is Top-Left or
    * Bottom-Left.
+   *
+   * @param left Left boundary.
+   * @param right Right boundary.
+   * @param bottom Bottom boundary.
+   * @param top Top boundary.
    */
   Camera(float left, float right, float bottom, float top);
 
   /**
-   * Updates the boundaries (useful for window resizing).
+   * @brief Updates the boundaries (useful for window resizing).
+   *
+   * @param left Left boundary.
+   * @param right Right boundary.
+   * @param bottom Bottom boundary.
+   * @param top Top boundary.
    */
   void SetProjection(float left, float right, float bottom, float top);
 
   /**
-   * Moves the camera in world space.
+   * @brief Moves the camera in world space.
+   * @param position The new position.
    */
   void SetPosition(const glm::vec3& position);
 
-  const glm::vec3& GetPosition() const { return position; }
-  const glm::mat4& GetViewProjectionMatrix() const {
-    return view_projection_matrix;
+  /**
+   * @brief Gets the current position of the camera.
+   * @return The position.
+   */
+  const glm::vec3& position() const { return position_; }
+
+  /**
+   * @brief Gets the cached view-projection matrix.
+   * @return The matrix.
+   */
+  const glm::mat4& view_projection_matrix() const {
+    return view_projection_matrix_;
   }
 
  private:
   /**
-   * Re-calculates the final matrix whenever position or projection
+   * @brief Re-calculates the final matrix whenever position or projection
    * changes.
    */
   void UpdateMatrices();
 
- private:
-  glm::mat4 projection_matrix;       // The "Lens" (Resolution/Aspect)
-  glm::mat4 view_matrix;             // The "Eyeball" (Position/Rotation)
-  glm::mat4 view_projection_matrix;  // The cached result sent to Shaders
+  glm::mat4 projection_matrix_;       // The "Lens" (Resolution/Aspect)
+  glm::mat4 view_matrix_;             // The "Eyeball" (Position/Rotation)
+  glm::mat4 view_projection_matrix_;  // The cached result sent to Shaders
 
-  glm::vec3 position;  // Camera's location in world units
+  glm::vec3 position_;  // Camera's location in world units
 };
 
 }  // namespace engine::graphics
 
-#endif  // CAMERA_H
+#endif  // INCLUDE_GRAPHICS_CAMERA_H_
