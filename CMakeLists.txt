@@ -38,11 +38,13 @@ set(SOURCE_FILES
 )
 
 # Use GLOB_RECURSE relative to CURRENT_SOURCE_DIR
-file(GLOB_RECURSE INCLUDE_FILES 
-    "${ENGINE_ROOT}/src/*.h" 
+file(GLOB_RECURSE INCLUDE_FILES
     "${ENGINE_ROOT}/include/*.h"
     "${ENGINE_ROOT}/include/ecs/*.h"
     "${ENGINE_ROOT}/include/graphics/*.h"
+    "${ENGINE_ROOT}/src/*.h"
+    "${ENGINE_ROOT}/src/ecs/*.h"
+    "${ENGINE_ROOT}/src/graphics/*.h" 
 )
 
 # 4. Create Library
