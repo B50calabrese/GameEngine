@@ -23,6 +23,12 @@ class MainScene : public engine::Scene {
 
   void OnAttach() override {}
 
+  void OnUpdate(float deltaTimeSeconds) {
+    auto position = engine::InputManager::Get().GetMouseScreenPos();
+
+    std::cout << "X: " << position.x << " Y: " << position.y << "\n";
+  }
+
   bool OnInput() override { return true; }
 
  private:

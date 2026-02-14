@@ -1,6 +1,7 @@
 #ifndef INCLUDE_INPUT_MANAGER_H_
 #define INCLUDE_INPUT_MANAGER_H_
 
+#include <glm/glm.hpp>
 #include <map>
 
 class Window;
@@ -136,16 +137,11 @@ class InputManager {
   bool IsKeyReleased(KeyCode key_code) const;
 
   /**
-   * @brief Returns the current x-coordinate of the mouse cursor.
-   * @return Mouse x-coordinate.
+   * @brief Retrieves the mouse position in screen coordinates.
+   *
+   * @returns the screen position in [-1, 1] space.
    */
-  float mouse_x() const { return mouse_x_; }
-
-  /**
-   * @brief Returns the current y-coordinate of the mouse cursor.
-   * @return Mouse y-coordinate.
-   */
-  float mouse_y() const { return mouse_y_; }
+  glm::vec2 GetMouseScreenPos() const { return glm::vec2(mouse_x_, mouse_y_); }
 
   /**
    * @brief Updates the key states for the current frame.
