@@ -11,9 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # This ensures paths work even when this project is included via add_subdirectory
 set(ENGINE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 set(THIRD_PARTY_DIR "${ENGINE_ROOT}/third_party")
-set(GLFW_INCLUDE_DIR "${THIRD_PARTY_DIR}/include")
+set(THIRD_PARTY_INCLUDE "${THIRD_PARTY_DIR}/include")
 set(THIRD_PARTY_LIBS "${THIRD_PARTY_DIR}/libs")
-set(GLM_INCLUDE_DIR  "${THIRD_PARTY_DIR}/include")
 
 # Inform the linker where to find the library files (e.g., glfw3.lib)
 link_directories("${THIRD_PARTY_LIBS}")
@@ -33,6 +32,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/graphics/primitive_renderer.cpp"
     "${ENGINE_ROOT}/src/graphics/renderer.cpp"
     "${ENGINE_ROOT}/src/graphics/shader.cpp"
+    "${ENGINE_ROOT}/src/graphics/text_renderer.cpp"
     "${ENGINE_ROOT}/src/graphics/texture.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
 )
@@ -54,16 +54,17 @@ add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 # 5. Linking Dependencies & Includes
 # ----------------------------------
 target_include_directories(GameEngine 
-    PRIVATE "${GLFW_INCLUDE_DIR}"	
     PUBLIC  "${ENGINE_ROOT}/include"
     PRIVATE "${ENGINE_ROOT}/src"
-    PUBLIC  "${GLM_INCLUDE_DIR}"
+    PUBLIC  "${THIRD_PARTY_INCLUDE}"
+    PUBLIC  "${THIRD_PARTY_INCLUDE}/freetype"
 )
 
 # Link the GLFW library and all necessary system libraries.
 if(WIN32)
     target_link_libraries(GameEngine PRIVATE
         "${THIRD_PARTY_LIBS}/glfw3.lib"
+        "${THIRD_PARTY_LIBS}/freetype.lib"
         opengl32
         gdi32
         shell32
@@ -72,6 +73,7 @@ if(WIN32)
 else()
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GLFW REQUIRED glfw3)
+    pkg_check_modules(FREETYPE REQUIRED freetype2)
     target_link_libraries(GameEngine PRIVATE ${GLFW_LIBRARIES} GL dl)
     target_include_directories(GameEngine PRIVATE ${GLFW_INCLUDE_DIRS})
 endif()
@@ -83,5 +85,6 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/ecsdemo)
     add_subdirectory(demos/rendererdemo)
     add_subdirectory(demos/scenedemo)
+    add_subdirectory(demos/textdemo)
     add_subdirectory(demos/windowdemo)
 endif()

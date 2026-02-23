@@ -8,6 +8,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -223,36 +224,66 @@ void PrimitiveRenderer::SubmitQuad(float x, float y, float w, float h,
 
 void PrimitiveRenderer::SubmitTexturedQuad(float x, float y, float w, float h,
                                            unsigned int texture_id,
-                                           const float color[4]) {
+                                           const float color[4], float rotation,
+                                           bool flip_uv) {
   // Handle batch overflow or when we have too many textures.
   if (vertex_batch_.size() + 4 > kMaxVertices || texture_slot_index_ >= 32) {
     RenderBatch();
     StartBatch(current_view_projection_);
   }
 
-  float texIndex = (float)GetTextureSlot(texture_id);
+  float tex_index = (float)GetTextureSlot(texture_id);
 
-  // Add vertices for a single quad (Counter-Clockwise)
-  // Bottom-Left
-  vertex_batch_.push_back({{x, y},
-                           {color[0], color[1], color[2], color[3]},
-                           {0.0f, 0.0f},
-                           texIndex});
-  // Bottom-Right
-  vertex_batch_.push_back({{x + w, y},
-                           {color[0], color[1], color[2], color[3]},
-                           {1.0f, 0.0f},
-                           texIndex});
-  // Top-Right
-  vertex_batch_.push_back({{x + w, y + h},
-                           {color[0], color[1], color[2], color[3]},
-                           {1.0f, 1.0f},
-                           texIndex});
-  // Top-Left
-  vertex_batch_.push_back({{x, y + h},
-                           {color[0], color[1], color[2], color[3]},
-                           {0.0f, 1.0f},
-                           texIndex});
+  // 1. Define local vertices.
+  glm::vec4 local_vertices[4] = {
+      {0.0f, 0.0f, 0.0f, 1.0f},  // Top-Left
+      {w, 0.0f, 0.0f, 1.0f},     // Top-Right
+      {w, h, 0.0f, 1.0f},        // Bottom-Right
+      {0.0f, h, 0.0f, 1.0f}      // Bottom-Left
+  };
+
+  // 2. Apply Rotation to the local positions
+  if (rotation != 0.0f) {
+    glm::mat4 rotation_matrix = glm::rotate(
+        glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0, 0, 1));
+
+    for (int i = 0; i < 4; i++) {
+      local_vertices[i] = rotation_matrix * local_vertices[i];
+    }
+  }
+
+  // 3. Set UVs based on flip_uv
+  float u0 = 0.0f, v0 = 0.0f, u1 = 1.0f, v1 = 1.0f;
+  if (flip_uv) {
+    v0 = 1.0f;  // Top becomes 1.0
+    v1 = 0.0f;  // Bottom becomes 0.0
+  }
+
+  float texture_coords[4][2] = {
+      {u0, v0},  // Top-Left
+      {u1, v0},  // Top-Right
+      {u1, v1},  // Bottom-Right
+      {u0, v1}   // Bottom-Left
+  };
+
+  // 4. Submit vertices to batch
+  // We add the world (x, y) translation to the rotated local vertices.
+  for (int i = 0; i < 4; i++) {
+    Vertex2D v;
+    v.position[0] = x + local_vertices[i].x;
+    v.position[1] = y + local_vertices[i].y;
+
+    v.color[0] = color[0];
+    v.color[1] = color[1];
+    v.color[2] = color[2];
+    v.color[3] = color[3];
+
+    v.texCoords[0] = texture_coords[i][0];
+    v.texCoords[1] = texture_coords[i][1];
+    v.texIndex = tex_index;
+
+    vertex_batch_.push_back(v);
+  }
 }
 
 }  // namespace engine::graphics
