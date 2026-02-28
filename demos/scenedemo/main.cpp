@@ -15,17 +15,17 @@ class SceneBOverlay : public engine::Scene {
  public:
   explicit SceneBOverlay(const std::string& name) : Scene(name) {}
 
-  void OnRender() override {
+  void on_render() override {
     // Draw a green rectangle on some of the screen.
-    engine::graphics::Renderer::Get().DrawRect(WIDTH / 4.0f, HEIGHT / 4.0f,
-                                               WIDTH / 2.0f, HEIGHT / 2.0f,
-                                               0.0f, 1.0f, 0.0f);
+    engine::graphics::Renderer::get().draw_rect(WIDTH / 4.0f, HEIGHT / 4.0f,
+                                                WIDTH / 2.0f, HEIGHT / 2.0f,
+                                                0.0f, 1.0f, 0.0f);
   }
 
-  bool OnInput() override {
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_ESCAPE)) {
+  bool on_input() override {
+    if (engine::InputManager::get().is_key_pressed(engine::KeyCode::KC_ESCAPE)) {
       // Remove the current screen.
-      engine::SceneManager::Get().PopScene();
+      engine::SceneManager::get().pop_scene();
     }
     return true;
   }
@@ -35,16 +35,16 @@ class SceneB : public engine::Scene {
  public:
   explicit SceneB(const std::string& name) : Scene(name) {}
 
-  void OnRender() override {
+  void on_render() override {
     // Draw a blue rectangle on the whole screen.
-    engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, WIDTH, HEIGHT, 0.0f,
-                                               0.0f, 1.0f);
+    engine::graphics::Renderer::get().draw_rect(0.0f, 0.0f, WIDTH, HEIGHT, 0.0f,
+                                                0.0f, 1.0f);
   }
 
-  bool OnInput() override {
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_ESCAPE)) {
+  bool on_input() override {
+    if (engine::InputManager::get().is_key_pressed(engine::KeyCode::KC_ESCAPE)) {
       // Push the overlay screen.
-      engine::SceneManager::Get().PushScene(
+      engine::SceneManager::get().push_scene(
           std::make_unique<SceneBOverlay>("SceneBOverlay"));
     }
     return true;
@@ -55,15 +55,15 @@ class SceneA : public engine::Scene {
  public:
   explicit SceneA(const std::string& name) : Scene(name) {}
 
-  void OnRender() override {
+  void on_render() override {
     // Draw a red rectangle on the whole screen.
-    engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, WIDTH, HEIGHT, 1.0f,
-                                               0.0f, 0.0f);
+    engine::graphics::Renderer::get().draw_rect(0.0f, 0.0f, WIDTH, HEIGHT, 1.0f,
+                                                0.0f, 0.0f);
   }
 
-  bool OnInput() override {
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_SPACE)) {
-      engine::SceneManager::Get().SetScene(std::make_unique<SceneB>("SceneB"));
+  bool on_input() override {
+    if (engine::InputManager::get().is_key_pressed(engine::KeyCode::KC_SPACE)) {
+      engine::SceneManager::get().set_scene(std::make_unique<SceneB>("SceneB"));
     }
     return true;
   }
@@ -71,19 +71,19 @@ class SceneA : public engine::Scene {
 
 class MyApp : public engine::Application {
  public:
-  void OnInit() override {
+  void on_init() override {
     std::cout << "Initializing Application" << std::endl;
-    engine::SceneManager::Get().PushScene(std::make_unique<SceneA>("SceneA"));
+    engine::SceneManager::get().push_scene(std::make_unique<SceneA>("SceneA"));
   }
 
-  void OnShutdown() override {
+  void on_shutdown() override {
     std::cout << "Shutting down Application" << std::endl;
   }
 
-  void OnUpdate(double deltaTimeSeconds) override {}
+  void on_update(double delta_time_seconds) override {}
 
  private:
-  double totalTime_ = 0.0;
+  double total_time_ = 0.0;
 };
 
 /**
@@ -93,8 +93,8 @@ int main(void) {
   engine::EngineConfig engine_config;
   engine_config.window_height = HEIGHT;
   engine_config.window_width = WIDTH;
-  engine::Engine::Init(engine_config);
+  engine::Engine::init(engine_config);
   MyApp my_app;
-  my_app.Run();
+  my_app.run();
   return 0;
 }

@@ -4,8 +4,8 @@
 
 namespace engine::graphics {
 
-void BufferUtils::CreateBasicBuffers(unsigned int& vao, unsigned int& vbo,
-                                     unsigned int& ebo, size_t vboSize) {
+void BufferUtils::create_basic_buffers(unsigned int& vao, unsigned int& vbo,
+                                       unsigned int& ebo, size_t vbo_size) {
   // Generate the handles
   glGenVertexArrays(1, &vao);
   glGenBuffers(1, &vbo);
@@ -19,7 +19,7 @@ void BufferUtils::CreateBasicBuffers(unsigned int& vao, unsigned int& vbo,
 
   // We initialize with NULL and DYNAMIC_DRAW because renderers usually
   // update vertex data every frame (batching)
-  glBufferData(GL_ARRAY_BUFFER, vboSize, nullptr, GL_DYNAMIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, vbo_size, nullptr, GL_DYNAMIC_DRAW);
 
   // Setup EBO (Element/Index Buffer)
   // Note: The actual index data is usually static and provided
@@ -27,8 +27,8 @@ void BufferUtils::CreateBasicBuffers(unsigned int& vao, unsigned int& vbo,
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 }
 
-void BufferUtils::SetAttribute(unsigned int index, int size, size_t stride,
-                               size_t offset) {
+void BufferUtils::set_attribute(unsigned int index, int size, size_t stride,
+                                size_t offset) {
   // Enable the specific attribute slot in the currently bound VAO
   glEnableVertexAttribArray(index);
 

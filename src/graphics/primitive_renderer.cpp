@@ -63,29 +63,64 @@ static const char* fragmentSource = R"(
         out vec4 color;
 
         void main() {
+            vec4 texColor;
             int index = int(vTexIndex);
-            // Sample the texture and multiply by the per-vertex color/tint
-            color = texture(uTextures[index], vTexCoord) * vColor;
+            switch(index) {
+                case 0:  texColor = texture(uTextures[0], vTexCoord); break;
+                case 1:  texColor = texture(uTextures[1], vTexCoord); break;
+                case 2:  texColor = texture(uTextures[2], vTexCoord); break;
+                case 3:  texColor = texture(uTextures[3], vTexCoord); break;
+                case 4:  texColor = texture(uTextures[4], vTexCoord); break;
+                case 5:  texColor = texture(uTextures[5], vTexCoord); break;
+                case 6:  texColor = texture(uTextures[6], vTexCoord); break;
+                case 7:  texColor = texture(uTextures[7], vTexCoord); break;
+                case 8:  texColor = texture(uTextures[8], vTexCoord); break;
+                case 9:  texColor = texture(uTextures[9], vTexCoord); break;
+                case 10: texColor = texture(uTextures[10], vTexCoord); break;
+                case 11: texColor = texture(uTextures[11], vTexCoord); break;
+                case 12: texColor = texture(uTextures[12], vTexCoord); break;
+                case 13: texColor = texture(uTextures[13], vTexCoord); break;
+                case 14: texColor = texture(uTextures[14], vTexCoord); break;
+                case 15: texColor = texture(uTextures[15], vTexCoord); break;
+                case 16: texColor = texture(uTextures[16], vTexCoord); break;
+                case 17: texColor = texture(uTextures[17], vTexCoord); break;
+                case 18: texColor = texture(uTextures[18], vTexCoord); break;
+                case 19: texColor = texture(uTextures[19], vTexCoord); break;
+                case 20: texColor = texture(uTextures[20], vTexCoord); break;
+                case 21: texColor = texture(uTextures[21], vTexCoord); break;
+                case 22: texColor = texture(uTextures[22], vTexCoord); break;
+                case 23: texColor = texture(uTextures[23], vTexCoord); break;
+                case 24: texColor = texture(uTextures[24], vTexCoord); break;
+                case 25: texColor = texture(uTextures[25], vTexCoord); break;
+                case 26: texColor = texture(uTextures[26], vTexCoord); break;
+                case 27: texColor = texture(uTextures[27], vTexCoord); break;
+                case 28: texColor = texture(uTextures[28], vTexCoord); break;
+                case 29: texColor = texture(uTextures[29], vTexCoord); break;
+                case 30: texColor = texture(uTextures[30], vTexCoord); break;
+                case 31: texColor = texture(uTextures[31], vTexCoord); break;
+                default: texColor = vec4(1.0); break;
+            }
+            color = texColor * vColor;
         }
     )";
 
-void PrimitiveRenderer::Init() {
+void PrimitiveRenderer::init() {
   // Initialize Buffers using Utility Helpers
-  BufferUtils::CreateBasicBuffers(vao_, vbo_, ebo_,
-                                  kMaxVertices * sizeof(Vertex2D));
+  BufferUtils::create_basic_buffers(vao_, vbo_, ebo_,
+                                    kMaxVertices * sizeof(Vertex2D));
 
   // Define Vertex Layout using Utility Helpers
   // Position: index 0, 2 floats
-  BufferUtils::SetAttribute(0, 2, sizeof(Vertex2D),
-                            offsetof(Vertex2D, position));
+  BufferUtils::set_attribute(0, 2, sizeof(Vertex2D),
+                             offsetof(Vertex2D, position));
   // Color: index 1, 4 floats
-  BufferUtils::SetAttribute(1, 4, sizeof(Vertex2D), offsetof(Vertex2D, color));
+  BufferUtils::set_attribute(1, 4, sizeof(Vertex2D), offsetof(Vertex2D, color));
   // TexCoords: index 2, 2 floats
-  BufferUtils::SetAttribute(2, 2, sizeof(Vertex2D),
-                            offsetof(Vertex2D, texCoords));
+  BufferUtils::set_attribute(2, 2, sizeof(Vertex2D),
+                             offsetof(Vertex2D, tex_coords));
   // TexIndex: index 3, 1 float
-  BufferUtils::SetAttribute(3, 1, sizeof(Vertex2D),
-                            offsetof(Vertex2D, texIndex));
+  BufferUtils::set_attribute(3, 1, sizeof(Vertex2D),
+                             offsetof(Vertex2D, tex_index));
 
   // Pre-populate Index Buffer (static pattern: 0,1,2, 2,3,0)
   std::vector<unsigned int> indices(kMaxIndices);
@@ -116,20 +151,22 @@ void PrimitiveRenderer::Init() {
 
   // Compile Built-in Shaders
   default_shader_ = std::unique_ptr<Shader>(
-      Shader::CreateFromSource(vertexSource, fragmentSource));
+      Shader::create_from_source(vertexSource, fragmentSource));
 
-  default_shader_->Bind();
-  int samplers[32];
-  for (int i = 0; i < 32; i++) samplers[i] = i;
+  if (default_shader_) {
+    default_shader_->bind();
+    int samplers[32];
+    for (int i = 0; i < 32; i++) samplers[i] = i;
 
-  int location = glGetUniformLocation(default_shader_->id(), "uTextures");
-  glUniform1iv(location, 32, samplers);
+    int location = glGetUniformLocation(default_shader_->id(), "uTextures");
+    glUniform1iv(location, 32, samplers);
+  }
 
   // Reserve CPU Batch Memory
   vertex_batch_.reserve(kMaxVertices);
 }
 
-void PrimitiveRenderer::Shutdown() {
+void PrimitiveRenderer::shutdown() {
   glDeleteVertexArrays(1, &vao_);
   glDeleteBuffers(1, &vbo_);
   glDeleteBuffers(1, &ebo_);
@@ -140,15 +177,17 @@ void PrimitiveRenderer::Shutdown() {
 
 // --- Batch Control ---
 
-void PrimitiveRenderer::StartBatch(const glm::mat4& view_projection) {
+void PrimitiveRenderer::start_batch(const glm::mat4& view_projection) {
   current_view_projection_ = view_projection;
   vertex_batch_.clear();
   texture_slot_index_ = 1;  // Reset to 1, preserving the white texture at 0
-  default_shader_->Bind();
-  default_shader_->SetMat4("u_ViewProjection", view_projection);
+  if (default_shader_) {
+    default_shader_->bind();
+    default_shader_->set_mat4("u_ViewProjection", view_projection);
+  }
 }
 
-void PrimitiveRenderer::FinalizeBatch() {
+void PrimitiveRenderer::finalize_batch() {
   if (vertex_batch_.empty()) return;
 
   // Upload CPU data to GPU dynamic buffer
@@ -157,10 +196,10 @@ void PrimitiveRenderer::FinalizeBatch() {
                   vertex_batch_.data());
 }
 
-void PrimitiveRenderer::RenderBatch() {
-  if (vertex_batch_.empty()) return;
+void PrimitiveRenderer::render_batch() {
+  if (vertex_batch_.empty() || !default_shader_) return;
 
-  default_shader_->Bind();
+  default_shader_->bind();
 
   // Bind all textures currently active in this batch
   for (uint32_t i = 0; i < texture_slot_index_; i++) {
@@ -175,10 +214,10 @@ void PrimitiveRenderer::RenderBatch() {
   glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 
   glBindVertexArray(0);
-  default_shader_->Unbind();
+  default_shader_->unbind();
 }
 
-int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
+int PrimitiveRenderer::get_texture_slot(unsigned int texture_id) {
   // Search if texture is already in a slot
   for (uint32_t i = 0; i < texture_slot_index_; i++) {
     if (texture_slots_[i] == texture_id) return (int)i;
@@ -190,56 +229,42 @@ int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
 
 // --- Submission API ---
 
-void PrimitiveRenderer::SubmitQuad(float x, float y, float w, float h,
-                                   const float color[4]) {
-  // Handle batch overflow
-  if (vertex_batch_.size() + 4 > kMaxVertices) {
-    RenderBatch();
-    StartBatch(current_view_projection_);
-  }
-
-  float texIndex = 0.0f;  // Use the white texture
-  // Add vertices for a single quad (Counter-Clockwise)
-  // Bottom-Left
-  vertex_batch_.push_back({{x, y},
-                           {color[0], color[1], color[2], color[3]},
-                           {0.0f, 0.0f},
-                           texIndex});
-  // Bottom-Right
-  vertex_batch_.push_back({{x + w, y},
-                           {color[0], color[1], color[2], color[3]},
-                           {1.0f, 0.0f},
-                           texIndex});
-  // Top-Right
-  vertex_batch_.push_back({{x + w, y + h},
-                           {color[0], color[1], color[2], color[3]},
-                           {1.0f, 1.0f},
-                           texIndex});
-  // Top-Left
-  vertex_batch_.push_back({{x, y + h},
-                           {color[0], color[1], color[2], color[3]},
-                           {0.0f, 1.0f},
-                           texIndex});
+void PrimitiveRenderer::submit_quad(const glm::vec2& position,
+                                    const glm::vec2& size,
+                                    const glm::vec4& color, float rotation,
+                                    const glm::vec2& origin) {
+  submit_textured_quad(position, size, texture_slots_[0], color, rotation,
+                       origin, false);
 }
 
-void PrimitiveRenderer::SubmitTexturedQuad(float x, float y, float w, float h,
-                                           unsigned int texture_id,
-                                           const float color[4], float rotation,
-                                           bool flip_uv) {
+void PrimitiveRenderer::submit_textured_quad(const glm::vec2& position,
+                                             const glm::vec2& size,
+                                             unsigned int texture_id,
+                                             const glm::vec4& color,
+                                             float rotation,
+                                             const glm::vec2& origin,
+                                             bool flip_uv) {
   // Handle batch overflow or when we have too many textures.
   if (vertex_batch_.size() + 4 > kMaxVertices || texture_slot_index_ >= 32) {
-    RenderBatch();
-    StartBatch(current_view_projection_);
+    render_batch();
+    start_batch(current_view_projection_);
   }
 
-  float tex_index = (float)GetTextureSlot(texture_id);
+  float tex_index = (float)get_texture_slot(texture_id);
 
-  // 1. Define local vertices.
+  float w = size.x;
+  float h = size.y;
+
+  // 1. Define local vertices relative to the origin.
+  // We subtract the origin (scaled by size) to center the quad around it.
+  float offsetX = origin.x * w;
+  float offsetY = origin.y * h;
+
   glm::vec4 local_vertices[4] = {
-      {0.0f, 0.0f, 0.0f, 1.0f},  // Top-Left
-      {w, 0.0f, 0.0f, 1.0f},     // Top-Right
-      {w, h, 0.0f, 1.0f},        // Bottom-Right
-      {0.0f, h, 0.0f, 1.0f}      // Bottom-Left
+      {-offsetX, -offsetY, 0.0f, 1.0f},      // Bottom-Left
+      {w - offsetX, -offsetY, 0.0f, 1.0f},   // Bottom-Right
+      {w - offsetX, h - offsetY, 0.0f, 1.0f},  // Top-Right
+      {-offsetX, h - offsetY, 0.0f, 1.0f}     // Top-Left
   };
 
   // 2. Apply Rotation to the local positions
@@ -260,27 +285,27 @@ void PrimitiveRenderer::SubmitTexturedQuad(float x, float y, float w, float h,
   }
 
   float texture_coords[4][2] = {
-      {u0, v0},  // Top-Left
-      {u1, v0},  // Top-Right
-      {u1, v1},  // Bottom-Right
-      {u0, v1}   // Bottom-Left
+      {u0, v0},  // Bottom-Left
+      {u1, v0},  // Bottom-Right
+      {u1, v1},  // Top-Right
+      {u0, v1}   // Top-Left
   };
 
   // 4. Submit vertices to batch
   // We add the world (x, y) translation to the rotated local vertices.
   for (int i = 0; i < 4; i++) {
     Vertex2D v;
-    v.position[0] = x + local_vertices[i].x;
-    v.position[1] = y + local_vertices[i].y;
+    v.position[0] = position.x + local_vertices[i].x;
+    v.position[1] = position.y + local_vertices[i].y;
 
-    v.color[0] = color[0];
-    v.color[1] = color[1];
-    v.color[2] = color[2];
-    v.color[3] = color[3];
+    v.color[0] = color.r;
+    v.color[1] = color.g;
+    v.color[2] = color.b;
+    v.color[3] = color.a;
 
-    v.texCoords[0] = texture_coords[i][0];
-    v.texCoords[1] = texture_coords[i][1];
-    v.texIndex = tex_index;
+    v.tex_coords[0] = texture_coords[i][0];
+    v.tex_coords[1] = texture_coords[i][1];
+    v.tex_index = tex_index;
 
     vertex_batch_.push_back(v);
   }

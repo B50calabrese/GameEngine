@@ -10,14 +10,14 @@
 
 namespace engine::graphics {
 
-void TextRenderer::Init() {
+void TextRenderer::init() {
   if (FT_Init_FreeType(&ft_library_)) {
     std::cout << "ERROR::FREETYPE: Could not init FreeType Library"
               << std::endl;
   }
 }
 
-void TextRenderer::Shutdown() {
+void TextRenderer::shutdown() {
   // Clean up OpenGL textures
   for (auto const& [fontName, charMap] : fonts_) {
     for (auto const& [c, character] : charMap) {
@@ -27,9 +27,9 @@ void TextRenderer::Shutdown() {
   FT_Done_FreeType(ft_library_);
 }
 
-void TextRenderer::LoadFont(const std::string& name, const std::string& path,
-                            unsigned int font_size) {
-  std::string full_path = Renderer::Get().ResolveAssetPath(path);
+void TextRenderer::load_font(const std::string& name, const std::string& path,
+                             unsigned int font_size) {
+  std::string full_path = Renderer::get().resolve_asset_path(path);
 
   FT_Face face;
   if (FT_New_Face(ft_library_, full_path.c_str(), 0, &face)) {
@@ -73,39 +73,49 @@ void TextRenderer::LoadFont(const std::string& name, const std::string& path,
             << "px)" << std::endl;
 }
 
-void TextRenderer::DrawText(const std::string& font_name,
-                            const std::string& text, glm::vec2 position,
-                            float rotation, float scale,
-                            const glm::vec4& color) {
+void TextRenderer::draw_text(const std::string& font_name,
+                             const std::string& text, glm::vec2 position,
+                             float rotation, float scale,
+                             const glm::vec4& color) {
   if (fonts_.find(font_name) == fonts_.end()) return;
 
   auto& characters = fonts_[font_name];
   float x_cursor = 0.0f;
-  float rad = glm::radians(rotation);
-  float cosA = cos(rad);
-  float sinA = sin(rad);
-
-  glm::mat4 rotationMat =
-      glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0, 0, 1));
 
   for (char c : text) {
     Character ch = characters[c];
 
-    // Calculate the position of the character's baseline origin relative to
-    // start (x,y)
-    float worldOriginX = position.x + (x_cursor * cosA);
-    float worldOriginY = position.y + (x_cursor * sinA);
+    // Character bearing: horizontal offset from origin to left of glyph,
+    // and vertical offset from origin to top of glyph.
+    float xpos = position.x + (x_cursor + ch.bearing.x) * scale;
+    float ypos = position.y - (ch.size.y - ch.bearing.y) * scale;
 
     float w = ch.size.x * scale;
     float h = ch.size.y * scale;
 
-    // We pass the baseline origin as the (x,y) and the bearing as local offsets
-    // SubmitTexturedQuad now handles the rotation of these offsets correctly.
-    PrimitiveRenderer::SubmitTexturedQuad(worldOriginX, worldOriginY, w, h,
-                                          ch.texture_id, &color[0], rotation,
-                                          true);
+    // submit_textured_quad handles rotation around the specified origin.
+    // For text characters, we use the bottom-left of the glyph as the origin for its individual quad,
+    // but the text as a whole should ideally rotate around the start position.
+    // Implementing full text rotation is complex; for now we rotate each character quad
+    // around the 'position' passed to draw_text.
 
-    x_cursor += (ch.advance >> 6) * scale;
+    // Calculate character position relative to text origin
+    glm::vec2 char_rel_pos = glm::vec2(xpos - position.x, ypos - position.y);
+
+    if (rotation != 0.0f) {
+        float rad = glm::radians(rotation);
+        float cosA = cos(rad);
+        float sinA = sin(rad);
+        float rx = char_rel_pos.x * cosA - char_rel_pos.y * sinA;
+        float ry = char_rel_pos.x * sinA + char_rel_pos.y * cosA;
+        char_rel_pos = glm::vec2(rx, ry);
+    }
+
+    PrimitiveRenderer::submit_textured_quad(position + char_rel_pos,
+                                            {w, h}, ch.texture_id, color,
+                                            rotation, {0.0f, 0.0f}, true);
+
+    x_cursor += (ch.advance >> 6);
   }
 }
 

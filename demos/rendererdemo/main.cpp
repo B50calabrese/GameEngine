@@ -5,20 +5,22 @@
 
 class RendererApp : public engine::Application {
  public:
-  void OnInit() override {
-    texture = engine::graphics::Texture::Create("card_back.png");
+  void on_init() override {
+    texture_ = engine::graphics::Texture::create("card_back.png");
   }
 
-  void OnShutdown() override {}
+  void on_shutdown() override {}
 
-  void OnUpdate(double deltaTimeSeconds) override {
-    engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, 400.0f, 300.0f);
-    engine::graphics::Renderer::Get().DrawTexturedRect(400.0f, 300.0f, 400.0f,
-                                                       300.0f, texture->id());
+  void on_update(double delta_time_seconds) override {
+    engine::graphics::Renderer::get().draw_rect(0.0f, 0.0f, 400.0f, 300.0f);
+    if (texture_) {
+        engine::graphics::Renderer::get().draw_textured_quad(
+            {400.0f, 300.0f}, {400.0f, 300.0f}, texture_.get());
+    }
   }
 
  private:
-  engine::graphics::Texture* texture;
+  std::unique_ptr<engine::graphics::Texture> texture_;
 };
 
 /**
@@ -29,8 +31,8 @@ int main(void) {
   engine_config.asset_path = ENGINE_ASSETS_PATH;
   engine_config.window_height = 600;
   engine_config.window_width = 800;
-  engine::Engine::Init(engine_config);
+  engine::Engine::init(engine_config);
   RendererApp renderer_app;
-  renderer_app.Run();
+  renderer_app.run();
   return 0;
 }

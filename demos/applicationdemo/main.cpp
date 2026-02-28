@@ -5,24 +5,22 @@
 
 class MyApp : public engine::Application {
  public:
-  void OnInit() override {
-    std::cout << "Initializing Application" << std::endl;
-  }
+  void on_init() override { std::cout << "Initializing Application" << std::endl; }
 
-  void OnShutdown() override {
+  void on_shutdown() override {
     std::cout << "Shutting down Application" << std::endl;
   }
 
-  void OnUpdate(double deltaTimeSeconds) override {
-    this->totalTime_ = this->totalTime_ + deltaTimeSeconds;
-    if (this->totalTime_ >= 1.0) {
+  void on_update(double delta_time_seconds) override {
+    this->total_time_ = this->total_time_ + delta_time_seconds;
+    if (this->total_time_ >= 1.0) {
       std::cout << "1 second has passed in the application." << std::endl;
-      this->totalTime_ = 0.0;
+      this->total_time_ = 0.0;
     }
   }
 
  private:
-  double totalTime_ = 0.0;
+  double total_time_ = 0.0;
 };
 
 /**
@@ -30,8 +28,8 @@ class MyApp : public engine::Application {
  */
 int main(void) {
   engine::EngineConfig engine_config;
-  engine::Engine::Init(engine_config);
+  engine::Engine::init(engine_config);
   MyApp my_app;
-  my_app.Run();
+  my_app.run();
   return 0;
 }
