@@ -36,12 +36,12 @@ class Engine {
    * @param config The `EngineConfig` struct containing initialization
    * settings.
    */
-  static void Init(const EngineConfig& config);
+  static void init(const EngineConfig& config);
 
   /**
    * @brief Gracefully shuts down the engine and releases all resources.
    */
-  static void Shutdown();
+  static void shutdown();
 
   /**
    * @brief Provides access to the main application window.

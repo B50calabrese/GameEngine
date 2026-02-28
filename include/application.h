@@ -21,10 +21,10 @@ class Application {
   /**
    * @brief Drives the main game loop.
    *
-   * This method will continuously call `OnUpdate` until the application is
+   * This method will continuously call `on_update` until the application is
    * terminated.
    */
-  void Run();
+  void run();
 
   /**
    * @brief Called once when the application starts.
@@ -32,23 +32,23 @@ class Application {
    * This is the ideal place for one-time initialization code, such as loading
    * assets.
    */
-  virtual void OnInit() = 0;
+  virtual void on_init() = 0;
 
   /**
    * @brief Called once when the application is about to close.
    *
    * Use this for cleanup code.
    */
-  virtual void OnShutdown() = 0;
+  virtual void on_shutdown() = 0;
 
   /**
    * @brief Called every frame. Game logic and rendering should be handled here.
    *
-   * @param deltaTimeSeconds The time elapsed since the last frame, in seconds.
+   * @param delta_time_seconds The time elapsed since the last frame, in seconds.
    *        This value should be used for frame-rate independent physics and
    *        animations.
    */
-  virtual void OnUpdate(double deltaTimeSeconds) = 0;
+  virtual void on_update(double delta_time_seconds) = 0;
 
   /** @brief Virtual destructor is crucial for proper inheritance cleanup. */
   virtual ~Application() = default;
@@ -65,7 +65,7 @@ class Application {
    * events.
    * @return Reference to the InputManager.
    */
-  InputManager& input_manager() { return InputManager::Get(); }
+  InputManager& input_manager() { return InputManager::get(); }
 
   /**
    * @brief Provides access to the primary camera used for rendering the scene.

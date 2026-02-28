@@ -25,28 +25,28 @@ class Scene {
    * @brief Called when the scene is added to the manager (e.g., loading
    * assets).
    */
-  virtual void OnAttach() {}
+  virtual void on_attach() {}
 
   /**
    * @brief Called when the scene is removed from the manager (e.g., clearing
    * assets).
    */
-  virtual void OnDetach() {}
+  virtual void on_detach() {}
 
   /**
    * @brief Called every frame for logic updates.
-   * @param deltaTimeSeconds The time elapsed since the last frame, in seconds.
+   * @param delta_time_seconds The time elapsed since the last frame, in seconds.
    */
-  virtual void OnUpdate(float deltaTimeSeconds) {}
+  virtual void on_update(float delta_time_seconds) {}
 
   /** @brief Called every frame for drawing calls. */
-  virtual void OnRender() {}
+  virtual void on_render() {}
 
   /**
    * @brief Called by the application when an input event occurs.
    * @return `true` if the event was "handled" and shouldn't propagate.
    */
-  virtual bool OnInput() { return false; }
+  virtual bool on_input() { return false; }
 
   /**
    * @brief Gets the debug name of the scene.

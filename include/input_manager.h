@@ -106,7 +106,7 @@ class InputManager {
    * @brief Returns a reference to the singleton `InputManager` instance.
    * @return Reference to the InputManager.
    */
-  static InputManager& Get();
+  static InputManager& get();
 
   /**
    * @brief Checks if a key is currently being held down.
@@ -114,7 +114,7 @@ class InputManager {
    * @param key_code The `KeyCode` to check.
    * @return `true` if the key is currently pressed, `false` otherwise.
    */
-  bool IsKeyDown(KeyCode key_code) const;
+  bool is_key_down(KeyCode key_code) const;
 
   /**
    * @brief Checks if a key was pressed during the current frame.
@@ -124,7 +124,7 @@ class InputManager {
    * @param key_code The `KeyCode` to check.
    * @return `true` if the key was pressed in this frame, `false` otherwise.
    */
-  bool IsKeyPressed(KeyCode key_code) const;
+  bool is_key_pressed(KeyCode key_code) const;
 
   /**
    * @brief Checks if a key was released during the current frame.
@@ -134,21 +134,23 @@ class InputManager {
    * @param key_code The `KeyCode` to check.
    * @return `true` if the key was released in this frame, `false` otherwise.
    */
-  bool IsKeyReleased(KeyCode key_code) const;
+  bool is_key_released(KeyCode key_code) const;
 
   /**
    * @brief Retrieves the mouse position in screen coordinates.
    *
    * @returns the screen position in [-1, 1] space.
    */
-  glm::vec2 GetMouseScreenPos() const { return glm::vec2(mouse_x_, mouse_y_); }
+  glm::vec2 get_mouse_screen_pos() const {
+    return glm::vec2(mouse_x_, mouse_y_);
+  }
 
   /**
    * @brief Updates the key states for the current frame.
    *
    * This should be called once per frame by the main application loop.
    */
-  void UpdateState();
+  void update_state();
 
   friend class Window;
 
@@ -162,16 +164,16 @@ class InputManager {
   /**
    * @brief Raw event handler called by GLFW callbacks for key events.
    */
-  void HandleKey(int raw_key_code, int action);
+  void handle_key(int raw_key_code, int action);
   /**
    * @brief Raw event handler called by GLFW callbacks for mouse button events.
    */
-  void HandleMouseButton(int raw_button_code, int action);
+  void handle_mouse_button(int raw_button_code, int action);
   /**
    * @brief Raw event handler called by GLFW callbacks for cursor position
    * events.
    */
-  void HandleCursorPosition(double xpos, double ypos);
+  void handle_cursor_position(double xpos, double ypos);
 
   float mouse_x_ = 0.0f;
   float mouse_y_ = 0.0f;
@@ -181,7 +183,7 @@ class InputManager {
   /**
    * @brief Utility function to map GLFW codes to our internal KeyCode.
    */
-  KeyCode MapRawCode(int raw_code) const;
+  KeyCode map_raw_code(int raw_code) const;
 };
 
 }  // namespace engine

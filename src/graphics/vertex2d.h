@@ -18,9 +18,9 @@ struct Vertex2D {
   /** @brief [r, g, b, a] color. */
   float color[4];
   /** @brief [u, v] texture coordinates. */
-  float texCoords[2];
+  float tex_coords[2];
   /** @brief Index into the texture slots array. */
-  float texIndex;
+  float tex_index;
 };
 
 }  // namespace engine::graphics

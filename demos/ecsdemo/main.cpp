@@ -15,21 +15,21 @@ constexpr float HEIGHT = 600.0f;
 class MainScene : public engine::Scene {
  public:
   MainScene(const std::string& name) : Scene(name) {
-    entity_1_ = registry_.CreateEntity();
-    entity_2_ = registry_.CreateEntity();
+    entity_1_ = registry_.create_entity();
+    entity_2_ = registry_.create_entity();
   }
 
-  void OnRender() override {}
+  void on_render() override {}
 
-  void OnAttach() override {}
+  void on_attach() override {}
 
-  void OnUpdate(float deltaTimeSeconds) {
-    auto position = engine::InputManager::Get().GetMouseScreenPos();
+  void on_update(float delta_time_seconds) override {
+    auto position = engine::InputManager::get().get_mouse_screen_pos();
 
     std::cout << "X: " << position.x << " Y: " << position.y << "\n";
   }
 
-  bool OnInput() override { return true; }
+  bool on_input() override { return true; }
 
  private:
   engine::ecs::Registry registry_;
@@ -39,20 +39,20 @@ class MainScene : public engine::Scene {
 
 class MyApp : public engine::Application {
  public:
-  void OnInit() override {
+  void on_init() override {
     std::cout << "Initializing Application" << std::endl;
-    engine::SceneManager::Get().PushScene(
+    engine::SceneManager::get().push_scene(
         std::make_unique<MainScene>("SceneA"));
   }
 
-  void OnShutdown() override {
+  void on_shutdown() override {
     std::cout << "Shutting down Application" << std::endl;
   }
 
-  void OnUpdate(double deltaTimeSeconds) override {}
+  void on_update(double delta_time_seconds) override {}
 
  private:
-  double totalTime_ = 0.0;
+  double total_time_ = 0.0;
 };
 
 /**
@@ -62,8 +62,8 @@ int main(void) {
   engine::EngineConfig engine_config;
   engine_config.window_height = HEIGHT;
   engine_config.window_width = WIDTH;
-  engine::Engine::Init(engine_config);
+  engine::Engine::init(engine_config);
   MyApp my_app;
-  my_app.Run();
+  my_app.run();
   return 0;
 }

@@ -36,12 +36,12 @@ class Window {
    * @brief Checks if the window should remain open.
    * @return `true` if the window should stay open, `false` otherwise.
    */
-  bool IsRunning() const { return true; }
+  bool is_running() const { return true; }
 
   /**
    * @brief Processes all pending events, such as keyboard and mouse input.
    */
-  void PollEvents();
+  void poll_events();
 
   /**
    * @brief Calculates and returns the time elapsed since the last frame.
@@ -73,12 +73,12 @@ class Window {
   /**
    * @brief Sets up GLFW callbacks for input events.
    */
-  void SetupCallbacks();
+  void setup_callbacks();
 
   /**
    * @brief Swaps the front and back buffers.
    */
-  void SwapBuffers() const;
+  void swap_buffers() const;
 
   // Prevent copy/move to enforce a single instance handled by Engine
   Window(const Window&) = delete;

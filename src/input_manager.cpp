@@ -96,21 +96,20 @@ static const std::map<int, KeyCode>& GetKeyCodeMap() {
 }
 }  // namespace
 
-InputManager& InputManager::Get() {
+InputManager& InputManager::get() {
   static InputManager instance;
   return instance;
 }
 
-bool InputManager::IsKeyDown(KeyCode key_code) const {
+bool InputManager::is_key_down(KeyCode key_code) const {
   if (current_key_state_.find(key_code) == current_key_state_.end()) {
     return false;
   }
   return current_key_state_.at(key_code);
 }
 
-bool InputManager::IsKeyPressed(KeyCode key_code) const {
+bool InputManager::is_key_pressed(KeyCode key_code) const {
   // True if key is DOWN now (Current) AND was UP last frame (Previous)
-  // Assumes keys are initialized to false in the map.
   auto current_it = current_key_state_.find(key_code);
   auto previous_it = previous_key_state_.find(key_code);
 
@@ -121,7 +120,7 @@ bool InputManager::IsKeyPressed(KeyCode key_code) const {
   return is_current_down && !was_previous_down;
 }
 
-bool InputManager::IsKeyReleased(KeyCode key_code) const {
+bool InputManager::is_key_released(KeyCode key_code) const {
   // True if key is UP now (Current) AND was DOWN last frame (Previous)
   auto current_it = current_key_state_.find(key_code);
   auto previous_it = previous_key_state_.find(key_code);
@@ -134,12 +133,14 @@ bool InputManager::IsKeyReleased(KeyCode key_code) const {
   return !is_current_down && was_previous_down;
 }
 
-void InputManager::UpdateState() { previous_key_state_ = current_key_state_; }
+void InputManager::update_state() { previous_key_state_ = current_key_state_; }
 
 // Private functions
 
-void InputManager::HandleKey(int raw_key_code, int action) {
-  KeyCode key = MapRawCode(raw_key_code);
+void InputManager::handle_key(int raw_key_code, int action) {
+  KeyCode key = map_raw_code(raw_key_code);
+  if (key == static_cast<KeyCode>(-1)) return;
+
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
     current_key_state_[key] = true;
   } else if (action == GLFW_RELEASE) {
@@ -147,17 +148,24 @@ void InputManager::HandleKey(int raw_key_code, int action) {
   }
 }
 
-void InputManager::HandleMouseButton(int raw_button_code, int action) {
-  // Implementation here
+void InputManager::handle_mouse_button(int raw_button_code, int action) {
+  KeyCode key = map_raw_code(raw_button_code);
+  if (key == static_cast<KeyCode>(-1)) return;
+
+  if (action == GLFW_PRESS) {
+    current_key_state_[key] = true;
+  } else if (action == GLFW_RELEASE) {
+    current_key_state_[key] = false;
+  }
 }
 
-void InputManager::HandleCursorPosition(double xpos, double ypos) {
+void InputManager::handle_cursor_position(double xpos, double ypos) {
   mouse_x_ = static_cast<float>(xpos);
   mouse_y_ = static_cast<float>(ypos);
 }
 
 // The function that performs the mapping lookup
-KeyCode InputManager::MapRawCode(int raw_code) const {
+KeyCode InputManager::map_raw_code(int raw_code) const {
   const auto& map = GetKeyCodeMap();
 
   auto it = map.find(raw_code);

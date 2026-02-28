@@ -6,6 +6,7 @@
 // clang-format on
 
 #include <iostream>
+#include <memory>
 
 #include "graphics/renderer.h"
 
@@ -14,8 +15,8 @@
 
 namespace engine::graphics {
 
-Texture* Texture::Create(const std::string& path) {
-  std::string full_path = Renderer::Get().ResolveAssetPath(path);
+std::unique_ptr<Texture> Texture::create(const std::string& path) {
+  std::string full_path = Renderer::get().resolve_asset_path(path);
   int width, height, channels;
 
   // OpenGL expects pixels to start from bottom-left, but most image formats
@@ -50,12 +51,12 @@ Texture* Texture::Create(const std::string& path) {
 
   stbi_image_free(data);
 
-  return new Texture(id, width, height, path);
+  return std::unique_ptr<Texture>(new Texture(id, width, height, path));
 }
 
 Texture::~Texture() { glDeleteTextures(1, &renderer_id_); }
 
-void Texture::Bind(unsigned int slot) const {
+void Texture::bind(unsigned int slot) const {
   glActiveTexture(GL_TEXTURE0 + slot);
   glBindTexture(GL_TEXTURE_2D, renderer_id_);
 }

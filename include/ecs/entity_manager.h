@@ -19,12 +19,12 @@ class EntityManager {
   /**
    * @brief Creates an entity, returning a free one when possible.
    */
-  EntityID CreateEntity();
+  EntityID create_entity();
 
   /**
    * @brief Marks the given entity as 'free'.
    */
-  void DestroyEntity(EntityID entity);
+  void destroy_entity(EntityID entity);
 
   /**
    * @brief Returns true if the entity is allocated.
@@ -33,7 +33,7 @@ class EntityManager {
    * @return `true` if the entity is being used.
 
    */
-  bool IsAlive(EntityID entity) const;
+  bool is_alive(EntityID entity) const;
 
  private:
   EntityID next_id_ = 0;

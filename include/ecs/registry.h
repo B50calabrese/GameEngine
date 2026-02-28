@@ -20,17 +20,17 @@ class Registry {
    * @brief Creates an entity in the registry.
    * @returns the ID of the entity created.
    */
-  EntityID CreateEntity() { return entity_manager_.CreateEntity(); }
+  EntityID create_entity() { return entity_manager_.create_entity(); }
 
   /**
    * @brief Deletes the entity and associated data.
    * @param entity the ID of the entity to delete.
    */
-  void DeleteEntity(EntityID entity) {
+  void delete_entity(EntityID entity) {
     for (auto& [type, storage] : storages_) {
-      storage->Remove(entity);
+      storage->remove(entity);
     }
-    entity_manager_.DestroyEntity(entity);
+    entity_manager_.destroy_entity(entity);
   }
 
   /**
@@ -38,8 +38,8 @@ class Registry {
    * @param entity the ID of the entity to check
    * @returns `true` if the entity is alive.
    */
-  bool IsAlive(EntityID entity) const {
-    return entity_manager_.IsAlive(entity);
+  bool is_alive(EntityID entity) const {
+    return entity_manager_.is_alive(entity);
   }
 
   /**
@@ -48,8 +48,8 @@ class Registry {
    * @param component the component to add to the entity.
    */
   template <typename T>
-  void AddComponent(EntityID entity, T component) {
-    GetStorage<T>()->Add(entity, component);
+  void add_component(EntityID entity, T component) {
+    get_storage<T>()->add(entity, component);
   }
 
   /**
@@ -57,8 +57,8 @@ class Registry {
    * @param entity the ID of the entity to remove.
    */
   template <typename T>
-  void RemoveComponent(EntityID entity) {
-    GetStorage<T>()->Remove(entity);
+  void remove_component(EntityID entity) {
+    get_storage<T>()->remove(entity);
   }
 
   /**
@@ -67,8 +67,8 @@ class Registry {
    * @returns the component of the given type.
    */
   template <typename T>
-  T& GetComponent(EntityID entity) {
-    return GetStorage<T>()->Get(entity);
+  T& get_component(EntityID entity) {
+    return get_storage<T>()->get(entity);
   }
 
   /**
@@ -77,8 +77,8 @@ class Registry {
    * @returns `true` if the component exists.
    */
   template <typename T>
-  bool HasComponent(EntityID entity) {
-    return GetStorage<T>()->Has(entity);
+  bool has_component(EntityID entity) {
+    return get_storage<T>()->has(entity);
   }
 
  private:
@@ -87,7 +87,7 @@ class Registry {
    * @returns the ComponentStorage for the template type.
    */
   template <typename T>
-  ComponentStorage<T>* GetStorage() {
+  ComponentStorage<T>* get_storage() {
     auto type = std::type_index(typeid(T));
     if (storages_.find(type) == storages_.end()) {
       storages_[type] = std::make_unique<ComponentStorage<T>>();
