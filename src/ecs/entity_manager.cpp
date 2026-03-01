@@ -4,7 +4,7 @@
 
 namespace engine::ecs {
 
-EntityID EntityManager::create_entity() {
+EntityID EntityManager::CreateEntity() {
   // Pop a free entity.
   if (free_entities_.size() > 0) {
     int ret = free_entities_[0];
@@ -14,11 +14,11 @@ EntityID EntityManager::create_entity() {
   return next_id_++;
 }
 
-void EntityManager::destroy_entity(EntityID entity) {
+void EntityManager::DestroyEntity(EntityID entity) {
   free_entities_.push_back(entity);
 }
 
-bool EntityManager::is_alive(EntityID entity) const {
+bool EntityManager::IsAlive(EntityID entity) const {
   if (entity < next_id_) {
     return true;
   }

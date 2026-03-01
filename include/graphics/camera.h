@@ -67,7 +67,7 @@ class Camera {
    * @brief Re-calculates the final matrix whenever position or projection
    * changes.
    */
-  void UpdateMatrices();
+  void update_matrices();
 
   glm::mat4 projection_matrix_;       // The "Lens" (Resolution/Aspect)
   glm::mat4 view_matrix_;             // The "Eyeball" (Position/Rotation)

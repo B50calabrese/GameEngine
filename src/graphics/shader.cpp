@@ -12,7 +12,7 @@
 
 namespace engine::graphics {
 
-std::unique_ptr<Shader> Shader::create_from_source(
+std::unique_ptr<Shader> Shader::CreateFromSource(
     const std::string& vertex_source, const std::string& fragment_source) {
   // 1. Create and compile Vertex Shader
   GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -70,23 +70,23 @@ std::unique_ptr<Shader> Shader::create_from_source(
 
 Shader::~Shader() { glDeleteProgram(shader_id_); }
 
-void Shader::bind() const { glUseProgram(shader_id_); }
+void Shader::Bind() const { glUseProgram(shader_id_); }
 
-void Shader::unbind() const { glUseProgram(0); }
+void Shader::Unbind() const { glUseProgram(0); }
 
-void Shader::set_int(const std::string& name, int value) {
+void Shader::SetInt(const std::string& name, int value) {
   glUniform1i(get_uniform_location(name), value);
 }
 
-void Shader::set_vec3(const std::string& name, glm::vec3 value) {
+void Shader::SetVec3(const std::string& name, glm::vec3 value) {
   glUniform3f(get_uniform_location(name), value.x, value.y, value.z);
 }
 
-void Shader::set_vec4(const std::string& name, glm::vec4 value) {
+void Shader::SetVec4(const std::string& name, glm::vec4 value) {
   glUniform4f(get_uniform_location(name), value.x, value.y, value.z, value.w);
 }
 
-void Shader::set_mat4(const std::string& name, glm::mat4 value) {
+void Shader::SetMat4(const std::string& name, glm::mat4 value) {
   glUniformMatrix4fv(get_uniform_location(name), 1, false,
                      glm::value_ptr(value));
 }

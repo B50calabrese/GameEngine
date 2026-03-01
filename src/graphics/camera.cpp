@@ -10,22 +10,22 @@ Camera::Camera(float left, float right, float bottom, float top)
     : projection_matrix_(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)),
       view_matrix_(1.0f),
       position_(0.0f, 0.0f, 0.0f) {
-  UpdateMatrices();
+  update_matrices();
 }
 
 void Camera::SetProjection(float left, float right, float bottom, float top) {
   projection_matrix_ = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
-  UpdateMatrices();
+  update_matrices();
 }
 
 void Camera::SetPosition(const glm::vec3& position) {
   position_ = position;
-  UpdateMatrices();
+  update_matrices();
 }
 
 // Private functions
 
-void Camera::UpdateMatrices() {
+void Camera::update_matrices() {
   // In 2D, "moving" the camera is just the inverse translation of the world.
   // We use -position_ because if the camera moves Right, the world moves
   // Left.

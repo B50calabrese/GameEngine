@@ -21,11 +21,11 @@ Window::Window(int width, int height, std::string name)
 
   last_frame_time_ = glfwGetTime();
 
-  setup_callbacks();
+  SetupCallbacks();
 }
 
-void Window::poll_events() {
-  InputManager::get().update_state();
+void Window::PollEvents() {
+  InputManager::Get().UpdateState();
   glfwPollEvents();
   last_frame_time_ = glfwGetTime();
 }
@@ -34,28 +34,28 @@ double Window::delta_time() const { return glfwGetTime() - last_frame_time_; }
 
 // Private functions
 
-void Window::setup_callbacks() {
+void Window::SetupCallbacks() {
   // 1. GLFW Key Callback
   glfwSetKeyCallback(internal_window_, [](GLFWwindow* window, int key,
                                           int scancode, int action, int mods) {
     // Forward the raw event to the InputManager singleton
-    InputManager::get().handle_key(key, action);
+    InputManager::Get().HandleKey(key, action);
   });
 
   // 2. GLFW Mouse Button Callback
   glfwSetMouseButtonCallback(
       internal_window_,
       [](GLFWwindow* window, int button, int action, int mods) {
-        InputManager::get().handle_mouse_button(button, action);
+        InputManager::Get().HandleMouseButton(button, action);
       });
 
   // 3. GLFW Cursor Position Callback
   glfwSetCursorPosCallback(
       internal_window_, [](GLFWwindow* window, double xpos, double ypos) {
-        InputManager::get().handle_cursor_position(xpos, ypos);
+        InputManager::Get().HandleCursorPosition(xpos, ypos);
       });
 }
 
-void Window::swap_buffers() const { glfwSwapBuffers(internal_window_); }
+void Window::SwapBuffers() const { glfwSwapBuffers(internal_window_); }
 
 }  // namespace engine

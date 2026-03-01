@@ -18,7 +18,7 @@ class Texture {
    * @param path File path to the image (PNG, JPG, etc.)
    * @return A unique pointer to the Texture object, or nullptr if loading fails.
    */
-  static std::unique_ptr<Texture> create(const std::string& path);
+  static std::unique_ptr<Texture> Create(const std::string& path);
 
   /** @brief Destructor deletes the OpenGL texture. */
   ~Texture();
@@ -27,7 +27,7 @@ class Texture {
    * @brief Binds the texture to a specific texture slot.
    * @param slot The texture slot to bind to (default is 0).
    */
-  void bind(unsigned int slot = 0) const;
+  void Bind(unsigned int slot = 0) const;
 
   /**
    * @brief Gets the OpenGL ID of the texture.

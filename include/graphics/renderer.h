@@ -31,13 +31,13 @@ class Renderer {
    * @brief Returns a reference to the singleton `Renderer` instance.
    * @return Reference to the Renderer.
    */
-  static Renderer& get() {
+  static Renderer& Get() {
     static Renderer instance;
     return instance;
   }
 
   /** @brief Clears the screen to the default background color. */
-  void clear() const;
+  void Clear() const;
 
   /**
    * @brief Prepares the renderer for a new frame.
@@ -46,14 +46,14 @@ class Renderer {
    *
    * @param camera The camera to use for this frame.
    */
-  void begin_frame(Camera& camera) const;
+  void BeginFrame(Camera& camera) const;
 
   /**
    * @brief Finalizes the frame and presents the rendered image to the screen.
    *
    * This should be called at the end of each frame's rendering phase.
    */
-  void end_frame() const;
+  void EndFrame() const;
 
   /**
    * @brief Draws a solid white rectangle to the screen.
@@ -63,7 +63,7 @@ class Renderer {
    * @param width The width of the rectangle.
    * @param height The height of the rectangle.
    */
-  void draw_rect(float x, float y, float width, float height);
+  void DrawRect(float x, float y, float width, float height);
 
   /**
    * @brief Draws a solid colored rectangle to the screen using RGB values.
@@ -76,7 +76,7 @@ class Renderer {
    * @param g The green component (0-1).
    * @param b The blue component (0-1).
    */
-  void draw_rect(float x, float y, float width, float height, float r, float g,
+  void DrawRect(float x, float y, float width, float height, float r, float g,
                  float b);
 
   /**
@@ -89,7 +89,7 @@ class Renderer {
    * @param origin The origin point for rotation and positioning relative to
    * size (e.g., (0,0) for bottom-left, (0.5, 0.5) for center).
    */
-  void draw_quad(const glm::vec2& position, const glm::vec2& size,
+  void DrawQuad(const glm::vec2& position, const glm::vec2& size,
                  const glm::vec4& color, float rotation = 0.0f,
                  const glm::vec2& origin = {0.0f, 0.0f});
 
@@ -103,7 +103,7 @@ class Renderer {
    * @param texture_id The OpenGL ID of the texture.
    * @param tint Optional RGBA tint (defaults to white).
    */
-  void draw_textured_rect(float x, float y, float w, float h,
+  void DrawTexturedRect(float x, float y, float w, float h,
                           unsigned int texture_id,
                           const float tint[4] = nullptr);
 
@@ -118,7 +118,7 @@ class Renderer {
    * @param origin The origin point for rotation and positioning relative to
    * size (e.g., (0,0) for bottom-left, (0.5, 0.5) for center).
    */
-  void draw_textured_quad(const glm::vec2& position, const glm::vec2& size,
+  void DrawTexturedQuad(const glm::vec2& position, const glm::vec2& size,
                           unsigned int texture_id, float rotation = 0.0f,
                           const glm::vec4& tint = glm::vec4(1.0f),
                           const glm::vec2& origin = {0.0f, 0.0f});
@@ -134,7 +134,7 @@ class Renderer {
    * @param origin The origin point for rotation and positioning relative to
    * size (e.g., (0,0) for bottom-left, (0.5, 0.5) for center).
    */
-  void draw_textured_quad(const glm::vec2& position, const glm::vec2& size,
+  void DrawTexturedQuad(const glm::vec2& position, const glm::vec2& size,
                           const Texture* texture, float rotation = 0.0f,
                           const glm::vec4& tint = glm::vec4(1.0f),
                           const glm::vec2& origin = {0.0f, 0.0f});
@@ -149,7 +149,7 @@ class Renderer {
    * @param scale The scale factor.
    * @param color The RGBA color.
    */
-  void draw_text(const std::string& font_name, const std::string& text,
+  void DrawText(const std::string& font_name, const std::string& text,
                  const glm::vec2& position, float rotation = 0.0f,
                  float scale = 1.0f, const glm::vec4& color = glm::vec4(1.0f));
 
@@ -158,7 +158,7 @@ class Renderer {
    * @param relative_path The relative path to resolve.
    * @return The absolute path as a string.
    */
-  std::string resolve_asset_path(const std::string& relative_path) const;
+  std::string ResolveAssetPath(const std::string& relative_path) const;
 
  private:
   Renderer() = default;
@@ -177,30 +177,30 @@ class Renderer {
    *
    * @param window The Window instance that holds the active context.
    */
-  void init(Window& window);
+  void Init(Window& window);
 
   /** @brief Cleans up any persistent graphics resources. */
-  void shutdown();
+  void Shutdown();
 
   /**
    * @brief Sets the OpenGL viewport dimensions.
    * @param width Viewport width.
    * @param height Viewport height.
    */
-  void set_viewport(int width, int height) const;
+  void SetViewport(int width, int height) const;
 
   /**
    * @brief Callback function for window resize events to adjust the viewport.
    * @param width New width.
    * @param height New height.
    */
-  void handle_resize(int& width, int& height) const;
+  void HandleResize(int& width, int& height) const;
 
   /**
    * @brief Used to set the asset root path.
    * @param path The root path.
    */
-  void set_asset_root(const std::string& path);
+  void SetAssetRoot(const std::string& path);
 
   std::string asset_root_path_ = "";
 };

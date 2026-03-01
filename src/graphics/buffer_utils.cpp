@@ -4,8 +4,8 @@
 
 namespace engine::graphics {
 
-void BufferUtils::create_basic_buffers(unsigned int& vao, unsigned int& vbo,
-                                       unsigned int& ebo, size_t vbo_size) {
+void BufferUtils::CreateBasicBuffers(unsigned int& vao, unsigned int& vbo,
+                                     unsigned int& ebo, size_t vbo_size) {
   // Generate the handles
   glGenVertexArrays(1, &vao);
   glGenBuffers(1, &vbo);
@@ -27,7 +27,7 @@ void BufferUtils::create_basic_buffers(unsigned int& vao, unsigned int& vbo,
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 }
 
-void BufferUtils::set_attribute(unsigned int index, int size, size_t stride,
+void BufferUtils::SetAttribute(unsigned int index, int size, size_t stride,
                                 size_t offset) {
   // Enable the specific attribute slot in the currently bound VAO
   glEnableVertexAttribArray(index);

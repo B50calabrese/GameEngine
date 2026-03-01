@@ -20,17 +20,17 @@ class Registry {
    * @brief Creates an entity in the registry.
    * @returns the ID of the entity created.
    */
-  EntityID create_entity() { return entity_manager_.create_entity(); }
+  EntityID CreateEntity() { return entity_manager_.CreateEntity(); }
 
   /**
    * @brief Deletes the entity and associated data.
    * @param entity the ID of the entity to delete.
    */
-  void delete_entity(EntityID entity) {
+  void DeleteEntity(EntityID entity) {
     for (auto& [type, storage] : storages_) {
       storage->remove(entity);
     }
-    entity_manager_.destroy_entity(entity);
+    entity_manager_.DestroyEntity(entity);
   }
 
   /**
@@ -38,8 +38,8 @@ class Registry {
    * @param entity the ID of the entity to check
    * @returns `true` if the entity is alive.
    */
-  bool is_alive(EntityID entity) const {
-    return entity_manager_.is_alive(entity);
+  bool IsAlive(EntityID entity) const {
+    return entity_manager_.IsAlive(entity);
   }
 
   /**
@@ -48,7 +48,7 @@ class Registry {
    * @param component the component to add to the entity.
    */
   template <typename T>
-  void add_component(EntityID entity, T component) {
+  void AddComponent(EntityID entity, T component) {
     get_storage<T>()->add(entity, component);
   }
 
@@ -57,7 +57,7 @@ class Registry {
    * @param entity the ID of the entity to remove.
    */
   template <typename T>
-  void remove_component(EntityID entity) {
+  void RemoveComponent(EntityID entity) {
     get_storage<T>()->remove(entity);
   }
 
@@ -67,7 +67,7 @@ class Registry {
    * @returns the component of the given type.
    */
   template <typename T>
-  T& get_component(EntityID entity) {
+  T& GetComponent(EntityID entity) {
     return get_storage<T>()->get(entity);
   }
 
@@ -77,7 +77,7 @@ class Registry {
    * @returns `true` if the component exists.
    */
   template <typename T>
-  bool has_component(EntityID entity) {
+  bool HasComponent(EntityID entity) {
     return get_storage<T>()->has(entity);
   }
 

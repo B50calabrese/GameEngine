@@ -10,14 +10,14 @@
 
 namespace engine::graphics {
 
-void TextRenderer::init() {
+void TextRenderer::Init() {
   if (FT_Init_FreeType(&ft_library_)) {
     std::cout << "ERROR::FREETYPE: Could not init FreeType Library"
               << std::endl;
   }
 }
 
-void TextRenderer::shutdown() {
+void TextRenderer::Shutdown() {
   // Clean up OpenGL textures
   for (auto const& [fontName, charMap] : fonts_) {
     for (auto const& [c, character] : charMap) {
@@ -27,9 +27,9 @@ void TextRenderer::shutdown() {
   FT_Done_FreeType(ft_library_);
 }
 
-void TextRenderer::load_font(const std::string& name, const std::string& path,
-                             unsigned int font_size) {
-  std::string full_path = Renderer::get().resolve_asset_path(path);
+void TextRenderer::LoadFont(const std::string& name, const std::string& path,
+                            unsigned int font_size) {
+  std::string full_path = Renderer::Get().ResolveAssetPath(path);
 
   FT_Face face;
   if (FT_New_Face(ft_library_, full_path.c_str(), 0, &face)) {
@@ -73,10 +73,10 @@ void TextRenderer::load_font(const std::string& name, const std::string& path,
             << "px)" << std::endl;
 }
 
-void TextRenderer::draw_text(const std::string& font_name,
-                             const std::string& text, glm::vec2 position,
-                             float rotation, float scale,
-                             const glm::vec4& color) {
+void TextRenderer::DrawText(const std::string& font_name,
+                            const std::string& text, const glm::vec2& position,
+                            float rotation, float scale,
+                            const glm::vec4& color) {
   if (fonts_.find(font_name) == fonts_.end()) return;
 
   auto& characters = fonts_[font_name];
@@ -94,11 +94,6 @@ void TextRenderer::draw_text(const std::string& font_name,
     float h = ch.size.y * scale;
 
     // submit_textured_quad handles rotation around the specified origin.
-    // For text characters, we use the bottom-left of the glyph as the origin for its individual quad,
-    // but the text as a whole should ideally rotate around the start position.
-    // Implementing full text rotation is complex; for now we rotate each character quad
-    // around the 'position' passed to draw_text.
-
     // Calculate character position relative to text origin
     glm::vec2 char_rel_pos = glm::vec2(xpos - position.x, ypos - position.y);
 
@@ -111,7 +106,7 @@ void TextRenderer::draw_text(const std::string& font_name,
         char_rel_pos = glm::vec2(rx, ry);
     }
 
-    PrimitiveRenderer::submit_textured_quad(position + char_rel_pos,
+    PrimitiveRenderer::SubmitTexturedQuad(position + char_rel_pos,
                                             {w, h}, ch.texture_id, color,
                                             rotation, {0.0f, 0.0f}, true);
 

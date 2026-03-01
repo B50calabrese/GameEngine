@@ -18,7 +18,7 @@ constexpr int kGlfwVersionMinor = 3;
 
 std::unique_ptr<Window> Engine::internal_window_ = nullptr;
 
-void Engine::init(const EngineConfig& engine_config) {
+void Engine::Init(const EngineConfig& engine_config) {
   if (!glfwInit()) {
     return;
   }
@@ -30,10 +30,10 @@ void Engine::init(const EngineConfig& engine_config) {
   Engine::internal_window_ = std::make_unique<Window>(
       engine_config.window_width, engine_config.window_height,
       engine_config.window_title);
-  (graphics::Renderer::get()).init(*(Engine::internal_window_));
-  (graphics::Renderer::get()).set_asset_root(engine_config.asset_path);
+  (graphics::Renderer::Get()).Init(*(Engine::internal_window_));
+  (graphics::Renderer::Get()).SetAssetRoot(engine_config.asset_path);
 }
 
-void Engine::shutdown() {}
+void Engine::Shutdown() {}
 
 }  // namespace engine

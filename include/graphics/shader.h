@@ -26,7 +26,7 @@ class Shader {
    * @param fragment_source A string containing the fragment shader source code.
    * @return A unique pointer to the newly created `Shader` object, or nullptr.
    */
-  static std::unique_ptr<Shader> create_from_source(
+  static std::unique_ptr<Shader> CreateFromSource(
       const std::string& vertex_source, const std::string& fragment_source);
 
   /** @brief Deletes the shader program from the GPU. */
@@ -39,10 +39,10 @@ class Shader {
   unsigned int id() const { return shader_id_; }
 
   /** @brief Activates this shader program for subsequent rendering calls. */
-  void bind() const;
+  void Bind() const;
 
   /** @brief Deactivates the currently bound shader program. */
-  void unbind() const;
+  void Unbind() const;
 
   /**
    * @brief Sets an integer uniform variable in the shader.
@@ -50,7 +50,7 @@ class Shader {
    * @param name The name of the uniform variable in the GLSL code.
    * @param value The integer value to set.
    */
-  void set_int(const std::string& name, int value);
+  void SetInt(const std::string& name, int value);
 
   /**
    * @brief Sets a 3-component float vector uniform variable in the shader.
@@ -58,7 +58,7 @@ class Shader {
    * @param name The name of the uniform variable in the GLSL code.
    * @param value The `glm::vec3` value to set.
    */
-  void set_vec3(const std::string& name, glm::vec3 value);
+  void SetVec3(const std::string& name, glm::vec3 value);
 
   /**
    * @brief Sets a 4-component float vector uniform variable in the shader.
@@ -66,7 +66,7 @@ class Shader {
    * @param name The name of the uniform variable in the GLSL code.
    * @param value The `glm::vec4` value to set.
    */
-  void set_vec4(const std::string& name, glm::vec4 value);
+  void SetVec4(const std::string& name, glm::vec4 value);
 
   /**
    * @brief Sets a 4x4 matrix uniform variable in the shader.
@@ -74,7 +74,7 @@ class Shader {
    * @param name The name of the uniform variable in the GLSL code.
    * @param value The `glm::mat4` value to set.
    */
-  void set_mat4(const std::string& name, glm::mat4 value);
+  void SetMat4(const std::string& name, glm::mat4 value);
 
  private:
   explicit Shader(unsigned int shader_id);

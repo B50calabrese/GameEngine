@@ -15,8 +15,8 @@
 
 namespace engine::graphics {
 
-std::unique_ptr<Texture> Texture::create(const std::string& path) {
-  std::string full_path = Renderer::get().resolve_asset_path(path);
+std::unique_ptr<Texture> Texture::Create(const std::string& path) {
+  std::string full_path = Renderer::Get().ResolveAssetPath(path);
   int width, height, channels;
 
   // OpenGL expects pixels to start from bottom-left, but most image formats
@@ -56,7 +56,7 @@ std::unique_ptr<Texture> Texture::create(const std::string& path) {
 
 Texture::~Texture() { glDeleteTextures(1, &renderer_id_); }
 
-void Texture::bind(unsigned int slot) const {
+void Texture::Bind(unsigned int slot) const {
   glActiveTexture(GL_TEXTURE0 + slot);
   glBindTexture(GL_TEXTURE_2D, renderer_id_);
 }

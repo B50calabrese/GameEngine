@@ -21,7 +21,7 @@ class SceneManager {
    * @brief Returns a reference to the singleton `SceneManager` instance.
    * @return Reference to the SceneManager.
    */
-  static SceneManager& get() {
+  static SceneManager& Get() {
     static SceneManager instance;
     return instance;
   }
@@ -30,19 +30,19 @@ class SceneManager {
    * @brief Clears the stack and sets a single active scene.
    * @param new_scene Unique pointer to the new scene.
    */
-  void set_scene(std::unique_ptr<Scene> new_scene);
+  void SetScene(std::unique_ptr<Scene> new_scene);
 
   /**
    * @brief Pushes an overlay scene (like a Pause Menu) onto the stack.
    * @param overlay Unique pointer to the overlay scene.
    */
-  void push_scene(std::unique_ptr<Scene> overlay);
+  void PushScene(std::unique_ptr<Scene> overlay);
 
   /**
    * @brief Pops/removes the top scene on the stack (like removing the Pause
    * Menu).
    */
-  void pop_scene();
+  void PopScene();
 
  private:
   // The Application needs to drive the scenes, but we don't want
@@ -53,18 +53,18 @@ class SceneManager {
    * @brief Updates the active scene.
    * @param delta_time Time elapsed since last frame.
    */
-  void update_active_scene(float delta_time);
+  void UpdateActiveScene(float delta_time);
 
   /**
    * @brief Renders the active scene(s).
    */
-  void render_active_scene();
+  void RenderActiveScene();
 
   /**
    * @brief Dispatches input to the top scene.
    * @return `true` if the scene handled/consumed the input.
    */
-  bool dispatch_input();
+  bool DispatchInput();
 
  private:
   SceneManager() = default;

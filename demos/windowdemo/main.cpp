@@ -11,21 +11,21 @@
 
 int main(void) {
   engine::EngineConfig engine_config;
-  engine::Engine::init(engine_config);
+  engine::Engine::Init(engine_config);
   engine::Window& window = engine::Engine::window();
-  engine::InputManager& input_manager = engine::InputManager::get();
+  engine::InputManager& input_manager = engine::InputManager::Get();
   while (true) {
-    window.poll_events();
+    window.PollEvents();
 
-    if (input_manager.is_key_pressed(engine::KeyCode::KC_W)) {
+    if (input_manager.IsKeyPressed(engine::KeyCode::KC_W)) {
       std::cout << "W was pressed\n";
     }
 
-    if (input_manager.is_key_down(engine::KeyCode::KC_S)) {
+    if (input_manager.IsKeyDown(engine::KeyCode::KC_S)) {
       std::cout << "S is down\n";
     }
 
-    if (input_manager.is_key_released(engine::KeyCode::KC_A)) {
+    if (input_manager.IsKeyReleased(engine::KeyCode::KC_A)) {
       std::cout << "A was released\n";
     }
   }

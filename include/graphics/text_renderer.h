@@ -29,7 +29,7 @@ class TextRenderer {
    * @brief Returns a reference to the singleton `TextRenderer` instance.
    * @return Reference to the TextRenderer.
    */
-  static TextRenderer& get() {
+  static TextRenderer& Get() {
     static TextRenderer instance;
     return instance;
   }
@@ -41,12 +41,12 @@ class TextRenderer {
   /**
    * @brief Initializes the TextRenderer.
    */
-  void init();
+  void Init();
 
   /**
    * @brief Cleans up the TextRenderer.
    */
-  void shutdown();
+  void Shutdown();
 
   /**
    * @brief Loads a given font from a file.
@@ -57,15 +57,15 @@ class TextRenderer {
    * with the font file.
    * @param font_size The size of the font.
    */
-  void load_font(const std::string& name, const std::string& path,
-                 unsigned int font_size);
+  void LoadFont(const std::string& name, const std::string& path,
+                unsigned int font_size);
 
   /**
    * @brief Renders text with full transformation support.
    */
-  void draw_text(const std::string& font_name, const std::string& text,
-                 glm::vec2 position, float rotation, float scale,
-                 const glm::vec4& color);
+  void DrawText(const std::string& font_name, const std::string& text,
+                const glm::vec2& position, float rotation, float scale,
+                const glm::vec4& color);
 
  private:
   TextRenderer() : ft_library_(nullptr) {}
