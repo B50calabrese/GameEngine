@@ -64,7 +64,7 @@ class TextRenderer {
    * @brief Renders text with full transformation support.
    */
   void DrawText(const std::string& font_name, const std::string& text,
-                glm::vec2 position, float rotation, float scale,
+                const glm::vec2& position, float rotation, float scale,
                 const glm::vec4& color);
 
  private:

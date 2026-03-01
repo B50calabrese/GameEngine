@@ -74,8 +74,8 @@ else()
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GLFW REQUIRED glfw3)
     pkg_check_modules(FREETYPE REQUIRED freetype2)
-    target_link_libraries(GameEngine PRIVATE ${GLFW_LIBRARIES} GL dl)
-    target_include_directories(GameEngine PRIVATE ${GLFW_INCLUDE_DIRS})
+    target_link_libraries(GameEngine PUBLIC ${GLFW_LIBRARIES} ${FREETYPE_LIBRARIES} GL dl)
+    target_include_directories(GameEngine PUBLIC ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
 endif()
 
 # --- 6. Add Demos (Optional when building as a library) ---

@@ -52,33 +52,33 @@ class PrimitiveRenderer {
    * @brief Submits a colored rectangle (quad) to be drawn at the specified
    * position and size.
    *
-   * @param x The x-coordinate of the rectangle's top-left corner.
-   * @param y The y-coordinate of the rectangle's top-left corner.
-   * @param w The width of the rectangle.
-   * @param h The height of the rectangle.
-   * @param color An array of four floats representing the RGBA color of the
-   * rectangle.
+   * @param position The position of the rectangle's top-left corner.
+   * @param size The size of the rectangle.
+   * @param color The RGBA color of the rectangle.
+   * @param rotation The amount to rotate the quad in degrees.
+   * @param origin The origin point for rotation (relative to size, 0-1).
    */
-  static void SubmitQuad(float x, float y, float w, float h,
-                         const float color[4]);
+  static void SubmitQuad(const glm::vec2& position, const glm::vec2& size,
+                         const glm::vec4& color, float rotation = 0.0f,
+                         const glm::vec2& origin = {0.0f, 0.0f});
 
   /**
    * @brief Submits a textured rectangle (quad) to be drawn at the specified
    * position and size.
    *
-   * @param x The x-coordinate of the rectangle's top-left corner.
-   * @param y The y-coordinate of the rectangle's top-left corner.
-   * @param w The width of the rectangle.
-   * @param h The height of the rectangle.
+   * @param position The position of the rectangle's top-left corner.
+   * @param size The size of the rectangle.
    * @param texture_id The OpenGL texture ID to use.
-   * @param color An array of four floats representing the RGBA color of the
-   * rectangle.
+   * @param color The RGBA color (tint) of the rectangle.
    * @param rotation The amount to rotate the quad in degrees.
+   * @param origin The origin point for rotation (relative to size, 0-1).
    * @param flip_uv Whether to flip the way the textured quad is rendered.
    */
-  static void SubmitTexturedQuad(float x, float y, float w, float h,
-                                 unsigned int texture_id, const float color[4],
-                                 float rotation = 0.0f, bool flip_uv = false);
+  static void SubmitTexturedQuad(const glm::vec2& position,
+                                 const glm::vec2& size, unsigned int texture_id,
+                                 const glm::vec4& color, float rotation = 0.0f,
+                                 const glm::vec2& origin = {0.0f, 0.0f},
+                                 bool flip_uv = false);
 
  private:
   // OpenGL buffers.

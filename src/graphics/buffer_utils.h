@@ -16,10 +16,10 @@ struct BufferUtils {
    * @param vao Reference to store the VAO ID.
    * @param vbo Reference to store the VBO ID.
    * @param ebo Reference to store the EBO ID.
-   * @param vboSize Size of the VBO in bytes.
+   * @param vbo_size Size of the VBO in bytes.
    */
   static void CreateBasicBuffers(unsigned int& vao, unsigned int& vbo,
-                                 unsigned int& ebo, size_t vboSize);
+                                 unsigned int& ebo, size_t vbo_size);
 
   /**
    * @brief Defines a float vertex attribute pointer.

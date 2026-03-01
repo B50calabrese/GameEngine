@@ -16,7 +16,7 @@ class MyApp : public engine::Application {
     std::cout << "Shutting down Application" << std::endl;
   }
 
-  void OnUpdate(double deltaTimeSeconds) override {
+  void OnUpdate(double delta_time_seconds) override {
     engine::graphics::TextRenderer::Get().DrawText(
         "arial", "HELLO WORLD!", glm::vec2(50.0f), /*rotation=*/0.0f,
         /*scale=*/1.0f, glm::vec4(1.0f));

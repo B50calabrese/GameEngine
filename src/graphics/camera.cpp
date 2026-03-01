@@ -13,12 +13,12 @@ Camera::Camera(float left, float right, float bottom, float top)
   UpdateMatrices();
 }
 
-void Camera::SetProjection(float left, float right, float bottom, float top) {
+void Camera::set_projection(float left, float right, float bottom, float top) {
   projection_matrix_ = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
   UpdateMatrices();
 }
 
-void Camera::SetPosition(const glm::vec3& position) {
+void Camera::set_position(const glm::vec3& position) {
   position_ = position;
   UpdateMatrices();
 }

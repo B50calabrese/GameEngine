@@ -40,13 +40,13 @@ class Camera {
    * @param bottom Bottom boundary.
    * @param top Top boundary.
    */
-  void SetProjection(float left, float right, float bottom, float top);
+  void set_projection(float left, float right, float bottom, float top);
 
   /**
    * @brief Moves the camera in world space.
    * @param position The new position.
    */
-  void SetPosition(const glm::vec3& position);
+  void set_position(const glm::vec3& position);
 
   /**
    * @brief Gets the current position of the camera.

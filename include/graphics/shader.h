@@ -4,6 +4,7 @@
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
 #include <glm/mat4x4.hpp>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -21,13 +22,12 @@ class Shader {
    * @brief Loads vertex and fragment shader source code, compiles them, and
    * links them into a single shader program.
    *
-   * @param vertexSource A string containing the vertex shader source code.
-   * @param fragmentSource A string containing the fragment shader source code.
-   * @return A pointer to the newly created `Shader` object. The caller is
-   * responsible for deleting this pointer.
+   * @param vertex_source A string containing the vertex shader source code.
+   * @param fragment_source A string containing the fragment shader source code.
+   * @return A unique pointer to the newly created `Shader` object, or nullptr.
    */
-  static Shader* CreateFromSource(const std::string& vertexSource,
-                                  const std::string& fragmentSource);
+  static std::unique_ptr<Shader> CreateFromSource(
+      const std::string& vertex_source, const std::string& fragment_source);
 
   /** @brief Deletes the shader program from the GPU. */
   ~Shader();

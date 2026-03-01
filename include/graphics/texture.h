@@ -1,6 +1,7 @@
 #ifndef INCLUDE_GRAPHICS_TEXTURE_H_
 #define INCLUDE_GRAPHICS_TEXTURE_H_
 
+#include <memory>
 #include <string>
 
 namespace engine::graphics {
@@ -15,9 +16,9 @@ class Texture {
   /**
    * @brief Loads an image from disk and uploads it to the GPU.
    * @param path File path to the image (PNG, JPG, etc.)
-   * @return A pointer to the Texture object, or nullptr if loading fails.
+   * @return A unique pointer to the Texture object, or nullptr if loading fails.
    */
-  static Texture* Create(const std::string& path);
+  static std::unique_ptr<Texture> Create(const std::string& path);
 
   /** @brief Destructor deletes the OpenGL texture. */
   ~Texture();

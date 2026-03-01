@@ -35,9 +35,9 @@ class Scene {
 
   /**
    * @brief Called every frame for logic updates.
-   * @param deltaTimeSeconds The time elapsed since the last frame, in seconds.
+   * @param delta_time_seconds The time elapsed since the last frame, in seconds.
    */
-  virtual void OnUpdate(float deltaTimeSeconds) {}
+  virtual void OnUpdate(float delta_time_seconds) {}
 
   /** @brief Called every frame for drawing calls. */
   virtual void OnRender() {}

@@ -6,19 +6,21 @@
 class RendererApp : public engine::Application {
  public:
   void OnInit() override {
-    texture = engine::graphics::Texture::Create("card_back.png");
+    texture_ = engine::graphics::Texture::Create("card_back.png");
   }
 
   void OnShutdown() override {}
 
-  void OnUpdate(double deltaTimeSeconds) override {
+  void OnUpdate(double delta_time_seconds) override {
     engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, 400.0f, 300.0f);
-    engine::graphics::Renderer::Get().DrawTexturedRect(400.0f, 300.0f, 400.0f,
-                                                       300.0f, texture->id());
+    if (texture_) {
+        engine::graphics::Renderer::Get().DrawTexturedQuad(
+            {400.0f, 300.0f}, {400.0f, 300.0f}, texture_.get());
+    }
   }
 
  private:
-  engine::graphics::Texture* texture;
+  std::unique_ptr<engine::graphics::Texture> texture_;
 };
 
 /**

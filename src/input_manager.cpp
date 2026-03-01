@@ -110,7 +110,6 @@ bool InputManager::IsKeyDown(KeyCode key_code) const {
 
 bool InputManager::IsKeyPressed(KeyCode key_code) const {
   // True if key is DOWN now (Current) AND was UP last frame (Previous)
-  // Assumes keys are initialized to false in the map.
   auto current_it = current_key_state_.find(key_code);
   auto previous_it = previous_key_state_.find(key_code);
 
@@ -140,6 +139,8 @@ void InputManager::UpdateState() { previous_key_state_ = current_key_state_; }
 
 void InputManager::HandleKey(int raw_key_code, int action) {
   KeyCode key = MapRawCode(raw_key_code);
+  if (key == static_cast<KeyCode>(-1)) return;
+
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
     current_key_state_[key] = true;
   } else if (action == GLFW_RELEASE) {
@@ -148,7 +149,14 @@ void InputManager::HandleKey(int raw_key_code, int action) {
 }
 
 void InputManager::HandleMouseButton(int raw_button_code, int action) {
-  // Implementation here
+  KeyCode key = MapRawCode(raw_button_code);
+  if (key == static_cast<KeyCode>(-1)) return;
+
+  if (action == GLFW_PRESS) {
+    current_key_state_[key] = true;
+  } else if (action == GLFW_RELEASE) {
+    current_key_state_[key] = false;
+  }
 }
 
 void InputManager::HandleCursorPosition(double xpos, double ypos) {

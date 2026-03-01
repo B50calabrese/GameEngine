@@ -7,64 +7,65 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
 #include <iostream>
+#include <memory>
 #include <string>
 
 namespace engine::graphics {
 
-Shader* Shader::CreateFromSource(const std::string& vertexSource,
-                                 const std::string& fragmentSource) {
+std::unique_ptr<Shader> Shader::CreateFromSource(
+    const std::string& vertex_source, const std::string& fragment_source) {
   // 1. Create and compile Vertex Shader
-  GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  const char* vSource = vertexSource.c_str();
-  glShaderSource(vertexShader, 1, &vSource, 0);
-  glCompileShader(vertexShader);
+  GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+  const char* v_source = vertex_source.c_str();
+  glShaderSource(vertex_shader, 1, &v_source, 0);
+  glCompileShader(vertex_shader);
 
   // print compile errors if any
   int success;
-  char infoLog[512];
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+  char info_log[512];
+  glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
   if (!success) {
-    glGetShaderInfoLog(vertexShader, 512, 0, infoLog);
-    std::cout << "Vertex shader compilation failed:\n" << infoLog << std::endl;
+    glGetShaderInfoLog(vertex_shader, 512, 0, info_log);
+    std::cout << "Vertex shader compilation failed:\n" << info_log << std::endl;
     return nullptr;
   };
 
   // 2. Create and compile Fragment Shader
-  GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  const char* fSource = fragmentSource.c_str();
-  glShaderSource(fragmentShader, 1, &fSource, nullptr);
-  glCompileShader(fragmentShader);
+  GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+  const char* f_source = fragment_source.c_str();
+  glShaderSource(fragment_shader, 1, &f_source, nullptr);
+  glCompileShader(fragment_shader);
 
   // Check for FS errors
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+  glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
   if (!success) {
-    char infoLog[512];
-    glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
+    char info_log[512];
+    glGetShaderInfoLog(fragment_shader, 512, nullptr, info_log);
     std::cerr << "Fragment shader compilation failed:\n"
-              << infoLog << std::endl;
+              << info_log << std::endl;
     return nullptr;
   }
 
   // 3. Link into a Program
   GLuint program = glCreateProgram();
-  glAttachShader(program, vertexShader);
-  glAttachShader(program, fragmentShader);
+  glAttachShader(program, vertex_shader);
+  glAttachShader(program, fragment_shader);
   glLinkProgram(program);
 
   // Check for Linking errors
   glGetProgramiv(program, GL_LINK_STATUS, &success);
   if (!success) {
-    char infoLog[512];
-    glGetProgramInfoLog(program, 512, nullptr, infoLog);
-    std::cerr << "Shader program linking failed:\n" << infoLog << std::endl;
+    char info_log[512];
+    glGetProgramInfoLog(program, 512, nullptr, info_log);
+    std::cerr << "Shader program linking failed:\n" << info_log << std::endl;
     return nullptr;
   }
 
   // Clean up temporary shader objects
-  glDeleteShader(vertexShader);
-  glDeleteShader(fragmentShader);
+  glDeleteShader(vertex_shader);
+  glDeleteShader(fragment_shader);
 
-  return new Shader(program);
+  return std::unique_ptr<Shader>(new Shader(program));
 }
 
 Shader::~Shader() { glDeleteProgram(shader_id_); }
@@ -86,7 +87,8 @@ void Shader::SetVec4(const std::string& name, glm::vec4 value) {
 }
 
 void Shader::SetMat4(const std::string& name, glm::mat4 value) {
-  glUniformMatrix4fv(GetUniformLocation(name), 1, false, glm::value_ptr(value));
+  glUniformMatrix4fv(GetUniformLocation(name), 1, false,
+                     glm::value_ptr(value));
 }
 
 // Private functions

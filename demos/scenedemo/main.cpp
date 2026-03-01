@@ -18,8 +18,8 @@ class SceneBOverlay : public engine::Scene {
   void OnRender() override {
     // Draw a green rectangle on some of the screen.
     engine::graphics::Renderer::Get().DrawRect(WIDTH / 4.0f, HEIGHT / 4.0f,
-                                               WIDTH / 2.0f, HEIGHT / 2.0f,
-                                               0.0f, 1.0f, 0.0f);
+                                                WIDTH / 2.0f, HEIGHT / 2.0f,
+                                                0.0f, 1.0f, 0.0f);
   }
 
   bool OnInput() override {
@@ -38,7 +38,7 @@ class SceneB : public engine::Scene {
   void OnRender() override {
     // Draw a blue rectangle on the whole screen.
     engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, WIDTH, HEIGHT, 0.0f,
-                                               0.0f, 1.0f);
+                                                0.0f, 1.0f);
   }
 
   bool OnInput() override {
@@ -58,7 +58,7 @@ class SceneA : public engine::Scene {
   void OnRender() override {
     // Draw a red rectangle on the whole screen.
     engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, WIDTH, HEIGHT, 1.0f,
-                                               0.0f, 0.0f);
+                                                0.0f, 0.0f);
   }
 
   bool OnInput() override {
@@ -80,10 +80,10 @@ class MyApp : public engine::Application {
     std::cout << "Shutting down Application" << std::endl;
   }
 
-  void OnUpdate(double deltaTimeSeconds) override {}
+  void OnUpdate(double delta_time_seconds) override {}
 
  private:
-  double totalTime_ = 0.0;
+  double total_time_ = 0.0;
 };
 
 /**

@@ -42,13 +42,13 @@ class ComponentStorage : public IComponentStorage {
    * @brief Removes the entity from this given storage.
    * @param entity The entity to remove.
    */
-  void Remove(EntityID entity) { data_.erase(entity); }
+  void Remove(EntityID entity) override { data_.erase(entity); }
 
   /**
    * @brief Returns if the entity is in the storage.
    * @returns whether or not the entity is found in this storage.
    */
-  bool Has(EntityID entity) { return data.find(entity) != data.end(); }
+  bool Has(EntityID entity) { return data_.find(entity) != data_.end(); }
 
  private:
   std::unordered_map<EntityID, T> data_;

@@ -19,8 +19,8 @@ void TextRenderer::Init() {
 
 void TextRenderer::Shutdown() {
   // Clean up OpenGL textures
-  for (auto const& [fontName, charMap] : fonts_) {
-    for (auto const& [c, character] : charMap) {
+  for (auto const& [font_name, char_map] : fonts_) {
+    for (auto const& [c, character] : char_map) {
       glDeleteTextures(1, &character.texture_id);
     }
   }
@@ -43,7 +43,7 @@ void TextRenderer::LoadFont(const std::string& name, const std::string& path,
   // Disable byte-alignment restriction (FreeType bitmaps are 1-byte aligned)
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  std::map<char, Character> charMap;
+  std::map<char, Character> char_map;
   for (unsigned char c = 0; c < 128; c++) {
     if (FT_Load_Char(face, c, FT_LOAD_RENDER)) continue;
 
@@ -60,52 +60,57 @@ void TextRenderer::LoadFont(const std::string& name, const std::string& path,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    charMap[c] = {
+    char_map[c] = {
         texture,
         glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
         glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
         static_cast<unsigned int>(face->glyph->advance.x)};
   }
 
-  fonts_[name] = charMap;
+  fonts_[name] = char_map;
   FT_Done_Face(face);
   std::cout << "[FontRenderer] Loaded font '" << name << "' (" << font_size
             << "px)" << std::endl;
 }
 
 void TextRenderer::DrawText(const std::string& font_name,
-                            const std::string& text, glm::vec2 position,
+                            const std::string& text, const glm::vec2& position,
                             float rotation, float scale,
                             const glm::vec4& color) {
   if (fonts_.find(font_name) == fonts_.end()) return;
 
   auto& characters = fonts_[font_name];
   float x_cursor = 0.0f;
-  float rad = glm::radians(rotation);
-  float cosA = cos(rad);
-  float sinA = sin(rad);
-
-  glm::mat4 rotationMat =
-      glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0, 0, 1));
 
   for (char c : text) {
     Character ch = characters[c];
 
-    // Calculate the position of the character's baseline origin relative to
-    // start (x,y)
-    float worldOriginX = position.x + (x_cursor * cosA);
-    float worldOriginY = position.y + (x_cursor * sinA);
+    // Character bearing: horizontal offset from origin to left of glyph,
+    // and vertical offset from origin to top of glyph.
+    float xpos = position.x + (x_cursor + ch.bearing.x) * scale;
+    float ypos = position.y - (ch.size.y - ch.bearing.y) * scale;
 
     float w = ch.size.x * scale;
     float h = ch.size.y * scale;
 
-    // We pass the baseline origin as the (x,y) and the bearing as local offsets
-    // SubmitTexturedQuad now handles the rotation of these offsets correctly.
-    PrimitiveRenderer::SubmitTexturedQuad(worldOriginX, worldOriginY, w, h,
-                                          ch.texture_id, &color[0], rotation,
-                                          true);
+    // submit_textured_quad handles rotation around the specified origin.
+    // Calculate character position relative to text origin
+    glm::vec2 char_rel_pos = glm::vec2(xpos - position.x, ypos - position.y);
 
-    x_cursor += (ch.advance >> 6) * scale;
+    if (rotation != 0.0f) {
+      float rad = glm::radians(rotation);
+      float cos_a = std::cos(rad);
+      float sin_a = std::sin(rad);
+      float rx = char_rel_pos.x * cos_a - char_rel_pos.y * sin_a;
+      float ry = char_rel_pos.x * sin_a + char_rel_pos.y * cos_a;
+      char_rel_pos = glm::vec2(rx, ry);
+    }
+
+    PrimitiveRenderer::SubmitTexturedQuad(position + char_rel_pos,
+                                            {w, h}, ch.texture_id, color,
+                                            rotation, {0.0f, 0.0f}, true);
+
+    x_cursor += (ch.advance >> 6);
   }
 }
 

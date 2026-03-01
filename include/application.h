@@ -44,11 +44,11 @@ class Application {
   /**
    * @brief Called every frame. Game logic and rendering should be handled here.
    *
-   * @param deltaTimeSeconds The time elapsed since the last frame, in seconds.
+   * @param delta_time_seconds The time elapsed since the last frame, in seconds.
    *        This value should be used for frame-rate independent physics and
    *        animations.
    */
-  virtual void OnUpdate(double deltaTimeSeconds) = 0;
+  virtual void OnUpdate(double delta_time_seconds) = 0;
 
   /** @brief Virtual destructor is crucial for proper inheritance cleanup. */
   virtual ~Application() = default;

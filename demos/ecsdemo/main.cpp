@@ -23,8 +23,8 @@ class MainScene : public engine::Scene {
 
   void OnAttach() override {}
 
-  void OnUpdate(float deltaTimeSeconds) {
-    auto position = engine::InputManager::Get().GetMouseScreenPos();
+  void OnUpdate(float delta_time_seconds) override {
+    auto position = engine::InputManager::Get().mouse_screen_pos();
 
     std::cout << "X: " << position.x << " Y: " << position.y << "\n";
   }
@@ -49,10 +49,10 @@ class MyApp : public engine::Application {
     std::cout << "Shutting down Application" << std::endl;
   }
 
-  void OnUpdate(double deltaTimeSeconds) override {}
+  void OnUpdate(double delta_time_seconds) override {}
 
  private:
-  double totalTime_ = 0.0;
+  double total_time_ = 0.0;
 };
 
 /**
