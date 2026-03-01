@@ -24,7 +24,7 @@ class MainScene : public engine::Scene {
   void OnAttach() override {}
 
   void OnUpdate(float delta_time_seconds) override {
-    auto position = engine::InputManager::Get().get_mouse_screen_pos();
+    auto position = engine::InputManager::Get().mouse_screen_pos();
 
     std::cout << "X: " << position.x << " Y: " << position.y << "\n";
   }

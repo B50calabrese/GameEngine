@@ -75,19 +75,19 @@ void Shader::Bind() const { glUseProgram(shader_id_); }
 void Shader::Unbind() const { glUseProgram(0); }
 
 void Shader::SetInt(const std::string& name, int value) {
-  glUniform1i(get_uniform_location(name), value);
+  glUniform1i(GetUniformLocation(name), value);
 }
 
 void Shader::SetVec3(const std::string& name, glm::vec3 value) {
-  glUniform3f(get_uniform_location(name), value.x, value.y, value.z);
+  glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
 }
 
 void Shader::SetVec4(const std::string& name, glm::vec4 value) {
-  glUniform4f(get_uniform_location(name), value.x, value.y, value.z, value.w);
+  glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
 }
 
 void Shader::SetMat4(const std::string& name, glm::mat4 value) {
-  glUniformMatrix4fv(get_uniform_location(name), 1, false,
+  glUniformMatrix4fv(GetUniformLocation(name), 1, false,
                      glm::value_ptr(value));
 }
 
@@ -95,7 +95,7 @@ void Shader::SetMat4(const std::string& name, glm::mat4 value) {
 
 Shader::Shader(unsigned int shader_id) : shader_id_(shader_id) {}
 
-int Shader::get_uniform_location(const std::string& name) const {
+int Shader::GetUniformLocation(const std::string& name) const {
   if (uniform_location_cache_.find(name) != uniform_location_cache_.end())
     return uniform_location_cache_[name];
 

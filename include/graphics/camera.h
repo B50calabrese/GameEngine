@@ -40,13 +40,13 @@ class Camera {
    * @param bottom Bottom boundary.
    * @param top Top boundary.
    */
-  void SetProjection(float left, float right, float bottom, float top);
+  void set_projection(float left, float right, float bottom, float top);
 
   /**
    * @brief Moves the camera in world space.
    * @param position The new position.
    */
-  void SetPosition(const glm::vec3& position);
+  void set_position(const glm::vec3& position);
 
   /**
    * @brief Gets the current position of the camera.
@@ -67,7 +67,7 @@ class Camera {
    * @brief Re-calculates the final matrix whenever position or projection
    * changes.
    */
-  void update_matrices();
+  void UpdateMatrices();
 
   glm::mat4 projection_matrix_;       // The "Lens" (Resolution/Aspect)
   glm::mat4 view_matrix_;             // The "Eyeball" (Position/Rotation)

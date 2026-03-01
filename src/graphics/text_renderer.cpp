@@ -19,8 +19,8 @@ void TextRenderer::Init() {
 
 void TextRenderer::Shutdown() {
   // Clean up OpenGL textures
-  for (auto const& [fontName, charMap] : fonts_) {
-    for (auto const& [c, character] : charMap) {
+  for (auto const& [font_name, char_map] : fonts_) {
+    for (auto const& [c, character] : char_map) {
       glDeleteTextures(1, &character.texture_id);
     }
   }
@@ -43,7 +43,7 @@ void TextRenderer::LoadFont(const std::string& name, const std::string& path,
   // Disable byte-alignment restriction (FreeType bitmaps are 1-byte aligned)
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  std::map<char, Character> charMap;
+  std::map<char, Character> char_map;
   for (unsigned char c = 0; c < 128; c++) {
     if (FT_Load_Char(face, c, FT_LOAD_RENDER)) continue;
 
@@ -60,14 +60,14 @@ void TextRenderer::LoadFont(const std::string& name, const std::string& path,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    charMap[c] = {
+    char_map[c] = {
         texture,
         glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
         glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
         static_cast<unsigned int>(face->glyph->advance.x)};
   }
 
-  fonts_[name] = charMap;
+  fonts_[name] = char_map;
   FT_Done_Face(face);
   std::cout << "[FontRenderer] Loaded font '" << name << "' (" << font_size
             << "px)" << std::endl;
@@ -98,12 +98,12 @@ void TextRenderer::DrawText(const std::string& font_name,
     glm::vec2 char_rel_pos = glm::vec2(xpos - position.x, ypos - position.y);
 
     if (rotation != 0.0f) {
-        float rad = glm::radians(rotation);
-        float cosA = cos(rad);
-        float sinA = sin(rad);
-        float rx = char_rel_pos.x * cosA - char_rel_pos.y * sinA;
-        float ry = char_rel_pos.x * sinA + char_rel_pos.y * cosA;
-        char_rel_pos = glm::vec2(rx, ry);
+      float rad = glm::radians(rotation);
+      float cos_a = std::cos(rad);
+      float sin_a = std::sin(rad);
+      float rx = char_rel_pos.x * cos_a - char_rel_pos.y * sin_a;
+      float ry = char_rel_pos.x * sin_a + char_rel_pos.y * cos_a;
+      char_rel_pos = glm::vec2(rx, ry);
     }
 
     PrimitiveRenderer::SubmitTexturedQuad(position + char_rel_pos,

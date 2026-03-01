@@ -30,7 +30,7 @@ uint32_t PrimitiveRenderer::texture_slot_index_ =
 glm::mat4 PrimitiveRenderer::current_view_projection_ = glm::mat4(1.0f);
 
 // --- Built-in GLSL Shaders ---
-static const char* vertexSource = R"(
+static const char* kVertexSource = R"(
         #version 330 core
         layout (location = 0) in vec2 aPos;
         layout (location = 1) in vec4 aColor;
@@ -52,7 +52,7 @@ static const char* vertexSource = R"(
         }
     )";
 
-static const char* fragmentSource = R"(
+static const char* kFragmentSource = R"(
         #version 330 core
         in vec4 vColor;
         in vec2 vTexCoord;
@@ -151,7 +151,7 @@ void PrimitiveRenderer::Init() {
 
   // Compile Built-in Shaders
   default_shader_ = std::unique_ptr<Shader>(
-      Shader::CreateFromSource(vertexSource, fragmentSource));
+      Shader::CreateFromSource(kVertexSource, kFragmentSource));
 
   if (default_shader_) {
     default_shader_->Bind();
@@ -210,8 +210,8 @@ void PrimitiveRenderer::RenderBatch() {
   glBindVertexArray(vao_);
 
   // 6 indices per 4 vertices (1 quad)
-  uint32_t indexCount = static_cast<uint32_t>((vertex_batch_.size() / 4) * 6);
-  glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+  uint32_t index_count = static_cast<uint32_t>((vertex_batch_.size() / 4) * 6);
+  glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 
   glBindVertexArray(0);
   default_shader_->Unbind();
@@ -256,14 +256,14 @@ void PrimitiveRenderer::SubmitTexturedQuad(const glm::vec2& position,
   float h = size.y;
 
   // 1. Define local vertices relative to the origin.
-  float offsetX = origin.x * w;
-  float offsetY = origin.y * h;
+  float offset_x = origin.x * w;
+  float offset_y = origin.y * h;
 
   glm::vec4 local_vertices[4] = {
-      {-offsetX, -offsetY, 0.0f, 1.0f},      // Bottom-Left
-      {w - offsetX, -offsetY, 0.0f, 1.0f},   // Bottom-Right
-      {w - offsetX, h - offsetY, 0.0f, 1.0f},  // Top-Right
-      {-offsetX, h - offsetY, 0.0f, 1.0f}     // Top-Left
+      {-offset_x, -offset_y, 0.0f, 1.0f},      // Bottom-Left
+      {w - offset_x, -offset_y, 0.0f, 1.0f},   // Bottom-Right
+      {w - offset_x, h - offset_y, 0.0f, 1.0f},  // Top-Right
+      {-offset_x, h - offset_y, 0.0f, 1.0f}     // Top-Left
   };
 
   // 2. Apply Rotation to the local positions

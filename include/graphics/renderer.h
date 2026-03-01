@@ -187,7 +187,7 @@ class Renderer {
    * @param width Viewport width.
    * @param height Viewport height.
    */
-  void SetViewport(int width, int height) const;
+  void set_viewport(int width, int height) const;
 
   /**
    * @brief Callback function for window resize events to adjust the viewport.
@@ -200,7 +200,7 @@ class Renderer {
    * @brief Used to set the asset root path.
    * @param path The root path.
    */
-  void SetAssetRoot(const std::string& path);
+  void set_asset_root(const std::string& path);
 
   std::string asset_root_path_ = "";
 };

@@ -86,7 +86,7 @@ class Shader {
    * @param name The name of the uniform.
    * @return The location.
    */
-  int get_uniform_location(const std::string& name) const;
+  int GetUniformLocation(const std::string& name) const;
 
   /** @brief Caching uniform locations improves performance significantly. */
   mutable std::unordered_map<std::string, int> uniform_location_cache_;

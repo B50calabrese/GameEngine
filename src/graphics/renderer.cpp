@@ -112,7 +112,7 @@ void Renderer::Init(Window& window) {
   // Set viewport to window dimensions
   int width, height;
   glfwGetWindowSize(window.native_handle(), &width, &height);
-  SetViewport(width, height);
+  set_viewport(width, height);
 
   // Initialize renderers.
   graphics::PrimitiveRenderer::Init();
@@ -123,15 +123,15 @@ void Renderer::Shutdown() {
   graphics::PrimitiveRenderer::Shutdown();
 }
 
-void Renderer::SetViewport(int width, int height) const {
+void Renderer::set_viewport(int width, int height) const {
   glViewport(0, 0, width, height);
 }
 
 void Renderer::HandleResize(int& width, int& height) const {
-  this->SetViewport(width, height);
+  this->set_viewport(width, height);
 }
 
-void Renderer::SetAssetRoot(const std::string& path) {
+void Renderer::set_asset_root(const std::string& path) {
   if (path.empty()) {
     asset_root_path_ = "";
     return;

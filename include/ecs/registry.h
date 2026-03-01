@@ -28,7 +28,7 @@ class Registry {
    */
   void DeleteEntity(EntityID entity) {
     for (auto& [type, storage] : storages_) {
-      storage->remove(entity);
+      storage->Remove(entity);
     }
     entity_manager_.DestroyEntity(entity);
   }
@@ -49,7 +49,7 @@ class Registry {
    */
   template <typename T>
   void AddComponent(EntityID entity, T component) {
-    get_storage<T>()->add(entity, component);
+    GetStorage<T>()->Add(entity, component);
   }
 
   /**
@@ -58,7 +58,7 @@ class Registry {
    */
   template <typename T>
   void RemoveComponent(EntityID entity) {
-    get_storage<T>()->remove(entity);
+    GetStorage<T>()->Remove(entity);
   }
 
   /**
@@ -68,7 +68,7 @@ class Registry {
    */
   template <typename T>
   T& GetComponent(EntityID entity) {
-    return get_storage<T>()->get(entity);
+    return GetStorage<T>()->Get(entity);
   }
 
   /**
@@ -78,7 +78,7 @@ class Registry {
    */
   template <typename T>
   bool HasComponent(EntityID entity) {
-    return get_storage<T>()->has(entity);
+    return GetStorage<T>()->Has(entity);
   }
 
  private:
@@ -87,7 +87,7 @@ class Registry {
    * @returns the ComponentStorage for the template type.
    */
   template <typename T>
-  ComponentStorage<T>* get_storage() {
+  ComponentStorage<T>* GetStorage() {
     auto type = std::type_index(typeid(T));
     if (storages_.find(type) == storages_.end()) {
       storages_[type] = std::make_unique<ComponentStorage<T>>();

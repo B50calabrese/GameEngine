@@ -141,9 +141,7 @@ class InputManager {
    *
    * @returns the screen position in [-1, 1] space.
    */
-  glm::vec2 get_mouse_screen_pos() const {
-    return glm::vec2(mouse_x_, mouse_y_);
-  }
+  glm::vec2 mouse_screen_pos() const { return glm::vec2(mouse_x_, mouse_y_); }
 
   /**
    * @brief Updates the key states for the current frame.
@@ -183,7 +181,7 @@ class InputManager {
   /**
    * @brief Utility function to map GLFW codes to our internal KeyCode.
    */
-  KeyCode map_raw_code(int raw_code) const;
+  KeyCode MapRawCode(int raw_code) const;
 };
 
 }  // namespace engine

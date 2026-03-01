@@ -138,7 +138,7 @@ void InputManager::UpdateState() { previous_key_state_ = current_key_state_; }
 // Private functions
 
 void InputManager::HandleKey(int raw_key_code, int action) {
-  KeyCode key = map_raw_code(raw_key_code);
+  KeyCode key = MapRawCode(raw_key_code);
   if (key == static_cast<KeyCode>(-1)) return;
 
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
@@ -149,7 +149,7 @@ void InputManager::HandleKey(int raw_key_code, int action) {
 }
 
 void InputManager::HandleMouseButton(int raw_button_code, int action) {
-  KeyCode key = map_raw_code(raw_button_code);
+  KeyCode key = MapRawCode(raw_button_code);
   if (key == static_cast<KeyCode>(-1)) return;
 
   if (action == GLFW_PRESS) {
@@ -165,7 +165,7 @@ void InputManager::HandleCursorPosition(double xpos, double ypos) {
 }
 
 // The function that performs the mapping lookup
-KeyCode InputManager::map_raw_code(int raw_code) const {
+KeyCode InputManager::MapRawCode(int raw_code) const {
   const auto& map = GetKeyCodeMap();
 
   auto it = map.find(raw_code);
