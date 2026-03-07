@@ -6,9 +6,10 @@
 #include <glm/ext/vector_float4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
-#include <iostream>
 #include <memory>
 #include <string>
+
+#include "util/logger.h"
 
 namespace engine::graphics {
 
@@ -26,7 +27,7 @@ std::shared_ptr<Shader> Shader::CreateFromSource(
   glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
   if (!success) {
     glGetShaderInfoLog(vertex_shader, 512, 0, info_log);
-    std::cout << "Vertex shader compilation failed:\n" << info_log << std::endl;
+    LOG_ERR("Vertex shader compilation failed:\n%s", info_log);
     return nullptr;
   };
 
@@ -41,8 +42,7 @@ std::shared_ptr<Shader> Shader::CreateFromSource(
   if (!success) {
     char info_log[512];
     glGetShaderInfoLog(fragment_shader, 512, nullptr, info_log);
-    std::cerr << "Fragment shader compilation failed:\n"
-              << info_log << std::endl;
+    LOG_ERR("Fragment shader compilation failed:\n%s", info_log);
     return nullptr;
   }
 
@@ -57,7 +57,7 @@ std::shared_ptr<Shader> Shader::CreateFromSource(
   if (!success) {
     char info_log[512];
     glGetProgramInfoLog(program, 512, nullptr, info_log);
-    std::cerr << "Shader program linking failed:\n" << info_log << std::endl;
+    LOG_ERR("Shader program linking failed:\n%s", info_log);
     return nullptr;
   }
 
@@ -101,8 +101,8 @@ int Shader::GetUniformLocation(const std::string& name) const {
 
   int location = glGetUniformLocation(shader_id_, name.c_str());
   if (location == -1) {
-    std::cout << "Warning: uniform '" << name
-              << "' doesn't exist or is not used in shader!" << std::endl;
+    LOG_WARN("Warning: uniform '%s' doesn't exist or is not used in shader!",
+             name.c_str());
     return 0;
   }
   uniform_location_cache_[name] = location;

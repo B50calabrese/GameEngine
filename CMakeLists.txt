@@ -26,6 +26,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/input_manager.cpp"
     "${ENGINE_ROOT}/src/scene_manager.cpp"
     "${ENGINE_ROOT}/src/window.cpp"
+    "${ENGINE_ROOT}/src/util/logger.cpp"
     "${ENGINE_ROOT}/src/ecs/entity_manager.cpp"
     "${ENGINE_ROOT}/src/graphics/buffer_utils.cpp"
     "${ENGINE_ROOT}/src/graphics/camera.cpp"
@@ -41,9 +42,11 @@ set(SOURCE_FILES
 # Use GLOB_RECURSE relative to CURRENT_SOURCE_DIR
 file(GLOB_RECURSE INCLUDE_FILES
     "${ENGINE_ROOT}/include/*.h"
+    "${ENGINE_ROOT}/include/util/*.h"
     "${ENGINE_ROOT}/include/ecs/*.h"
     "${ENGINE_ROOT}/include/graphics/*.h"
     "${ENGINE_ROOT}/src/*.h"
+    "${ENGINE_ROOT}/src/util/*.h"
     "${ENGINE_ROOT}/src/ecs/*.h"
     "${ENGINE_ROOT}/src/graphics/*.h" 
 )

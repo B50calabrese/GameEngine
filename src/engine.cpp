@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "graphics/renderer.h"
+#include "util/logger.h"
 #include "window.h"
 
 namespace engine {
@@ -19,7 +20,13 @@ constexpr int kGlfwVersionMinor = 3;
 std::unique_ptr<Window> Engine::internal_window_ = nullptr;
 
 void Engine::Init(const EngineConfig& engine_config) {
+  if (!util::Logger::Get().IsInitialized()) {
+    util::Logger::Get().Init();
+  }
+  LOG_INFO("Initializing Engine...");
+
   if (!glfwInit()) {
+    LOG_ERR("Failed to initialize GLFW");
     return;
   }
 
