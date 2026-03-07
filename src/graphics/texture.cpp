@@ -5,10 +5,10 @@
 #include <GLFW/glfw3.h>
 // clang-format on
 
-#include <iostream>
 #include <memory>
 
 #include "graphics/renderer.h"
+#include "util/logger.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -27,7 +27,7 @@ std::shared_ptr<Texture> Texture::Load(const std::string& path) {
       stbi_load(full_path.c_str(), &width, &height, &channels, 4);
 
   if (!data) {
-    std::cout << "[Texture] Failed to load path: " << path << "\n";
+    LOG_ERR("[Texture] Failed to load path: %s", path.c_str());
     return nullptr;
   }
 

@@ -3,12 +3,12 @@
 #include <ft2build.h>
 #include <glad/glad.h>
 
-#include <iostream>
 #include <map>
 #include <memory>
 #include <string>
 
 #include "graphics/renderer.h"
+#include "util/logger.h"
 #include FT_FREETYPE_H
 
 namespace engine::graphics {
@@ -23,8 +23,8 @@ std::shared_ptr<Font> Font::Load(const std::string& path) {
     try {
       font_size = std::stoi(path.substr(colon_pos + 1));
     } catch (...) {
-      std::cerr << "[Font] Failed to parse font size from: " << path
-                << ". Using default 16." << std::endl;
+      LOG_WARN("[Font] Failed to parse font size from: %s. Using default 16.",
+               path.c_str());
     }
   }
 
@@ -32,15 +32,13 @@ std::shared_ptr<Font> Font::Load(const std::string& path) {
 
   FT_Library ft;
   if (FT_Init_FreeType(&ft)) {
-    std::cerr << "ERROR::FREETYPE: Could not init FreeType Library"
-              << std::endl;
+    LOG_ERR("ERROR::FREETYPE: Could not init FreeType Library");
     return nullptr;
   }
 
   FT_Face face;
   if (FT_New_Face(ft, full_path.c_str(), 0, &face)) {
-    std::cerr << "ERROR::FREETYPE: Failed to load font: " << full_path
-              << std::endl;
+    LOG_ERR("ERROR::FREETYPE: Failed to load font: %s", full_path.c_str());
     FT_Done_FreeType(ft);
     return nullptr;
   }
@@ -76,8 +74,7 @@ std::shared_ptr<Font> Font::Load(const std::string& path) {
   FT_Done_Face(face);
   FT_Done_FreeType(ft);
 
-  std::cout << "[Font] Loaded font from '" << full_path << "' (" << font_size
-            << "px)" << std::endl;
+  LOG_INFO("[Font] Loaded font from '%s' (%dpx)", full_path.c_str(), font_size);
 
   return std::shared_ptr<Font>(new Font(std::move(char_map)));
 }

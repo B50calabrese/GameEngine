@@ -6,9 +6,9 @@
 // clang-format on
 
 #include <filesystem>
-#include <iostream>
 
 #include "graphics/camera.h"
+#include "util/logger.h"
 #include "graphics/text_renderer.h"
 #include "graphics/texture.h"
 #include "primitive_renderer.h"
@@ -95,7 +95,7 @@ std::string Renderer::ResolveAssetPath(const std::string& relative_path) const {
 void Renderer::Init(Window& window) {
   // Load Glad
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cout << "Failed to initialize GLAD\n";
+    LOG_ERR("Failed to initialize GLAD");
     return;
   }
 
