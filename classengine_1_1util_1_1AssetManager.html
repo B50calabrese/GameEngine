@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>engine::Engine class | Game Engine</title>
+  <title>engine::util::AssetManager class | Game Engine</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon-dark.png" type="image/png" />
@@ -43,9 +43,10 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="namespaceengine.html">engine</a>::<wbr/></span>Engine <span class="m-thin">class</span>
+          <div class="m-doc-template">template&lt;typename T&gt;</div>
+          <span class="m-breadcrumb"><a href="namespaceengine.html">engine</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespaceengine_1_1util.html">util</a>::<wbr/></span>AssetManager <span class="m-thin">class</span>
         </h1>
-        <p>The static <code><a href="classengine_1_1Engine.html" class="m-doc">Engine</a></code> class provides the core functionality of the game engine, including initialization, shutdown, and access to engine-managed systems.</p>
+        <p>Centralized, templated utility for managing the lifecycle of engine resources.</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -57,56 +58,48 @@
             </li>
           </ul>
         </nav>
+<p>Uses reference counting (std::shared_ptr/std::weak_ptr) to automatically free assets when they are no longer in use.</p>
         <section id="pub-static-methods">
           <h2><a href="#pub-static-methods">Public static functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">static void <a href="#a62a4a56e8d1af87a788fd7fdd989b7c9" class="m-doc">Init</a>(</span><span class="m-doc-wrap">const <a href="structengine_1_1EngineConfig.html" class="m-doc">EngineConfig</a>&amp; config)</span>
+              <span class="m-doc-wrap-bumper">static auto <a href="#ab52ebd34022d4510510e749e3bff484b" class="m-doc">Get</a>(</span><span class="m-doc-wrap">const std::string&amp; path) -&gt; std::shared_ptr&lt;T&gt;</span>
             </dt>
-            <dd>Initializes the engine, including the window, graphics context, and other core systems.</dd>
-            <dt id="a7551eb7055ff963a8f8408a8411d84a2">
-              <span class="m-doc-wrap-bumper">static void <a href="#a7551eb7055ff963a8f8408a8411d84a2" class="m-doc-self">Shutdown</a>(</span><span class="m-doc-wrap">)</span>
+            <dd>Retrieves a reference-counted asset.</dd>
+            <dt id="a05c0085b0e02eca45afd1472a8883bca">
+              <span class="m-doc-wrap-bumper">static void <a href="#a05c0085b0e02eca45afd1472a8883bca" class="m-doc-self">GarbageCollect</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>Gracefully shuts down the engine and releases all resources.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">static auto <a href="#aface66e6a2ac92ae43df2fba37121e2a" class="m-doc">window</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classengine_1_1Window.html" class="m-doc">Window</a>&amp;</span>
-            </dt>
-            <dd>Provides access to the main application window.</dd>
+            <dd>Clears references to assets that are no longer in use.</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a62a4a56e8d1af87a788fd7fdd989b7c9"><div>
+          <section class="m-doc-details" id="ab52ebd34022d4510510e749e3bff484b"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">static void engine::<wbr />Engine::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a62a4a56e8d1af87a788fd7fdd989b7c9" class="m-doc-self">Init</a>(</span><span class="m-doc-wrap">const <a href="structengine_1_1EngineConfig.html" class="m-doc">EngineConfig</a>&amp; config)</span></span>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">static std::shared_ptr&lt;T&gt; engine::<wbr />util::<wbr />AssetManager&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab52ebd34022d4510510e749e3bff484b" class="m-doc-self">Get</a>(</span><span class="m-doc-wrap">const std::string&amp; path)</span></span>
             </h3>
-            <p>Initializes the engine, including the window, graphics context, and other core systems.</p>
+            <p>Retrieves a reference-counted asset.</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">config</td>
-                  <td>The <code><a href="structengine_1_1EngineConfig.html" class="m-doc">EngineConfig</a></code> struct containing initialization settings.</td>
+                  <td style="width: 1%">path</td>
+                  <td>The path to the asset.</td>
                 </tr>
               </tbody>
-            </table>
-<p>This must be called before any other engine functions.</p>
-          </div></section>
-          <section class="m-doc-details" id="aface66e6a2ac92ae43df2fba37121e2a"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">static <a href="classengine_1_1Window.html" class="m-doc">Window</a>&amp; engine::<wbr />Engine::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aface66e6a2ac92ae43df2fba37121e2a" class="m-doc-self">window</a>(</span><span class="m-doc-wrap">)</span></span>
-            </h3>
-            <p>Provides access to the main application window.</p>
-            <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
-                  <th style="width: 1%">Returns</th>
-                  <td>Reference to the main <a href="classengine_1_1Window.html" class="m-doc">Window</a>.</td>
+                  <th>Returns</th>
+                  <td>A shared pointer to the asset, or nullptr if loading fails.</td>
                 </tr>
               </tfoot>
             </table>
+<p>If the asset is already in the cache and still alive, it returns it. Otherwise, it calls T::Load(path) to create it.</p>
           </div></section>
         </section>
       </div>

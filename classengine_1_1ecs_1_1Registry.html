@@ -61,36 +61,36 @@
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#ad88d00ce713e5795d9847dfd22659392" class="m-doc">CreateEntity</a>(</span><span class="m-doc-wrap">) -&gt; EntityID</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad88d00ce713e5795d9847dfd22659392" class="m-doc">CreateEntity</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a></span>
             </dt>
             <dd>Creates an entity in the registry.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a91b588debd42945d37651d14552d7265" class="m-doc">DeleteEntity</a>(</span><span class="m-doc-wrap">EntityID entity)</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a91b588debd42945d37651d14552d7265" class="m-doc">DeleteEntity</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity) -&gt; <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">void</a></span>
             </dt>
             <dd>Deletes the entity and associated data.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a6297685885e072904a7bc5e1764889d0" class="m-doc">IsAlive</a>(</span><span class="m-doc-wrap">EntityID entity) const -&gt; bool</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a6297685885e072904a7bc5e1764889d0" class="m-doc">IsAlive</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity) const -&gt; <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">bool</a></span>
             </dt>
             <dd>Indicates if an entity is alive.</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a8fe72fc3a7cfbdb05952877afa7d1586" class="m-doc">AddComponent</a>(</span><span class="m-doc-wrap">EntityID entity,
-              T component)</span>
+              <div class="m-doc-template">template&lt;<a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">typename</a> <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8fe72fc3a7cfbdb05952877afa7d1586" class="m-doc">AddComponent</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity,
+              <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a> component) -&gt; <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">void</a></span>
             </dt>
             <dd>Adds a component to the given entity.</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a0d3e12b61d48c15a02aee86a8c64913c" class="m-doc">RemoveComponent</a>(</span><span class="m-doc-wrap">EntityID entity)</span>
+              <div class="m-doc-template">template&lt;<a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">typename</a> <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a0d3e12b61d48c15a02aee86a8c64913c" class="m-doc">RemoveComponent</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity) -&gt; <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">void</a></span>
             </dt>
             <dd>Removes a component from the given entity.</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a020fa2769a2292958165fa852a5bf28e" class="m-doc">GetComponent</a>(</span><span class="m-doc-wrap">EntityID entity) -&gt; T&amp;</span>
+              <div class="m-doc-template">template&lt;<a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">typename</a> <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a020fa2769a2292958165fa852a5bf28e" class="m-doc">GetComponent</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity) -&gt; <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&amp;</span>
             </dt>
             <dd>Retrieves the component for the entity.</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a68bb155b6f8e69566ab6fdc2242d3ab4" class="m-doc">HasComponent</a>(</span><span class="m-doc-wrap">EntityID entity) -&gt; bool</span>
+              <div class="m-doc-template">template&lt;<a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">typename</a> <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a68bb155b6f8e69566ab6fdc2242d3ab4" class="m-doc">HasComponent</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity) -&gt; <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">bool</a></span>
             </dt>
             <dd>Returns <code>true</code> if the component exists on the entity.</dd>
           </dl>
@@ -99,7 +99,7 @@
           <h2>Function documentation</h2>
           <section class="m-doc-details" id="ad88d00ce713e5795d9847dfd22659392"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">EntityID engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad88d00ce713e5795d9847dfd22659392" class="m-doc-self">CreateEntity</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad88d00ce713e5795d9847dfd22659392" class="m-doc-self">CreateEntity</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>Creates an entity in the registry.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -113,7 +113,7 @@
           </div></section>
           <section class="m-doc-details" id="a91b588debd42945d37651d14552d7265"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a91b588debd42945d37651d14552d7265" class="m-doc-self">DeleteEntity</a>(</span><span class="m-doc-wrap">EntityID entity)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">void</a> engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a91b588debd42945d37651d14552d7265" class="m-doc-self">DeleteEntity</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity)</span></span>
             </h3>
             <p>Deletes the entity and associated data.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -130,7 +130,7 @@
           </div></section>
           <section class="m-doc-details" id="a6297685885e072904a7bc5e1764889d0"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">bool engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6297685885e072904a7bc5e1764889d0" class="m-doc-self">IsAlive</a>(</span><span class="m-doc-wrap">EntityID entity) const</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">bool</a> engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6297685885e072904a7bc5e1764889d0" class="m-doc-self">IsAlive</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity) const</span></span>
             </h3>
             <p>Indicates if an entity is alive.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -154,10 +154,10 @@
           <section class="m-doc-details" id="a8fe72fc3a7cfbdb05952877afa7d1586"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T&gt;
+                template&lt;<a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">typename</a> <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8fe72fc3a7cfbdb05952877afa7d1586" class="m-doc-self">AddComponent</a>(</span><span class="m-doc-wrap">EntityID entity,
-              T component)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">void</a> engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8fe72fc3a7cfbdb05952877afa7d1586" class="m-doc-self">AddComponent</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity,
+              <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a> component)</span></span>
             </h3>
             <p>Adds a component to the given entity.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -179,9 +179,9 @@
           <section class="m-doc-details" id="a0d3e12b61d48c15a02aee86a8c64913c"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T&gt;
+                template&lt;<a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">typename</a> <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0d3e12b61d48c15a02aee86a8c64913c" class="m-doc-self">RemoveComponent</a>(</span><span class="m-doc-wrap">EntityID entity)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">void</a> engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0d3e12b61d48c15a02aee86a8c64913c" class="m-doc-self">RemoveComponent</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity)</span></span>
             </h3>
             <p>Removes a component from the given entity.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -199,9 +199,9 @@
           <section class="m-doc-details" id="a020fa2769a2292958165fa852a5bf28e"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T&gt;
+                template&lt;<a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">typename</a> <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper">T&amp; engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a020fa2769a2292958165fa852a5bf28e" class="m-doc-self">GetComponent</a>(</span><span class="m-doc-wrap">EntityID entity)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&amp; engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a020fa2769a2292958165fa852a5bf28e" class="m-doc-self">GetComponent</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity)</span></span>
             </h3>
             <p>Retrieves the component for the entity.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -225,9 +225,9 @@
           <section class="m-doc-details" id="a68bb155b6f8e69566ab6fdc2242d3ab4"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T&gt;
+                template&lt;<a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">typename</a> <a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">T</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper">bool engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a68bb155b6f8e69566ab6fdc2242d3ab4" class="m-doc-self">HasComponent</a>(</span><span class="m-doc-wrap">EntityID entity)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a3d30fe7839fa38a5e2ca1b7d5c706c9f" class="m-doc">bool</a> engine::<wbr />ecs::<wbr />Registry::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a68bb155b6f8e69566ab6fdc2242d3ab4" class="m-doc-self">HasComponent</a>(</span><span class="m-doc-wrap"><a href="namespaceengine_1_1ecs.html#a3957bf4618cdcad1e70860ae45490698" class="m-doc">EntityID</a> entity)</span></span>
             </h3>
             <p>Returns <code>true</code> if the component exists on the entity.</p>
             <table class="m-table m-fullwidth m-flat">

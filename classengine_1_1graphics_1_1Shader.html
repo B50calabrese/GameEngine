@@ -64,10 +64,14 @@
           <h2><a href="#pub-static-methods">Public static functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">static auto <a href="#ac87a17b7eedc016fdf49432ca456655c" class="m-doc">CreateFromSource</a>(</span><span class="m-doc-wrap">const std::string&amp; vertex_source,
-              const std::string&amp; fragment_source) -&gt; std::unique_ptr&lt;<a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a>&gt;</span>
+              <span class="m-doc-wrap-bumper">static auto <a href="#a8cc755521a06fda10e7d8f869a78982b" class="m-doc">CreateFromSource</a>(</span><span class="m-doc-wrap">const std::string&amp; vertex_source,
+              const std::string&amp; fragment_source) -&gt; std::shared_ptr&lt;<a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a>&gt;</span>
             </dt>
             <dd>Loads vertex and fragment shader source code, compiles them, and links them into a single shader program.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">static auto <a href="#a42575d13534f4a0da27e99643f2e34bd" class="m-doc">Load</a>(</span><span class="m-doc-wrap">const std::string&amp; path) -&gt; std::shared_ptr&lt;<a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a>&gt;</span>
+            </dt>
+            <dd>Placeholder Load method to satisfy the AssetManager requirement.</dd>
           </dl>
         </section>
         <section id="typeless-methods">
@@ -118,9 +122,9 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="ac87a17b7eedc016fdf49432ca456655c"><div>
+          <section class="m-doc-details" id="a8cc755521a06fda10e7d8f869a78982b"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">static std::unique_ptr&lt;<a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a>&gt; engine::<wbr />graphics::<wbr />Shader::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac87a17b7eedc016fdf49432ca456655c" class="m-doc-self">CreateFromSource</a>(</span><span class="m-doc-wrap">const std::string&amp; vertex_source,
+              <span class="m-doc-wrap-bumper">static std::shared_ptr&lt;<a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a>&gt; engine::<wbr />graphics::<wbr />Shader::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8cc755521a06fda10e7d8f869a78982b" class="m-doc-self">CreateFromSource</a>(</span><span class="m-doc-wrap">const std::string&amp; vertex_source,
               const std::string&amp; fragment_source)</span></span>
             </h3>
             <p>Loads vertex and fragment shader source code, compiles them, and links them into a single shader program.</p>
@@ -141,10 +145,34 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td>A unique pointer to the newly created <code><a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a></code> object, or nullptr.</td>
+                  <td>A shared pointer to the newly created <code><a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a></code> object, or nullptr.</td>
                 </tr>
               </tfoot>
             </table>
+          </div></section>
+          <section class="m-doc-details" id="a42575d13534f4a0da27e99643f2e34bd"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">static std::shared_ptr&lt;<a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a>&gt; engine::<wbr />graphics::<wbr />Shader::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a42575d13534f4a0da27e99643f2e34bd" class="m-doc-self">Load</a>(</span><span class="m-doc-wrap">const std::string&amp; path)</span></span>
+            </h3>
+            <p>Placeholder Load method to satisfy the AssetManager requirement.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">path</td>
+                  <td>The path to the shader (not currently used for loading from disk).</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>A shared pointer to the <a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a>, or nullptr.</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>Shaders are typically created from source in this engine.</p>
           </div></section>
           <section class="m-doc-details" id="a3df366d3793481119a158c90a2152a8b"><div>
             <h3>

@@ -83,7 +83,12 @@
               const std::string&amp; path,
               unsigned int font_size)</span>
             </dt>
-            <dd>Loads a given font from a file.</dd>
+            <dd>Caches a font by name.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#acf73f7aba9c44f273a50aea42159f295" class="m-doc">AddFont</a>(</span><span class="m-doc-wrap">const std::string&amp; name,
+              std::shared_ptr&lt;<a href="classengine_1_1graphics_1_1Font.html" class="m-doc">Font</a>&gt; font)</span>
+            </dt>
+            <dd>Caches an already loaded font resource.</dd>
             <dt id="ab95843d7654ce45e1be2369b7755a979">
               <span class="m-doc-wrap-bumper">void <a href="#ab95843d7654ce45e1be2369b7755a979" class="m-doc-self">DrawText</a>(</span><span class="m-doc-wrap">const std::string&amp; font_name,
               const std::string&amp; text,
@@ -117,7 +122,7 @@
               const std::string&amp; path,
               unsigned int font_size)</span></span>
             </h3>
-            <p>Loads a given font from a file.</p>
+            <p>Caches a font by name.</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -125,15 +130,37 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">name</td>
-                  <td>The name of the font when referenced.</td>
+                  <td>The name to associate with the font.</td>
                 </tr>
                 <tr>
                   <td>path</td>
-                  <td>The location of the file path with the font file.</td>
+                  <td>The file path of the font.</td>
                 </tr>
                 <tr>
                   <td>font_size</td>
-                  <td>The size of the font.</td>
+                  <td>The pixel size to load.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="acf73f7aba9c44f273a50aea42159f295"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void engine::<wbr />graphics::<wbr />TextRenderer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acf73f7aba9c44f273a50aea42159f295" class="m-doc-self">AddFont</a>(</span><span class="m-doc-wrap">const std::string&amp; name,
+              std::shared_ptr&lt;<a href="classengine_1_1graphics_1_1Font.html" class="m-doc">Font</a>&gt; font)</span></span>
+            </h3>
+            <p>Caches an already loaded font resource.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">name</td>
+                  <td>The name to associate with the font.</td>
+                </tr>
+                <tr>
+                  <td>font</td>
+                  <td>The <a href="classengine_1_1graphics_1_1Font.html" class="m-doc">Font</a> resource.</td>
                 </tr>
               </tbody>
             </table>

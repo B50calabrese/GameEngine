@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>engine::Engine class | Game Engine</title>
+  <title>engine::graphics::Vertex2D struct | Game Engine</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon-dark.png" type="image/png" />
@@ -43,71 +43,41 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="namespaceengine.html">engine</a>::<wbr/></span>Engine <span class="m-thin">class</span>
+          <span class="m-breadcrumb"><a href="namespaceengine.html">engine</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespaceengine_1_1graphics.html">graphics</a>::<wbr/></span>Vertex2D <span class="m-thin">struct</span>
         </h1>
-        <p>The static <code><a href="classengine_1_1Engine.html" class="m-doc">Engine</a></code> class provides the core functionality of the game engine, including initialization, shutdown, and access to engine-managed systems.</p>
+        <p>This layout must perfectly match the layout defined in the <a href="classengine_1_1graphics_1_1PrimitiveRenderer.html" class="m-doc">PrimitiveRenderer</a>&#x27;s shader.</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#pub-static-methods">Public static functions</a></li>
+                <li><a href="#pub-attribs">Public variables</a></li>
               </ul>
             </li>
           </ul>
         </nav>
-        <section id="pub-static-methods">
-          <h2><a href="#pub-static-methods">Public static functions</a></h2>
+<p>Location 0: Position (vec2) Location 1: Color (vec4) Location 2: TexCoord (vec2) Location 3: TexIndex (float)</p>
+        <section id="pub-attribs">
+          <h2><a href="#pub-attribs">Public variables</a></h2>
           <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">static void <a href="#a62a4a56e8d1af87a788fd7fdd989b7c9" class="m-doc">Init</a>(</span><span class="m-doc-wrap">const <a href="structengine_1_1EngineConfig.html" class="m-doc">EngineConfig</a>&amp; config)</span>
+            <dt id="a39ebf38e8b355d21fb79adab3dadcc15">
+              float <a href="#a39ebf38e8b355d21fb79adab3dadcc15" class="m-doc-self">position</a>
             </dt>
-            <dd>Initializes the engine, including the window, graphics context, and other core systems.</dd>
-            <dt id="a7551eb7055ff963a8f8408a8411d84a2">
-              <span class="m-doc-wrap-bumper">static void <a href="#a7551eb7055ff963a8f8408a8411d84a2" class="m-doc-self">Shutdown</a>(</span><span class="m-doc-wrap">)</span>
+            <dd>[x, y] coordinates.</dd>
+            <dt id="a0a86bb8298241aa04f13346f81e78193">
+              float <a href="#a0a86bb8298241aa04f13346f81e78193" class="m-doc-self">color</a>
             </dt>
-            <dd>Gracefully shuts down the engine and releases all resources.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">static auto <a href="#aface66e6a2ac92ae43df2fba37121e2a" class="m-doc">window</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classengine_1_1Window.html" class="m-doc">Window</a>&amp;</span>
+            <dd>[r, g, b, a] color.</dd>
+            <dt id="a9eb82ed55c1ae83709943ff059105d2d">
+              float <a href="#a9eb82ed55c1ae83709943ff059105d2d" class="m-doc-self">tex_coords</a>
             </dt>
-            <dd>Provides access to the main application window.</dd>
+            <dd>[u, v] texture coordinates.</dd>
+            <dt id="a2933a0e218deff0fe188527424faa4e7">
+              float <a href="#a2933a0e218deff0fe188527424faa4e7" class="m-doc-self">tex_index</a>
+            </dt>
+            <dd>Index into the texture slots array.</dd>
           </dl>
-        </section>
-        <section>
-          <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a62a4a56e8d1af87a788fd7fdd989b7c9"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">static void engine::<wbr />Engine::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a62a4a56e8d1af87a788fd7fdd989b7c9" class="m-doc-self">Init</a>(</span><span class="m-doc-wrap">const <a href="structengine_1_1EngineConfig.html" class="m-doc">EngineConfig</a>&amp; config)</span></span>
-            </h3>
-            <p>Initializes the engine, including the window, graphics context, and other core systems.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">config</td>
-                  <td>The <code><a href="structengine_1_1EngineConfig.html" class="m-doc">EngineConfig</a></code> struct containing initialization settings.</td>
-                </tr>
-              </tbody>
-            </table>
-<p>This must be called before any other engine functions.</p>
-          </div></section>
-          <section class="m-doc-details" id="aface66e6a2ac92ae43df2fba37121e2a"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">static <a href="classengine_1_1Window.html" class="m-doc">Window</a>&amp; engine::<wbr />Engine::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aface66e6a2ac92ae43df2fba37121e2a" class="m-doc-self">window</a>(</span><span class="m-doc-wrap">)</span></span>
-            </h3>
-            <p>Provides access to the main application window.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <tfoot>
-                <tr>
-                  <th style="width: 1%">Returns</th>
-                  <td>Reference to the main <a href="classengine_1_1Window.html" class="m-doc">Window</a>.</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div></section>
         </section>
       </div>
     </div>
