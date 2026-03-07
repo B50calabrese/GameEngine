@@ -1,24 +1,14 @@
 #ifndef INCLUDE_GRAPHICS_TEXT_RENDERER_H_
 #define INCLUDE_GRAPHICS_TEXT_RENDERER_H_
 
-#include <ft2build.h>
-
 #include <glm/glm.hpp>
 #include <map>
+#include <memory>
 #include <string>
-#include FT_FREETYPE_H
+
+#include "graphics/font.h"
 
 namespace engine::graphics {
-
-/**
- * @brief Represents a single character in a font file.
- */
-struct Character {
-  unsigned int texture_id;
-  glm::ivec2 size;
-  glm::ivec2 bearing;
-  unsigned int advance;
-};
 
 /**
  * @brief Renders text using font files.
@@ -49,16 +39,22 @@ class TextRenderer {
   void Shutdown();
 
   /**
-   * @brief Loads a given font from a file.
+   * @brief Caches a font by name.
    *
-   * @param name The name
-   * of the font when referenced.
-   * @param path The location of the file path
-   * with the font file.
-   * @param font_size The size of the font.
+   * @param name The name to associate with the font.
+   * @param path The file path of the font.
+   * @param font_size The pixel size to load.
    */
   void LoadFont(const std::string& name, const std::string& path,
                 unsigned int font_size);
+
+  /**
+   * @brief Caches an already loaded font resource.
+   *
+   * @param name The name to associate with the font.
+   * @param font The Font resource.
+   */
+  void AddFont(const std::string& name, std::shared_ptr<Font> font);
 
   /**
    * @brief Renders text with full transformation support.
@@ -68,10 +64,9 @@ class TextRenderer {
                 const glm::vec4& color);
 
  private:
-  TextRenderer() : ft_library_(nullptr) {}
+  TextRenderer() = default;
 
-  FT_Library ft_library_;
-  std::map<std::string, std::map<char, Character>> fonts_;
+  std::map<std::string, std::shared_ptr<Font>> fonts_;
 };
 
 }  // namespace engine::graphics

@@ -85,7 +85,7 @@ class PrimitiveRenderer {
   static unsigned int vao_, vbo_, ebo_;
 
   // Default Shader used for rendering
-  static std::unique_ptr<Shader> default_shader_;
+  static std::shared_ptr<Shader> default_shader_;
 
   // Batch of vertices to draw.
   static std::vector<Vertex2D> vertex_batch_;

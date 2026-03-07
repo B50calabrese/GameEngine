@@ -29,6 +29,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/ecs/entity_manager.cpp"
     "${ENGINE_ROOT}/src/graphics/buffer_utils.cpp"
     "${ENGINE_ROOT}/src/graphics/camera.cpp"
+    "${ENGINE_ROOT}/src/graphics/font.cpp"
     "${ENGINE_ROOT}/src/graphics/primitive_renderer.cpp"
     "${ENGINE_ROOT}/src/graphics/renderer.cpp"
     "${ENGINE_ROOT}/src/graphics/shader.cpp"

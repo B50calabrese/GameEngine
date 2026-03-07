@@ -6,7 +6,7 @@
 class RendererApp : public engine::Application {
  public:
   void OnInit() override {
-    texture_ = engine::graphics::Texture::Create("card_back.png");
+    texture_ = engine::graphics::Texture::Load("card_back.png");
   }
 
   void OnShutdown() override {}
@@ -20,7 +20,7 @@ class RendererApp : public engine::Application {
   }
 
  private:
-  std::unique_ptr<engine::graphics::Texture> texture_;
+  std::shared_ptr<engine::graphics::Texture> texture_;
 };
 
 /**

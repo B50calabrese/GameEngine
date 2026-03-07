@@ -12,7 +12,7 @@
 
 namespace engine::graphics {
 
-std::unique_ptr<Shader> Shader::CreateFromSource(
+std::shared_ptr<Shader> Shader::CreateFromSource(
     const std::string& vertex_source, const std::string& fragment_source) {
   // 1. Create and compile Vertex Shader
   GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -65,7 +65,7 @@ std::unique_ptr<Shader> Shader::CreateFromSource(
   glDeleteShader(vertex_shader);
   glDeleteShader(fragment_shader);
 
-  return std::unique_ptr<Shader>(new Shader(program));
+  return std::shared_ptr<Shader>(new Shader(program));
 }
 
 Shader::~Shader() { glDeleteProgram(shader_id_); }

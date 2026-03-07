@@ -22,7 +22,7 @@ namespace engine::graphics {
 unsigned int PrimitiveRenderer::vao_ = 0;
 unsigned int PrimitiveRenderer::vbo_ = 0;
 unsigned int PrimitiveRenderer::ebo_ = 0;
-std::unique_ptr<Shader> PrimitiveRenderer::default_shader_ = nullptr;
+std::shared_ptr<Shader> PrimitiveRenderer::default_shader_ = nullptr;
 std::vector<Vertex2D> PrimitiveRenderer::vertex_batch_;
 std::array<unsigned int, 32> PrimitiveRenderer::texture_slots_;
 uint32_t PrimitiveRenderer::texture_slot_index_ =
@@ -150,8 +150,7 @@ void PrimitiveRenderer::Init() {
   texture_slots_[0] = whiteTex;
 
   // Compile Built-in Shaders
-  default_shader_ = std::unique_ptr<Shader>(
-      Shader::CreateFromSource(kVertexSource, kFragmentSource));
+  default_shader_ = Shader::CreateFromSource(kVertexSource, kFragmentSource);
 
   if (default_shader_) {
     default_shader_->Bind();
