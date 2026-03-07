@@ -1,3 +1,8 @@
+/**
+ * @file input_manager.h
+ * @brief Handles keyboard and mouse input.
+ */
+
 #ifndef INCLUDE_INPUT_MANAGER_H_
 #define INCLUDE_INPUT_MANAGER_H_
 

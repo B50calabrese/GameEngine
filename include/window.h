@@ -1,3 +1,8 @@
+/**
+ * @file window.h
+ * @brief Manages the application window and OpenGL context.
+ */
+
 #ifndef INCLUDE_WINDOW_H_
 #define INCLUDE_WINDOW_H_
 

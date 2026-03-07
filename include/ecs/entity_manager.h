@@ -1,3 +1,8 @@
+/**
+ * @file entity_manager.h
+ * @brief Manages entity lifecycle and IDs.
+ */
+
 #ifndef INCLUDE_ECS_ENTITY_MANAGER_H_
 #define INCLUDE_ECS_ENTITY_MANAGER_H_
 

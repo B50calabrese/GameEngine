@@ -1,3 +1,8 @@
+/**
+ * @file shader.h
+ * @brief GLSL shader program management.
+ */
+
 #ifndef INCLUDE_GRAPHICS_SHADER_H_
 #define INCLUDE_GRAPHICS_SHADER_H_
 

@@ -1,3 +1,8 @@
+/**
+ * @file registry.h
+ * @brief Main coordinator for ECS entities and components.
+ */
+
 #ifndef INCLUDE_ECS_REGISTRY_H_
 #define INCLUDE_ECS_REGISTRY_H_
 
@@ -8,6 +13,10 @@
 #include "ecs/component_storage.h"
 #include "ecs/entity_manager.h"
 
+/**
+ * @namespace engine::ecs
+ * @brief Entity Component System implementation.
+ */
 namespace engine::ecs {
 
 /**

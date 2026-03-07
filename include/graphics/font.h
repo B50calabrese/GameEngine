@@ -1,3 +1,8 @@
+/**
+ * @file font.h
+ * @brief Font resource for text rendering.
+ */
+
 #ifndef INCLUDE_GRAPHICS_FONT_H_
 #define INCLUDE_GRAPHICS_FONT_H_
 
