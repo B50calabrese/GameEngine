@@ -32,6 +32,14 @@ void Window::PollEvents() {
 
 double Window::delta_time() const { return glfwGetTime() - last_frame_time_; }
 
+bool Window::IsRunning() const { return !glfwWindowShouldClose(internal_window_); }
+
+bool Window::ShouldClose() const {
+  return glfwWindowShouldClose(internal_window_);
+}
+
+void Window::SwapBuffers() const { glfwSwapBuffers(internal_window_); }
+
 // Private functions
 
 void Window::SetupCallbacks() {
@@ -55,7 +63,5 @@ void Window::SetupCallbacks() {
         InputManager::Get().HandleCursorPosition(xpos, ypos);
       });
 }
-
-void Window::SwapBuffers() const { glfwSwapBuffers(internal_window_); }
 
 }  // namespace engine

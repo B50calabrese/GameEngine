@@ -36,7 +36,18 @@ class Window {
    * @brief Checks if the window should remain open.
    * @return `true` if the window should stay open, `false` otherwise.
    */
-  bool IsRunning() const { return true; }
+  bool IsRunning() const;
+
+  /**
+   * @brief Checks if the window should close.
+   * @return `true` if the window should close, `false` otherwise.
+   */
+  bool ShouldClose() const;
+
+  /**
+   * @brief Swaps the front and back buffers.
+   */
+  void SwapBuffers() const;
 
   /**
    * @brief Processes all pending events, such as keyboard and mouse input.
@@ -74,11 +85,6 @@ class Window {
    * @brief Sets up GLFW callbacks for input events.
    */
   void SetupCallbacks();
-
-  /**
-   * @brief Swaps the front and back buffers.
-   */
-  void SwapBuffers() const;
 
   // Prevent copy/move to enforce a single instance handled by Engine
   Window(const Window&) = delete;
