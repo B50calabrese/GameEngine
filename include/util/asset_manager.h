@@ -1,5 +1,5 @@
-#ifndef INCLUDE_UTIL_ASSET_AUTHORITY_H_
-#define INCLUDE_UTIL_ASSET_AUTHORITY_H_
+#ifndef INCLUDE_UTIL_ASSET_MANAGER_H_
+#define INCLUDE_UTIL_ASSET_MANAGER_H_
 
 #include <memory>
 #include <string>
@@ -15,7 +15,7 @@ namespace engine::util {
  * assets when they are no longer in use.
  */
 template <typename T>
-class AssetAuthority {
+class AssetManager {
  public:
   /**
    * @brief Retrieves a reference-counted asset.
@@ -68,4 +68,4 @@ class AssetAuthority {
 
 }  // namespace engine::util
 
-#endif  // INCLUDE_UTIL_ASSET_AUTHORITY_H_
+#endif  // INCLUDE_UTIL_ASSET_MANAGER_H_

@@ -30,7 +30,7 @@ class Shader {
       const std::string& vertex_source, const std::string& fragment_source);
 
   /**
-   * @brief Placeholder Load method to satisfy the AssetAuthority requirement.
+   * @brief Placeholder Load method to satisfy the AssetManager requirement.
    *
    * Shaders are typically created from source in this engine.
    *

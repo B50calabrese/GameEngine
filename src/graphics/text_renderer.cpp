@@ -7,7 +7,7 @@
 
 #include "graphics/renderer.h"
 #include "primitive_renderer.h"
-#include "util/asset_authority.h"
+#include "util/asset_manager.h"
 
 namespace engine::graphics {
 
@@ -18,7 +18,7 @@ void TextRenderer::Shutdown() { fonts_.clear(); }
 void TextRenderer::LoadFont(const std::string& name, const std::string& path,
                             unsigned int font_size) {
   std::string full_path = path + ":" + std::to_string(font_size);
-  std::shared_ptr<Font> font = util::AssetAuthority<Font>::Get(full_path);
+  std::shared_ptr<Font> font = util::AssetManager<Font>::Get(full_path);
   if (font) {
     fonts_[name] = font;
   }
