@@ -5,6 +5,10 @@
 /cmake_install.cmake
 /Makefile
 /*.ninja
+
+# Documentation
+/html/
+/xml/
 /*.rules
 
 # Visual Studio specific
@@ -31,6 +35,7 @@ Thumbs.db
 *.swo
 
 # Temporary files
+__pycache__/
 *.tmp
 *.temp
 *.bak
