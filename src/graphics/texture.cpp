@@ -15,7 +15,7 @@
 
 namespace engine::graphics {
 
-std::unique_ptr<Texture> Texture::Create(const std::string& path) {
+std::shared_ptr<Texture> Texture::Load(const std::string& path) {
   std::string full_path = Renderer::Get().ResolveAssetPath(path);
   int width, height, channels;
 
@@ -51,7 +51,7 @@ std::unique_ptr<Texture> Texture::Create(const std::string& path) {
 
   stbi_image_free(data);
 
-  return std::unique_ptr<Texture>(new Texture(id, width, height, path));
+  return std::shared_ptr<Texture>(new Texture(id, width, height, path));
 }
 
 Texture::~Texture() { glDeleteTextures(1, &renderer_id_); }

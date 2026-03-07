@@ -16,9 +16,9 @@ class Texture {
   /**
    * @brief Loads an image from disk and uploads it to the GPU.
    * @param path File path to the image (PNG, JPG, etc.)
-   * @return A unique pointer to the Texture object, or nullptr if loading fails.
+   * @return A shared pointer to the Texture object, or nullptr if loading fails.
    */
-  static std::unique_ptr<Texture> Create(const std::string& path);
+  static std::shared_ptr<Texture> Load(const std::string& path);
 
   /** @brief Destructor deletes the OpenGL texture. */
   ~Texture();

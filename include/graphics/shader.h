@@ -24,10 +24,23 @@ class Shader {
    *
    * @param vertex_source A string containing the vertex shader source code.
    * @param fragment_source A string containing the fragment shader source code.
-   * @return A unique pointer to the newly created `Shader` object, or nullptr.
+   * @return A shared pointer to the newly created `Shader` object, or nullptr.
    */
-  static std::unique_ptr<Shader> CreateFromSource(
+  static std::shared_ptr<Shader> CreateFromSource(
       const std::string& vertex_source, const std::string& fragment_source);
+
+  /**
+   * @brief Placeholder Load method to satisfy the AssetAuthority requirement.
+   *
+   * Shaders are typically created from source in this engine.
+   *
+   * @param path The path to the shader (not currently used for loading from
+   * disk).
+   * @return A shared pointer to the Shader, or nullptr.
+   */
+  static std::shared_ptr<Shader> Load(const std::string& path) {
+    return nullptr;
+  }
 
   /** @brief Deletes the shader program from the GPU. */
   ~Shader();
