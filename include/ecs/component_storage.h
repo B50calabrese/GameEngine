@@ -1,3 +1,8 @@
+/**
+ * @file component_storage.h
+ * @brief Internal storage for ECS components.
+ */
+
 #ifndef INCLUDE_ECS_COMPONENT_STORAGE_H
 #define INCLUDE_ECS_COMPONENT_STORAGE_H
 

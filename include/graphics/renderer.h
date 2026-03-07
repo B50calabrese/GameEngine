@@ -1,3 +1,8 @@
+/**
+ * @file renderer.h
+ * @brief Core rendering API.
+ */
+
 #ifndef INCLUDE_GRAPHICS_RENDERER_H_
 #define INCLUDE_GRAPHICS_RENDERER_H_
 
@@ -12,6 +17,10 @@ namespace engine {
 class Engine;
 }  // namespace engine
 
+/**
+ * @namespace engine::graphics
+ * @brief Graphics and rendering systems.
+ */
 namespace engine::graphics {
 
 class Texture;

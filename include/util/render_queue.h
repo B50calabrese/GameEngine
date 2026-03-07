@@ -1,3 +1,8 @@
+/**
+ * @file render_queue.h
+ * @brief Sorting and batching of render commands.
+ */
+
 #ifndef INCLUDE_UTIL_RENDER_QUEUE_H_
 #define INCLUDE_UTIL_RENDER_QUEUE_H_
 

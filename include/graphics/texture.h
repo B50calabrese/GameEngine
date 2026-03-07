@@ -1,3 +1,8 @@
+/**
+ * @file texture.h
+ * @brief Texture resource management.
+ */
+
 #ifndef INCLUDE_GRAPHICS_TEXTURE_H_
 #define INCLUDE_GRAPHICS_TEXTURE_H_
 

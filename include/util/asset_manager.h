@@ -1,3 +1,8 @@
+/**
+ * @file asset_manager.h
+ * @brief Template-based asset caching and management.
+ */
+
 #ifndef INCLUDE_UTIL_ASSET_MANAGER_H_
 #define INCLUDE_UTIL_ASSET_MANAGER_H_
 
@@ -5,6 +10,10 @@
 #include <string>
 #include <unordered_map>
 
+/**
+ * @namespace engine::util
+ * @brief General purpose utility classes.
+ */
 namespace engine::util {
 
 /**

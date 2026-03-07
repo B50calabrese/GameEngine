@@ -1,3 +1,8 @@
+/**
+ * @file application.h
+ * @brief Defines the base Application class for the engine.
+ */
+
 #ifndef INCLUDE_APPLICATION_H_
 #define INCLUDE_APPLICATION_H_
 

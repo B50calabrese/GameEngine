@@ -1,3 +1,8 @@
+/**
+ * @file scene_manager.h
+ * @brief Manages scene transitions and the scene stack.
+ */
+
 #ifndef INCLUDE_SCENE_MANAGER_H_
 #define INCLUDE_SCENE_MANAGER_H_
 

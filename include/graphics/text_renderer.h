@@ -1,3 +1,8 @@
+/**
+ * @file text_renderer.h
+ * @brief Specialized renderer for text.
+ */
+
 #ifndef INCLUDE_GRAPHICS_TEXT_RENDERER_H_
 #define INCLUDE_GRAPHICS_TEXT_RENDERER_H_
 

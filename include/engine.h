@@ -1,3 +1,28 @@
+/**
+ * @file engine.h
+ * @brief Main engine entry point and configuration.
+ */
+
+/**
+ * @dir include
+ * @brief Public engine headers.
+ */
+
+/**
+ * @dir include/ecs
+ * @brief Entity Component System.
+ */
+
+/**
+ * @dir include/graphics
+ * @brief Rendering and graphics utilities.
+ */
+
+/**
+ * @dir include/util
+ * @brief General purpose utilities.
+ */
+
 #ifndef INCLUDE_ENGINE_H_
 #define INCLUDE_ENGINE_H_
 
@@ -6,6 +31,10 @@
 
 #include "window.h"
 
+/**
+ * @namespace engine
+ * @brief The core namespace for the Game Engine.
+ */
 namespace engine {
 
 /**

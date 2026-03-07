@@ -1,3 +1,8 @@
+/**
+ * @file scene.h
+ * @brief Defines the base Scene class.
+ */
+
 #ifndef INCLUDE_SCENE_H_
 #define INCLUDE_SCENE_H_
 
