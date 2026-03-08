@@ -4,6 +4,7 @@
 #include "graphics/renderer.h"
 #include "input_manager.h"
 #include "scene_manager.h"
+#include "util/render_queue.h"
 #include "window.h"
 
 namespace engine {
@@ -26,6 +27,9 @@ void Application::Run() {
     // Dispatch the new input to the appropriate scenes.
     bool input_handled = SceneManager::Get().DispatchInput();
 
+    // Reset the render queue for the new frame.
+    util::RenderQueue::Default().Clear();
+
     // Pre-rendering calls to prepare the renderer prior to drawing anything.
     graphics::Renderer::Get().Clear();
     graphics::Renderer::Get().BeginFrame(*main_camera_);
@@ -36,6 +40,9 @@ void Application::Run() {
 
     // Run application wide update logic.
     this->OnUpdate(delta_time);
+
+    // Finalize rendering by flushing the command queue.
+    util::RenderQueue::Default().Flush();
 
     // End the frame rendering and flush the renderer
     graphics::Renderer::Get().EndFrame();
