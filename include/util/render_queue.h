@@ -31,6 +31,15 @@ struct RenderCommand {
  */
 class RenderQueue {
  public:
+  /**
+   * @brief Returns the default global RenderQueue instance.
+   * @return Reference to the default RenderQueue.
+   */
+  static RenderQueue& Default() {
+    static RenderQueue instance;
+    return instance;
+  }
+
   /** @brief Adds a command to the queue without executing it immediately. */
   void Submit(const RenderCommand& command) { commands_.push_back(command); }
 
