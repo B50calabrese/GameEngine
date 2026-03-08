@@ -1,3 +1,8 @@
+/**
+ * @file window.cpp
+ * @brief Window class implementation.
+ */
+
 #include "window.h"
 
 // clang-format off

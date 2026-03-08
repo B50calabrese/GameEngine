@@ -1,3 +1,13 @@
+/**
+ * @file entity_manager.cpp
+ * @brief EntityManager class implementation.
+ */
+
+/**
+ * @dir src/ecs
+ * @brief ECS internal logic.
+ */
+
 #include "ecs/entity_manager.h"
 
 #include <algorithm>

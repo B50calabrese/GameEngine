@@ -1,3 +1,8 @@
+/**
+ * @file shader.cpp
+ * @brief Shader class implementation.
+ */
+
 #include "graphics/shader.h"
 
 #include <glad/glad.h>

@@ -11,6 +11,11 @@
 #include <unordered_map>
 
 /**
+ * @dir include/util
+ * @brief General purpose utilities.
+ */
+
+/**
  * @namespace engine::util
  * @brief General purpose utility classes.
  */

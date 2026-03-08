@@ -1,3 +1,13 @@
+/**
+ * @file logger.cpp
+ * @brief Logger class implementation.
+ */
+
+/**
+ * @dir src/util
+ * @brief Internal helper utilities.
+ */
+
 #include "util/logger.h"
 
 #include <cstdio>

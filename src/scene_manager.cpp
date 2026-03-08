@@ -1,3 +1,8 @@
+/**
+ * @file scene_manager.cpp
+ * @brief SceneManager class implementation.
+ */
+
 #include "scene_manager.h"
 
 #include <memory>

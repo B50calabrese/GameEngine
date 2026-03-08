@@ -9,6 +9,10 @@
 #include <cstdint>
 #include <vector>
 
+/**
+ * @namespace engine::ecs
+ * @brief Entity Component System implementation.
+ */
 namespace engine::ecs {
 
 using EntityID = uint32_t;

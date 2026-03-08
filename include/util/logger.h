@@ -1,9 +1,18 @@
+/**
+ * @file logger.h
+ * @brief Engine-wide logging utility.
+ */
+
 #ifndef INCLUDE_UTIL_LOGGER_H_
 #define INCLUDE_UTIL_LOGGER_H_
 
 #include <cstdarg>
 #include <string>
 
+/**
+ * @namespace engine::util
+ * @brief Utility classes and functions.
+ */
 namespace engine::util {
 
 /**

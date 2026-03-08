@@ -13,6 +13,10 @@
 
 #include "graphics/renderer.h"
 
+/**
+ * @namespace engine::util
+ * @brief General purpose utility classes.
+ */
 namespace engine::util {
 
 /** @brief Represents a single drawing command stored in the queue. */

@@ -9,6 +9,10 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
+/**
+ * @namespace engine::graphics
+ * @brief Graphics and rendering systems.
+ */
 namespace engine::graphics {
 
 /**

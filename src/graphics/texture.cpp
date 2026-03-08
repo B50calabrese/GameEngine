@@ -1,3 +1,8 @@
+/**
+ * @file texture.cpp
+ * @brief Texture class implementation.
+ */
+
 #include "graphics/texture.h"
 
 // clang-format off

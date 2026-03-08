@@ -1,3 +1,8 @@
+/**
+ * @file text_renderer.cpp
+ * @brief TextRenderer class implementation.
+ */
+
 #include "graphics/text_renderer.h"
 
 #include <glad/glad.h>

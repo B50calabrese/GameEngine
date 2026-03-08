@@ -14,6 +14,11 @@
 #include "ecs/entity_manager.h"
 
 /**
+ * @dir include/ecs
+ * @brief Entity Component System.
+ */
+
+/**
  * @namespace engine::ecs
  * @brief Entity Component System implementation.
  */

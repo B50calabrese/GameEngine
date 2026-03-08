@@ -1,3 +1,8 @@
+/**
+ * @file renderer.cpp
+ * @brief Renderer class implementation.
+ */
+
 #include "graphics/renderer.h"
 
 // clang-format off

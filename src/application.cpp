@@ -1,3 +1,8 @@
+/**
+ * @file application.cpp
+ * @brief Application class implementation.
+ */
+
 #include "application.h"
 
 #include "graphics/camera.h"

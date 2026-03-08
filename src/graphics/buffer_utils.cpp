@@ -1,3 +1,8 @@
+/**
+ * @file buffer_utils.cpp
+ * @brief BufferUtils implementation.
+ */
+
 #include "buffer_utils.h"
 
 #include <glad/glad.h>

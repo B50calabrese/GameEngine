@@ -12,6 +12,11 @@
 #include "camera.h"
 #include "window.h"
 
+/**
+ * @dir include/graphics
+ * @brief Rendering and graphics utilities.
+ */
+
 namespace engine {
 // Forward declaration to give access to private methods.
 class Engine;

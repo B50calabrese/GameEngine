@@ -8,20 +8,6 @@
  * @brief Public engine headers.
  */
 
-/**
- * @dir include/ecs
- * @brief Entity Component System.
- */
-
-/**
- * @dir include/graphics
- * @brief Rendering and graphics utilities.
- */
-
-/**
- * @dir include/util
- * @brief General purpose utilities.
- */
 
 #ifndef INCLUDE_ENGINE_H_
 #define INCLUDE_ENGINE_H_
