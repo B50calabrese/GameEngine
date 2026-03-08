@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "application.h"
-#include "engine.h"
-#include "graphics/text_renderer.h"
+#include <engine/core/application.h>
+#include <engine/core/engine.h>
+#include <engine/graphics/text_renderer.h>
 
 class MyApp : public engine::Application {
  public:

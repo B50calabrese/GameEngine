@@ -1,13 +1,13 @@
 #include <iostream>
 #include <memory>
 
-#include "application.h"
-#include "ecs/registry.h"
-#include "engine.h"
-#include "graphics/renderer.h"
-#include "input_manager.h"
-#include "scene.h"
-#include "scene_manager.h"
+#include <engine/core/application.h>
+#include <engine/ecs/registry.h>
+#include <engine/core/engine.h>
+#include <engine/graphics/renderer.h>
+#include <engine/input/input_manager.h>
+#include <engine/scene/scene.h>
+#include <engine/scene/scene_manager.h>
 
 constexpr float WIDTH = 800.0f;
 constexpr float HEIGHT = 600.0f;

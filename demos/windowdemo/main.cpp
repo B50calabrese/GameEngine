@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "engine.h"
-#include "input_manager.h"
-#include "window.h"
+#include <engine/core/engine.h>
+#include <engine/input/input_manager.h>
+#include <engine/core/window.h>
 
 /**
  * @brief Simple demo to show off creating a window, accessing the input

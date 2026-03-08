@@ -1,6 +1,6 @@
-#include "application.h"
-#include "engine.h"
-#include "util/render_queue.h"
+#include <engine/core/application.h>
+#include <engine/core/engine.h>
+#include <engine/util/render_queue.h>
 
 /**
  * @brief Demo showing the RenderQueue integrated into the Application lifecycle.
