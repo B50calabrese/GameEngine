@@ -1,6 +1,6 @@
-#include "application.h"
-#include "engine.h"
-#include "util/render_queue.h"
+#include <engine/core/application.h>
+#include <engine/core/engine.h>
+#include <engine/graphics/render_queue.h>
 
 /**
  * @brief Demo showing the RenderQueue integrated into the Application lifecycle.
@@ -12,7 +12,7 @@ class RenderQueueDemo : public engine::Application {
   void OnShutdown() override {}
 
   void OnUpdate(double delta_time_seconds) override {
-    auto& queue = engine::util::RenderQueue::Default();
+    auto& queue = engine::graphics::RenderQueue::Default();
 
     // 1. Submit UI (High Z-order) - SUBMITTED FIRST
     // Even though it's submitted first, it will be rendered last due to Z-order.

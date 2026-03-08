@@ -21,34 +21,28 @@ link_directories("${THIRD_PARTY_LIBS}")
 # ----------
 # We prefix these with ENGINE_ROOT to ensure they are found correctly
 set(SOURCE_FILES
-    "${ENGINE_ROOT}/src/application.cpp"
-    "${ENGINE_ROOT}/src/engine.cpp"
-    "${ENGINE_ROOT}/src/input_manager.cpp"
-    "${ENGINE_ROOT}/src/scene_manager.cpp"
-    "${ENGINE_ROOT}/src/window.cpp"
-    "${ENGINE_ROOT}/src/util/logger.cpp"
-    "${ENGINE_ROOT}/src/ecs/entity_manager.cpp"
-    "${ENGINE_ROOT}/src/graphics/buffer_utils.cpp"
-    "${ENGINE_ROOT}/src/graphics/camera.cpp"
-    "${ENGINE_ROOT}/src/graphics/font.cpp"
-    "${ENGINE_ROOT}/src/graphics/primitive_renderer.cpp"
-    "${ENGINE_ROOT}/src/graphics/renderer.cpp"
-    "${ENGINE_ROOT}/src/graphics/shader.cpp"
-    "${ENGINE_ROOT}/src/graphics/text_renderer.cpp"
-    "${ENGINE_ROOT}/src/graphics/texture.cpp"
+    "${ENGINE_ROOT}/src/engine/core/application.cpp"
+    "${ENGINE_ROOT}/src/engine/core/engine.cpp"
+    "${ENGINE_ROOT}/src/engine/core/window.cpp"
+    "${ENGINE_ROOT}/src/engine/input/input_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/scene/scene_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/util/logger.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/entity_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/buffer_utils.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/camera.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/font.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/primitive_renderer.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/renderer.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/shader.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/text_renderer.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/texture.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
 )
 
 # Use GLOB_RECURSE relative to CURRENT_SOURCE_DIR
 file(GLOB_RECURSE INCLUDE_FILES
-    "${ENGINE_ROOT}/include/*.h"
-    "${ENGINE_ROOT}/include/util/*.h"
-    "${ENGINE_ROOT}/include/ecs/*.h"
-    "${ENGINE_ROOT}/include/graphics/*.h"
-    "${ENGINE_ROOT}/src/*.h"
-    "${ENGINE_ROOT}/src/util/*.h"
-    "${ENGINE_ROOT}/src/ecs/*.h"
-    "${ENGINE_ROOT}/src/graphics/*.h" 
+    "${ENGINE_ROOT}/include/engine/*.h"
+    "${ENGINE_ROOT}/src/engine/*.h"
 )
 
 # 4. Create Library

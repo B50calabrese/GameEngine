@@ -1,7 +1,7 @@
-#include "application.h"
-#include "engine.h"
-#include "graphics/renderer.h"
-#include "graphics/texture.h"
+#include <engine/core/application.h>
+#include <engine/core/engine.h>
+#include <engine/graphics/renderer.h>
+#include <engine/graphics/texture.h>
 
 class RendererApp : public engine::Application {
  public:

@@ -1,6 +1,6 @@
-#include "application.h"
-#include "engine.h"
-#include "util/logger.h"
+#include <engine/core/application.h>
+#include <engine/core/engine.h>
+#include <engine/util/logger.h>
 
 class MyApp : public engine::Application {
  public:
