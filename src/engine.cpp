@@ -1,3 +1,13 @@
+/**
+ * @file engine.cpp
+ * @brief Engine class implementation.
+ */
+
+/**
+ * @dir src
+ * @brief Engine implementation.
+ */
+
 #include "engine.h"
 
 // clang-format off

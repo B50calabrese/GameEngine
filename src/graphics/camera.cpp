@@ -1,3 +1,8 @@
+/**
+ * @file camera.cpp
+ * @brief Camera class implementation.
+ */
+
 #include "graphics/camera.h"
 
 #include <glm/gtc/matrix_transform.hpp>

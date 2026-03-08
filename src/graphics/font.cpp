@@ -1,3 +1,8 @@
+/**
+ * @file font.cpp
+ * @brief Font class implementation.
+ */
+
 #include "graphics/font.h"
 
 #include <ft2build.h>

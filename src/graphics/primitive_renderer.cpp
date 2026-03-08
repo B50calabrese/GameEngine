@@ -1,3 +1,8 @@
+/**
+ * @file primitive_renderer.cpp
+ * @brief PrimitiveRenderer implementation.
+ */
+
 #include "primitive_renderer.h"
 
 // clang-format off

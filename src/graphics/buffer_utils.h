@@ -1,3 +1,8 @@
+/**
+ * @file buffer_utils.h
+ * @brief Internal OpenGL buffer management helpers.
+ */
+
 #ifndef SRC_GRAPHICS_BUFFER_UTILS_H_
 #define SRC_GRAPHICS_BUFFER_UTILS_H_
 

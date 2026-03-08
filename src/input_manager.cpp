@@ -1,3 +1,8 @@
+/**
+ * @file input_manager.cpp
+ * @brief InputManager class implementation.
+ */
+
 #include "input_manager.h"
 
 #include <GLFW/glfw3.h>

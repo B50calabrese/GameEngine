@@ -1,3 +1,13 @@
+/**
+ * @file primitive_renderer.h
+ * @brief Batch rendering for geometry.
+ */
+
+/**
+ * @dir src/graphics
+ * @brief Rendering system internals.
+ */
+
 #ifndef SRC_GRAPHICS_PRIMITIVE_RENDERER_H_
 #define SRC_GRAPHICS_PRIMITIVE_RENDERER_H_
 

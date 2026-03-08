@@ -1,3 +1,8 @@
+/**
+ * @file vertex2d.h
+ * @brief Vertex layout for 2D rendering.
+ */
+
 #ifndef SRC_GRAPHICS_VERTEX2D_H_
 #define SRC_GRAPHICS_VERTEX2D_H_
 
