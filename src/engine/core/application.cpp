@@ -9,7 +9,7 @@
 #include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
-#include <engine/util/render_queue.h>
+#include <engine/graphics/render_queue.h>
 #include <engine/core/window.h>
 
 namespace engine {
@@ -33,7 +33,7 @@ void Application::Run() {
     bool input_handled = SceneManager::Get().DispatchInput();
 
     // Reset the render queue for the new frame.
-    util::RenderQueue::Default().Clear();
+    graphics::RenderQueue::Default().Clear();
 
     // Pre-rendering calls to prepare the renderer prior to drawing anything.
     graphics::Renderer::Get().Clear();
@@ -47,7 +47,7 @@ void Application::Run() {
     this->OnUpdate(delta_time);
 
     // Finalize rendering by flushing the command queue.
-    util::RenderQueue::Default().Flush();
+    graphics::RenderQueue::Default().Flush();
 
     // End the frame rendering and flush the renderer
     graphics::Renderer::Get().EndFrame();

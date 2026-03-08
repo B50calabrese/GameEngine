@@ -1,10 +1,11 @@
 /**
  * @file render_queue.h
+ * @dir include/engine/graphics
  * @brief Sorting and batching of render commands.
  */
 
-#ifndef INCLUDE_ENGINE_UTIL_RENDER_QUEUE_H_
-#define INCLUDE_ENGINE_UTIL_RENDER_QUEUE_H_
+#ifndef INCLUDE_ENGINE_GRAPHICS_RENDER_QUEUE_H_
+#define INCLUDE_ENGINE_GRAPHICS_RENDER_QUEUE_H_
 
 #include <algorithm>
 #include <vector>
@@ -14,10 +15,10 @@
 #include <engine/graphics/renderer.h>
 
 /**
- * @namespace engine::util
- * @brief General purpose utility classes.
+ * @namespace engine::graphics
+ * @brief Graphics and rendering systems.
  */
-namespace engine::util {
+namespace engine::graphics {
 
 /** @brief Represents a single drawing command stored in the queue. */
 struct RenderCommand {
@@ -77,6 +78,6 @@ class RenderQueue {
   std::vector<RenderCommand> commands_;
 };
 
-}  // namespace engine::util
+}  // namespace engine::graphics
 
-#endif  // INCLUDE_ENGINE_UTIL_RENDER_QUEUE_H_
+#endif  // INCLUDE_ENGINE_GRAPHICS_RENDER_QUEUE_H_
