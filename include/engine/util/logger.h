@@ -9,10 +9,6 @@
 #include <cstdarg>
 #include <string>
 
-/**
- * @namespace engine::util
- * @brief Utility classes and functions.
- */
 namespace engine::util {
 
 /**

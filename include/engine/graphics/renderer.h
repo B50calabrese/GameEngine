@@ -3,6 +3,16 @@
  * @brief Core rendering API.
  */
 
+/**
+ * @dir include/engine/graphics
+ * @brief Rendering and graphics utilities.
+ */
+
+/**
+ * @namespace engine::graphics
+ * @brief Graphics and rendering systems.
+ */
+
 #ifndef INCLUDE_ENGINE_GRAPHICS_RENDERER_H_
 #define INCLUDE_ENGINE_GRAPHICS_RENDERER_H_
 
@@ -12,20 +22,10 @@
 #include <engine/graphics/camera.h>
 #include <engine/core/window.h>
 
-/**
- * @dir include/engine/graphics
- * @brief Rendering and graphics utilities.
- */
-
 namespace engine {
 // Forward declaration to give access to private methods.
 class Engine;
 }  // namespace engine
-
-/**
- * @namespace engine::graphics
- * @brief Graphics and rendering systems.
- */
 namespace engine::graphics {
 
 class Texture;

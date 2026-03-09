@@ -13,10 +13,6 @@
 
 #include <engine/graphics/font.h>
 
-/**
- * @namespace engine::graphics
- * @brief Graphics and rendering systems.
- */
 namespace engine::graphics {
 
 /**

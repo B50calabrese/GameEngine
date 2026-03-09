@@ -4,8 +4,18 @@
  */
 
 /**
+ * @dir include
+ * @brief Root include directory.
+ */
+
+/**
  * @dir include/engine
  * @brief Public engine headers.
+ */
+
+/**
+ * @dir include/engine/core
+ * @brief Core engine functionality (application, window, engine lifecycle).
  */
 
 

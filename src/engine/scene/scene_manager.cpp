@@ -3,6 +3,11 @@
  * @brief SceneManager class implementation.
  */
 
+/**
+ * @dir src/engine/scene
+ * @brief Scene management implementation.
+ */
+
 #include <engine/scene/scene_manager.h>
 
 #include <memory>

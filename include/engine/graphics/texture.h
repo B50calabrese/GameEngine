@@ -9,10 +9,6 @@
 #include <memory>
 #include <string>
 
-/**
- * @namespace engine::graphics
- * @brief Graphics and rendering systems.
- */
 namespace engine::graphics {
 
 /**

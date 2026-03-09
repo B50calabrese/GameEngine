@@ -3,6 +3,11 @@
  * @brief Renderer class implementation.
  */
 
+/**
+ * @dir src/engine/graphics
+ * @brief Rendering system internals.
+ */
+
 #include <engine/graphics/renderer.h>
 
 // clang-format off

@@ -3,6 +3,11 @@
  * @brief Manages scene transitions and the scene stack.
  */
 
+/**
+ * @dir include/engine/scene
+ * @brief Scene management.
+ */
+
 #ifndef INCLUDE_ENGINE_SCENE_SCENE_MANAGER_H_
 #define INCLUDE_ENGINE_SCENE_SCENE_MANAGER_H_
 

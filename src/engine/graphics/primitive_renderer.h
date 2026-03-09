@@ -3,11 +3,6 @@
  * @brief Batch rendering for geometry.
  */
 
-/**
- * @dir src/engine/graphics
- * @brief Rendering system internals.
- */
-
 #ifndef SRC_ENGINE_GRAPHICS_PRIMITIVE_RENDERER_H_
 #define SRC_ENGINE_GRAPHICS_PRIMITIVE_RENDERER_H_
 
