@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>src/engine/input/ directory | Game Engine</title>
+  <title>include/engine/input/action_manager.h file | Game Engine</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon-dark.png" type="image/png" />
@@ -43,27 +43,48 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a>/</span><span class="m-breadcrumb"><a href="dir_2052808828190f934b76e979ee65af8a.html">engine</a>/</span>input<span class="m-breadcrumb">/</span> <span class="m-thin">directory</span>
+          <span class="m-breadcrumb"><a href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a>/</span><span class="m-breadcrumb"><a href="dir_a7f531b1c37460085cedd304cb8df01d.html">engine</a>/</span><span class="m-breadcrumb"><a href="dir_f77ff83871a8c0c224aa74732336c103.html">input</a>/</span>action_manager.h <span class="m-thin">file</span>
         </h1>
-        <p>Input management implementation.</p>
+        <p>Decouples physical keys from logical gameplay intents.</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#files">Files</a></li>
+                <li><a href="#namespaces">Namespaces</a></li>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#enum-members">Enums</a></li>
               </ul>
             </li>
           </ul>
         </nav>
-        <section id="files">
-          <h2><a href="#files">Files</a></h2>
+        <section id="namespaces">
+          <h2><a href="#namespaces">Namespaces</a></h2>
           <dl class="m-doc">
-            <dt>file <a href="action__manager_8cpp.html" class="m-doc">action_manager.cpp</a></dt>
-            <dd>ActionManager class implementation.</dd>
-            <dt>file <a href="input__manager_8cpp.html" class="m-doc">input_manager.cpp</a></dt>
-            <dd>InputManager class implementation.</dd>
+            <dt>namespace <a href="namespaceengine.html" class="m-doc">engine</a></dt>
+            <dd>The core namespace for the Game <a href="classengine_1_1Engine.html" class="m-doc">Engine</a>.</dd>
+          </dl>
+        </section>
+        <section id="nested-classes">
+          <h2><a href="#nested-classes">Classes</a></h2>
+          <dl class="m-doc">
+            <dt>
+              class <a href="classengine_1_1ActionManager.html" class="m-doc">engine::ActionManager</a>
+            </dt>
+            <dd><a href="classengine_1_1ActionManager.html" class="m-doc">ActionManager</a> decouples physical keys from logical gameplay intents.</dd>
+          </dl>
+        </section>
+        <section id="enum-members">
+          <h2><a href="#enum-members">Enums</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="namespaceengine.html#a5c296654c21e93bb05ceb7d20596ddac" class="m-doc">ActionState</a> { </span><span class="m-doc-wrap"><a href="#a5c296654c21e93bb05ceb7d20596ddaca6adf97f83acf6453d4a6a4b1070f3754" class="m-doc">None</a>,
+              <a href="#a5c296654c21e93bb05ceb7d20596ddaca8428552d86c0d262a542a528af490afa" class="m-doc">Started</a>,
+              <a href="#a5c296654c21e93bb05ceb7d20596ddaca7ee7defde6dc3a1d4a4a891b3894e790" class="m-doc">Ongoing</a>,
+              <a href="#a5c296654c21e93bb05ceb7d20596ddacaea1e34304a5d8ffa7c9b0ed8ede4ef1a" class="m-doc">Released</a> }</span>
+            </dt>
+            <dd>State transitions for logical actions.</dd>
           </dl>
         </section>
       </div>
