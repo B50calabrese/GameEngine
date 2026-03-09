@@ -4,8 +4,18 @@
  */
 
 /**
+ * @dir src
+ * @brief Root source directory.
+ */
+
+/**
  * @dir src/engine
  * @brief Engine implementation.
+ */
+
+/**
+ * @dir src/engine/core
+ * @brief Core engine implementation.
  */
 
 #include <engine/core/engine.h>

@@ -10,10 +10,6 @@
 
 #include <engine/ecs/entity_manager.h>
 
-/**
- * @namespace engine::ecs
- * @brief Entity Component System implementation.
- */
 namespace engine::ecs {
 
 /**

@@ -3,6 +3,11 @@
  * @brief Handles keyboard and mouse input.
  */
 
+/**
+ * @dir include/engine/input
+ * @brief Input management.
+ */
+
 #ifndef INCLUDE_ENGINE_INPUT_INPUT_MANAGER_H_
 #define INCLUDE_ENGINE_INPUT_INPUT_MANAGER_H_
 

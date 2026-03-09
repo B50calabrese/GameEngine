@@ -3,16 +3,6 @@
  * @brief Main coordinator for ECS entities and components.
  */
 
-#ifndef INCLUDE_ENGINE_ECS_REGISTRY_H_
-#define INCLUDE_ENGINE_ECS_REGISTRY_H_
-
-#include <memory>
-#include <typeindex>
-#include <unordered_map>
-
-#include <engine/ecs/component_storage.h>
-#include <engine/ecs/entity_manager.h>
-
 /**
  * @dir include/engine/ecs
  * @brief Entity Component System.
@@ -22,6 +12,16 @@
  * @namespace engine::ecs
  * @brief Entity Component System implementation.
  */
+
+#ifndef INCLUDE_ENGINE_ECS_REGISTRY_H_
+#define INCLUDE_ENGINE_ECS_REGISTRY_H_
+
+#include <memory>
+#include <typeindex>
+#include <unordered_map>
+
+#include <engine/ecs/component_storage.h>
+#include <engine/ecs/entity_manager.h>
 namespace engine::ecs {
 
 /**

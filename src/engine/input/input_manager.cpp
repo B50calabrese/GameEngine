@@ -3,6 +3,11 @@
  * @brief InputManager class implementation.
  */
 
+/**
+ * @dir src/engine/input
+ * @brief Input management implementation.
+ */
+
 #include <engine/input/input_manager.h>
 
 #include <GLFW/glfw3.h>

@@ -3,13 +3,6 @@
  * @brief Template-based asset caching and management.
  */
 
-#ifndef INCLUDE_ENGINE_UTIL_ASSET_MANAGER_H_
-#define INCLUDE_ENGINE_UTIL_ASSET_MANAGER_H_
-
-#include <memory>
-#include <string>
-#include <unordered_map>
-
 /**
  * @dir include/engine/util
  * @brief General purpose utilities.
@@ -19,6 +12,13 @@
  * @namespace engine::util
  * @brief General purpose utility classes.
  */
+
+#ifndef INCLUDE_ENGINE_UTIL_ASSET_MANAGER_H_
+#define INCLUDE_ENGINE_UTIL_ASSET_MANAGER_H_
+
+#include <memory>
+#include <string>
+#include <unordered_map>
 namespace engine::util {
 
 /**

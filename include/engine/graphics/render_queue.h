@@ -14,10 +14,6 @@
 
 #include <engine/graphics/renderer.h>
 
-/**
- * @namespace engine::graphics
- * @brief Graphics and rendering systems.
- */
 namespace engine::graphics {
 
 /** @brief Represents a single drawing command stored in the queue. */

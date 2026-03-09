@@ -13,10 +13,6 @@
 #include <string>
 #include <unordered_map>
 
-/**
- * @namespace engine::graphics
- * @brief Graphics and rendering systems.
- */
 namespace engine::graphics {
 
 /**
