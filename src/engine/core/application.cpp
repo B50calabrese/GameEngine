@@ -8,6 +8,7 @@
 #include <engine/graphics/camera.h>
 #include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
+#include <engine/input/action_manager.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/graphics/render_queue.h>
 #include <engine/core/window.h>
@@ -28,6 +29,7 @@ void Application::Run() {
     // Update the input manager's state and poll for events.
     input.UpdateState();
     win.PollEvents();
+    ActionManager::Get().Update();
 
     // Dispatch the new input to the appropriate scenes.
     bool input_handled = SceneManager::Get().DispatchInput();
