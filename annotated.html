@@ -44,6 +44,51 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>Classes</h1>
         <ul class="m-doc">
+          <li class="m-doc-collapsible">
+            <a href="#" onclick="return toggle(this)">namespace</a> <a href="namespaceengine.html" class="m-doc">engine</a> <span class="m-doc">The core namespace for the Game <a href="classengine_1_1Engine.html" class="m-doc">Engine</a>.</span>
+            <ul class="m-doc">
+              <li class="m-doc-collapsible collapsed">
+                <a href="#" onclick="return toggle(this)">namespace</a> <a href="namespaceengine_1_1ecs.html" class="m-doc">ecs</a> <span class="m-doc">Entity Component System implementation.</span>
+                <ul class="m-doc">
+                  <li>class <a href="classengine_1_1ecs_1_1ComponentStorage.html" class="m-doc">ComponentStorage</a> <span class="m-doc">Implementation of the interface for a given type.</span></li>
+                  <li>class <a href="classengine_1_1ecs_1_1EntityManager.html" class="m-doc">EntityManager</a> <span class="m-doc">Manages the entities for the user.</span></li>
+                  <li>class <a href="classengine_1_1ecs_1_1IComponentStorage.html" class="m-doc">IComponentStorage</a> <span class="m-doc">Base interface for generic storage.</span></li>
+                  <li>class <a href="classengine_1_1ecs_1_1Registry.html" class="m-doc">Registry</a> <span class="m-doc">Orchestrates the entities and components associated with those entities.</span></li>
+                </ul>
+              </li>
+              <li class="m-doc-collapsible collapsed">
+                <a href="#" onclick="return toggle(this)">namespace</a> <a href="namespaceengine_1_1graphics.html" class="m-doc">graphics</a> <span class="m-doc">Graphics and rendering systems.</span>
+                <ul class="m-doc">
+                  <li>struct <a href="structengine_1_1graphics_1_1BufferUtils.html" class="m-doc">BufferUtils</a> <span class="m-doc">A collection of functions to reduce OpenGL boilerplate related to buffers.</span></li>
+                  <li>class <a href="classengine_1_1graphics_1_1Camera.html" class="m-doc">Camera</a> <span class="m-doc">Simple 2D <a href="classengine_1_1graphics_1_1Camera.html" class="m-doc">Camera</a> that manages the Orthographic projection.</span></li>
+                  <li>struct <a href="structengine_1_1graphics_1_1Character.html" class="m-doc">Character</a> <span class="m-doc">Represents a single character in a font file.</span></li>
+                  <li>class <a href="classengine_1_1graphics_1_1Font.html" class="m-doc">Font</a> <span class="m-doc">Represents a loaded font resource.</span></li>
+                  <li>class <a href="classengine_1_1graphics_1_1PrimitiveRenderer.html" class="m-doc">PrimitiveRenderer</a> <span class="m-doc">Handles basic drawing of &#x27;primitives&#x27; or geometric 2D objects.</span></li>
+                  <li>struct <a href="structengine_1_1graphics_1_1RenderCommand.html" class="m-doc">RenderCommand</a> <span class="m-doc">Represents a single drawing command stored in the queue.</span></li>
+                  <li>class <a href="classengine_1_1graphics_1_1Renderer.html" class="m-doc">Renderer</a> <span class="m-doc">Manages the graphics context and provides the core drawing API.</span></li>
+                  <li>class <a href="classengine_1_1graphics_1_1RenderQueue.html" class="m-doc">RenderQueue</a> <span class="m-doc">A high-level utility to sort and optimize draw calls before sending them to the core <a href="classengine_1_1graphics_1_1Renderer.html" class="m-doc">Renderer</a>.</span></li>
+                  <li>class <a href="classengine_1_1graphics_1_1Shader.html" class="m-doc">Shader</a> <span class="m-doc">Represents a compiled and linked GLSL shader program.</span></li>
+                  <li>class <a href="classengine_1_1graphics_1_1TextRenderer.html" class="m-doc">TextRenderer</a> <span class="m-doc">Renders text using font files.</span></li>
+                  <li>class <a href="classengine_1_1graphics_1_1Texture.html" class="m-doc">Texture</a> <span class="m-doc">High-level wrapper for OpenGL <a href="classengine_1_1graphics_1_1Texture.html" class="m-doc">Texture</a> resources.</span></li>
+                  <li>struct <a href="structengine_1_1graphics_1_1Vertex2D.html" class="m-doc">Vertex2D</a> <span class="m-doc">This layout must perfectly match the layout defined in the <a href="classengine_1_1graphics_1_1PrimitiveRenderer.html" class="m-doc">PrimitiveRenderer</a>&#x27;s shader.</span></li>
+                </ul>
+              </li>
+              <li class="m-doc-collapsible collapsed">
+                <a href="#" onclick="return toggle(this)">namespace</a> <a href="namespaceengine_1_1util.html" class="m-doc">util</a> <span class="m-doc">General purpose utility classes.</span>
+                <ul class="m-doc">
+                  <li>class <a href="classengine_1_1util_1_1AssetManager.html" class="m-doc">AssetManager</a> <span class="m-doc">Centralized, templated utility for managing the lifecycle of engine resources.</span></li>
+                  <li>class <a href="classengine_1_1util_1_1Logger.html" class="m-doc">Logger</a> <span class="m-doc">A simple logger utility for the engine and client.</span></li>
+                </ul>
+              </li>
+              <li>class <a href="classengine_1_1Application.html" class="m-doc">Application</a> <span class="m-doc">Represents the client application that runs on top of the engine.</span></li>
+              <li>class <a href="classengine_1_1Engine.html" class="m-doc">Engine</a> <span class="m-doc">The static <code><a href="classengine_1_1Engine.html" class="m-doc">Engine</a></code> class provides the core functionality of the game engine, including initialization, shutdown, and access to engine-managed systems.</span></li>
+              <li>struct <a href="structengine_1_1EngineConfig.html" class="m-doc">EngineConfig</a> <span class="m-doc">Holds the configuration for the engine&#x27;s initialization.</span></li>
+              <li>class <a href="classengine_1_1InputManager.html" class="m-doc">InputManager</a> <span class="m-doc">A singleton class that manages all keyboard and mouse input.</span></li>
+              <li>class <a href="classengine_1_1Scene.html" class="m-doc">Scene</a> <span class="m-doc">Abstract base class for all scenes in a game.</span></li>
+              <li>class <a href="classengine_1_1SceneManager.html" class="m-doc">SceneManager</a> <span class="m-doc">Manages the lifecycle and stack of game scenes.</span></li>
+              <li>class <a href="classengine_1_1Window.html" class="m-doc">Window</a> <span class="m-doc">Manages the application window and its associated context.</span></li>
+            </ul>
+          </li>
         </ul>
         <script>
         function toggle(e) {

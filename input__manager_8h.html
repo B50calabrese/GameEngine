@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>include/engine/input/input_manager.h file | Game Engine</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon-dark.png" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">Game Engine</a>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="namespaces.html">Namespaces</a></li>
+            <li><a href="annotated.html">Classes</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a>/</span><span class="m-breadcrumb"><a href="dir_a7f531b1c37460085cedd304cb8df01d.html">engine</a>/</span><span class="m-breadcrumb"><a href="dir_f77ff83871a8c0c224aa74732336c103.html">input</a>/</span>input_manager.h <span class="m-thin">file</span>
+        </h1>
+        <p>Handles keyboard and mouse input.</p>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#namespaces">Namespaces</a></li>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#enum-members">Enums</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <section id="namespaces">
+          <h2><a href="#namespaces">Namespaces</a></h2>
+          <dl class="m-doc">
+            <dt>namespace <a href="namespaceengine.html" class="m-doc">engine</a></dt>
+            <dd>The core namespace for the Game <a href="classengine_1_1Engine.html" class="m-doc">Engine</a>.</dd>
+          </dl>
+        </section>
+        <section id="nested-classes">
+          <h2><a href="#nested-classes">Classes</a></h2>
+          <dl class="m-doc">
+            <dt>
+              class <a href="classengine_1_1InputManager.html" class="m-doc">engine::InputManager</a>
+            </dt>
+            <dd>A singleton class that manages all keyboard and mouse input.</dd>
+          </dl>
+        </section>
+        <section id="enum-members">
+          <h2><a href="#enum-members">Enums</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="namespaceengine.html#acf7754bc3daecb470283b6e2a68900c0" class="m-doc">KeyCode</a> { </span><span class="m-doc-wrap"><a href="#acf7754bc3daecb470283b6e2a68900c0ac1d6f0df270caf005b87cced2fda238a" class="m-doc">KC_MOUSE_LEFT</a> = 0,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a8f2b55cbe9892fec299ca3eaddfde4e0" class="m-doc">KC_MOUSE_RIGHT</a> = 1,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ae14b8638587d8f2cac22bb9fd4a7da19" class="m-doc">KC_MOUSE_MIDDLE</a> = 2,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a08e9bbd7d34ba0a40a8e435c236ec871" class="m-doc">KC_A</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0aa8017c5d81fc3363acf9b3364d7ef85a" class="m-doc">KC_B</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a67483ac13ecd9d5af1e905eed59ed1e8" class="m-doc">KC_C</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0abc0ec9a9b514c9137fdfcf44b053a501" class="m-doc">KC_D</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ac3310d6703d22b8ac0ce015fc29b3b9a" class="m-doc">KC_E</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ac440d0d7255fdf525e6702c737c5a8a9" class="m-doc">KC_F</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a126840dcc61459e9f25dccb465b6482f" class="m-doc">KC_G</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a6084aa6b1bbe9f8e61b5fc3653ce770d" class="m-doc">KC_H</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ae4086abe0cc3b237cd0b3be4245c07b7" class="m-doc">KC_I</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a516e44c152e0898c1b4c329fb6b340d6" class="m-doc">KC_J</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0af41b0c3f13b7a2c24fb31911f8ac90f6" class="m-doc">KC_K</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a48c68ad4ed5c599f76d77b2b9893347f" class="m-doc">KC_L</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a1784390336bdc6861fcd4cd5a02f59d9" class="m-doc">KC_M</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a92298f35489c458a0eb62e3ffb25a82c" class="m-doc">KC_N</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a6ccd4ea280344b839c92f2ab77739ce3" class="m-doc">KC_O</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a612e3174a151d6617ae8c36c697bc037" class="m-doc">KC_P</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0aed550fa7be79492d5a8c0beb4d74c461" class="m-doc">KC_Q</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a0bc1353bd922d7c4b9b1b8679dbf6c58" class="m-doc">KC_R</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ad397da6f582b9a5cf95a633f22d547fa" class="m-doc">KC_S</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a50f7e93dcade20ed176b366788c5c768" class="m-doc">KC_T</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a9b034c6049d21d2c3449875dcce1e8cc" class="m-doc">KC_U</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a8931a50e5c2328c0bd6ec39c4259be27" class="m-doc">KC_V</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a4df1eea1cc762dbc5cde3aa8b70e1c31" class="m-doc">KC_W</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a2655140d10010b06282a35eef81861af" class="m-doc">KC_X</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a807d32fab3d9acb016b89c701427ee02" class="m-doc">KC_Y</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a35c05b127b062ebd73863fa9fc8ee302" class="m-doc">KC_Z</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0aab0e25c82418bef313c4d54108626a29" class="m-doc">KC_0</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a861faa721257f0667062897ebae1d619" class="m-doc">KC_1</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a2f4327a2ae4df1c8aa350fbfa32605ce" class="m-doc">KC_2</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a0d3fb74cda56fbe8b5058adfe39635c0" class="m-doc">KC_3</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a0111fc29a515c6248e03296ace19edef" class="m-doc">KC_4</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a2a4859822f000e40dec51bc82c899a85" class="m-doc">KC_5</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a7c44d347aaede00e1df24a26fd31730a" class="m-doc">KC_6</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a09ee937c046079418ac389fd23c1627b" class="m-doc">KC_7</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a433eec25c117cbb26606b0e4c8473f35" class="m-doc">KC_8</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ac1e91ee27b6412dbf8337f95ed6a0497" class="m-doc">KC_9</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a4679fec42396a4951c33a582808638dc" class="m-doc">KC_ESCAPE</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a0cfd3c0731124f24a6b0c110f445cbd2" class="m-doc">KC_ENTER</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a19851da1c56a8d1d314bc60158e9d9c0" class="m-doc">KC_SPACE</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ac6d545489fc7760bbf9da1d464e1dbf1" class="m-doc">KC_TAB</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ac3e49789e6559e05d73f2c87065b2365" class="m-doc">KC_LEFT_SHIFT</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0adea1ba04fd54c1a723f97c0ce64d3776" class="m-doc">KC_LEFT_CONTROL</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0aa55a2e618c36c25a79f6c6862561bfc3" class="m-doc">KC_LEFT_ALT</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0aa1be320a45cb753ea31885d206ea2a48" class="m-doc">KC_BACKSPACE</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a8f417c74d3fdd0dd0472f81fc2b53eee" class="m-doc">KC_DELETE</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0aed4c7a498229e92264ac8fffc57d6ac3" class="m-doc">KC_UP</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a9171cb334d73f12fc12be9273f05a845" class="m-doc">KC_DOWN</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ae8c647d3380083957f642610e8d438d7" class="m-doc">KC_LEFT</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a41170bc0a98efe18c948e139eddfeb52" class="m-doc">KC_RIGHT</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ab5302820b8e39e3768d1522a7c70f142" class="m-doc">KC_F1</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a4d1be22b1fe4ecc36923026ed9fe2fdb" class="m-doc">KC_F2</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a39e931335f0fa6efdad8a8b6dd72f241" class="m-doc">KC_F3</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a15e35dec82b06564954963de8b3397bc" class="m-doc">KC_F4</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0af46e39347649fe1e78769fde32b5db4d" class="m-doc">KC_F5</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a41dd13dce9b451be888517c872e6ad90" class="m-doc">KC_F6</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0add40014b87c930402f53d28b10aa4beb" class="m-doc">KC_F7</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a01b520dad3c13ab342e74c5454e979cb" class="m-doc">KC_F8</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0aaf59aa59933c80b2c56a6fb3465b2444" class="m-doc">KC_F9</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a2a59952168b62a52f999193b2f60a567" class="m-doc">KC_F10</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a504c11c04fc4f206dfd9a46a9bbadb12" class="m-doc">KC_F11</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a640f63393e768dee188ca32edeee5b37" class="m-doc">KC_F12</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ae0ae9b356dea278eba04e51283f4290e" class="m-doc">KC_HOME</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a316ec54f47c062bd179c97a23f3f521a" class="m-doc">KC_END</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0ac4840d11d7d99f3a5b73af12b5ca3515" class="m-doc">KC_PAGE_UP</a>,
+              <a href="#acf7754bc3daecb470283b6e2a68900c0a19a2d3528e03aba71fad97d7eebca075" class="m-doc">KC_PAGE_DOWN</a> }</span>
+            </dt>
+            <dd>An enumeration of all supported keyboard and mouse button codes.</dd>
+          </dl>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        Game Engine. Generated by 1.9.8 and m.css.
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>
