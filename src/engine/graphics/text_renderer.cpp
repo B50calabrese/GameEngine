@@ -3,15 +3,14 @@
  * @brief TextRenderer class implementation.
  */
 
-#include <engine/graphics/text_renderer.h>
-
-#include <glad/glad.h>
-
-#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-#include <engine/graphics/renderer.h>
+#include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <engine/graphics/primitive_renderer.h>
+#include <engine/graphics/renderer.h>
+#include <engine/graphics/text_renderer.h>
 #include <engine/util/asset_manager.h>
 
 namespace engine::graphics {
@@ -68,9 +67,9 @@ void TextRenderer::DrawText(const std::string& font_name,
       char_rel_pos = glm::vec2(rx, ry);
     }
 
-    PrimitiveRenderer::SubmitTexturedQuad(position + char_rel_pos,
-                                            {w, h}, ch.texture_id, color,
-                                            rotation, {0.0f, 0.0f}, true);
+    PrimitiveRenderer::SubmitTexturedQuad(position + char_rel_pos, {w, h},
+                                          ch.texture_id, color, rotation,
+                                          {0.0f, 0.0f}, true);
 
     x_cursor += (ch.advance >> 6);
   }

@@ -4,14 +4,13 @@
  */
 
 #include <engine/core/application.h>
-
-#include <engine/graphics/camera.h>
-#include <engine/graphics/renderer.h>
-#include <engine/input/input_manager.h>
-#include <engine/input/action_manager.h>
-#include <engine/scene/scene_manager.h>
-#include <engine/graphics/render_queue.h>
 #include <engine/core/window.h>
+#include <engine/graphics/camera.h>
+#include <engine/graphics/render_queue.h>
+#include <engine/graphics/renderer.h>
+#include <engine/input/action_manager.h>
+#include <engine/input/input_manager.h>
+#include <engine/scene/scene_manager.h>
 
 namespace engine {
 
@@ -21,7 +20,8 @@ void Application::Run() {
   Window& win = window();
   InputManager& input = input_manager();
   main_camera_ = std::make_unique<engine::graphics::Camera>(
-      0.0f, (float)win.width(), 0.0f, (float)win.height());
+      0.0f, static_cast<float>(win.width()), 0.0f,
+      static_cast<float>(win.height()));
 
   while (win.IsRunning()) {
     double delta_time = win.delta_time();  // Get time since last frame
@@ -32,7 +32,7 @@ void Application::Run() {
     ActionManager::Get().Update();
 
     // Dispatch the new input to the appropriate scenes.
-    bool input_handled = SceneManager::Get().DispatchInput();
+    [[maybe_unused]] bool input_handled = SceneManager::Get().DispatchInput();
 
     // Reset the render queue for the new frame.
     graphics::RenderQueue::Default().Clear();
@@ -42,7 +42,7 @@ void Application::Run() {
     graphics::Renderer::Get().BeginFrame(*main_camera_);
 
     // Run scene specific update and rendering logic.
-    SceneManager::Get().UpdateActiveScene((float)delta_time);
+    SceneManager::Get().UpdateActiveScene(static_cast<float>(delta_time));
     SceneManager::Get().RenderActiveScene();
 
     // Run application wide update logic.

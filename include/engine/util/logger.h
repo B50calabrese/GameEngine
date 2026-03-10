@@ -64,8 +64,8 @@ class Logger {
   Logger(const Logger&) = delete;
   Logger& operator=(const Logger&) = delete;
 
-  void LogInternal(LogLevel level, const char* file, int line, const char* format,
-                   va_list args);
+  void LogInternal(LogLevel level, const char* file, int line,
+                   const char* format, va_list args);
 
   bool initialized_ = false;
   bool to_file_ = false;
@@ -75,11 +75,14 @@ class Logger {
 }  // namespace engine::util
 
 // Macros for easier logging with file and line information
-#define LOG_INFO(...) \
-  engine::util::Logger::Get().Log(engine::util::LogLevel::INFO, __FILE__, __LINE__, __VA_ARGS__)
-#define LOG_WARN(...) \
-  engine::util::Logger::Get().Log(engine::util::LogLevel::WARNING, __FILE__, __LINE__, __VA_ARGS__)
-#define LOG_ERR(...) \
-  engine::util::Logger::Get().Log(engine::util::LogLevel::ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_INFO(...)                                                     \
+  engine::util::Logger::Get().Log(engine::util::LogLevel::INFO, __FILE__, \
+                                  __LINE__, __VA_ARGS__)
+#define LOG_WARN(...)                                                        \
+  engine::util::Logger::Get().Log(engine::util::LogLevel::WARNING, __FILE__, \
+                                  __LINE__, __VA_ARGS__)
+#define LOG_ERR(...)                                                       \
+  engine::util::Logger::Get().Log(engine::util::LogLevel::ERROR, __FILE__, \
+                                  __LINE__, __VA_ARGS__)
 
 #endif  // INCLUDE_ENGINE_UTIL_LOGGER_H_

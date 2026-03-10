@@ -8,9 +8,9 @@
  * @brief Scene management implementation.
  */
 
-#include <engine/scene/scene_manager.h>
-
 #include <memory>
+
+#include <engine/scene/scene_manager.h>
 
 namespace engine {
 void SceneManager::SetScene(std::unique_ptr<Scene> new_scene) {

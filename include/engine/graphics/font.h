@@ -6,10 +6,11 @@
 #ifndef INCLUDE_ENGINE_GRAPHICS_FONT_H_
 #define INCLUDE_ENGINE_GRAPHICS_FONT_H_
 
-#include <glm/glm.hpp>
 #include <map>
 #include <memory>
 #include <string>
+
+#include <glm/glm.hpp>
 
 namespace engine::graphics {
 

@@ -9,9 +9,9 @@
 #include <memory>
 
 #include <engine/core/engine.h>
+#include <engine/core/window.h>
 #include <engine/graphics/camera.h>
 #include <engine/input/input_manager.h>
-#include <engine/core/window.h>
 
 namespace engine {
 
@@ -49,8 +49,8 @@ class Application {
   /**
    * @brief Called every frame. Game logic and rendering should be handled here.
    *
-   * @param delta_time_seconds The time elapsed since the last frame, in seconds.
-   *        This value should be used for frame-rate independent physics and
+   * @param delta_time_seconds The time elapsed since the last frame, in
+   * seconds. This value should be used for frame-rate independent physics and
    *        animations.
    */
   virtual void OnUpdate(double delta_time_seconds) = 0;
