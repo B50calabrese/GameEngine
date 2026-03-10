@@ -11,8 +11,9 @@
 #ifndef INCLUDE_ENGINE_INPUT_INPUT_MANAGER_H_
 #define INCLUDE_ENGINE_INPUT_INPUT_MANAGER_H_
 
-#include <glm/glm.hpp>
 #include <map>
+
+#include <glm/glm.hpp>
 
 class Window;
 

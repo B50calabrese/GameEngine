@@ -13,10 +13,11 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
-#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <memory>
 #include <vector>
+
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <engine/graphics/buffer_utils.h>
 #include <engine/graphics/shader.h>
@@ -112,20 +113,20 @@ static const char* kFragmentSource = R"(
 void PrimitiveRenderer::Init() {
   // Initialize Buffers using Utility Helpers
   BufferUtils::CreateBasicBuffers(vao_, vbo_, ebo_,
-                                    kMaxVertices * sizeof(Vertex2D));
+                                  kMaxVertices * sizeof(Vertex2D));
 
   // Define Vertex Layout using Utility Helpers
   // Position: index 0, 2 floats
   BufferUtils::SetAttribute(0, 2, sizeof(Vertex2D),
-                             offsetof(Vertex2D, position));
+                            offsetof(Vertex2D, position));
   // Color: index 1, 4 floats
   BufferUtils::SetAttribute(1, 4, sizeof(Vertex2D), offsetof(Vertex2D, color));
   // TexCoords: index 2, 2 floats
   BufferUtils::SetAttribute(2, 2, sizeof(Vertex2D),
-                             offsetof(Vertex2D, tex_coords));
+                            offsetof(Vertex2D, tex_coords));
   // TexIndex: index 3, 1 float
   BufferUtils::SetAttribute(3, 1, sizeof(Vertex2D),
-                             offsetof(Vertex2D, tex_index));
+                            offsetof(Vertex2D, tex_index));
 
   // Pre-populate Index Buffer (static pattern: 0,1,2, 2,3,0)
   std::vector<unsigned int> indices(kMaxIndices);
@@ -160,7 +161,9 @@ void PrimitiveRenderer::Init() {
   if (default_shader_) {
     default_shader_->Bind();
     int samplers[32];
-    for (int i = 0; i < 32; i++) samplers[i] = i;
+    for (int i = 0; i < 32; i++) {
+      samplers[i] = i;
+    }
 
     int location = glGetUniformLocation(default_shader_->id(), "uTextures");
     glUniform1iv(location, 32, samplers);
@@ -192,7 +195,9 @@ void PrimitiveRenderer::StartBatch(const glm::mat4& view_projection) {
 }
 
 void PrimitiveRenderer::FinalizeBatch() {
-  if (vertex_batch_.empty()) return;
+  if (vertex_batch_.empty()) {
+    return;
+  }
 
   // Upload CPU data to GPU dynamic buffer
   glBindBuffer(GL_ARRAY_BUFFER, vbo_);
@@ -201,7 +206,9 @@ void PrimitiveRenderer::FinalizeBatch() {
 }
 
 void PrimitiveRenderer::RenderBatch() {
-  if (vertex_batch_.empty() || !default_shader_) return;
+  if (vertex_batch_.empty() || !default_shader_) {
+    return;
+  }
 
   default_shader_->Bind();
 
@@ -224,37 +231,36 @@ void PrimitiveRenderer::RenderBatch() {
 int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
   // Search if texture is already in a slot
   for (uint32_t i = 0; i < texture_slot_index_; i++) {
-    if (texture_slots_[i] == texture_id) return (int)i;
+    if (texture_slots_[i] == texture_id) {
+      return static_cast<int>(i);
+    }
   }
 
   texture_slots_[texture_slot_index_] = texture_id;
-  return (int)texture_slot_index_++;
+  return static_cast<int>(texture_slot_index_++);
 }
 
 // --- Submission API ---
 
 void PrimitiveRenderer::SubmitQuad(const glm::vec2& position,
-                                    const glm::vec2& size,
-                                    const glm::vec4& color, float rotation,
-                                    const glm::vec2& origin) {
-  SubmitTexturedQuad(position, size, texture_slots_[0], color, rotation,
-                       origin, false);
+                                   const glm::vec2& size,
+                                   const glm::vec4& color, float rotation,
+                                   const glm::vec2& origin) {
+  SubmitTexturedQuad(position, size, texture_slots_[0], color, rotation, origin,
+                     false);
 }
 
-void PrimitiveRenderer::SubmitTexturedQuad(const glm::vec2& position,
-                                             const glm::vec2& size,
-                                             unsigned int texture_id,
-                                             const glm::vec4& color,
-                                             float rotation,
-                                             const glm::vec2& origin,
-                                             bool flip_uv) {
+void PrimitiveRenderer::SubmitTexturedQuad(
+    const glm::vec2& position, const glm::vec2& size, unsigned int texture_id,
+    const glm::vec4& color, float rotation, const glm::vec2& origin,
+    bool flip_uv) {
   // Handle batch overflow or when we have too many textures.
   if (vertex_batch_.size() + 4 > kMaxVertices || texture_slot_index_ >= 32) {
     RenderBatch();
     StartBatch(current_view_projection_);
   }
 
-  float tex_index = (float)GetTextureSlot(texture_id);
+  float tex_index = static_cast<float>(GetTextureSlot(texture_id));
 
   float w = size.x;
   float h = size.y;
@@ -264,10 +270,10 @@ void PrimitiveRenderer::SubmitTexturedQuad(const glm::vec2& position,
   float offset_y = origin.y * h;
 
   glm::vec4 local_vertices[4] = {
-      {-offset_x, -offset_y, 0.0f, 1.0f},      // Bottom-Left
-      {w - offset_x, -offset_y, 0.0f, 1.0f},   // Bottom-Right
+      {-offset_x, -offset_y, 0.0f, 1.0f},        // Bottom-Left
+      {w - offset_x, -offset_y, 0.0f, 1.0f},     // Bottom-Right
       {w - offset_x, h - offset_y, 0.0f, 1.0f},  // Top-Right
-      {-offset_x, h - offset_y, 0.0f, 1.0f}     // Top-Left
+      {-offset_x, h - offset_y, 0.0f, 1.0f}      // Top-Left
   };
 
   // 2. Apply Rotation to the local positions

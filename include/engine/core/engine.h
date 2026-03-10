@@ -18,7 +18,6 @@
  * @brief Core engine functionality (application, window, engine lifecycle).
  */
 
-
 #ifndef INCLUDE_ENGINE_CORE_ENGINE_H_
 #define INCLUDE_ENGINE_CORE_ENGINE_H_
 

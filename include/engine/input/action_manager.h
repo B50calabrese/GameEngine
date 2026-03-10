@@ -6,10 +6,11 @@
 #ifndef INCLUDE_ENGINE_INPUT_ACTION_MANAGER_H_
 #define INCLUDE_ENGINE_INPUT_ACTION_MANAGER_H_
 
-#include <engine/input/input_manager.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+#include <engine/input/input_manager.h>
 
 namespace engine {
 

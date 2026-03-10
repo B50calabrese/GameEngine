@@ -10,9 +10,9 @@
 
 #include <engine/input/input_manager.h>
 
-#include <GLFW/glfw3.h>
-
 #include <iostream>
+
+#include <GLFW/glfw3.h>
 
 namespace engine {
 namespace {

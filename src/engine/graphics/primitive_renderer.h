@@ -6,14 +6,15 @@
 #ifndef SRC_ENGINE_GRAPHICS_PRIMITIVE_RENDERER_H_
 #define SRC_ENGINE_GRAPHICS_PRIMITIVE_RENDERER_H_
 
-#include <engine/graphics/shader.h>
-#include <engine/graphics/vertex2d.h>
-
 #include <array>
 #include <cstdint>
-#include <glm/mat4x4.hpp>
 #include <memory>
 #include <vector>
+
+#include <glm/mat4x4.hpp>
+
+#include <engine/graphics/shader.h>
+#include <engine/graphics/vertex2d.h>
 
 namespace engine::graphics {
 

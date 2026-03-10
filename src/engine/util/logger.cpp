@@ -8,13 +8,13 @@
  * @brief Internal helper utilities.
  */
 
-#include <engine/util/logger.h>
-
 #include <cstdio>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+
+#include <engine/util/logger.h>
 
 namespace engine::util {
 

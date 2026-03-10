@@ -27,9 +27,9 @@
 
 #include <memory>
 
+#include <engine/core/window.h>
 #include <engine/graphics/renderer.h>
 #include <engine/util/logger.h>
-#include <engine/core/window.h>
 
 namespace engine {
 namespace {

@@ -3,15 +3,14 @@
  * @brief Font class implementation.
  */
 
-#include <engine/graphics/font.h>
-
-#include <ft2build.h>
-#include <glad/glad.h>
-
 #include <map>
 #include <memory>
 #include <string>
 
+#include <ft2build.h>
+#include <glad/glad.h>
+
+#include <engine/graphics/font.h>
 #include <engine/graphics/renderer.h>
 #include <engine/util/logger.h>
 #include FT_FREETYPE_H
@@ -54,7 +53,9 @@ std::shared_ptr<Font> Font::Load(const std::string& path) {
 
   std::map<char, Character> char_map;
   for (unsigned char c = 0; c < 128; c++) {
-    if (FT_Load_Char(face, c, FT_LOAD_RENDER)) continue;
+    if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+      continue;
+    }
 
     unsigned int texture;
     glGenTextures(1, &texture);

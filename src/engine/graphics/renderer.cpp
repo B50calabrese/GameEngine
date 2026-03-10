@@ -18,10 +18,10 @@
 #include <filesystem>
 
 #include <engine/graphics/camera.h>
-#include <engine/util/logger.h>
+#include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/text_renderer.h>
 #include <engine/graphics/texture.h>
-#include <engine/graphics/primitive_renderer.h>
+#include <engine/util/logger.h>
 
 namespace engine::graphics {
 
@@ -69,21 +69,21 @@ void Renderer::DrawTexturedRect(float x, float y, float w, float h,
   PrimitiveRenderer::SubmitTexturedQuad({x, y}, {w, h}, texture_id, color);
 }
 
-void Renderer::DrawTexturedQuad(const glm::vec2& position, const glm::vec2& size,
-                                unsigned int texture_id, float rotation,
-                                const glm::vec4& tint,
+void Renderer::DrawTexturedQuad(const glm::vec2& position,
+                                const glm::vec2& size, unsigned int texture_id,
+                                float rotation, const glm::vec4& tint,
                                 const glm::vec2& origin) {
   PrimitiveRenderer::SubmitTexturedQuad(position, size, texture_id, tint,
                                         rotation, origin);
 }
 
-void Renderer::DrawTexturedQuad(const glm::vec2& position, const glm::vec2& size,
-                                const Texture* texture, float rotation,
-                                const glm::vec4& tint,
+void Renderer::DrawTexturedQuad(const glm::vec2& position,
+                                const glm::vec2& size, const Texture* texture,
+                                float rotation, const glm::vec4& tint,
                                 const glm::vec2& origin) {
   if (texture) {
-    PrimitiveRenderer::SubmitTexturedQuad(position, size, texture->id(), tint,
-                                          rotation, origin);
+    PrimitiveRenderer::SubmitTexturedQuad(
+        position, size, texture->renderer_id(), tint, rotation, origin);
   }
 }
 
@@ -96,15 +96,19 @@ void Renderer::DrawText(const std::string& font_name, const std::string& text,
 
 std::string Renderer::ResolveAssetPath(const std::string& relative_path) const {
   std::filesystem::path p(relative_path);
-  if (p.is_absolute()) return relative_path;
-  if (asset_root_path_.empty()) return relative_path;
+  if (p.is_absolute()) {
+    return relative_path;
+  }
+  if (asset_root_path_.empty()) {
+    return relative_path;
+  }
   return asset_root_path_ + relative_path;
 }
 
 // Retrieve the native handle from the window
 void Renderer::Init(Window& window) {
   // Load Glad
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+  if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
     LOG_ERR("Failed to initialize GLAD");
     return;
   }

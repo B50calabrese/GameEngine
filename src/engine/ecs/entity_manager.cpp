@@ -8,9 +8,9 @@
  * @brief ECS internal logic.
  */
 
-#include <engine/ecs/entity_manager.h>
-
 #include <algorithm>
+
+#include <engine/ecs/entity_manager.h>
 
 namespace engine::ecs {
 

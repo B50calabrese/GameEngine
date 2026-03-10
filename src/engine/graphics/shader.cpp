@@ -3,17 +3,16 @@
  * @brief Shader class implementation.
  */
 
-#include <engine/graphics/shader.h>
+#include <memory>
+#include <string>
 
 #include <glad/glad.h>
-
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
-#include <memory>
-#include <string>
 
+#include <engine/graphics/shader.h>
 #include <engine/util/logger.h>
 
 namespace engine::graphics {
@@ -92,8 +91,7 @@ void Shader::SetVec4(const std::string& name, glm::vec4 value) {
 }
 
 void Shader::SetMat4(const std::string& name, glm::mat4 value) {
-  glUniformMatrix4fv(GetUniformLocation(name), 1, false,
-                     glm::value_ptr(value));
+  glUniformMatrix4fv(GetUniformLocation(name), 1, false, glm::value_ptr(value));
 }
 
 // Private functions
@@ -101,8 +99,9 @@ void Shader::SetMat4(const std::string& name, glm::mat4 value) {
 Shader::Shader(unsigned int shader_id) : shader_id_(shader_id) {}
 
 int Shader::GetUniformLocation(const std::string& name) const {
-  if (uniform_location_cache_.find(name) != uniform_location_cache_.end())
+  if (uniform_location_cache_.find(name) != uniform_location_cache_.end()) {
     return uniform_location_cache_[name];
+  }
 
   int location = glGetUniformLocation(shader_id_, name.c_str());
   if (location == -1) {

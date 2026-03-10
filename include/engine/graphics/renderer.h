@@ -16,11 +16,12 @@
 #ifndef INCLUDE_ENGINE_GRAPHICS_RENDERER_H_
 #define INCLUDE_ENGINE_GRAPHICS_RENDERER_H_
 
-#include <glm/glm.hpp>
 #include <string>
 
-#include <engine/graphics/camera.h>
+#include <glm/glm.hpp>
+
 #include <engine/core/window.h>
+#include <engine/graphics/camera.h>
 
 namespace engine {
 // Forward declaration to give access to private methods.
@@ -91,7 +92,7 @@ class Renderer {
    * @param b The blue component (0-1).
    */
   void DrawRect(float x, float y, float width, float height, float r, float g,
-                 float b);
+                float b);
 
   /**
    * @brief Draws a colored quad with full transformation support.
@@ -104,8 +105,8 @@ class Renderer {
    * size (e.g., (0,0) for bottom-left, (0.5, 0.5) for center).
    */
   void DrawQuad(const glm::vec2& position, const glm::vec2& size,
-                 const glm::vec4& color, float rotation = 0.0f,
-                 const glm::vec2& origin = {0.0f, 0.0f});
+                const glm::vec4& color, float rotation = 0.0f,
+                const glm::vec2& origin = {0.0f, 0.0f});
 
   /**
    * @brief Draws a textured rectangle to the screen.
@@ -118,8 +119,7 @@ class Renderer {
    * @param tint Optional RGBA tint (defaults to white).
    */
   void DrawTexturedRect(float x, float y, float w, float h,
-                          unsigned int texture_id,
-                          const float tint[4] = nullptr);
+                        unsigned int texture_id, const float tint[4] = nullptr);
 
   /**
    * @brief Draws a textured quad with full transformation support.
@@ -133,9 +133,9 @@ class Renderer {
    * size (e.g., (0,0) for bottom-left, (0.5, 0.5) for center).
    */
   void DrawTexturedQuad(const glm::vec2& position, const glm::vec2& size,
-                          unsigned int texture_id, float rotation = 0.0f,
-                          const glm::vec4& tint = glm::vec4(1.0f),
-                          const glm::vec2& origin = {0.0f, 0.0f});
+                        unsigned int texture_id, float rotation = 0.0f,
+                        const glm::vec4& tint = glm::vec4(1.0f),
+                        const glm::vec2& origin = {0.0f, 0.0f});
 
   /**
    * @brief Draws a textured quad with full transformation support.
@@ -149,9 +149,9 @@ class Renderer {
    * size (e.g., (0,0) for bottom-left, (0.5, 0.5) for center).
    */
   void DrawTexturedQuad(const glm::vec2& position, const glm::vec2& size,
-                          const Texture* texture, float rotation = 0.0f,
-                          const glm::vec4& tint = glm::vec4(1.0f),
-                          const glm::vec2& origin = {0.0f, 0.0f});
+                        const Texture* texture, float rotation = 0.0f,
+                        const glm::vec4& tint = glm::vec4(1.0f),
+                        const glm::vec2& origin = {0.0f, 0.0f});
 
   /**
    * @brief Renders text with full transformation support.
@@ -164,8 +164,8 @@ class Renderer {
    * @param color The RGBA color.
    */
   void DrawText(const std::string& font_name, const std::string& text,
-                 const glm::vec2& position, float rotation = 0.0f,
-                 float scale = 1.0f, const glm::vec4& color = glm::vec4(1.0f));
+                const glm::vec2& position, float rotation = 0.0f,
+                float scale = 1.0f, const glm::vec4& color = glm::vec4(1.0f));
 
   /**
    * @brief Takes a relative path and resolves to the full path.

@@ -3,9 +3,9 @@
  * @brief BufferUtils implementation.
  */
 
-#include <engine/graphics/buffer_utils.h>
-
 #include <glad/glad.h>
+
+#include <engine/graphics/buffer_utils.h>
 
 namespace engine::graphics {
 
@@ -33,19 +33,19 @@ void BufferUtils::CreateBasicBuffers(unsigned int& vao, unsigned int& vbo,
 }
 
 void BufferUtils::SetAttribute(unsigned int index, int size, size_t stride,
-                                size_t offset) {
+                               size_t offset) {
   // Enable the specific attribute slot in the currently bound VAO
   glEnableVertexAttribArray(index);
 
   // Define how OpenGL should interpret the vertex data
   // We assume GL_FLOAT as it is the standard for engine vertex data
   glVertexAttribPointer(
-      index,            // Attribute index (location in shader)
-      size,             // Number of components (e.g., 2 for vec2, 4 for vec4)
-      GL_FLOAT,         // Data type
-      GL_FALSE,         // Normalized?
-      (GLsizei)stride,  // Byte offset between consecutive vertices
-      (void*)offset     // Offset of the first component
+      index,     // Attribute index (location in shader)
+      size,      // Number of components (e.g., 2 for vec2, 4 for vec4)
+      GL_FLOAT,  // Data type
+      GL_FALSE,  // Normalized?
+      static_cast<GLsizei>(stride),  // Byte offset between consecutive vertices
+      reinterpret_cast<void*>(offset)  // Offset of the first component
   );
 }
 

@@ -6,12 +6,13 @@
 #ifndef INCLUDE_ENGINE_GRAPHICS_SHADER_H_
 #define INCLUDE_ENGINE_GRAPHICS_SHADER_H_
 
-#include <glm/ext/vector_float3.hpp>
-#include <glm/ext/vector_float4.hpp>
-#include <glm/mat4x4.hpp>
 #include <memory>
 #include <string>
 #include <unordered_map>
+
+#include <glm/ext/vector_float3.hpp>
+#include <glm/ext/vector_float4.hpp>
+#include <glm/mat4x4.hpp>
 
 namespace engine::graphics {
 

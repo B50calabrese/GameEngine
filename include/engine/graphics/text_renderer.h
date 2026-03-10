@@ -6,10 +6,11 @@
 #ifndef INCLUDE_ENGINE_GRAPHICS_TEXT_RENDERER_H_
 #define INCLUDE_ENGINE_GRAPHICS_TEXT_RENDERER_H_
 
-#include <glm/glm.hpp>
 #include <map>
 #include <memory>
 #include <string>
+
+#include <glm/glm.hpp>
 
 #include <engine/graphics/font.h>
 

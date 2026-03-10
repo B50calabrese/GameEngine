@@ -21,7 +21,8 @@ class Texture {
   /**
    * @brief Loads an image from disk and uploads it to the GPU.
    * @param path File path to the image (PNG, JPG, etc.)
-   * @return A shared pointer to the Texture object, or nullptr if loading fails.
+   * @return A shared pointer to the Texture object, or nullptr if loading
+   * fails.
    */
   static std::shared_ptr<Texture> Load(const std::string& path);
 
@@ -38,7 +39,7 @@ class Texture {
    * @brief Gets the OpenGL ID of the texture.
    * @return The renderer ID.
    */
-  inline unsigned int id() const { return renderer_id_; }
+  inline unsigned int renderer_id() const { return renderer_id_; }
 
   /**
    * @brief Gets the width of the texture.
