@@ -2,8 +2,8 @@
 #include <memory>
 
 #include <engine/core/application.h>
-#include <engine/ecs/registry.h>
 #include <engine/core/engine.h>
+#include <engine/ecs/registry.h>
 #include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>

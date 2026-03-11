@@ -55,7 +55,7 @@ class Shader {
    * @brief Gets the OpenGL ID of the shader program.
    * @return The shader ID.
    */
-  unsigned int id() const { return shader_id_; }
+  [[nodiscard]] unsigned int id() const { return shader_id_; }
 
   /** @brief Activates this shader program for subsequent rendering calls. */
   void Bind() const;

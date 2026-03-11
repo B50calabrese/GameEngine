@@ -119,7 +119,8 @@ class Renderer {
    * @param tint Optional RGBA tint (defaults to white).
    */
   void DrawTexturedRect(float x, float y, float w, float h,
-                        unsigned int texture_id, const float tint[4] = nullptr);
+                        unsigned int texture_id,
+                        const glm::vec4* tint = nullptr);
 
   /**
    * @brief Draws a textured quad with full transformation support.
@@ -208,7 +209,7 @@ class Renderer {
    * @param width New width.
    * @param height New height.
    */
-  void HandleResize(int& width, int& height) const;
+  void HandleResize(int* width, int* height) const;
 
   /**
    * @brief Used to set the asset root path.

@@ -60,10 +60,11 @@ void Renderer::DrawQuad(const glm::vec2& position, const glm::vec2& size,
 }
 
 void Renderer::DrawTexturedRect(float x, float y, float w, float h,
-                                unsigned int texture_id, const float tint[4]) {
+                                unsigned int texture_id,
+                                const glm::vec4* tint) {
   glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
   if (tint) {
-    color = glm::vec4(tint[0], tint[1], tint[2], tint[3]);
+    color = *tint;
   }
 
   PrimitiveRenderer::SubmitTexturedQuad({x, y}, {w, h}, texture_id, color);
@@ -141,8 +142,10 @@ void Renderer::set_viewport(int width, int height) const {
   glViewport(0, 0, width, height);
 }
 
-void Renderer::HandleResize(int& width, int& height) const {
-  this->set_viewport(width, height);
+void Renderer::HandleResize(int* width, int* height) const {
+  if (width && height) {
+    this->set_viewport(*width, *height);
+  }
 }
 
 void Renderer::set_asset_root(const std::string& path) {
