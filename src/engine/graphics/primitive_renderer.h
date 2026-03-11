@@ -86,6 +86,25 @@ class PrimitiveRenderer {
                                  const glm::vec2& origin = {0.0f, 0.0f},
                                  bool flip_uv = false);
 
+  /**
+   * @brief Submits a textured rectangle (quad) with custom UV coordinates.
+   *
+   * @param position The world-space position.
+   * @param size The width and height.
+   * @param texture_id The OpenGL ID of the texture.
+   * @param uv_min The bottom-left UV coordinate.
+   * @param uv_max The top-right UV coordinate.
+   * @param color The RGBA tint color.
+   * @param rotation The rotation in degrees.
+   * @param origin The origin point for rotation.
+   */
+  static void SubmitTexturedQuad(const glm::vec2& position,
+                                 const glm::vec2& size, unsigned int texture_id,
+                                 const glm::vec2& uv_min,
+                                 const glm::vec2& uv_max,
+                                 const glm::vec4& color, float rotation = 0.0f,
+                                 const glm::vec2& origin = {0.0f, 0.0f});
+
  private:
   // OpenGL buffers.
   static unsigned int vao_, vbo_, ebo_;

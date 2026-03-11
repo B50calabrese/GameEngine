@@ -254,6 +254,20 @@ void PrimitiveRenderer::SubmitTexturedQuad(
     const glm::vec2& position, const glm::vec2& size, unsigned int texture_id,
     const glm::vec4& color, float rotation, const glm::vec2& origin,
     bool flip_uv) {
+  glm::vec2 uv_min(0.0f, 0.0f);
+  glm::vec2 uv_max(1.0f, 1.0f);
+  if (flip_uv) {
+    uv_min.y = 1.0f;
+    uv_max.y = 0.0f;
+  }
+  SubmitTexturedQuad(position, size, texture_id, uv_min, uv_max, color, rotation,
+                     origin);
+}
+
+void PrimitiveRenderer::SubmitTexturedQuad(
+    const glm::vec2& position, const glm::vec2& size, unsigned int texture_id,
+    const glm::vec2& uv_min, const glm::vec2& uv_max, const glm::vec4& color,
+    float rotation, const glm::vec2& origin) {
   // Handle batch overflow or when we have too many textures.
   if (vertex_batch_.size() + 4 > kMaxVertices || texture_slot_index_ >= 32) {
     RenderBatch();
@@ -286,18 +300,12 @@ void PrimitiveRenderer::SubmitTexturedQuad(
     }
   }
 
-  // 3. Set UVs based on flip_uv
-  float u0 = 0.0f, v0 = 0.0f, u1 = 1.0f, v1 = 1.0f;
-  if (flip_uv) {
-    v0 = 1.0f;  // Top becomes 1.0
-    v1 = 0.0f;  // Bottom becomes 0.0
-  }
-
+  // 3. Set UVs based on uv_min and uv_max
   float texture_coords[4][2] = {
-      {u0, v0},  // Bottom-Left
-      {u1, v0},  // Bottom-Right
-      {u1, v1},  // Top-Right
-      {u0, v1}   // Top-Left
+      {uv_min.x, uv_min.y},  // Bottom-Left
+      {uv_max.x, uv_min.y},  // Bottom-Right
+      {uv_max.x, uv_max.y},  // Top-Right
+      {uv_min.x, uv_max.y}   // Top-Left
   };
 
   // 4. Submit vertices to batch

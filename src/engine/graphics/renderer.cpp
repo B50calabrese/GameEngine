@@ -19,6 +19,7 @@
 
 #include <engine/graphics/camera.h>
 #include <engine/graphics/primitive_renderer.h>
+#include <engine/graphics/sprite_sheet.h>
 #include <engine/graphics/text_renderer.h>
 #include <engine/graphics/texture.h>
 #include <engine/util/logger.h>
@@ -84,6 +85,19 @@ void Renderer::DrawTexturedQuad(const glm::vec2& position,
   if (texture) {
     PrimitiveRenderer::SubmitTexturedQuad(
         position, size, texture->renderer_id(), tint, rotation, origin);
+  }
+}
+
+void Renderer::DrawSprite(const class SpriteSheet* sprite_sheet, int index,
+                          const glm::vec2& position, const glm::vec2& size,
+                          float rotation, const glm::vec4& tint,
+                          const glm::vec2& origin) {
+  if (sprite_sheet && sprite_sheet->texture()) {
+    glm::vec2 uv_min, uv_max;
+    sprite_sheet->GetUVs(index, &uv_min, &uv_max);
+    PrimitiveRenderer::SubmitTexturedQuad(position, size,
+                                          sprite_sheet->texture()->renderer_id(),
+                                          uv_min, uv_max, tint, rotation, origin);
   }
 }
 

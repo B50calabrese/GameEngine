@@ -154,6 +154,23 @@ class Renderer {
                         const glm::vec2& origin = {0.0f, 0.0f});
 
   /**
+   * @brief Draws a sprite from a sprite sheet.
+   *
+   * @param sprite_sheet The sprite sheet to use.
+   * @param index The index of the sprite to draw.
+   * @param position The world-space position.
+   * @param size The width and height of the quad.
+   * @param rotation The rotation in degrees.
+   * @param tint The RGBA tint color.
+   * @param origin The origin point for rotation.
+   */
+  void DrawSprite(const class SpriteSheet* sprite_sheet, int index,
+                  const glm::vec2& position, const glm::vec2& size,
+                  float rotation = 0.0f,
+                  const glm::vec4& tint = glm::vec4(1.0f),
+                  const glm::vec2& origin = {0.0f, 0.0f});
+
+  /**
    * @brief Renders text with full transformation support.
    *
    * @param font_name The name of the loaded font.
