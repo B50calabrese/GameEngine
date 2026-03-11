@@ -28,6 +28,8 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/input/action_manager.cpp"
     "${ENGINE_ROOT}/src/engine/scene/scene_manager.cpp"
     "${ENGINE_ROOT}/src/engine/util/logger.cpp"
+    "${ENGINE_ROOT}/src/engine/util/easing.cpp"
+    "${ENGINE_ROOT}/src/engine/util/tween_manager.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/entity_manager.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/buffer_utils.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/camera.cpp"
@@ -88,4 +90,5 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/textdemo)
     add_subdirectory(demos/windowdemo)
     add_subdirectory(demos/actionmapping)
+    add_subdirectory(demos/tweendemo)
 endif()
