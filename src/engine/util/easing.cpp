@@ -3,9 +3,9 @@
  * @brief Implementation of easing functions.
  */
 
-#include <engine/util/easing.h>
-
 #include <cmath>
+
+#include <engine/util/easing.h>
 
 namespace engine::util {
 
@@ -65,7 +65,8 @@ float Easing::InQuad(float t) { return t * t; }
 float Easing::OutQuad(float t) { return 1.0f - (1.0f - t) * (1.0f - t); }
 
 float Easing::InOutQuad(float t) {
-  return t < 0.5f ? 2.0f * t * t : 1.0f - std::pow(-2.0f * t + 2.0f, 2.0f) / 2.0f;
+  return t < 0.5f ? 2.0f * t * t
+                  : 1.0f - std::pow(-2.0f * t + 2.0f, 2.0f) / 2.0f;
 }
 
 float Easing::InCubic(float t) { return t * t * t; }
@@ -77,17 +78,11 @@ float Easing::InOutCubic(float t) {
                   : 1.0f - std::pow(-2.0f * t + 2.0f, 3.0f) / 2.0f;
 }
 
-float Easing::InSine(float t) {
-  return 1.0f - std::cos((t * kPi) / 2.0f);
-}
+float Easing::InSine(float t) { return 1.0f - std::cos((t * kPi) / 2.0f); }
 
-float Easing::OutSine(float t) {
-  return std::sin((t * kPi) / 2.0f);
-}
+float Easing::OutSine(float t) { return std::sin((t * kPi) / 2.0f); }
 
-float Easing::InOutSine(float t) {
-  return -(std::cos(kPi * t) - 1.0f) / 2.0f;
-}
+float Easing::InOutSine(float t) { return -(std::cos(kPi * t) - 1.0f) / 2.0f; }
 
 float Easing::InBounce(float t) { return 1.0f - OutBounce(1.0f - t); }
 
@@ -116,37 +111,32 @@ float Easing::InOutBounce(float t) {
 
 float Easing::InElastic(float t) {
   const float c4 = (2.0f * kPi) / 3.0f;
-  return t == 0.0f
-             ? 0.0f
-             : t == 1.0f ? 1.0f
-                         : -std::pow(2.0f, 10.0f * t - 10.0f) *
-                               std::sin((t * 10.0f - 10.75f) * c4);
+  return t == 0.0f   ? 0.0f
+         : t == 1.0f ? 1.0f
+                     : -std::pow(2.0f, 10.0f * t - 10.0f) *
+                           std::sin((t * 10.0f - 10.75f) * c4);
 }
 
 float Easing::OutElastic(float t) {
   const float c4 = (2.0f * kPi) / 3.0f;
-  return t == 0.0f
-             ? 0.0f
-             : t == 1.0f ? 1.0f
-                         : std::pow(2.0f, -10.0f * t) *
-                                   std::sin((t * 10.0f - 0.75f) * c4) +
-                               1.0f;
+  return t == 0.0f ? 0.0f
+         : t == 1.0f
+             ? 1.0f
+             : std::pow(2.0f, -10.0f * t) * std::sin((t * 10.0f - 0.75f) * c4) +
+                   1.0f;
 }
 
 float Easing::InOutElastic(float t) {
   const float c5 = (2.0f * kPi) / 4.5f;
-  return t == 0.0f
-             ? 0.0f
-             : t == 1.0f
-                   ? 1.0f
-                   : t < 0.5f
-                         ? -(std::pow(2.0f, 20.0f * t - 10.0f) *
-                             std::sin((20.0f * t - 11.125f) * c5)) /
-                               2.0f
-                         : (std::pow(2.0f, -20.0f * t + 10.0f) *
-                            std::sin((20.0f * t - 11.125f) * c5)) /
-                               2.0f +
-                               1.0f;
+  return t == 0.0f   ? 0.0f
+         : t == 1.0f ? 1.0f
+         : t < 0.5f  ? -(std::pow(2.0f, 20.0f * t - 10.0f) *
+                        std::sin((20.0f * t - 11.125f) * c5)) /
+                          2.0f
+                    : (std::pow(2.0f, -20.0f * t + 10.0f) *
+                       std::sin((20.0f * t - 11.125f) * c5)) /
+                              2.0f +
+                          1.0f;
 }
 
 float Easing::InBack(float t) {

@@ -57,13 +57,13 @@ class Camera {
    * @brief Gets the current position of the camera.
    * @return The position.
    */
-  const glm::vec3& position() const { return position_; }
+  [[nodiscard]] const glm::vec3& position() const { return position_; }
 
   /**
    * @brief Gets the cached view-projection matrix.
    * @return The matrix.
    */
-  const glm::mat4& view_projection_matrix() const {
+  [[nodiscard]] const glm::mat4& view_projection_matrix() const {
     return view_projection_matrix_;
   }
 

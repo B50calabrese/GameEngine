@@ -14,8 +14,8 @@ class RendererApp : public engine::Application {
   void OnUpdate(double delta_time_seconds) override {
     engine::graphics::Renderer::Get().DrawRect(0.0f, 0.0f, 400.0f, 300.0f);
     if (texture_) {
-        engine::graphics::Renderer::Get().DrawTexturedQuad(
-            {400.0f, 300.0f}, {400.0f, 300.0f}, texture_.get());
+      engine::graphics::Renderer::Get().DrawTexturedQuad(
+          {400.0f, 300.0f}, {400.0f, 300.0f}, texture_.get());
     }
   }
 

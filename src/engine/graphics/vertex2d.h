@@ -6,6 +6,8 @@
 #ifndef SRC_ENGINE_GRAPHICS_VERTEX2D_H_
 #define SRC_ENGINE_GRAPHICS_VERTEX2D_H_
 
+#include <glm/glm.hpp>
+
 namespace engine::graphics {
 
 /**
@@ -19,11 +21,11 @@ namespace engine::graphics {
  */
 struct Vertex2D {
   /** @brief [x, y] coordinates. */
-  float position[2];
+  glm::vec2 position;
   /** @brief [r, g, b, a] color. */
-  float color[4];
+  glm::vec4 color;
   /** @brief [u, v] texture coordinates. */
-  float tex_coords[2];
+  glm::vec2 tex_coords;
   /** @brief Index into the texture slots array. */
   float tex_index;
 };

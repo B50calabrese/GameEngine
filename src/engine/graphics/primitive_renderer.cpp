@@ -303,16 +303,12 @@ void PrimitiveRenderer::SubmitTexturedQuad(
   // 4. Submit vertices to batch
   for (int i = 0; i < 4; i++) {
     Vertex2D v;
-    v.position[0] = position.x + local_vertices[i].x;
-    v.position[1] = position.y + local_vertices[i].y;
+    v.position = {position.x + local_vertices[i].x,
+                  position.y + local_vertices[i].y};
 
-    v.color[0] = color.r;
-    v.color[1] = color.g;
-    v.color[2] = color.b;
-    v.color[3] = color.a;
+    v.color = color;
 
-    v.tex_coords[0] = texture_coords[i][0];
-    v.tex_coords[1] = texture_coords[i][1];
+    v.tex_coords = {texture_coords[i][0], texture_coords[i][1]};
     v.tex_index = tex_index;
 
     vertex_batch_.push_back(v);

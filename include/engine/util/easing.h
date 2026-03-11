@@ -34,7 +34,8 @@ enum class EaseType {
 };
 
 /**
- * @brief Provides various easing functions to calculate non-linear interpolation.
+ * @brief Provides various easing functions to calculate non-linear
+ * interpolation.
  */
 class Easing {
  public:
