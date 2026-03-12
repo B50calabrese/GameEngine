@@ -52,7 +52,7 @@ class Registry {
    * @param entity the ID of the entity to check
    * @returns `true` if the entity is alive.
    */
-  bool IsAlive(EntityID entity) const {
+  [[nodiscard]] bool IsAlive(EntityID entity) const {
     return entity_manager_.IsAlive(entity);
   }
 
@@ -91,7 +91,7 @@ class Registry {
    * @returns `true` if the component exists.
    */
   template <typename T>
-  bool HasComponent(EntityID entity) {
+  [[nodiscard]] bool HasComponent(EntityID entity) {
     return GetStorage<T>()->Has(entity);
   }
 

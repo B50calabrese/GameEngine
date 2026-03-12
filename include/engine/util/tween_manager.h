@@ -6,14 +6,14 @@
 #ifndef INCLUDE_ENGINE_UTIL_TWEEN_MANAGER_H_
 #define INCLUDE_ENGINE_UTIL_TWEEN_MANAGER_H_
 
-#include <engine/util/easing.h>
-
 #include <algorithm>
 #include <functional>
 #include <memory>
 #include <vector>
 
 #include <glm/glm.hpp>
+
+#include <engine/util/easing.h>
 
 namespace engine::util {
 
@@ -24,7 +24,7 @@ class ITweenTask {
  public:
   virtual ~ITweenTask() = default;
   virtual bool Update(float delta_time) = 0;
-  virtual uint32_t id() const = 0;
+  [[nodiscard]] virtual uint32_t id() const = 0;
   virtual void Stop() = 0;
 };
 
@@ -32,7 +32,8 @@ template <typename T>
 class TweenBuilder;
 
 /**
- * @brief Manages active tween tasks and provides a fluent API for creating them.
+ * @brief Manages active tween tasks and provides a fluent API for creating
+ * them.
  */
 class TweenManager {
  public:
@@ -72,7 +73,7 @@ class TweenManager {
   /**
    * @brief Internal use only. Gets the next available tween ID.
    */
-  uint32_t GetNextId() { return next_id_++; }
+  [[nodiscard]] uint32_t GetNextId() { return next_id_++; }
 
   /**
    * @brief Internal use only. Adds a task to the manager.
@@ -169,7 +170,9 @@ class TweenTask : public ITweenTask {
         on_complete_(on_complete) {}
 
   bool Update(float delta_time) override {
-    if (stopped_) return true;
+    if (stopped_) {
+      return true;
+    }
 
     if (delay_ > 0.0f) {
       delay_ -= delta_time;
@@ -205,7 +208,7 @@ class TweenTask : public ITweenTask {
     return false;
   }
 
-  uint32_t id() const override { return id_; }
+  [[nodiscard]] uint32_t id() const override { return id_; }
   void Stop() override { stopped_ = true; }
 
  private:

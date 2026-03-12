@@ -36,19 +36,25 @@ void ActionManager::Update() {
 
 bool ActionManager::IsStarted(const std::string& action_name) const {
   auto it = registry_.find(action_name);
-  if (it == registry_.end()) return false;
+  if (it == registry_.end()) {
+    return false;
+  }
   return it->second.is_active_this_frame && !it->second.was_active_last_frame;
 }
 
 bool ActionManager::IsOngoing(const std::string& action_name) const {
   auto it = registry_.find(action_name);
-  if (it == registry_.end()) return false;
+  if (it == registry_.end()) {
+    return false;
+  }
   return it->second.is_active_this_frame;
 }
 
 bool ActionManager::IsReleased(const std::string& action_name) const {
   auto it = registry_.find(action_name);
-  if (it == registry_.end()) return false;
+  if (it == registry_.end()) {
+    return false;
+  }
   return !it->second.is_active_this_frame && it->second.was_active_last_frame;
 }
 

@@ -225,7 +225,7 @@ class Renderer {
    * @param width New width.
    * @param height New height.
    */
-  void HandleResize(int& width, int& height) const;
+  void HandleResize(int* width, int* height) const;
 
   /**
    * @brief Used to set the asset root path.

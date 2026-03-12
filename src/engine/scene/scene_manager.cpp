@@ -35,7 +35,9 @@ void SceneManager::PushScene(std::unique_ptr<Scene> overlay) {
 }
 
 void SceneManager::PopScene() {
-  if (scene_stack_.empty()) return;
+  if (scene_stack_.empty()) {
+    return;
+  }
 
   scene_stack_.back()->OnDetach();
   scene_stack_.pop_back();
@@ -60,7 +62,9 @@ void SceneManager::RenderActiveScene() {
 }
 
 bool SceneManager::DispatchInput() {
-  if (scene_stack_.empty()) return false;
+  if (scene_stack_.empty()) {
+    return false;
+  }
 
   // Dispatch input to the top-most scene first.
   // If it returns true, it "consumed" the input event.

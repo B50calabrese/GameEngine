@@ -3,11 +3,10 @@
  * @brief SpriteSheet implementation.
  */
 
-#include <engine/graphics/sprite_sheet.h>
-
 #include <sstream>
 #include <vector>
 
+#include <engine/graphics/sprite_sheet.h>
 #include <engine/graphics/texture.h>
 #include <engine/util/logger.h>
 
@@ -24,9 +23,10 @@ std::shared_ptr<SpriteSheet> SpriteSheet::Load(const std::string& path) {
   }
 
   if (segments.size() != 5) {
-    LOG_ERR("Invalid SpriteSheet load path format: %s. Expected "
-            "'path:w:h:rows:cols'",
-            path.c_str());
+    LOG_ERR(
+        "Invalid SpriteSheet load path format: %s. Expected "
+        "'path:w:h:rows:cols'",
+        path.c_str());
     return nullptr;
   }
 

@@ -47,7 +47,9 @@ class Font {
    * @brief Gets the character map for this font.
    * @return Reference to the character map.
    */
-  const std::map<char, Character>& characters() const { return characters_; }
+  [[nodiscard]] const std::map<char, Character>& characters() const {
+    return characters_;
+  }
 
  private:
   explicit Font(std::map<char, Character> characters)

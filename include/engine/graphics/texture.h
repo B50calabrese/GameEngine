@@ -39,19 +39,19 @@ class Texture {
    * @brief Gets the OpenGL ID of the texture.
    * @return The renderer ID.
    */
-  inline unsigned int renderer_id() const { return renderer_id_; }
+  [[nodiscard]] inline unsigned int renderer_id() const { return renderer_id_; }
 
   /**
    * @brief Gets the width of the texture.
    * @return Width in pixels.
    */
-  inline int width() const { return width_; }
+  [[nodiscard]] inline int width() const { return width_; }
 
   /**
    * @brief Gets the height of the texture.
    * @return Height in pixels.
    */
-  inline int height() const { return height_; }
+  [[nodiscard]] inline int height() const { return height_; }
 
  private:
   Texture(unsigned int id, int w, int h, const std::string& p)

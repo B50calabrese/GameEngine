@@ -3,6 +3,8 @@
  * @brief PrimitiveRenderer implementation.
  */
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <engine/graphics/primitive_renderer.h>
 
 // clang-format off
@@ -16,8 +18,6 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-
-#include <glm/gtc/matrix_transform.hpp>
 
 #include <engine/graphics/buffer_utils.h>
 #include <engine/graphics/shader.h>
@@ -260,8 +260,8 @@ void PrimitiveRenderer::SubmitTexturedQuad(
     uv_min.y = 1.0f;
     uv_max.y = 0.0f;
   }
-  SubmitTexturedQuad(position, size, texture_id, uv_min, uv_max, color, rotation,
-                     origin);
+  SubmitTexturedQuad(position, size, texture_id, uv_min, uv_max, color,
+                     rotation, origin);
 }
 
 void PrimitiveRenderer::SubmitTexturedQuad(

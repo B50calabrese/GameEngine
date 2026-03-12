@@ -150,7 +150,7 @@ IncludeCategories:
     SortPriority:    0
     CaseSensitive:   false
 IncludeIsMainRegex: '([-_](test|unittest))?$'
-IncludeIsMainSourceRegex: ''
+IncludeIsMainSourceRegex: 'cpp$'
 IndentAccessModifiers: false
 IndentCaseBlocks: false
 IndentCaseLabels: true

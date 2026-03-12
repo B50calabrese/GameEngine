@@ -38,7 +38,7 @@ class EntityManager {
    * @return `true` if the entity is being used.
 
    */
-  bool IsAlive(EntityID entity) const;
+  [[nodiscard]] bool IsAlive(EntityID entity) const;
 
  private:
   EntityID next_id_ = 0;
