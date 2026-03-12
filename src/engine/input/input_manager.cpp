@@ -8,11 +8,11 @@
  * @brief Input management implementation.
  */
 
-#include <engine/input/input_manager.h>
-
 #include <iostream>
 
 #include <GLFW/glfw3.h>
+
+#include <engine/input/input_manager.h>
 
 namespace engine {
 namespace {
@@ -149,7 +149,9 @@ void InputManager::UpdateState() { previous_key_state_ = current_key_state_; }
 
 void InputManager::HandleKey(int raw_key_code, int action) {
   KeyCode key = MapRawCode(raw_key_code);
-  if (key == static_cast<KeyCode>(-1)) return;
+  if (key == static_cast<KeyCode>(-1)) {
+    return;
+  }
 
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
     current_key_state_[key] = true;
@@ -160,7 +162,9 @@ void InputManager::HandleKey(int raw_key_code, int action) {
 
 void InputManager::HandleMouseButton(int raw_button_code, int action) {
   KeyCode key = MapRawCode(raw_button_code);
-  if (key == static_cast<KeyCode>(-1)) return;
+  if (key == static_cast<KeyCode>(-1)) {
+    return;
+  }
 
   if (action == GLFW_PRESS) {
     current_key_state_[key] = true;

@@ -35,19 +35,19 @@ class Window {
    * @brief Returns a pointer to the native GLFW window handle.
    * @return Pointer to the GLFWwindow.
    */
-  GLFWwindow* native_handle() const { return internal_window_; }
+  [[nodiscard]] GLFWwindow* native_handle() const { return internal_window_; }
 
   /**
    * @brief Checks if the window should remain open.
    * @return `true` if the window should stay open, `false` otherwise.
    */
-  bool IsRunning() const;
+  [[nodiscard]] bool IsRunning() const;
 
   /**
    * @brief Checks if the window should close.
    * @return `true` if the window should close, `false` otherwise.
    */
-  bool ShouldClose() const;
+  [[nodiscard]] bool ShouldClose() const;
 
   /**
    * @brief Swaps the front and back buffers.
@@ -63,19 +63,19 @@ class Window {
    * @brief Calculates and returns the time elapsed since the last frame.
    * @return The delta time in seconds.
    */
-  double delta_time() const;
+  [[nodiscard]] double delta_time() const;
 
   /**
    * @brief Gets the width of the window.
    * @return Width in pixels.
    */
-  int width() const { return width_; }
+  [[nodiscard]] int width() const { return width_; }
 
   /**
    * @brief Gets the height of the window.
    * @return Height in pixels.
    */
-  int height() const { return height_; }
+  [[nodiscard]] int height() const { return height_; }
 
  private:
   friend class Application;

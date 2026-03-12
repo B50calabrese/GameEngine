@@ -37,13 +37,17 @@ void TextRenderer::DrawText(const std::string& font_name,
                             const std::string& text, const glm::vec2& position,
                             float rotation, float scale,
                             const glm::vec4& color) {
-  if (fonts_.find(font_name) == fonts_.end()) return;
+  if (fonts_.find(font_name) == fonts_.end()) {
+    return;
+  }
 
   auto& characters = fonts_[font_name]->characters();
   float x_cursor = 0.0f;
 
   for (char c : text) {
-    if (characters.find(c) == characters.end()) continue;
+    if (characters.find(c) == characters.end()) {
+      continue;
+    }
     Character ch = characters.at(c);
 
     // Character bearing: horizontal offset from origin to left of glyph,

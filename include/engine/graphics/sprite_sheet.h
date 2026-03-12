@@ -57,19 +57,19 @@ class SpriteSheet {
   void GetUVs(int index, glm::vec2* uv_min, glm::vec2* uv_max) const;
 
   /** @brief Gets the underlying texture. */
-  const Texture* texture() const { return texture_.get(); }
+  [[nodiscard]] const Texture* texture() const { return texture_.get(); }
 
   /** @brief Gets the sprite width. */
-  int sprite_width() const { return sprite_width_; }
+  [[nodiscard]] int sprite_width() const { return sprite_width_; }
 
   /** @brief Gets the sprite height. */
-  int sprite_height() const { return sprite_height_; }
+  [[nodiscard]] int sprite_height() const { return sprite_height_; }
 
   /** @brief Gets the number of rows. */
-  int rows() const { return rows_; }
+  [[nodiscard]] int rows() const { return rows_; }
 
   /** @brief Gets the number of columns. */
-  int cols() const { return cols_; }
+  [[nodiscard]] int cols() const { return cols_; }
 
  private:
   SpriteSheet(std::shared_ptr<Texture> texture, int sprite_width,

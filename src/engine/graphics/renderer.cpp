@@ -95,9 +95,9 @@ void Renderer::DrawSprite(const class SpriteSheet* sprite_sheet, int index,
   if (sprite_sheet && sprite_sheet->texture()) {
     glm::vec2 uv_min, uv_max;
     sprite_sheet->GetUVs(index, &uv_min, &uv_max);
-    PrimitiveRenderer::SubmitTexturedQuad(position, size,
-                                          sprite_sheet->texture()->renderer_id(),
-                                          uv_min, uv_max, tint, rotation, origin);
+    PrimitiveRenderer::SubmitTexturedQuad(
+        position, size, sprite_sheet->texture()->renderer_id(), uv_min, uv_max,
+        tint, rotation, origin);
   }
 }
 
@@ -155,8 +155,10 @@ void Renderer::set_viewport(int width, int height) const {
   glViewport(0, 0, width, height);
 }
 
-void Renderer::HandleResize(int& width, int& height) const {
-  this->set_viewport(width, height);
+void Renderer::HandleResize(int* width, int* height) const {
+  if (width && height) {
+    this->set_viewport(*width, *height);
+  }
 }
 
 void Renderer::set_asset_root(const std::string& path) {
