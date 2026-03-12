@@ -37,6 +37,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/graphics/primitive_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/shader.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/sprite_sheet.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/text_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/texture.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
@@ -91,4 +92,5 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/windowdemo)
     add_subdirectory(demos/actionmapping)
     add_subdirectory(demos/tweendemo)
+    add_subdirectory(demos/spritesheetdemo)
 endif()
