@@ -72,6 +72,14 @@ class Shader {
   void SetInt(const std::string& name, int value);
 
   /**
+   * @brief Sets a float uniform variable in the shader.
+   *
+   * @param name The name of the uniform variable in the GLSL code.
+   * @param value The float value to set.
+   */
+  void SetFloat(const std::string& name, float value);
+
+  /**
    * @brief Sets a 3-component float vector uniform variable in the shader.
    *
    * @param name The name of the uniform variable in the GLSL code.

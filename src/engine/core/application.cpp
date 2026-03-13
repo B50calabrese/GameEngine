@@ -38,8 +38,8 @@ void Application::Run() {
     graphics::RenderQueue::Default().Clear();
 
     // Pre-rendering calls to prepare the renderer prior to drawing anything.
-    graphics::Renderer::Get().Clear();
     graphics::Renderer::Get().BeginFrame(*main_camera_);
+    graphics::Renderer::Get().Clear();
 
     // Run scene specific update and rendering logic.
     SceneManager::Get().UpdateActiveScene(static_cast<float>(delta_time));

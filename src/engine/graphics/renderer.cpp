@@ -18,6 +18,7 @@
 #include <filesystem>
 
 #include <engine/graphics/camera.h>
+#include <engine/graphics/post_processor.h>
 #include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/sprite_sheet.h>
 #include <engine/graphics/text_renderer.h>
@@ -32,6 +33,7 @@ void Renderer::Clear() const {
 }
 
 void Renderer::BeginFrame(Camera& camera) const {
+  PostProcessManager::Get().Begin();
   // Instruct renders to reset themselves for the frame.
   graphics::PrimitiveRenderer::StartBatch(camera.view_projection_matrix());
 }
@@ -40,6 +42,7 @@ void Renderer::EndFrame() const {
   // Flush all renderers.
   graphics::PrimitiveRenderer::FinalizeBatch();
   graphics::PrimitiveRenderer::RenderBatch();
+  PostProcessManager::Get().End();
 }
 
 void Renderer::DrawRect(float x, float y, float width, float height) {
@@ -95,9 +98,9 @@ void Renderer::DrawSprite(const class SpriteSheet* sprite_sheet, int index,
   if (sprite_sheet && sprite_sheet->texture()) {
     glm::vec2 uv_min, uv_max;
     sprite_sheet->GetUVs(index, &uv_min, &uv_max);
-    PrimitiveRenderer::SubmitTexturedQuad(position, size,
-                                          sprite_sheet->texture()->renderer_id(),
-                                          uv_min, uv_max, tint, rotation, origin);
+    PrimitiveRenderer::SubmitTexturedQuad(
+        position, size, sprite_sheet->texture()->renderer_id(), uv_min, uv_max,
+        tint, rotation, origin);
   }
 }
 
@@ -144,6 +147,7 @@ void Renderer::Init(Window& window) {
 
   // Initialize renderers.
   graphics::PrimitiveRenderer::Init();
+  PostProcessManager::Get().Init(window.width(), window.height());
 }
 
 void Renderer::Shutdown() {
@@ -155,8 +159,9 @@ void Renderer::set_viewport(int width, int height) const {
   glViewport(0, 0, width, height);
 }
 
-void Renderer::HandleResize(int& width, int& height) const {
+void Renderer::HandleResize(int width, int height) {
   this->set_viewport(width, height);
+  PostProcessManager::Get().OnResize(width, height);
 }
 
 void Renderer::set_asset_root(const std::string& path) {

@@ -78,7 +78,8 @@ class SpriteAnimator {
    */
   [[nodiscard]] int GetCurrentFrame() const;
 
-  /** @brief Returns true if an animation is currently playing and not finished. */
+  /** @brief Returns true if an animation is currently playing and not finished.
+   */
   [[nodiscard]] bool IsPlaying() const { return playing_; }
 
   /** @brief Returns true if a non-looping animation has reached its end. */

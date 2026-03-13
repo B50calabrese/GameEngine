@@ -66,8 +66,8 @@ class AnimatorDemoApp : public engine::Application {
       engine::graphics::Renderer::Get().DrawText(
           "default", "Looping Animation (4 FPS)", {100.0f, 450.0f}, 0.0f, 0.5f);
       engine::graphics::Renderer::Get().DrawSprite(
-          sprite_sheet_.get(), loop_animator_.GetCurrentFrame(), {150.0f, 250.0f},
-          {200.0f, 200.0f});
+          sprite_sheet_.get(), loop_animator_.GetCurrentFrame(),
+          {150.0f, 250.0f}, {200.0f, 200.0f});
 
       // Draw oneshot animation
       std::string once_label = "Oneshot Animation (2 FPS)";
@@ -77,8 +77,8 @@ class AnimatorDemoApp : public engine::Application {
       engine::graphics::Renderer::Get().DrawText("default", once_label,
                                                  {450.0f, 450.0f}, 0.0f, 0.5f);
       engine::graphics::Renderer::Get().DrawSprite(
-          sprite_sheet_.get(), once_animator_.GetCurrentFrame(), {500.0f, 250.0f},
-          {200.0f, 200.0f});
+          sprite_sheet_.get(), once_animator_.GetCurrentFrame(),
+          {500.0f, 250.0f}, {200.0f, 200.0f});
 
       engine::graphics::Renderer::Get().DrawText(
           "default", "Press SPACE to restart oneshot", {100.0f, 100.0f}, 0.0f,

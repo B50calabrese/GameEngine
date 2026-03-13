@@ -1,10 +1,11 @@
+#include <iostream>
+
+#include <GLFW/glfw3.h>  // For raw key codes if needed, though we use KeyCode
+
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
 #include <engine/input/action_manager.h>
 #include <engine/util/logger.h>
-#include <iostream>
-
-#include <GLFW/glfw3.h> // For raw key codes if needed, though we use KeyCode
 
 class ActionMappingApp : public engine::Application {
  public:
@@ -34,7 +35,7 @@ class ActionMappingApp : public engine::Application {
     }
 
     if (am.IsReleased("Jump")) {
-        LOG_INFO("Jump Released!");
+      LOG_INFO("Jump Released!");
     }
   }
 

@@ -3,11 +3,11 @@
  * @brief Sprite animation management and playback implementation.
  */
 
-#include <engine/graphics/sprite_animator.h>
-#include <engine/util/logger.h>
-
 #include <algorithm>
 #include <cmath>
+
+#include <engine/graphics/sprite_animator.h>
+#include <engine/util/logger.h>
 
 namespace engine::graphics {
 
@@ -59,7 +59,8 @@ void SpriteAnimator::Update(float delta_time) {
 
   elapsed_time_ += delta_time;
 
-  float duration = static_cast<float>(current_clip_->frames.size()) / current_clip_->fps;
+  float duration =
+      static_cast<float>(current_clip_->frames.size()) / current_clip_->fps;
 
   if (elapsed_time_ >= duration) {
     if (current_clip_->loop) {
@@ -82,7 +83,8 @@ int SpriteAnimator::GetCurrentFrame() const {
   // Calculate index based on elapsed time and FPS
   int index = static_cast<int>(elapsed_time_ * current_clip_->fps);
 
-  // Clamp index to avoid overflow due to floating point precision at the very end of non-looping animations
+  // Clamp index to avoid overflow due to floating point precision at the very
+  // end of non-looping animations
   int max_index = static_cast<int>(current_clip_->frames.size()) - 1;
   index = std::clamp(index, 0, max_index);
 
