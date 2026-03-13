@@ -1,10 +1,10 @@
+#include <vector>
+
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>
 #include <engine/util/logger.h>
 #include <engine/util/tween_manager.h>
-
-#include <vector>
 
 using namespace engine;
 using namespace engine::util;
@@ -23,8 +23,10 @@ class TweenDemoApp : public Application {
     LOG_INFO("TweenDemoApp Init");
 
     // 1. Moving Square with OutBounce
-    squares_.push_back({{50.0f, 500.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, 0.0f, "OutBounce"});
-    TweenManager::Get().Tween<glm::vec2>({50.0f, 500.0f}, {750.0f, 500.0f}, 3.0f)
+    squares_.push_back(
+        {{50.0f, 500.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, 0.0f, "OutBounce"});
+    TweenManager::Get()
+        .Tween<glm::vec2>({50.0f, 500.0f}, {750.0f, 500.0f}, 3.0f)
         .Ease(EaseType::OutBounce)
         .Loop()
         .OnUpdate([this](const glm::vec2& val, float progress) {
@@ -33,8 +35,12 @@ class TweenDemoApp : public Application {
         .Play();
 
     // 2. Ping-ponging Square with InOutQuad
-    squares_.push_back({{50.0f, 400.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, "PingPong InOutQuad"});
-    TweenManager::Get().Tween<glm::vec2>({50.0f, 400.0f}, {750.0f, 400.0f}, 2.0f)
+    squares_.push_back({{50.0f, 400.0f},
+                        {0.0f, 1.0f, 0.0f, 1.0f},
+                        0.0f,
+                        "PingPong InOutQuad"});
+    TweenManager::Get()
+        .Tween<glm::vec2>({50.0f, 400.0f}, {750.0f, 400.0f}, 2.0f)
         .Ease(EaseType::InOutQuad)
         .PingPong()
         .OnUpdate([this](const glm::vec2& val, float progress) {
@@ -43,8 +49,12 @@ class TweenDemoApp : public Application {
         .Play();
 
     // 3. Rotating and Scaling color Square with OutElastic
-    squares_.push_back({{400.0f, 300.0f}, {0.0f, 0.0f, 1.0f, 1.0f}, 0.0f, "Elastic Rotate/Color"});
-    TweenManager::Get().Tween<float>(0.0f, 360.0f, 4.0f)
+    squares_.push_back({{400.0f, 300.0f},
+                        {0.0f, 0.0f, 1.0f, 1.0f},
+                        0.0f,
+                        "Elastic Rotate/Color"});
+    TweenManager::Get()
+        .Tween<float>(0.0f, 360.0f, 4.0f)
         .Ease(EaseType::OutElastic)
         .Loop()
         .OnUpdate([this](const float& val, float progress) {
@@ -52,7 +62,9 @@ class TweenDemoApp : public Application {
         })
         .Play();
 
-    TweenManager::Get().Tween<glm::vec4>({0.0f, 0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}, 2.0f)
+    TweenManager::Get()
+        .Tween<glm::vec4>({0.0f, 0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f, 1.0f},
+                          2.0f)
         .Ease(EaseType::Linear)
         .PingPong()
         .OnUpdate([this](const glm::vec4& val, float progress) {
@@ -61,8 +73,10 @@ class TweenDemoApp : public Application {
         .Play();
 
     // 4. Delayed tween
-    squares_.push_back({{50.0f, 200.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, 0.0f, "Delayed InSine"});
-    TweenManager::Get().Tween<glm::vec2>({50.0f, 200.0f}, {750.0f, 200.0f}, 2.0f)
+    squares_.push_back(
+        {{50.0f, 200.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, 0.0f, "Delayed InSine"});
+    TweenManager::Get()
+        .Tween<glm::vec2>({50.0f, 200.0f}, {750.0f, 200.0f}, 2.0f)
         .Ease(EaseType::InSine)
         .Delay(2.0f)
         .Loop()
@@ -72,39 +86,39 @@ class TweenDemoApp : public Application {
         .Play();
 
     // 5. Chained tweens
-    squares_.push_back({{50.0f, 100.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, "Chained"});
+    squares_.push_back(
+        {{50.0f, 100.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, "Chained"});
     StartChainedTween();
   }
 
   void StartChainedTween() {
-    TweenManager::Get().Tween<glm::vec2>({50.0f, 100.0f}, {750.0f, 100.0f}, 1.5f)
+    TweenManager::Get()
+        .Tween<glm::vec2>({50.0f, 100.0f}, {750.0f, 100.0f}, 1.5f)
         .Ease(EaseType::InOutCubic)
         .OnUpdate([this](const glm::vec2& val, float progress) {
           squares_[4].pos = val;
         })
         .OnComplete([this]() {
-          TweenManager::Get().Tween<glm::vec2>({750.0f, 100.0f}, {50.0f, 100.0f}, 1.5f)
+          TweenManager::Get()
+              .Tween<glm::vec2>({750.0f, 100.0f}, {50.0f, 100.0f}, 1.5f)
               .Ease(EaseType::InOutCubic)
               .OnUpdate([this](const glm::vec2& val, float progress) {
                 squares_[4].pos = val;
               })
-              .OnComplete([this]() {
-                StartChainedTween();
-              })
+              .OnComplete([this]() { StartChainedTween(); })
               .Play();
         })
         .Play();
   }
 
-  void OnShutdown() override {
-    TweenManager::Get().Clear();
-  }
+  void OnShutdown() override { TweenManager::Get().Clear(); }
 
   void OnUpdate(double delta_time_seconds) override {
     TweenManager::Get().Update(static_cast<float>(delta_time_seconds));
 
     for (const auto& square : squares_) {
-      Renderer::Get().DrawQuad(square.pos, {50.0f, 50.0f}, square.color, square.rotation, {25.0f, 25.0f});
+      Renderer::Get().DrawQuad(square.pos, {50.0f, 50.0f}, square.color,
+                               square.rotation);
     }
   }
 
