@@ -23,6 +23,7 @@ link_directories("${THIRD_PARTY_LIBS}")
 set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/core/application.cpp"
     "${ENGINE_ROOT}/src/engine/core/engine.cpp"
+    "${ENGINE_ROOT}/src/engine/core/job_system.cpp"
     "${ENGINE_ROOT}/src/engine/core/window.cpp"
     "${ENGINE_ROOT}/src/engine/input/input_manager.cpp"
     "${ENGINE_ROOT}/src/engine/input/action_manager.cpp"
@@ -98,4 +99,5 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/spritesheetdemo)
     add_subdirectory(demos/animatordemo)
     add_subdirectory(demos/post_effects)
+    add_subdirectory(demos/jobsystemdemo)
 endif()

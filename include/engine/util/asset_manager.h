@@ -17,6 +17,7 @@
 #define INCLUDE_ENGINE_UTIL_ASSET_MANAGER_H_
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 namespace engine::util {
@@ -41,6 +42,7 @@ class AssetManager {
    * @return A shared pointer to the asset, or nullptr if loading fails.
    */
   static std::shared_ptr<T> Get(const std::string& path) {
+    std::lock_guard<std::mutex> lock(GetMutex());
     auto& cache = GetCache();
 
     if (cache.count(path) && !cache[path].expired()) {
@@ -59,6 +61,7 @@ class AssetManager {
    * @brief Clears references to assets that are no longer in use.
    */
   static void GarbageCollect() {
+    std::lock_guard<std::mutex> lock(GetMutex());
     auto& cache = GetCache();
     for (auto it = cache.begin(); it != cache.end();) {
       if (it->second.expired()) {
@@ -77,6 +80,15 @@ class AssetManager {
   static std::unordered_map<std::string, std::weak_ptr<T>>& GetCache() {
     static std::unordered_map<std::string, std::weak_ptr<T>> cache;
     return cache;
+  }
+
+  /**
+   * @brief Static mutex to protect the cache.
+   * @return Reference to the mutex.
+   */
+  static std::mutex& GetMutex() {
+    static std::mutex mutex;
+    return mutex;
   }
 };
 
