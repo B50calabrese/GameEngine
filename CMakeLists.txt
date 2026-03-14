@@ -34,6 +34,8 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/graphics/buffer_utils.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/camera.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/font.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/framebuffer.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/post_processor.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/primitive_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/shader.cpp"
@@ -95,4 +97,5 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/tweendemo)
     add_subdirectory(demos/spritesheetdemo)
     add_subdirectory(demos/animatordemo)
+    add_subdirectory(demos/post_effects)
 endif()

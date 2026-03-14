@@ -6,14 +6,14 @@
 #ifndef INCLUDE_ENGINE_UTIL_TWEEN_MANAGER_H_
 #define INCLUDE_ENGINE_UTIL_TWEEN_MANAGER_H_
 
-#include <engine/util/easing.h>
-
 #include <algorithm>
 #include <functional>
 #include <memory>
 #include <vector>
 
 #include <glm/glm.hpp>
+
+#include <engine/util/easing.h>
 
 namespace engine::util {
 
@@ -32,7 +32,8 @@ template <typename T>
 class TweenBuilder;
 
 /**
- * @brief Manages active tween tasks and provides a fluent API for creating them.
+ * @brief Manages active tween tasks and provides a fluent API for creating
+ * them.
  */
 class TweenManager {
  public:

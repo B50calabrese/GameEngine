@@ -12,6 +12,7 @@
 
 #include <string>
 
+#include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
 
 namespace engine {
@@ -50,6 +51,19 @@ void Window::SwapBuffers() const { glfwSwapBuffers(internal_window_); }
 // Private functions
 
 void Window::SetupCallbacks() {
+  glfwSetWindowUserPointer(internal_window_, this);
+
+  // 0. GLFW Framebuffer Size Callback
+  glfwSetFramebufferSizeCallback(
+      internal_window_, [](GLFWwindow* window, int width, int height) {
+        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+        if (win) {
+          win->width_ = width;
+          win->height_ = height;
+          graphics::Renderer::Get().HandleResize(width, height);
+        }
+      });
+
   // 1. GLFW Key Callback
   glfwSetKeyCallback(internal_window_, [](GLFWwindow* window, int key,
                                           int scancode, int action, int mods) {

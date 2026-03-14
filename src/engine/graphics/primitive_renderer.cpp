@@ -260,8 +260,8 @@ void PrimitiveRenderer::SubmitTexturedQuad(
     uv_min.y = 1.0f;
     uv_max.y = 0.0f;
   }
-  SubmitTexturedQuad(position, size, texture_id, uv_min, uv_max, color, rotation,
-                     origin);
+  SubmitTexturedQuad(position, size, texture_id, uv_min, uv_max, color,
+                     rotation, origin);
 }
 
 void PrimitiveRenderer::SubmitTexturedQuad(

@@ -191,6 +191,13 @@ class Renderer {
    */
   std::string ResolveAssetPath(const std::string& relative_path) const;
 
+  /**
+   * @brief Callback function for window resize events to adjust the viewport.
+   * @param width New width.
+   * @param height New height.
+   */
+  void HandleResize(int width, int height);
+
  private:
   Renderer() = default;
   ~Renderer() = default;
@@ -219,13 +226,6 @@ class Renderer {
    * @param height Viewport height.
    */
   void set_viewport(int width, int height) const;
-
-  /**
-   * @brief Callback function for window resize events to adjust the viewport.
-   * @param width New width.
-   * @param height New height.
-   */
-  void HandleResize(int& width, int& height) const;
 
   /**
    * @brief Used to set the asset root path.
