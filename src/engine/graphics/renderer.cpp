@@ -17,6 +17,7 @@
 
 #include <filesystem>
 
+#include <engine/core/job_system.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/post_processor.h>
 #include <engine/graphics/primitive_renderer.h>
@@ -28,17 +29,20 @@
 namespace engine::graphics {
 
 void Renderer::Clear() const {
+  ASSERT_MAIN_THREAD();
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::BeginFrame(Camera& camera) const {
+  ASSERT_MAIN_THREAD();
   PostProcessManager::Get().Begin();
   // Instruct renders to reset themselves for the frame.
   graphics::PrimitiveRenderer::StartBatch(camera.view_projection_matrix());
 }
 
 void Renderer::EndFrame() const {
+  ASSERT_MAIN_THREAD();
   // Flush all renderers.
   graphics::PrimitiveRenderer::FinalizeBatch();
   graphics::PrimitiveRenderer::RenderBatch();
@@ -46,6 +50,7 @@ void Renderer::EndFrame() const {
 }
 
 void Renderer::DrawRect(float x, float y, float width, float height) {
+  ASSERT_MAIN_THREAD();
   // Default white color for basic DrawRect call
   glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
   PrimitiveRenderer::SubmitQuad({x, y}, {width, height}, color);
@@ -53,6 +58,7 @@ void Renderer::DrawRect(float x, float y, float width, float height) {
 
 void Renderer::DrawRect(float x, float y, float width, float height, float r,
                         float g, float b) {
+  ASSERT_MAIN_THREAD();
   glm::vec4 color(r, g, b, 1.0f);
   PrimitiveRenderer::SubmitQuad({x, y}, {width, height}, color);
 }
@@ -60,11 +66,13 @@ void Renderer::DrawRect(float x, float y, float width, float height, float r,
 void Renderer::DrawQuad(const glm::vec2& position, const glm::vec2& size,
                         const glm::vec4& color, float rotation,
                         const glm::vec2& origin) {
+  ASSERT_MAIN_THREAD();
   PrimitiveRenderer::SubmitQuad(position, size, color, rotation, origin);
 }
 
 void Renderer::DrawTexturedRect(float x, float y, float w, float h,
                                 unsigned int texture_id, const float tint[4]) {
+  ASSERT_MAIN_THREAD();
   glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
   if (tint) {
     color = glm::vec4(tint[0], tint[1], tint[2], tint[3]);
@@ -77,6 +85,7 @@ void Renderer::DrawTexturedQuad(const glm::vec2& position,
                                 const glm::vec2& size, unsigned int texture_id,
                                 float rotation, const glm::vec4& tint,
                                 const glm::vec2& origin) {
+  ASSERT_MAIN_THREAD();
   PrimitiveRenderer::SubmitTexturedQuad(position, size, texture_id, tint,
                                         rotation, origin);
 }
@@ -85,6 +94,7 @@ void Renderer::DrawTexturedQuad(const glm::vec2& position,
                                 const glm::vec2& size, const Texture* texture,
                                 float rotation, const glm::vec4& tint,
                                 const glm::vec2& origin) {
+  ASSERT_MAIN_THREAD();
   if (texture) {
     PrimitiveRenderer::SubmitTexturedQuad(
         position, size, texture->renderer_id(), tint, rotation, origin);
@@ -95,6 +105,7 @@ void Renderer::DrawSprite(const class SpriteSheet* sprite_sheet, int index,
                           const glm::vec2& position, const glm::vec2& size,
                           float rotation, const glm::vec4& tint,
                           const glm::vec2& origin) {
+  ASSERT_MAIN_THREAD();
   if (sprite_sheet && sprite_sheet->texture()) {
     glm::vec2 uv_min, uv_max;
     sprite_sheet->GetUVs(index, &uv_min, &uv_max);
@@ -107,6 +118,7 @@ void Renderer::DrawSprite(const class SpriteSheet* sprite_sheet, int index,
 void Renderer::DrawText(const std::string& font_name, const std::string& text,
                         const glm::vec2& position, float rotation, float scale,
                         const glm::vec4& color) {
+  ASSERT_MAIN_THREAD();
   TextRenderer::Get().DrawText(font_name, text, position, rotation, scale,
                                color);
 }

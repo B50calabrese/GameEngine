@@ -4,6 +4,7 @@
  */
 
 #include <engine/core/application.h>
+#include <engine/core/job_system.h>
 #include <engine/core/window.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/render_queue.h>
@@ -47,6 +48,10 @@ void Application::Run() {
 
     // Run application wide update logic.
     this->OnUpdate(delta_time);
+
+    // Synchronization point: ensure all background jobs are finished before
+    // proceeding to finalize the frame.
+    core::JobSystem::Get().Wait();
 
     // Finalize rendering by flushing the command queue.
     graphics::RenderQueue::Default().Flush();

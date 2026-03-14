@@ -27,6 +27,7 @@
 
 #include <memory>
 
+#include <engine/core/job_system.h>
 #include <engine/core/window.h>
 #include <engine/graphics/renderer.h>
 #include <engine/util/logger.h>
@@ -59,8 +60,10 @@ void Engine::Init(const EngineConfig& engine_config) {
       engine_config.window_title);
   (graphics::Renderer::Get()).Init(*(Engine::internal_window_));
   (graphics::Renderer::Get()).set_asset_root(engine_config.asset_path);
+
+  core::JobSystem::Get().Init();
 }
 
-void Engine::Shutdown() {}
+void Engine::Shutdown() { core::JobSystem::Get().Shutdown(); }
 
 }  // namespace engine
