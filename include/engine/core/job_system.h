@@ -58,11 +58,24 @@ class JobSystem {
     std::future<ReturnType> res = task->get_future();
     {
       std::lock_guard<std::mutex> lock(queue_mutex_);
-      tasks_.emplace([task]() { (*task)(); });
+      busy_tasks_++;
+      tasks_.emplace([this, task]() {
+        (*task)();
+        {
+          std::lock_guard<std::mutex> lock(queue_mutex_);
+          busy_tasks_--;
+        }
+        wait_condition_.notify_all();
+      });
     }
     condition_.notify_one();
     return res;
   }
+
+  /**
+   * @brief Blocks until all submitted tasks have completed.
+   */
+  void Wait();
 
   /**
    * @brief Checks if the current thread is the thread that initialized the
@@ -89,7 +102,9 @@ class JobSystem {
 
   std::mutex queue_mutex_;
   std::condition_variable condition_;
+  std::condition_variable wait_condition_;
   bool stop_ = false;
+  size_t busy_tasks_ = 0;
 
   std::thread::id main_thread_id_;
 };

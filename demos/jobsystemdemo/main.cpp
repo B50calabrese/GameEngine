@@ -58,14 +58,13 @@ class JobSystemDemo : public engine::Application {
     size_t num_particles = particles_.size();
     if (num_particles > 0) {
       size_t particles_per_thread = num_particles / num_threads_;
-      std::vector<std::future<void>> futures;
 
       for (int i = 0; i < num_threads_; ++i) {
         size_t start = i * particles_per_thread;
         size_t end = (i == num_threads_ - 1) ? num_particles : (i + 1) * particles_per_thread;
 
         if (start < end) {
-          futures.push_back(engine::core::JobSystem::Get().Execute([this, start, end, delta_time]() {
+          engine::core::JobSystem::Get().Execute([this, start, end, delta_time]() {
             for (size_t j = start; j < end; ++j) {
               particles_[j].position += particles_[j].velocity * delta_time;
 
@@ -77,14 +76,12 @@ class JobSystemDemo : public engine::Application {
                 particles_[j].velocity.y *= -1;
               }
             }
-          }));
+          });
         }
       }
-
-      // Wait for all tasks to complete before drawing
-      for (auto& f : futures) {
-        f.wait();
-      }
+      // Explicitly wait for calculations to finish before we start reading
+      // positions for drawing.
+      engine::core::JobSystem::Get().Wait();
     }
 
     for (const auto& p : particles_) {
@@ -123,5 +120,6 @@ int main() {
   engine::Engine::Init(engine_config);
   JobSystemDemo demo;
   demo.Run();
+  engine::Engine::Shutdown();
   return 0;
 }

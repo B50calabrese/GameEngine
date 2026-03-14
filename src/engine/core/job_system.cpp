@@ -44,6 +44,11 @@ bool JobSystem::IsMainThread() const {
   return std::this_thread::get_id() == main_thread_id_;
 }
 
+void JobSystem::Wait() {
+  std::unique_lock<std::mutex> lock(queue_mutex_);
+  wait_condition_.wait(lock, [this]() { return tasks_.empty() && busy_tasks_ == 0; });
+}
+
 void JobSystem::WorkerLoop() {
   while (true) {
     std::function<void()> task;
