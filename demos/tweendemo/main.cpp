@@ -118,7 +118,7 @@ class TweenDemoApp : public Application {
 
     for (const auto& square : squares_) {
       Renderer::Get().DrawQuad(square.pos, {50.0f, 50.0f}, square.color,
-                               square.rotation, {25.0f, 25.0f});
+                               square.rotation);
     }
   }
 
