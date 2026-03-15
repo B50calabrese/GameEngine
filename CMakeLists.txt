@@ -27,6 +27,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/core/window.cpp"
     "${ENGINE_ROOT}/src/engine/input/input_manager.cpp"
     "${ENGINE_ROOT}/src/engine/input/action_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/ui/ui_systems.cpp"
     "${ENGINE_ROOT}/src/engine/scene/scene_manager.cpp"
     "${ENGINE_ROOT}/src/engine/util/logger.cpp"
     "${ENGINE_ROOT}/src/engine/util/easing.cpp"
@@ -100,4 +101,5 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/animatordemo)
     add_subdirectory(demos/post_effects)
     add_subdirectory(demos/jobsystemdemo)
+    add_subdirectory(demos/ui_menu)
 endif()

@@ -1,3 +1,8 @@
+#include <random>
+#include <vector>
+
+#include <glm/glm.hpp>
+
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
 #include <engine/core/job_system.h>
@@ -5,10 +10,6 @@
 #include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
 #include <engine/util/logger.h>
-
-#include <glm/glm.hpp>
-#include <random>
-#include <vector>
 
 struct Particle {
   glm::vec2 position;
@@ -25,9 +26,7 @@ class JobSystemDemo : public engine::Application {
     ResetParticles(50000);
   }
 
-  void OnShutdown() override {
-    LOG_INFO("Shutting down Job System Demo");
-  }
+  void OnShutdown() override { LOG_INFO("Shutting down Job System Demo"); }
 
   void OnUpdate(double delta_time_seconds) override {
     float delta_time = static_cast<float>(delta_time_seconds);
@@ -61,22 +60,26 @@ class JobSystemDemo : public engine::Application {
 
       for (int i = 0; i < num_threads_; ++i) {
         size_t start = i * particles_per_thread;
-        size_t end = (i == num_threads_ - 1) ? num_particles : (i + 1) * particles_per_thread;
+        size_t end = (i == num_threads_ - 1) ? num_particles
+                                             : (i + 1) * particles_per_thread;
 
         if (start < end) {
-          engine::core::JobSystem::Get().Execute([this, start, end, delta_time]() {
-            for (size_t j = start; j < end; ++j) {
-              particles_[j].position += particles_[j].velocity * delta_time;
+          engine::core::JobSystem::Get().Execute(
+              [this, start, end, delta_time]() {
+                for (size_t j = start; j < end; ++j) {
+                  particles_[j].position += particles_[j].velocity * delta_time;
 
-              // Bounce off screen edges
-              if (particles_[j].position.x < 0 || particles_[j].position.x > 1280) {
-                particles_[j].velocity.x *= -1;
-              }
-              if (particles_[j].position.y < 0 || particles_[j].position.y > 720) {
-                particles_[j].velocity.y *= -1;
-              }
-            }
-          });
+                  // Bounce off screen edges
+                  if (particles_[j].position.x < 0 ||
+                      particles_[j].position.x > 1280) {
+                    particles_[j].velocity.x *= -1;
+                  }
+                  if (particles_[j].position.y < 0 ||
+                      particles_[j].position.y > 720) {
+                    particles_[j].velocity.y *= -1;
+                  }
+                }
+              });
         }
       }
       // Explicitly wait for calculations to finish before we start reading
@@ -85,7 +88,8 @@ class JobSystemDemo : public engine::Application {
     }
 
     for (const auto& p : particles_) {
-      engine::graphics::Renderer::Get().DrawQuad(p.position, {2.0f, 2.0f}, p.color);
+      engine::graphics::Renderer::Get().DrawQuad(p.position, {2.0f, 2.0f},
+                                                 p.color);
     }
   }
 
@@ -102,11 +106,9 @@ class JobSystemDemo : public engine::Application {
     std::uniform_real_distribution<float> color(0, 1);
 
     for (size_t i = 0; i < count; ++i) {
-      particles_.push_back({
-          {pos_x(gen), pos_y(gen)},
-          {vel(gen), vel(gen)},
-          {color(gen), color(gen), color(gen), 1.0f}
-      });
+      particles_.push_back({{pos_x(gen), pos_y(gen)},
+                            {vel(gen), vel(gen)},
+                            {color(gen), color(gen), color(gen), 1.0f}});
     }
     LOG_INFO("Simulating %zu particles", count);
   }

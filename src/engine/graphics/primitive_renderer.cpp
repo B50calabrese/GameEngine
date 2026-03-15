@@ -42,17 +42,20 @@ static const char* kVertexSource = R"(
         layout (location = 1) in vec4 aColor;
         layout (location = 2) in vec2 aTexCoord;
         layout (location = 3) in float aTexIndex;
+        layout (location = 4) in float aIsFont;
 
         uniform mat4 u_ViewProjection; // Maps world space to screen space
 
         out vec4 vColor;
         out vec2 vTexCoord;
         out float vTexIndex;
+        out float vIsFont;
 
         void main() {
             vColor = aColor;
             vTexCoord = aTexCoord;
             vTexIndex = aTexIndex;
+            vIsFont = aIsFont;
             // Apply the camera transformation
             gl_Position = u_ViewProjection * vec4(aPos, 0.0, 1.0);
         }
@@ -63,6 +66,7 @@ static const char* kFragmentSource = R"(
         in vec4 vColor;
         in vec2 vTexCoord;
         in float vTexIndex;
+        in float vIsFont;
 
         uniform sampler2D uTextures[32];
 
@@ -106,6 +110,11 @@ static const char* kFragmentSource = R"(
                 case 31: texColor = texture(uTextures[31], vTexCoord); break;
                 default: texColor = vec4(1.0); break;
             }
+
+            if (vIsFont > 0.5) {
+                texColor = vec4(1.0, 1.0, 1.0, texColor.r);
+            }
+
             color = texColor * vColor;
         }
     )";
@@ -116,6 +125,9 @@ void PrimitiveRenderer::Init() {
                                   kMaxVertices * sizeof(Vertex2D));
 
   // Define Vertex Layout using Utility Helpers
+  glBindVertexArray(vao_);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+
   // Position: index 0, 2 floats
   BufferUtils::SetAttribute(0, 2, sizeof(Vertex2D),
                             offsetof(Vertex2D, position));
@@ -127,6 +139,9 @@ void PrimitiveRenderer::Init() {
   // TexIndex: index 3, 1 float
   BufferUtils::SetAttribute(3, 1, sizeof(Vertex2D),
                             offsetof(Vertex2D, tex_index));
+  // IsFont: index 4, 1 float
+  BufferUtils::SetAttribute(4, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, is_font));
 
   // Pre-populate Index Buffer (static pattern: 0,1,2, 2,3,0)
   std::vector<unsigned int> indices(kMaxIndices);
@@ -226,6 +241,8 @@ void PrimitiveRenderer::RenderBatch() {
 
   glBindVertexArray(0);
   default_shader_->Unbind();
+
+  vertex_batch_.clear();
 }
 
 int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
@@ -234,6 +251,11 @@ int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
     if (texture_slots_[i] == texture_id) {
       return static_cast<int>(i);
     }
+  }
+
+  if (texture_slot_index_ >= 32) {
+    // This should ideally trigger a flush, but we handle it in Submit
+    return 0;
   }
 
   texture_slots_[texture_slot_index_] = texture_id;
@@ -261,15 +283,16 @@ void PrimitiveRenderer::SubmitTexturedQuad(
     uv_max.y = 0.0f;
   }
   SubmitTexturedQuad(position, size, texture_id, uv_min, uv_max, color,
-                     rotation, origin);
+                     rotation, origin, /*is_font=*/false);
 }
 
 void PrimitiveRenderer::SubmitTexturedQuad(
     const glm::vec2& position, const glm::vec2& size, unsigned int texture_id,
     const glm::vec2& uv_min, const glm::vec2& uv_max, const glm::vec4& color,
-    float rotation, const glm::vec2& origin) {
+    float rotation, const glm::vec2& origin, bool is_font) {
   // Handle batch overflow or when we have too many textures.
   if (vertex_batch_.size() + 4 > kMaxVertices || texture_slot_index_ >= 32) {
+    FinalizeBatch();
     RenderBatch();
     StartBatch(current_view_projection_);
   }
@@ -322,6 +345,7 @@ void PrimitiveRenderer::SubmitTexturedQuad(
     v.tex_coords[0] = texture_coords[i][0];
     v.tex_coords[1] = texture_coords[i][1];
     v.tex_index = tex_index;
+    v.is_font = is_font ? 1.0f : 0.0f;
 
     vertex_batch_.push_back(v);
   }

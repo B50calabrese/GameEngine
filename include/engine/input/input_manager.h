@@ -3,11 +3,6 @@
  * @brief Handles keyboard and mouse input.
  */
 
-/**
- * @dir include/engine/input
- * @brief Input management.
- */
-
 #ifndef INCLUDE_ENGINE_INPUT_INPUT_MANAGER_H_
 #define INCLUDE_ENGINE_INPUT_INPUT_MANAGER_H_
 
@@ -150,9 +145,20 @@ class InputManager {
   /**
    * @brief Retrieves the mouse position in screen coordinates.
    *
-   * @returns the screen position in [-1, 1] space.
+   * @returns the screen position in pixel space.
    */
   glm::vec2 mouse_screen_pos() const { return glm::vec2(mouse_x_, mouse_y_); }
+
+  /**
+   * @brief Returns true if the input has been consumed by the UI system.
+   * @return `true` if consumed.
+   */
+  bool IsConsumed() const { return is_consumed_; }
+
+  /**
+   * @brief Marks the input as consumed for the current frame.
+   */
+  void Consume() { is_consumed_ = true; }
 
   /**
    * @brief Updates the key states for the current frame.
@@ -183,9 +189,14 @@ class InputManager {
    * events.
    */
   void HandleCursorPosition(double xpos, double ypos);
+  void HandleResize(int width, int height) {
+    window_height_ = static_cast<float>(height);
+  }
 
   float mouse_x_ = 0.0f;
   float mouse_y_ = 0.0f;
+  float window_height_ = 600.0f;
+  bool is_consumed_ = false;
   std::map<KeyCode, bool> current_key_state_;
   std::map<KeyCode, bool> previous_key_state_;
 

@@ -8,6 +8,8 @@
 
 #include <string>
 
+#include <engine/ecs/registry.h>
+
 namespace engine {
 
 /**
@@ -60,9 +62,16 @@ class Scene {
    */
   inline const std::string& name() const { return debug_name_; }
 
+  /**
+   * @brief Returns the registry associated with this scene.
+   */
+  ecs::Registry& registry() { return registry_; }
+
  protected:
   /** @brief The debug name of the scene. */
   std::string debug_name_;
+  /** @brief The ECS registry for this scene. */
+  ecs::Registry registry_;
 };
 }  // namespace engine
 

@@ -26,6 +26,8 @@ struct Vertex2D {
   float tex_coords[2];
   /** @brief Index into the texture slots array. */
   float tex_index;
+  /** @brief 1.0 if it's a font, 0.0 otherwise. */
+  float is_font;
 };
 
 }  // namespace engine::graphics

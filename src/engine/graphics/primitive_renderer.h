@@ -97,13 +97,15 @@ class PrimitiveRenderer {
    * @param color The RGBA tint color.
    * @param rotation The rotation in degrees.
    * @param origin The origin point for rotation.
+   * @param is_font Whether this quad represents a font glyph.
    */
   static void SubmitTexturedQuad(const glm::vec2& position,
                                  const glm::vec2& size, unsigned int texture_id,
                                  const glm::vec2& uv_min,
                                  const glm::vec2& uv_max,
                                  const glm::vec4& color, float rotation = 0.0f,
-                                 const glm::vec2& origin = {0.0f, 0.0f});
+                                 const glm::vec2& origin = {0.0f, 0.0f},
+                                 bool is_font = false);
 
  private:
   // OpenGL buffers.

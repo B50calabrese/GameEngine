@@ -3,25 +3,18 @@
  * @brief Main coordinator for ECS entities and components.
  */
 
-/**
- * @dir include/engine/ecs
- * @brief Entity Component System.
- */
-
-/**
- * @namespace engine::ecs
- * @brief Entity Component System implementation.
- */
-
 #ifndef INCLUDE_ENGINE_ECS_REGISTRY_H_
 #define INCLUDE_ENGINE_ECS_REGISTRY_H_
 
+#include <functional>
 #include <memory>
 #include <typeindex>
 #include <unordered_map>
+#include <vector>
 
 #include <engine/ecs/component_storage.h>
 #include <engine/ecs/entity_manager.h>
+
 namespace engine::ecs {
 
 /**
@@ -93,6 +86,63 @@ class Registry {
   template <typename T>
   bool HasComponent(EntityID entity) {
     return GetStorage<T>()->Has(entity);
+  }
+
+  /**
+   * @brief A view of entities that have a specific set of components.
+   */
+  template <typename... Components>
+  class View {
+   public:
+    View(Registry* registry) : registry_(registry) {
+      if (!registry_) return;
+      for (EntityID entity = 0; entity < registry_->entity_manager_.next_id();
+           ++entity) {
+        if (registry_->entity_manager_.IsAlive(entity) &&
+            (registry_->HasComponent<Components>(entity) && ...)) {
+          entities_.push_back(entity);
+        }
+      }
+    }
+
+    View() : registry_(nullptr) {}
+
+    template <typename Func>
+    std::vector<EntityID> Filter(Func&& predicate) {
+      std::vector<EntityID> result;
+      if (!registry_) return result;
+      for (auto entity : entities_) {
+        if (registry_->entity_manager_.IsAlive(entity) &&
+            (registry_->HasComponent<Components>(entity) && ...) &&
+            predicate(registry_->GetComponent<Components>(entity)...)) {
+          result.push_back(entity);
+        }
+      }
+      return result;
+    }
+
+    auto begin() { return entities_.begin(); }
+    auto end() { return entities_.end(); }
+
+   private:
+    Registry* registry_;
+    std::vector<EntityID> entities_;
+  };
+
+  template <typename... Components>
+  View<Components...> GetView() {
+    return View<Components...>(this);
+  }
+
+  template <typename... Components, typename Func>
+  void ForEach(Func&& func) {
+    auto view = GetView<Components...>();
+    for (auto entity : view) {
+      if (entity_manager_.IsAlive(entity) &&
+          (HasComponent<Components>(entity) && ...)) {
+        func(GetComponent<Components>(entity)...);
+      }
+    }
   }
 
  private:

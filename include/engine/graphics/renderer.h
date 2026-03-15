@@ -71,6 +71,11 @@ class Renderer {
   void EndFrame() const;
 
   /**
+   * @brief Flushes all currently batched geometry to the GPU.
+   */
+  void Flush() const;
+
+  /**
    * @brief Draws a solid white rectangle to the screen.
    *
    * @param x The x-coordinate of the bottom-left corner.
