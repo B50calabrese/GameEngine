@@ -3,11 +3,6 @@
  * @brief InputManager class implementation.
  */
 
-/**
- * @dir src/engine/input
- * @brief Input management implementation.
- */
-
 #include <iostream>
 
 #include <GLFW/glfw3.h>
@@ -17,16 +12,10 @@
 namespace engine {
 namespace {
 static const std::map<int, KeyCode>& GetKeyCodeMap() {
-  // The map is static, meaning it's initialized only once
-  // when this function is first called (thread-safe since C++11).
   static const std::map<int, KeyCode> s_KeyCodeMap = {
-
-      // --- Mouse Buttons (GLFW uses 0, 1, 2 for buttons) ---
       {GLFW_MOUSE_BUTTON_LEFT, KeyCode::KC_MOUSE_LEFT},
       {GLFW_MOUSE_BUTTON_RIGHT, KeyCode::KC_MOUSE_RIGHT},
       {GLFW_MOUSE_BUTTON_MIDDLE, KeyCode::KC_MOUSE_MIDDLE},
-
-      // --- Alphabet Keys (Sequential, but mapped explicitly for safety) ---
       {GLFW_KEY_A, KeyCode::KC_A},
       {GLFW_KEY_B, KeyCode::KC_B},
       {GLFW_KEY_C, KeyCode::KC_C},
@@ -53,8 +42,6 @@ static const std::map<int, KeyCode>& GetKeyCodeMap() {
       {GLFW_KEY_X, KeyCode::KC_X},
       {GLFW_KEY_Y, KeyCode::KC_Y},
       {GLFW_KEY_Z, KeyCode::KC_Z},
-
-      // --- Number Keys (Top Row) ---
       {GLFW_KEY_0, KeyCode::KC_0},
       {GLFW_KEY_1, KeyCode::KC_1},
       {GLFW_KEY_2, KeyCode::KC_2},
@@ -65,8 +52,6 @@ static const std::map<int, KeyCode>& GetKeyCodeMap() {
       {GLFW_KEY_7, KeyCode::KC_7},
       {GLFW_KEY_8, KeyCode::KC_8},
       {GLFW_KEY_9, KeyCode::KC_9},
-
-      // --- Functional Keys ---
       {GLFW_KEY_ESCAPE, KeyCode::KC_ESCAPE},
       {GLFW_KEY_ENTER, KeyCode::KC_ENTER},
       {GLFW_KEY_SPACE, KeyCode::KC_SPACE},
@@ -76,14 +61,10 @@ static const std::map<int, KeyCode>& GetKeyCodeMap() {
       {GLFW_KEY_LEFT_ALT, KeyCode::KC_LEFT_ALT},
       {GLFW_KEY_BACKSPACE, KeyCode::KC_BACKSPACE},
       {GLFW_KEY_DELETE, KeyCode::KC_DELETE},
-
-      // --- Navigation/Movement Keys ---
       {GLFW_KEY_UP, KeyCode::KC_UP},
       {GLFW_KEY_DOWN, KeyCode::KC_DOWN},
       {GLFW_KEY_LEFT, KeyCode::KC_LEFT},
       {GLFW_KEY_RIGHT, KeyCode::KC_RIGHT},
-
-      // --- System/Function Keys ---
       {GLFW_KEY_F1, KeyCode::KC_F1},
       {GLFW_KEY_F2, KeyCode::KC_F2},
       {GLFW_KEY_F3, KeyCode::KC_F3},
@@ -96,8 +77,6 @@ static const std::map<int, KeyCode>& GetKeyCodeMap() {
       {GLFW_KEY_F10, KeyCode::KC_F10},
       {GLFW_KEY_F11, KeyCode::KC_F11},
       {GLFW_KEY_F12, KeyCode::KC_F12},
-
-      // --- Utility Keys ---
       {GLFW_KEY_HOME, KeyCode::KC_HOME},
       {GLFW_KEY_END, KeyCode::KC_END},
       {GLFW_KEY_PAGE_UP, KeyCode::KC_PAGE_UP},
@@ -112,17 +91,16 @@ InputManager& InputManager::Get() {
 }
 
 bool InputManager::IsKeyDown(KeyCode key_code) const {
-  if (current_key_state_.find(key_code) == current_key_state_.end()) {
+  auto it = current_key_state_.find(key_code);
+  if (it == current_key_state_.end()) {
     return false;
   }
-  return current_key_state_.at(key_code);
+  return it->second;
 }
 
 bool InputManager::IsKeyPressed(KeyCode key_code) const {
-  // True if key is DOWN now (Current) AND was UP last frame (Previous)
   auto current_it = current_key_state_.find(key_code);
   auto previous_it = previous_key_state_.find(key_code);
-
   bool is_current_down =
       (current_it != current_key_state_.end()) ? current_it->second : false;
   bool was_previous_down =
@@ -131,26 +109,23 @@ bool InputManager::IsKeyPressed(KeyCode key_code) const {
 }
 
 bool InputManager::IsKeyReleased(KeyCode key_code) const {
-  // True if key is UP now (Current) AND was DOWN last frame (Previous)
   auto current_it = current_key_state_.find(key_code);
   auto previous_it = previous_key_state_.find(key_code);
-
   bool is_current_down =
       (current_it != current_key_state_.end()) ? current_it->second : false;
   bool was_previous_down =
       (previous_it != previous_key_state_.end()) ? previous_it->second : false;
-
   return !is_current_down && was_previous_down;
 }
 
-void InputManager::UpdateState() { previous_key_state_ = current_key_state_; }
-
-// Private functions
+void InputManager::UpdateState() {
+  previous_key_state_ = current_key_state_;
+  is_consumed_ = false;
+}
 
 void InputManager::HandleKey(int raw_key_code, int action) {
   KeyCode key = MapRawCode(raw_key_code);
   if (key == static_cast<KeyCode>(-1)) return;
-
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
     current_key_state_[key] = true;
   } else if (action == GLFW_RELEASE) {
@@ -161,7 +136,6 @@ void InputManager::HandleKey(int raw_key_code, int action) {
 void InputManager::HandleMouseButton(int raw_button_code, int action) {
   KeyCode key = MapRawCode(raw_button_code);
   if (key == static_cast<KeyCode>(-1)) return;
-
   if (action == GLFW_PRESS) {
     current_key_state_[key] = true;
   } else if (action == GLFW_RELEASE) {
@@ -171,19 +145,15 @@ void InputManager::HandleMouseButton(int raw_button_code, int action) {
 
 void InputManager::HandleCursorPosition(double xpos, double ypos) {
   mouse_x_ = static_cast<float>(xpos);
-  mouse_y_ = static_cast<float>(ypos);
+  mouse_y_ = window_height_ - static_cast<float>(ypos);
 }
 
-// The function that performs the mapping lookup
 KeyCode InputManager::MapRawCode(int raw_code) const {
   const auto& map = GetKeyCodeMap();
-
   auto it = map.find(raw_code);
-
   if (it != map.end()) {
     return it->second;
   }
-
   return static_cast<KeyCode>(-1);
 }
 

@@ -61,6 +61,7 @@ void Window::SetupCallbacks() {
           win->width_ = width;
           win->height_ = height;
           graphics::Renderer::Get().HandleResize(width, height);
+          InputManager::Get().HandleResize(width, height);
         }
       });
 

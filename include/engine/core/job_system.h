@@ -53,8 +53,8 @@ class JobSystem {
   template <typename F>
   auto Execute(F&& f) -> std::future<decltype(f())> {
     using ReturnType = decltype(f());
-    auto task = std::make_shared<std::packaged_task<ReturnType()>>(
-        std::forward<F>(f));
+    auto task =
+        std::make_shared<std::packaged_task<ReturnType()>>(std::forward<F>(f));
     std::future<ReturnType> res = task->get_future();
     {
       std::lock_guard<std::mutex> lock(queue_mutex_);
@@ -118,15 +118,16 @@ class JobSystem {
 #ifdef NDEBUG
 #define ASSERT_MAIN_THREAD() ((void)0)
 #else
-#include <engine/util/logger.h>
 #include <cstdlib>
-#define ASSERT_MAIN_THREAD()                                                   \
-  do {                                                                         \
-    if (!engine::core::JobSystem::Get().IsMainThread()) {                      \
-      LOG_ERR(                                                                 \
-          "Assertion failed: Function must be called from the main thread.");  \
-      std::abort();                                                            \
-    }                                                                          \
+
+#include <engine/util/logger.h>
+#define ASSERT_MAIN_THREAD()                                                  \
+  do {                                                                        \
+    if (!engine::core::JobSystem::Get().IsMainThread()) {                     \
+      LOG_ERR(                                                                \
+          "Assertion failed: Function must be called from the main thread."); \
+      std::abort();                                                           \
+    }                                                                         \
   } while (0)
 #endif
 

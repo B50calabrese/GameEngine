@@ -16,7 +16,6 @@
 namespace engine::graphics {
 
 void TextRenderer::Init() {}
-
 void TextRenderer::Shutdown() { fonts_.clear(); }
 
 void TextRenderer::LoadFont(const std::string& name, const std::string& path,
@@ -38,26 +37,17 @@ void TextRenderer::DrawText(const std::string& font_name,
                             float rotation, float scale,
                             const glm::vec4& color) {
   if (fonts_.find(font_name) == fonts_.end()) return;
-
   auto& characters = fonts_[font_name]->characters();
   float x_cursor = 0.0f;
-
   for (char c : text) {
-    if (characters.find(c) == characters.end()) continue;
-    Character ch = characters.at(c);
-
-    // Character bearing: horizontal offset from origin to left of glyph,
-    // and vertical offset from origin to top of glyph.
+    auto it = characters.find(c);
+    if (it == characters.end()) continue;
+    const Character& ch = it->second;
     float xpos = position.x + (x_cursor + ch.bearing.x) * scale;
     float ypos = position.y - (ch.size.y - ch.bearing.y) * scale;
-
     float w = ch.size.x * scale;
     float h = ch.size.y * scale;
-
-    // submit_textured_quad handles rotation around the specified origin.
-    // Calculate character position relative to text origin
     glm::vec2 char_rel_pos = glm::vec2(xpos - position.x, ypos - position.y);
-
     if (rotation != 0.0f) {
       float rad = glm::radians(rotation);
       float cos_a = std::cos(rad);
@@ -66,11 +56,9 @@ void TextRenderer::DrawText(const std::string& font_name,
       float ry = char_rel_pos.x * sin_a + char_rel_pos.y * cos_a;
       char_rel_pos = glm::vec2(rx, ry);
     }
-
-    PrimitiveRenderer::SubmitTexturedQuad(position + char_rel_pos, {w, h},
-                                          ch.texture_id, color, rotation,
-                                          {0.0f, 0.0f}, true);
-
+    PrimitiveRenderer::SubmitTexturedQuad(
+        position + char_rel_pos, {w, h}, ch.texture_id, {0.0f, 1.0f},
+        {1.0f, 0.0f}, color, rotation, {0.0f, 0.0f}, /*is_font=*/true);
     x_cursor += (ch.advance >> 6);
   }
 }

@@ -44,9 +44,14 @@ void Renderer::BeginFrame(Camera& camera) const {
 void Renderer::EndFrame() const {
   ASSERT_MAIN_THREAD();
   // Flush all renderers.
+  Flush();
+  PostProcessManager::Get().End();
+}
+
+void Renderer::Flush() const {
+  ASSERT_MAIN_THREAD();
   graphics::PrimitiveRenderer::FinalizeBatch();
   graphics::PrimitiveRenderer::RenderBatch();
-  PostProcessManager::Get().End();
 }
 
 void Renderer::DrawRect(float x, float y, float width, float height) {

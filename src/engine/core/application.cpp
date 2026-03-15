@@ -12,6 +12,7 @@
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
+#include <engine/ui/ui_systems.h>
 
 namespace engine {
 
@@ -25,43 +26,46 @@ void Application::Run() {
       static_cast<float>(win.height()));
 
   while (win.IsRunning()) {
-    double delta_time = win.delta_time();  // Get time since last frame
+    double delta_time = win.delta_time();
 
-    // Update the input manager's state and poll for events.
     input.UpdateState();
     win.PollEvents();
     ActionManager::Get().Update();
 
-    // Dispatch the new input to the appropriate scenes.
     [[maybe_unused]] bool input_handled = SceneManager::Get().DispatchInput();
 
-    // Reset the render queue for the new frame.
     graphics::RenderQueue::Default().Clear();
 
-    // Pre-rendering calls to prepare the renderer prior to drawing anything.
     graphics::Renderer::Get().BeginFrame(*main_camera_);
     graphics::Renderer::Get().Clear();
 
-    // Run scene specific update and rendering logic.
     SceneManager::Get().UpdateActiveScene(static_cast<float>(delta_time));
-    SceneManager::Get().RenderActiveScene();
 
-    // Run application wide update logic.
+    Scene* active_scene = SceneManager::Get().GetActiveScene();
+    if (active_scene) {
+      ecs::Registry& reg = active_scene->registry();
+      ui::UISyncSystem::Update(reg);
+      ui::UIInputSystem::Update(reg);
+      ui::UILayoutSystem::Update(reg, win.width(), win.height());
+    }
+
+    SceneManager::Get().RenderActiveScene();
     this->OnUpdate(delta_time);
 
-    // Synchronization point: ensure all background jobs are finished before
-    // proceeding to finalize the frame.
     core::JobSystem::Get().Wait();
 
-    // Finalize rendering by flushing the command queue.
     graphics::RenderQueue::Default().Flush();
+    graphics::Renderer::Get().Flush();
 
-    // End the frame rendering and flush the renderer
+    if (active_scene) {
+      static ui::UIRenderSystem ui_render_system;
+      ui_render_system.Render(active_scene->registry(), win.width(),
+                              win.height());
+    }
+
     graphics::Renderer::Get().EndFrame();
     win.SwapBuffers();
   }
-
-  // 5. Shutdown
   OnShutdown();
 }
 

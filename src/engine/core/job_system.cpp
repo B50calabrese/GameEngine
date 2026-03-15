@@ -4,7 +4,6 @@
  */
 
 #include <engine/core/job_system.h>
-
 #include <engine/util/logger.h>
 
 namespace engine::core {
@@ -46,7 +45,8 @@ bool JobSystem::IsMainThread() const {
 
 void JobSystem::Wait() {
   std::unique_lock<std::mutex> lock(queue_mutex_);
-  wait_condition_.wait(lock, [this]() { return tasks_.empty() && busy_tasks_ == 0; });
+  wait_condition_.wait(lock,
+                       [this]() { return tasks_.empty() && busy_tasks_ == 0; });
 }
 
 void JobSystem::WorkerLoop() {

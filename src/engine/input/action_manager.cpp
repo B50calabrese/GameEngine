@@ -19,12 +19,9 @@ void ActionManager::BindAction(const std::string& action_name,
 
 void ActionManager::Update() {
   auto& im = InputManager::Get();
-
   for (auto& [name, data] : registry_) {
     data.was_active_last_frame = data.is_active_this_frame;
     data.is_active_this_frame = false;
-
-    // An action is active if ANY of its bindings are pressed
     for (KeyCode code : data.bindings) {
       if (im.IsKeyDown(code)) {
         data.is_active_this_frame = true;
@@ -51,5 +48,11 @@ bool ActionManager::IsReleased(const std::string& action_name) const {
   if (it == registry_.end()) return false;
   return !it->second.is_active_this_frame && it->second.was_active_last_frame;
 }
+
+bool ActionManager::IsConsumed() const {
+  return InputManager::Get().IsConsumed();
+}
+
+void ActionManager::Consume() { InputManager::Get().Consume(); }
 
 }  // namespace engine
