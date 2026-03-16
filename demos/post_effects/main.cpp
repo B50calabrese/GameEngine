@@ -64,6 +64,10 @@ class PostEffectsDemo : public Application {
 };
 
 int main() {
+  EngineConfig config;
+  config.window_width = 800;
+  config.window_height = 600;
+  Engine::Init(config);
   PostEffectsDemo demo;
   demo.Run();
   return 0;
