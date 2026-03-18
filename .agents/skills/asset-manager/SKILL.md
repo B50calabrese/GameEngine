@@ -1,7 +1,7 @@
 ---
 id: asset-manager
 subsystem: util
-version: 0.1.0
+version: 0.2.0
 author_persona: Senior Systems Architect
 ---
 
@@ -11,6 +11,18 @@ author_persona: Senior Systems Architect
 - **Centralized Ownership**: Assets (textures, fonts, shaders) must be managed by the `AssetManager<T>` to avoid redundant loading and to centralize lifecycle management.
 - **Thread Safety**: Access to the `AssetManager` must be thread-safe for parallel resource loading.
 </guiding_principles>
+
+## Contextual Instructions
+
+### 🛠️ Engine Contributor Context (Core Development)
+- **Goal**: Add support for new asset types or improve caching.
+- **Constraint**: Ensure thread safety using the static mutex per asset type.
+- **Gotcha**: The static `Load` method in asset classes must remain compatible with the `AssetManager` template.
+
+### 🎮 Game Developer Context (Application Logic)
+- **Goal**: Load and retrieve game assets.
+- **Constraint**: Use `AssetManager<T>::Get()` to fetch shared pointers. Never hold long-lived `shared_ptr`s to assets globally; prefer local scope or component-bound lifetimes.
+- **Golden Sample**: <golden_sample file="include/engine/util/asset_manager.h" />
 
 ## Subsystem Architecture
 

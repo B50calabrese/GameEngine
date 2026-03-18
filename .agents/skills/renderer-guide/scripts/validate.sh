@@ -1,26 +1,27 @@
 #!/bin/bash
 
 # Descriptive Validation Script for Renderer Subsystem
-# This script outlines the manual and automated steps to verify Renderer changes.
+# This script distinguishes between core rendering and batching verification.
 
 echo "### Renderer Subsystem Validation Guide ###"
 
-# 1. Automated Build Check
-echo "Step 1: Verify Build"
-echo "  Run: mkdir -p build && cd build && cmake .. && make GameEngine demos/rendererdemo demos/renderqueuedemo"
-
-# 2. Execution Check
-echo "Step 2: Run Renderer Demos"
+# 🛠️ INTERNAL VERIFICATION (Engine Contributor)
+echo "--- Core Subsystem Check (Internal) ---"
+echo "1. Verify Core Renderer and Shaders"
+echo "  Run: mkdir -p build && cd build && cmake .. && make GameEngine demos/rendererdemo"
 echo "  Run: xvfb-run -a ./build/demos/rendererdemo/RendererDemo"
+echo "  Goal: Ensure the low-level rendering API (direct GL calls) is functioning correctly."
+
+# 🎮 INTEGRATION VERIFICATION (Game Developer)
+echo "--- API Usage Check (Integration) ---"
+echo "1. Run RenderQueue and Batching Demo"
+echo "  Run: make demos/renderqueuedemo"
 echo "  Run: xvfb-run -a ./build/demos/renderqueuedemo/RenderQueueDemo"
-echo "  Expectation: The applications should render correctly without visual artifacts or crashes."
+echo "  Expectation: The application should render correctly with Z-sorting and texture-based batching."
 
-# 3. Unit Test Verification (if applicable)
-echo "Step 3: Run Renderer Unit Tests (Planned)"
-echo "  Run: ./build/tests/renderer_tests (Wait for test infrastructure implementation)"
-
-# 4. Code Style Verification
-echo "Step 4: Verify Google C++ Style"
+# 🧼 STYLE VERIFICATION
+echo "--- Style Check ---"
+echo "1. Verify Google C++ Style Compliance"
 echo "  Run: clang-format -i include/engine/graphics/* src/engine/graphics/*"
 echo "  Run: git diff --exit-code"
 

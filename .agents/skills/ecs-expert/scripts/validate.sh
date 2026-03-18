@@ -1,25 +1,25 @@
 #!/bin/bash
 
 # Descriptive Validation Script for ECS Subsystem
-# This script outlines the manual and automated steps to verify ECS changes.
+# This script distinguishes between core and integration verification.
 
 echo "### ECS Subsystem Validation Guide ###"
 
-# 1. Automated Build Check
-echo "Step 1: Verify Build"
-echo "  Run: mkdir -p build && cd build && cmake .. && make GameEngine demos/ecsdemo"
+# 🛠️ INTERNAL VERIFICATION (Engine Contributor)
+echo "--- Core Subsystem Check (Internal) ---"
+echo "1. Verify Registry and ComponentStorage Integrity"
+echo "  Run: mkdir -p build && cd build && cmake .. && make GameEngine"
+echo "  Goal: Ensure no breaking changes to ECS template logic or memory layouts."
 
-# 2. Execution Check
-echo "Step 2: Run ECS Demo"
+# 🎮 INTEGRATION VERIFICATION (Game Developer)
+echo "--- API Usage Check (Integration) ---"
+echo "1. Run ECS Demo"
 echo "  Run: xvfb-run -a ./build/demos/ecsdemo/EcsDemo"
-echo "  Expectation: The application should run without segfaults and demonstrate entity/component creation."
+echo "  Expectation: The application should run without segfaults and demonstrate entity creation/view iteration."
 
-# 3. Unit Test Verification (if applicable)
-echo "Step 3: Run ECS Unit Tests (Planned)"
-echo "  Run: ./build/tests/ecs_tests (Wait for test infrastructure implementation)"
-
-# 4. Code Style Verification
-echo "Step 4: Verify Google C++ Style"
+# 🧼 STYLE VERIFICATION
+echo "--- Style Check ---"
+echo "1. Verify Google C++ Style Compliance"
 echo "  Run: clang-format -i include/engine/ecs/* src/engine/ecs/*"
 echo "  Run: git diff --exit-code"
 

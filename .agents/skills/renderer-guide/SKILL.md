@@ -1,7 +1,7 @@
 ---
 id: renderer-guide
 subsystem: renderer
-version: 1.0.0
+version: 1.1.0
 author_persona: Senior Systems Architect
 ---
 
@@ -14,18 +14,26 @@ author_persona: Senior Systems Architect
 - **Batched Rendering**: Avoid redundant `Flush` calls. Batch similar drawing commands whenever possible to minimize draw calls.
 </guiding_principles>
 
+## Contextual Instructions
+
+### 🛠️ Engine Contributor Context (Core Development)
+- **Goal**: Maintain and optimize `Renderer`, `RenderQueue`, or the `PostProcessManager`.
+- **Constraint**: Ensure GL context is bound when initializing shaders or framebuffers.
+- **Gotcha**: The `Renderer`'s viewport must be updated manually in `HandleResize` when the window dimensions change.
+
+### 🎮 Game Developer Context (Application Logic)
+- **Goal**: Use the rendering API for graphics and UI.
+- **Constraint**: Submit all 2D objects to the `RenderQueue::Default()`. Do not call `Renderer::Draw*` directly.
+- **Golden Samples**:
+  - <golden_sample file="demos/rendererdemo/main.cpp" /> - Basic API usage.
+  - <golden_sample file="demos/renderqueuedemo/main.cpp" /> - Optimized batching via `RenderQueue`.
+
 ## Subsystem Architecture
 
 The rendering pipeline is designed for high-performance 2D drawing:
 - `Renderer`: A singleton that manages the OpenGL context and provides the core primitive and textured quad drawing API.
 - `RenderQueue`: A sorting and optimization layer that collects `RenderCommand` objects, sorts them by Z-order and Texture ID, and flushes them to the `Renderer`.
 - `PostProcessManager`: A singleton that manages a full-screen post-processing pipeline (e.g., screen shake, flash overlays).
-
-## Golden Samples
-
-Proper usage of the `Renderer` and `RenderQueue` can be found in:
-- <golden_sample file="demos/rendererdemo/main.cpp" /> - Basic Renderer API usage.
-- <golden_sample file="demos/renderqueuedemo/main.cpp" /> - Optimized batching via `RenderQueue`.
 
 ## Gotchas
 
