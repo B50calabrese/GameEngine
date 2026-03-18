@@ -88,6 +88,27 @@ endif()
 # --- 6. Add Demos (Optional when building as a library) ---
 # We wrap this in a check so the game doesn't build engine demos by default
 if(PROJECT_NAME STREQUAL "GameEngine")
+    # Common assets for all demos
+    set(COMMON_ASSETS_DIR "${ENGINE_ROOT}/demos/assets")
+    set(COMMON_ASSETS_BUILD_DIR "${CMAKE_BINARY_DIR}/demos/assets")
+
+    # Copy common assets once to the build directory
+    file(COPY "${COMMON_ASSETS_DIR}/" DESTINATION "${COMMON_ASSETS_BUILD_DIR}")
+
+    # Helper function to add a demo executable
+    function(add_engine_demo DEMO_NAME SOURCE_FILES)
+        add_executable(${DEMO_NAME} ${SOURCE_FILES})
+        target_link_libraries(${DEMO_NAME} PRIVATE GameEngine)
+
+        # All demos use the shared assets directory
+        target_compile_definitions(${DEMO_NAME} PRIVATE ENGINE_ASSETS_PATH="${COMMON_ASSETS_BUILD_DIR}/")
+
+        # Set a consistent output directory for demos
+        set_target_properties(${DEMO_NAME} PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/demos/${DEMO_NAME}"
+        )
+    endfunction()
+
     add_subdirectory(demos/applicationdemo)
     add_subdirectory(demos/ecsdemo)
     add_subdirectory(demos/rendererdemo)

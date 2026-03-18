@@ -1,3 +1,1 @@
-add_executable(JobSystemDemo main.cpp)
-
-target_link_libraries(JobSystemDemo PRIVATE GameEngine)
+add_engine_demo(JobSystemDemo "main.cpp")

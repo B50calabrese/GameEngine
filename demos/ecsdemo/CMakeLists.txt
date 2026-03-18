@@ -1,3 +1,1 @@
-add_executable(EcsDemo main.cpp)
-
-target_link_libraries(EcsDemo PRIVATE GameEngine)
+add_engine_demo(EcsDemo "main.cpp")
