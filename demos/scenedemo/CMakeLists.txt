@@ -1,3 +1,1 @@
-add_executable(SceneDemo main.cpp)
-
-target_link_libraries(SceneDemo PRIVATE GameEngine)
+add_engine_demo(SceneDemo "main.cpp")

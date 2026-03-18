@@ -1,3 +1,1 @@
-add_executable(WindowDemo main.cpp)
-
-target_link_libraries(WindowDemo PRIVATE GameEngine)
+add_engine_demo(WindowDemo "main.cpp")

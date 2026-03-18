@@ -1,2 +1,1 @@
-add_executable(PostEffectsDemo main.cpp)
-target_link_libraries(PostEffectsDemo GameEngine)
+add_engine_demo(PostEffectsDemo "main.cpp")
