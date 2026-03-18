@@ -145,6 +145,16 @@ class Registry {
     }
   }
 
+  /**
+   * @brief Clears all entities and components from the registry.
+   */
+  void Clear() {
+    for (auto& [type, storage] : storages_) {
+      storage->Clear();
+    }
+    entity_manager_.Clear();
+  }
+
  private:
   /**
    * @brief Gets the appropriate ComponentStorage for the given type.

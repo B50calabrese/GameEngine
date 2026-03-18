@@ -29,11 +29,12 @@ void EntityManager::DestroyEntity(EntityID entity) {
 }
 
 bool EntityManager::IsAlive(EntityID entity) const {
-  if (entity < next_id_) {
-    return true;
-  }
   auto it = std::find(free_entities_.begin(), free_entities_.end(), entity);
-  // If it is at the end of the vector then it is alive.
-  return it != free_entities_.end();
+  return entity < next_id_ && it == free_entities_.end();
+}
+
+void EntityManager::Clear() {
+  next_id_ = 0;
+  free_entities_.clear();
 }
 }  // namespace engine::ecs
