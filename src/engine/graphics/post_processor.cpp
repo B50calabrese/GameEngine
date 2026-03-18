@@ -3,8 +3,10 @@
  * @brief PostProcessManager implementation.
  */
 
-#include <GLFW/glfw3.h>
+// clang-format off
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+// clang-format on
 
 #include <engine/graphics/post_processor.h>
 #include <engine/util/logger.h>
