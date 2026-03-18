@@ -69,7 +69,12 @@ class GameplayScene : public Scene {
 
   void OnAttach() override {
     graphics::TextRenderer::Get().Init();
+#ifdef COMMON_ASSETS_PATH
+    graphics::TextRenderer::Get().LoadFont("default",
+                                           COMMON_ASSETS_PATH "arial.ttf", 24);
+#else
     graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
+#endif
 
     ResetGame();
   }
@@ -333,7 +338,12 @@ class MenuScene : public Scene {
 
   void OnAttach() override {
     graphics::TextRenderer::Get().Init();
+#ifdef COMMON_ASSETS_PATH
+    graphics::TextRenderer::Get().LoadFont("default",
+                                           COMMON_ASSETS_PATH "arial.ttf", 24);
+#else
     graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
+#endif
   }
 
   void OnUpdate(float dt) override {

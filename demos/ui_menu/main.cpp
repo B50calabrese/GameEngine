@@ -120,7 +120,12 @@ class MenuScene : public Scene {
 
   void OnAttach() override {
     graphics::TextRenderer::Get().Init();
+#ifdef COMMON_ASSETS_PATH
+    graphics::TextRenderer::Get().LoadFont("arial",
+                                           COMMON_ASSETS_PATH "arial.ttf", 24);
+#else
     graphics::TextRenderer::Get().LoadFont("arial", "arial.ttf", 24);
+#endif
   }
 
   void OnUpdate(float delta_time_seconds) override {

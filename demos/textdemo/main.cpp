@@ -9,7 +9,12 @@ class MyApp : public engine::Application {
   void OnInit() override {
     std::cout << "Initializing Application" << std::endl;
     engine::graphics::TextRenderer::Get().Init();
+#ifdef COMMON_ASSETS_PATH
+    engine::graphics::TextRenderer::Get().LoadFont(
+        "arial", COMMON_ASSETS_PATH "arial.ttf", 16);
+#else
     engine::graphics::TextRenderer::Get().LoadFont("arial", "arial.ttf", 16);
+#endif
   }
 
   void OnShutdown() override {

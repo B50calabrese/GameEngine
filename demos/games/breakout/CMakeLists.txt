@@ -14,6 +14,7 @@ target_link_libraries(Breakout PRIVATE GameEngine)
 # -----------------------------------------
 target_compile_definitions(Breakout PRIVATE
     ENGINE_ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets"
+    COMMON_ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/../../common/assets/"
 )
 
 # 5. Copy Assets (if any)

@@ -40,19 +40,19 @@ void DrawLegend(float x, float y) {
   float spacing = 25.0f;
 
   graphics::Renderer::Get().DrawQuad({x, y}, {size, size}, {0.0f, 1.0f, 0.0f, 1.0f});
-  graphics::Renderer::Get().DrawText("default", "Player", {x + size + 5, y}, 0.0f, 0.5f, {1,1,1,1});
+  graphics::TextRenderer::Get().DrawText("default", "Player", {x + size + 5, y}, 0.0f, 0.5f, {1,1,1,1});
 
   graphics::Renderer::Get().DrawQuad({x, y - spacing}, {size, size}, {0.3f, 0.3f, 0.3f, 1.0f});
-  graphics::Renderer::Get().DrawText("default", "Floor", {x + size + 5, y - spacing}, 0.0f, 0.5f, {1,1,1,1});
+  graphics::TextRenderer::Get().DrawText("default", "Floor", {x + size + 5, y - spacing}, 0.0f, 0.5f, {1,1,1,1});
 
   graphics::Renderer::Get().DrawQuad({x, y - 2 * spacing}, {size, size}, {0.1f, 0.1f, 0.1f, 1.0f});
-  graphics::Renderer::Get().DrawText("default", "Wall", {x + size + 5, y - 2 * spacing}, 0.0f, 0.5f, {1,1,1,1});
+  graphics::TextRenderer::Get().DrawText("default", "Wall", {x + size + 5, y - 2 * spacing}, 0.0f, 0.5f, {1,1,1,1});
 
   graphics::Renderer::Get().DrawQuad({x, y - 3 * spacing}, {size, size}, {1.0f, 0.8f, 0.0f, 1.0f});
-  graphics::Renderer::Get().DrawText("default", "Chest", {x + size + 5, y - 3 * spacing}, 0.0f, 0.5f, {1,1,1,1});
+  graphics::TextRenderer::Get().DrawText("default", "Chest", {x + size + 5, y - 3 * spacing}, 0.0f, 0.5f, {1,1,1,1});
 
   graphics::Renderer::Get().DrawQuad({x, y - 4 * spacing}, {size, size}, {0.0f, 0.5f, 1.0f, 1.0f});
-  graphics::Renderer::Get().DrawText("default", "Stairs", {x + size + 5, y - 4 * spacing}, 0.0f, 0.5f, {1,1,1,1});
+  graphics::TextRenderer::Get().DrawText("default", "Stairs", {x + size + 5, y - 4 * spacing}, 0.0f, 0.5f, {1,1,1,1});
 }
 
 class MapScene : public Scene {
@@ -75,11 +75,6 @@ class MenuScene : public Scene {
  public:
   MenuScene(const std::string& name) : Scene(name) {}
 
-  void OnAttach() override {
-    graphics::TextRenderer::Get().Init();
-    graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-  }
-
   void OnUpdate(float dt) override {
     if (InputManager::Get().IsKeyPressed(KeyCode::KC_SPACE)) {
       GameState::Get().ResetRun();
@@ -93,13 +88,13 @@ class MenuScene : public Scene {
   void OnRender() override {
     graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
                                        {0.1f, 0.1f, 0.1f, 1.0f});
-    graphics::Renderer::Get().DrawText("default", "RPG ROGUELIKE DEMO",
+    graphics::TextRenderer::Get().DrawText("default", "RPG ROGUELIKE DEMO",
                                        {200.0f, 450.0f}, 0.0f, 1.5f,
                                        {1.0f, 1.0f, 1.0f, 1.0f});
-    graphics::Renderer::Get().DrawText("default", "Press SPACE to Start Run",
+    graphics::TextRenderer::Get().DrawText("default", "Press SPACE to Start Run",
                                        {250.0f, 350.0f}, 0.0f, 1.0f,
                                        {0.8f, 0.8f, 0.8f, 1.0f});
-    graphics::Renderer::Get().DrawText("default", "Press Q to Quit",
+    graphics::TextRenderer::Get().DrawText("default", "Press Q to Quit",
                                        {330.0f, 300.0f}, 0.0f, 0.8f,
                                        {0.8f, 0.8f, 0.8f, 1.0f});
 
@@ -112,10 +107,7 @@ class MenuScene : public Scene {
 class VictoryOverlay : public Scene {
 public:
   VictoryOverlay() : Scene("VictoryOverlay") {}
-  void OnAttach() override {
-    graphics::TextRenderer::Get().Init();
-    graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-  }
+
   void OnUpdate(float dt) override {
     if (InputManager::Get().IsKeyPressed(KeyCode::KC_SPACE)) {
       SceneManager::Get().SetScene(std::make_unique<MenuScene>("Menu"));
@@ -123,9 +115,9 @@ public:
   }
   void OnRender() override {
     graphics::Renderer::Get().DrawQuad({200.0f, 150.0f}, {400.0f, 300.0f}, {0.1f, 0.1f, 0.1f, 0.95f});
-    graphics::Renderer::Get().DrawText("default", "VICTORY!", {320, 350}, 0.0f, 1.5f, {1,1,1,1});
-    graphics::Renderer::Get().DrawText("default", "You cleared all 10 floors!", {250, 300}, 0.0f, 0.8f, {1,1,1,1});
-    graphics::Renderer::Get().DrawText("default", "Press SPACE to Return", {300, 250}, 0.0f, 0.8f, {0.7f, 0.7f, 0.7f, 1.0f});
+    graphics::TextRenderer::Get().DrawText("default", "VICTORY!", {320, 350}, 0.0f, 1.5f, {1,1,1,1});
+    graphics::TextRenderer::Get().DrawText("default", "You cleared all 10 floors!", {250, 300}, 0.0f, 0.8f, {1,1,1,1});
+    graphics::TextRenderer::Get().DrawText("default", "Press SPACE to Return", {300, 250}, 0.0f, 0.8f, {0.7f, 0.7f, 0.7f, 1.0f});
     graphics::Renderer::Get().Flush();
   }
 };
@@ -142,8 +134,6 @@ public:
   }
 
   void OnAttach() override {
-      graphics::TextRenderer::Get().Init();
-      graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
       RefreshSelection();
   }
 
@@ -210,23 +200,23 @@ public:
 
       // Enemy
       graphics::Renderer::Get().DrawQuad({500, 300}, {100, 100}, {1, 0, 0, 1});
-      graphics::Renderer::Get().DrawText("default", "Enemy HP: " + std::to_string(enemy_stats_.hp) + "/" + std::to_string(enemy_stats_.max_hp), {500, 420}, 0.0f, 0.8f, {1,1,1,1});
+      graphics::TextRenderer::Get().DrawText("default", "Enemy HP: " + std::to_string(enemy_stats_.hp) + "/" + std::to_string(enemy_stats_.max_hp), {500, 420}, 0.0f, 0.8f, {1,1,1,1});
 
       // Player
       graphics::Renderer::Get().DrawQuad({150, 150}, {80, 80}, {0, 1, 0, 1});
-      graphics::Renderer::Get().DrawText("default", "Player HP: " + std::to_string(GameState::Get().player_stats.hp) + "/" + std::to_string(GameState::Get().player_stats.max_hp), {150, 250}, 0.0f, 0.8f, {1,1,1,1});
+      graphics::TextRenderer::Get().DrawText("default", "Player HP: " + std::to_string(GameState::Get().player_stats.hp) + "/" + std::to_string(GameState::Get().player_stats.max_hp), {150, 250}, 0.0f, 0.8f, {1,1,1,1});
 
       // Actions
       for (int i = 0; i < (int)GameState::Get().player_attacks.size(); ++i) {
           auto& attack = GameState::Get().player_attacks[i];
           glm::vec4 color = (selected_index_ == i) ? glm::vec4(1,1,0,1) : glm::vec4(1,1,1,1);
           std::string text = attack.name + " (" + std::to_string(attack.current_uses) + "/" + std::to_string(attack.max_uses) + ")";
-          graphics::Renderer::Get().DrawText("default", text, {50, 500 - (float)i * 30}, 0.0f, 0.7f, color);
+          graphics::TextRenderer::Get().DrawText("default", text, {50, 500 - (float)i * 30}, 0.0f, 0.7f, color);
       }
       glm::vec4 run_color = (selected_index_ == options_count_ - 1) ? glm::vec4(1,1,0,1) : glm::vec4(1,1,1,1);
-      graphics::Renderer::Get().DrawText("default", "Run", {50, 500 - (float)GameState::Get().player_attacks.size() * 30}, 0.0f, 0.7f, run_color);
+      graphics::TextRenderer::Get().DrawText("default", "Run", {50, 500 - (float)GameState::Get().player_attacks.size() * 30}, 0.0f, 0.7f, run_color);
 
-      graphics::Renderer::Get().DrawText("default", last_log_, {200, 50}, 0.0f, 0.8f, {1,1,1,1});
+      graphics::TextRenderer::Get().DrawText("default", last_log_, {200, 50}, 0.0f, 0.8f, {1,1,1,1});
 
       graphics::Renderer::Get().Flush();
   }
@@ -244,11 +234,6 @@ public:
     LevelUpOverlay() : Scene("LevelUpOverlay") {
         pending_attacks_ = GameState::Get().GetRandomAttacks(3);
         options_count_ = 3; // Initially ATK, DEF, HP
-    }
-
-    void OnAttach() override {
-        graphics::TextRenderer::Get().Init();
-        graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
     }
 
     void OnUpdate(float dt) override {
@@ -282,18 +267,18 @@ public:
         graphics::Renderer::Get().DrawQuad({150.0f, 100.0f}, {500.0f, 400.0f}, {0.1f, 0.1f, 0.2f, 0.95f});
 
         if (!stat_picked_) {
-            graphics::Renderer::Get().DrawText("default", "LEVEL UP! Step 1: Choose Stat Boost", {200, 460}, 0.0f, 1.0f, {1,1,1,1});
+            graphics::TextRenderer::Get().DrawText("default", "LEVEL UP! Step 1: Choose Stat Boost", {200, 460}, 0.0f, 1.0f, {1,1,1,1});
             std::vector<std::string> options = {"+1 ATK", "+1 DEF", "+5 Max HP"};
             for (int i = 0; i < 3; ++i) {
                 glm::vec4 color = (selected_index_ == i) ? glm::vec4(1,1,0,1) : glm::vec4(1,1,1,1);
-                graphics::Renderer::Get().DrawText("default", options[i], {250, 350 - (float)i * 40}, 0.0f, 0.8f, color);
+                graphics::TextRenderer::Get().DrawText("default", options[i], {250, 350 - (float)i * 40}, 0.0f, 0.8f, color);
             }
         } else {
-            graphics::Renderer::Get().DrawText("default", "LEVEL UP! Step 2: Choose New Attack", {200, 460}, 0.0f, 1.0f, {1,1,1,1});
+            graphics::TextRenderer::Get().DrawText("default", "LEVEL UP! Step 2: Choose New Attack", {200, 460}, 0.0f, 1.0f, {1,1,1,1});
             for (int i = 0; i < 3; ++i) {
                 glm::vec4 color = (selected_index_ == i) ? glm::vec4(1,1,0,1) : glm::vec4(1,1,1,1);
                 std::string desc = pending_attacks_[i].name + " (Mult: " + std::to_string(pending_attacks_[i].damage_multiplier).substr(0, 3) + ")";
-                graphics::Renderer::Get().DrawText("default", desc, {200, 350 - (float)i * 40}, 0.0f, 0.8f, color);
+                graphics::TextRenderer::Get().DrawText("default", desc, {200, 350 - (float)i * 40}, 0.0f, 0.8f, color);
             }
         }
         graphics::Renderer::Get().Flush();
@@ -379,11 +364,11 @@ void MapScene::OnRender() {
                                      {TILE_SIZE - 2, TILE_SIZE - 2}, {0.0f, 1.0f, 0.0f, 1.0f});
 
   // Draw HUD
-  graphics::Renderer::Get().DrawText("default", "Floor: " + std::to_string(GameState::Get().current_floor),
+  graphics::TextRenderer::Get().DrawText("default", "Floor: " + std::to_string(GameState::Get().current_floor),
                                      {10, 570}, 0.0f, 0.8f, {1,1,1,1});
-  graphics::Renderer::Get().DrawText("default", "HP: " + std::to_string(GameState::Get().player_stats.hp) + "/" + std::to_string(GameState::Get().player_stats.max_hp),
+  graphics::TextRenderer::Get().DrawText("default", "HP: " + std::to_string(GameState::Get().player_stats.hp) + "/" + std::to_string(GameState::Get().player_stats.max_hp),
                                      {150, 570}, 0.0f, 0.8f, {1,1,1,1});
-  graphics::Renderer::Get().DrawText("default", "ATK: " + std::to_string(GameState::Get().player_stats.atk) + " DEF: " + std::to_string(GameState::Get().player_stats.def),
+  graphics::TextRenderer::Get().DrawText("default", "ATK: " + std::to_string(GameState::Get().player_stats.atk) + " DEF: " + std::to_string(GameState::Get().player_stats.def),
                                      {350, 570}, 0.0f, 0.8f, {1,1,1,1});
 
   graphics::Renderer::Get().Flush();
@@ -392,6 +377,13 @@ void MapScene::OnRender() {
 class RpgApp : public Application {
  public:
   void OnInit() override {
+    graphics::TextRenderer::Get().Init();
+#ifdef COMMON_ASSETS_PATH
+    graphics::TextRenderer::Get().LoadFont("default",
+                                           COMMON_ASSETS_PATH "arial.ttf", 24);
+#else
+    graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
+#endif
     SceneManager::Get().SetScene(std::make_unique<MenuScene>("Menu"));
   }
   void OnShutdown() override {}
