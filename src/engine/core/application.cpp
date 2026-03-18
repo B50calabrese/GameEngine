@@ -28,8 +28,8 @@ void Application::Run() {
   while (win.IsRunning()) {
     double delta_time = win.delta_time();
 
-    input.UpdateState();
     win.PollEvents();
+    input.UpdateState();
     ActionManager::Get().Update();
 
     [[maybe_unused]] bool input_handled = SceneManager::Get().DispatchInput();

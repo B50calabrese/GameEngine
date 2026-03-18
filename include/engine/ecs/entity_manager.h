@@ -46,6 +46,11 @@ class EntityManager {
    */
   EntityID next_id() const { return next_id_; }
 
+  /**
+   * @brief Resets the manager to its initial state.
+   */
+  void Clear();
+
  private:
   EntityID next_id_ = 0;
   std::vector<EntityID> free_entities_;

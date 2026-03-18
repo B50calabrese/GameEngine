@@ -19,6 +19,7 @@ class IComponentStorage {
  public:
   virtual ~IComponentStorage() = default;
   virtual void Remove(EntityID entity) = 0;
+  virtual void Clear() = 0;
 
  protected:
   IComponentStorage() = default;
@@ -54,6 +55,11 @@ class ComponentStorage : public IComponentStorage {
    * @returns whether or not the entity is found in this storage.
    */
   bool Has(EntityID entity) { return data_.find(entity) != data_.end(); }
+
+  /**
+   * @brief Clears all components from this storage.
+   */
+  void Clear() override { data_.clear(); }
 
  private:
   std::unordered_map<EntityID, T> data_;
