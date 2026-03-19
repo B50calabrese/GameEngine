@@ -31,6 +31,7 @@ author_persona: Senior Systems Architect
 ## Gotchas
 
 - **Input Consumption**: UI elements can consume input events, preventing them from reaching game systems. Use `InputManager::IsConsumed()` or `ActionManager::IsConsumed()`.
+- **State Update Timing**: `InputManager::UpdateState()` must be called **exactly once** per frame, and it should be called **before** `glfwPollEvents()` to correctly preserve the previous frame's state for `IsKeyPressed` and `IsKeyReleased` checks. In this engine, this is handled automatically within `Window::PollEvents()`. Calling it again elsewhere (like in the main loop) will break single-frame event detection.
 
 ## Validation
 
