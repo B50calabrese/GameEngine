@@ -4,6 +4,7 @@
 #include <engine/scene/scene_manager.h>
 #include <engine/util/collision.h>
 
+#include "level_loader.h"
 #include "scenes.h"
 
 namespace platformer {
@@ -27,88 +28,9 @@ void GameplayScene::LoadLevel(int level) {
   pc.position = {50.0f, 100.0f};
   registry().AddComponent(player_entity_, pc);
 
-  if (level == 1) {
-    CreatePlatform({0.0f, 0.0f}, {600.0f, 40.0f}, PlatformType::Stationary);
-    CreatePlatform({700.0f, 0.0f}, {800.0f, 40.0f}, PlatformType::Stationary);
-    CreatePlatform({250.0f, 120.0f}, {150.0f, 20.0f}, PlatformType::Stationary);
-    CreatePlatform({500.0f, 220.0f}, {150.0f, 20.0f}, PlatformType::Stationary);
-    CreatePlatform({800.0f, 120.0f}, {150.0f, 20.0f}, PlatformType::Stationary);
-    CreatePlatform({1050.0f, 220.0f}, {150.0f, 20.0f},
-                   PlatformType::Stationary);
-
-    CreateEnemy({400.0f, 40.0f}, false);
-    CreateEnemy({900.0f, 40.0f}, false);
-
-    CreateGoal({1400.0f, 40.0f});
-  } else if (level == 2) {
-    CreatePlatform({0.0f, 0.0f}, {300.0f, 40.0f}, PlatformType::Stationary);
-    CreatePlatform({400.0f, 100.0f}, {150.0f, 20.0f}, PlatformType::Moving,
-                   {400.0f, 100.0f}, {700.0f, 100.0f});
-    CreatePlatform({800.0f, 0.0f}, {400.0f, 40.0f}, PlatformType::Stationary);
-    CreateEnemy({900.0f, 40.0f}, true, {850.0f, 40.0f}, {1150.0f, 40.0f});
-    CreatePlatform({1300.0f, 100.0f}, {150.0f, 20.0f}, PlatformType::Moving,
-                   {1300.0f, 100.0f}, {1300.0f, 400.0f});
-    CreatePlatform({1500.0f, 0.0f}, {500.0f, 40.0f}, PlatformType::Stationary);
-    CreateEnemy({1600.0f, 40.0f}, true, {1550.0f, 40.0f}, {1950.0f, 40.0f});
-
-    CreateGoal({1900.0f, 40.0f});
-  } else {
-    CreatePlatform({0.0f, 0.0f}, {200.0f, 40.0f}, PlatformType::Stationary);
-    float x = 250.0f;
-    for (int i = 0; i < 5; ++i) {
-      CreatePlatform({x, 100.0f + (i % 2) * 100.0f}, {100.0f, 20.0f},
-                     PlatformType::Temporary);
-      x += 200.0f;
-    }
-    CreatePlatform({1300.0f, 0.0f}, {400.0f, 40.0f}, PlatformType::Stationary);
-    CreateEnemy({1400.0f, 40.0f}, true, {1300.0f, 40.0f}, {1650.0f, 40.0f});
-    CreatePlatform({1800.0f, 100.0f}, {150.0f, 20.0f}, PlatformType::Moving,
-                   {1800.0f, 100.0f}, {2100.0f, 100.0f});
-    CreatePlatform({2200.0f, 200.0f}, {100.0f, 20.0f}, PlatformType::Temporary);
-    CreatePlatform({2400.0f, 300.0f}, {100.0f, 20.0f}, PlatformType::Temporary);
-    CreatePlatform({2600.0f, 0.0f}, {400.0f, 40.0f}, PlatformType::Stationary);
-    CreateEnemy({2700.0f, 40.0f}, false);
-    CreateEnemy({2800.0f, 40.0f}, false);
-
-    CreateGoal({2900.0f, 40.0f});
-  }
-}
-
-void GameplayScene::CreatePlatform(glm::vec2 pos, glm::vec2 size,
-                                   PlatformType type, glm::vec2 start,
-                                   glm::vec2 end) {
-  auto entity = registry().CreateEntity();
-  PlatformComponent pc;
-  pc.type = type;
-  pc.position = pos;
-  pc.size = size;
-  pc.start_pos = start;
-  pc.end_pos = end;
-  if (type == PlatformType::Moving) {
-    pc.velocity = glm::normalize(end - start) * 150.0f;
-  }
-  registry().AddComponent(entity, pc);
-}
-
-void GameplayScene::CreateEnemy(glm::vec2 pos, bool patrolling, glm::vec2 start,
-                                glm::vec2 end) {
-  auto entity = registry().CreateEntity();
-  EnemyComponent ec;
-  ec.position = pos;
-  ec.is_patrolling = patrolling;
-  ec.start_pos = start;
-  ec.end_pos = end;
-  if (patrolling) {
-    ec.velocity = glm::normalize(end - start) * 100.0f;
-  }
-  registry().AddComponent(entity, ec);
-}
-
-void GameplayScene::CreateGoal(glm::vec2 pos) {
-  auto entity = registry().CreateEntity();
-  GoalComponent gc;
-  gc.position = pos;
-  registry().AddComponent(entity, gc);
+  std::string level_path = engine::graphics::Renderer::Get().ResolveAssetPath(
+      "platformer_level" + std::to_string(level) + ".txt");
+  LevelLoader::Load(level_path, registry());
 }
 
 void GameplayScene::OnUpdate(float dt) {
