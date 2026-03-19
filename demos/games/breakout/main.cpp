@@ -17,6 +17,7 @@
 #include <engine/scene/scene_manager.h>
 #include <engine/ui/ui_components.h>
 #include <engine/ui/ui_systems.h>
+#include <engine/util/collision.h>
 #include <engine/util/easing.h>
 #include <engine/util/tween_manager.h>
 
@@ -51,15 +52,6 @@ struct Particle {
 struct ParticleEmitterComponent {
   std::vector<Particle> particles;
 };
-
-// --- Helper Functions ---
-
-bool CheckCollision(const glm::vec2& pos1, const glm::vec2& size1,
-                    const glm::vec2& pos2, const glm::vec2& size2) {
-  bool collision_x = pos1.x + size1.x >= pos2.x && pos2.x + size2.x >= pos1.x;
-  bool collision_y = pos1.y + size1.y >= pos2.y && pos2.y + size2.y >= pos1.y;
-  return collision_x && collision_y;
-}
 
 // --- Scenes ---
 
@@ -202,8 +194,8 @@ class GameplayScene : public Scene {
     auto& paddle = registry().GetComponent<PaddleComponent>(paddle_);
     glm::vec2 p_size = paddle.current_size;
     glm::vec2 p_pos = paddle_pos_ - p_size / 2.0f;
-    if (CheckCollision(ball_pos_ - glm::vec2(ball.radius),
-                       glm::vec2(ball.radius * 2), p_pos, p_size)) {
+    if (util::CheckAABB(ball_pos_ - glm::vec2(ball.radius),
+                        glm::vec2(ball.radius * 2), p_pos, p_size)) {
       ball.velocity.y *= -1;
       ball_pos_.y = paddle_pos_.y - p_size.y / 2.0f - ball.radius;
 
@@ -220,8 +212,8 @@ class GameplayScene : public Scene {
     for (auto& b : bricks_) {
       auto& bc = registry().GetComponent<BrickComponent>(b.id);
       if (!bc.is_destroyed) {
-        if (CheckCollision(ball_pos_ - glm::vec2(ball.radius),
-                           glm::vec2(ball.radius * 2), b.pos, b.size)) {
+        if (util::CheckAABB(ball_pos_ - glm::vec2(ball.radius),
+                            glm::vec2(ball.radius * 2), b.pos, b.size)) {
           bc.is_destroyed = true;
           ball.velocity.y *= -1;
           bricks_hit_++;

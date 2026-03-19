@@ -1,0 +1,15 @@
+# P: x y w h type (S=Stationary, M=Moving, T=Temporary) [start_x start_y end_x end_y if Moving]
+# E: x y type (S=Stationary, P=Patrolling) [start_x start_y end_x end_y if Patrolling]
+# G: x y
+
+P 0 0 600 40 S
+P 700 0 800 40 S
+P 250 120 150 20 S
+P 500 220 150 20 S
+P 800 120 150 20 S
+P 1050 220 150 20 S
+
+E 400 40 S
+E 900 40 S
+
+G 1400 40
