@@ -29,7 +29,6 @@ void Application::Run() {
     double delta_time = win.delta_time();
 
     win.PollEvents();
-    input.UpdateState();
     ActionManager::Get().Update();
 
     [[maybe_unused]] bool input_handled = SceneManager::Get().DispatchInput();
