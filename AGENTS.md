@@ -24,6 +24,7 @@ To maximize effectiveness, first identify your **Persona Context**:
 | :--- | :--- | :--- | :--- |
 | **Core** | `src/engine/core` | Internal | (TBD) |
 | **ECS** | `src/engine/ecs` | Core/App | [ecs-expert](.agents/skills/ecs-expert/SKILL.md) |
+| **Physics** | `src/engine/physics` | Core/App | [physics-specialist](.agents/skills/physics-specialist/SKILL.md) |
 | **Renderer** | `src/engine/graphics` | Core/App | [renderer-guide](.agents/skills/renderer-guide/SKILL.md) |
 | **Input** | `src/engine/input` | Application | [input-mapper](.agents/skills/input-mapper/SKILL.md) |
 | **Asset Mgmt** | `src/engine/util` | Application | [asset-manager](.agents/skills/asset-manager/SKILL.md) |

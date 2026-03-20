@@ -12,6 +12,7 @@ author_persona: Senior Systems Architect
 - **Coordinate Consistency**: All spatial logic must adhere to the (0,0) bottom-left origin to remain compatible with the engine's orthographic projection.
 - **Lifecycle Encapsulation**: Post-processing and state management must be wrapped within `BeginFrame` and `EndFrame` blocks.
 - **Batched Rendering**: Avoid redundant `Flush` calls. Batch similar drawing commands whenever possible to minimize draw calls.
+- **ECS Automation**: Use `SpriteRenderSystem` for entities with `SpriteComponent` and `TransformComponent` to automate world-space rendering.
 </guiding_principles>
 
 ## Contextual Instructions
@@ -37,6 +38,7 @@ The rendering pipeline is designed for high-performance 2D drawing:
 
 ## Gotchas
 
+- **Sprite Component visibility**: The `SpriteComponent` (graphics/graphics_components.h) has a `visible` flag. Always check this in custom systems to prevent rendering hidden entities.
 - **Context Dependency**: Any `Renderer` call made before `Window` initialization (OpenGL context creation) or after `Shutdown` will trigger an OpenGL driver crash or undefined behavior.
 - **Batch Breaking**: Mixing `DrawRect` and `DrawTexturedQuad` with inconsistent Z-ordering can force redundant `Flush` calls, significantly degrading performance due to texture swaps.
 - **Z-Fighting**: Transparent overlays require distinct Z-order increments. Identical Z-values for overlapping textures lead to non-deterministic flickering (z-fighting).

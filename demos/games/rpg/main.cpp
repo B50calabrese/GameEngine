@@ -17,6 +17,7 @@
 #include <engine/ui/ui_components.h>
 #include <engine/ui/ui_systems.h>
 #include <engine/util/tween_manager.h>
+#include "../../common/menu_scene.h"
 
 #include "game_state.h"
 #include "map_generator.h"
@@ -27,7 +28,6 @@ using namespace engine;
 class MapScene;
 class BattleScene;
 class LevelUpOverlay;
-class MenuScene;
 
 // --- Constants ---
 const float TILE_SIZE = 40.0f;
@@ -70,45 +70,6 @@ class MapScene : public Scene {
   glm::ivec2 player_pos_;
 };
 
-// --- Menu Scene Implementation ---
-class MenuScene : public Scene {
- public:
-  MenuScene(const std::string& name) : Scene(name) {}
-
-  void OnAttach() override {
-    graphics::TextRenderer::Get().Init();
-    graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-  }
-
-  void OnUpdate(float dt) override {
-    if (InputManager::Get().IsKeyPressed(KeyCode::KC_SPACE)) {
-      GameState::Get().ResetRun();
-      SceneManager::Get().SetScene(std::make_unique<MapScene>("Map"));
-    }
-    if (InputManager::Get().IsKeyPressed(KeyCode::KC_Q)) {
-      Engine::Shutdown();
-    }
-  }
-
-  void OnRender() override {
-    graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
-                                       {0.1f, 0.1f, 0.1f, 1.0f});
-    graphics::Renderer::Get().DrawText("default", "RPG ROGUELIKE DEMO",
-                                       {200.0f, 450.0f}, 0.0f, 1.5f,
-                                       {1.0f, 1.0f, 1.0f, 1.0f});
-    graphics::Renderer::Get().DrawText("default", "Press SPACE to Start Run",
-                                       {250.0f, 350.0f}, 0.0f, 1.0f,
-                                       {0.8f, 0.8f, 0.8f, 1.0f});
-    graphics::Renderer::Get().DrawText("default", "Press Q to Quit",
-                                       {330.0f, 300.0f}, 0.0f, 0.8f,
-                                       {0.8f, 0.8f, 0.8f, 1.0f});
-
-    DrawLegend(650.0f, 200.0f);
-
-    graphics::Renderer::Get().Flush();
-  }
-};
-
 class VictoryOverlay : public Scene {
 public:
   VictoryOverlay() : Scene("VictoryOverlay") {}
@@ -118,7 +79,10 @@ public:
   }
   void OnUpdate(float dt) override {
     if (InputManager::Get().IsKeyPressed(KeyCode::KC_SPACE)) {
-      SceneManager::Get().SetScene(std::make_unique<MenuScene>("Menu"));
+      SceneManager::Get().SetScene(std::make_unique<demos::common::BaseMenuScene>("RPG ROGUELIKE DEMO", std::vector<demos::common::BaseMenuScene::MenuItem>{
+          {"New Run", []() { GameState::Get().ResetRun(); SceneManager::Get().SetScene(std::make_unique<MapScene>("Map")); }},
+          {"Quit", []() { Engine::Shutdown(); }}
+      }));
     }
   }
   void OnRender() override {
@@ -201,7 +165,10 @@ public:
       GameState::Get().player_stats.hp -= damage;
       last_log_ += " Enemy hits for " + std::to_string(damage) + "!";
       if (GameState::Get().player_stats.hp <= 0) {
-          SceneManager::Get().SetScene(std::make_unique<MenuScene>("Menu"));
+          SceneManager::Get().SetScene(std::make_unique<demos::common::BaseMenuScene>("RPG ROGUELIKE DEMO", std::vector<demos::common::BaseMenuScene::MenuItem>{
+              {"New Run", []() { GameState::Get().ResetRun(); SceneManager::Get().SetScene(std::make_unique<MapScene>("Map")); }},
+              {"Quit", []() { Engine::Shutdown(); }}
+          }));
       }
   }
 
@@ -392,7 +359,11 @@ void MapScene::OnRender() {
 class RpgApp : public Application {
  public:
   void OnInit() override {
-    SceneManager::Get().SetScene(std::make_unique<MenuScene>("Menu"));
+    std::vector<demos::common::BaseMenuScene::MenuItem> items = {
+        {"New Run", []() { GameState::Get().ResetRun(); SceneManager::Get().SetScene(std::make_unique<MapScene>("Map")); }},
+        {"Quit", []() { Engine::Shutdown(); }}
+    };
+    SceneManager::Get().SetScene(std::make_unique<demos::common::BaseMenuScene>("RPG ROGUELIKE DEMO", items));
   }
   void OnShutdown() override {}
   void OnUpdate(double dt) override {
