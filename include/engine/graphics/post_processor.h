@@ -7,6 +7,8 @@
 #define INCLUDE_ENGINE_GRAPHICS_POST_PROCESSOR_H_
 
 #include <memory>
+#include <vector>
+#include <string>
 
 #include <glm/glm.hpp>
 
@@ -14,6 +16,64 @@
 #include <engine/graphics/shader.h>
 
 namespace engine::graphics {
+
+/**
+ * @brief Interface for a post-processing effect.
+ */
+class IPostProcessEffect {
+ public:
+  virtual ~IPostProcessEffect() = default;
+
+  /**
+   * @brief Called when the effect is initialized or the window is resized.
+   * @param width New width.
+   * @param height New height.
+   */
+  virtual void OnResize(int width, int height) = 0;
+
+  /**
+   * @brief Applies the effect.
+   * @param input_texture The texture to process.
+   * @param output_framebuffer The framebuffer to render into.
+   */
+  virtual void Apply(unsigned int input_texture, Framebuffer* output_framebuffer) = 0;
+
+  /** @brief Returns the name of the effect. */
+  virtual std::string GetName() const = 0;
+};
+
+/**
+ * @brief Standard post-processing effect (shake, flash, palette).
+ * Maintains backward compatibility with existing engine features.
+ */
+class StandardEffect : public IPostProcessEffect {
+ public:
+  StandardEffect();
+  ~StandardEffect() override;
+
+  void OnResize(int width, int height) override {}
+  void Apply(unsigned int input_texture, Framebuffer* output_framebuffer) override;
+  std::string GetName() const override { return "StandardEffect"; }
+
+  void SetShake(float intensity) { shake_intensity_ = intensity; }
+  void SetFlash(const glm::vec3& color, float amount) {
+    flash_color_ = color;
+    flash_amount_ = amount;
+  }
+  void SetPalette(unsigned int texture_id) { palette_tex_id_ = texture_id; }
+
+ private:
+  void InitQuad();
+
+  std::shared_ptr<Shader> post_shader_;
+  unsigned int quad_vao_ = 0;
+  unsigned int quad_vbo_ = 0;
+
+  float shake_intensity_ = 0.0f;
+  glm::vec3 flash_color_ = {1.0f, 1.0f, 1.0f};
+  float flash_amount_ = 0.0f;
+  unsigned int palette_tex_id_ = 0;
+};
 
 /**
  * @brief Singleton manager for post-processing effects.
@@ -41,7 +101,7 @@ class PostProcessManager {
   /** @brief Prepares the FBO for scene rendering. */
   void Begin();
 
-  /** @brief Finalizes scene and renders the post-process quad to screen. */
+  /** @brief Finalizes scene and renders the post-process pipeline to screen. */
   void End();
 
   /**
@@ -52,48 +112,34 @@ class PostProcessManager {
   void OnResize(int width, int height);
 
   /**
-   * @brief Sets the intensity of the screen shake effect.
-   * @param intensity Shake intensity (0.0 to 1.0 recommended).
+   * @brief Adds an effect to the end of the pipeline.
+   * @param effect The effect to add.
    */
-  void SetShake(float intensity) { shake_intensity_ = intensity; }
+  void AddEffect(std::unique_ptr<IPostProcessEffect> effect);
 
   /**
-   * @brief Sets the screen flash effect parameters.
-   * @param color The color of the flash.
-   * @param amount The intensity of the flash (0.0 to 1.0).
+   * @brief Removes all effects from the pipeline.
    */
-  void SetFlash(const glm::vec3& color, float amount) {
-    flash_color_ = color;
-    flash_amount_ = amount;
-  }
+  void ClearEffects();
 
-  /**
-   * @brief Sets the palette texture for color mapping.
-   * @param texture_id The OpenGL ID of the palette texture.
-   */
-  void SetPalette(unsigned int texture_id) { palette_tex_id_ = texture_id; }
+  // Backward compatibility methods for StandardEffect
+  void SetShake(float intensity);
+  void SetFlash(const glm::vec3& color, float amount);
+  void SetPalette(unsigned int texture_id);
 
  private:
   PostProcessManager() = default;
-  ~PostProcessManager();
+  ~PostProcessManager() = default;
 
   // Prevent copy/move
   PostProcessManager(const PostProcessManager&) = delete;
   PostProcessManager& operator=(const PostProcessManager&) = delete;
 
-  /** @brief Initializes the full-screen quad VAO. */
-  void InitQuad();
-
   std::unique_ptr<Framebuffer> scene_buffer_;
-  std::shared_ptr<Shader> post_shader_;
-  unsigned int quad_vao_ = 0;
-  unsigned int quad_vbo_ = 0;
+  std::unique_ptr<Framebuffer> ping_pong_buffer_;
 
-  // Effect Parameters
-  float shake_intensity_ = 0.0f;
-  glm::vec3 flash_color_ = {1.0f, 1.0f, 1.0f};
-  float flash_amount_ = 0.0f;
-  unsigned int palette_tex_id_ = 0;
+  std::vector<std::unique_ptr<IPostProcessEffect>> effects_;
+  StandardEffect* standard_effect_ = nullptr; // Raw pointer to the effect in the vector for quick access
 
   int width_ = 0;
   int height_ = 0;

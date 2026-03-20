@@ -40,6 +40,8 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/graphics/framebuffer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/particle_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/post_processor.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/lighting_effect.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/lighting_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/primitive_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/shader.cpp"
@@ -124,6 +126,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/spritesheetdemo)
     add_subdirectory(demos/animatordemo)
     add_subdirectory(demos/post_effects)
+    add_subdirectory(demos/lighting_demo)
     add_subdirectory(demos/jobsystemdemo)
     add_subdirectory(demos/ui_menu)
     add_subdirectory(demos/common)

@@ -34,10 +34,12 @@ author_persona: Senior Systems Architect
 The rendering pipeline is designed for high-performance 2D drawing:
 - `Renderer`: A singleton that manages the OpenGL context and provides the core primitive and textured quad drawing API.
 - `RenderQueue`: A sorting and optimization layer that collects `RenderCommand` objects, sorts them by Z-order and Texture ID, and flushes them to the `Renderer`.
-- `PostProcessManager`: A singleton that manages a full-screen post-processing pipeline (e.g., screen shake, flash overlays).
+- `PostProcessManager`: A singleton that manages a modular pipeline of `IPostProcessEffect` objects (e.g., screen shake, 2D lighting, flash overlays).
 
 ## Gotchas
 
+- **Lighting Pass Performance**: Raymarching shadows in the `LightingEffect` is per-pixel and GPU-intensive. Keep `MAX_LIGHTS` low and consider using lower `steps` for performance-critical scenarios.
+- **Occluder Rendering**: The `LightingEffect` renders occluders in its own pass. Ensure all objects intended to cast shadows have an `OccluderComponent`.
 - **Sprite Component visibility**: The `SpriteComponent` (graphics/graphics_components.h) has a `visible` flag. Always check this in custom systems to prevent rendering hidden entities.
 - **Context Dependency**: Any `Renderer` call made before `Window` initialization (OpenGL context creation) or after `Shutdown` will trigger an OpenGL driver crash or undefined behavior.
 - **Batch Breaking**: Mixing `DrawRect` and `DrawTexturedQuad` with inconsistent Z-ordering can force redundant `Flush` calls, significantly degrading performance due to texture swaps.
