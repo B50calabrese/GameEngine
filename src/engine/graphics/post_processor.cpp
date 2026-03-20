@@ -63,45 +63,29 @@ static const char* kPostProcessFragmentSource = R"(
     }
 )";
 
-PostProcessManager::~PostProcessManager() {
-  if (quad_vao_) {
-    glDeleteVertexArrays(1, &quad_vao_);
-  }
-  if (quad_vbo_) {
-    glDeleteBuffers(1, &quad_vbo_);
-  }
-}
-
-void PostProcessManager::Init(int width, int height) {
-  width_ = width;
-  height_ = height;
-  scene_buffer_ = std::make_unique<Framebuffer>(width, height);
+StandardEffect::StandardEffect() {
   post_shader_ = Shader::CreateFromSource(kPostProcessVertexSource,
                                           kPostProcessFragmentSource);
   InitQuad();
 }
 
-void PostProcessManager::Begin() {
-  if (scene_buffer_) {
-    scene_buffer_->Bind();
-  }
+StandardEffect::~StandardEffect() {
+  if (quad_vao_) glDeleteVertexArrays(1, &quad_vao_);
+  if (quad_vbo_) glDeleteBuffers(1, &quad_vbo_);
 }
 
-void PostProcessManager::End() {
-  if (!scene_buffer_ || !post_shader_) {
-    return;
+void StandardEffect::Apply(unsigned int input_texture, Framebuffer* output_framebuffer) {
+  if (output_framebuffer) {
+    output_framebuffer->Bind();
+  } else {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
-  scene_buffer_->Unbind();
-
-  // Disable depth test to ensure the quad is always rendered
   glDisable(GL_DEPTH_TEST);
-
-  // Draw the full-screen quad with post-process shader
   post_shader_->Bind();
   post_shader_->SetInt("u_ScreenTexture", 0);
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, scene_buffer_->texture_id());
+  glBindTexture(GL_TEXTURE_2D, input_texture);
 
   if (palette_tex_id_ != 0) {
     post_shader_->SetInt("u_PaletteTexture", 1);
@@ -124,33 +108,98 @@ void PostProcessManager::End() {
   post_shader_->Unbind();
 }
 
-void PostProcessManager::OnResize(int width, int height) {
-  width_ = width;
-  height_ = height;
-  if (scene_buffer_) {
-    scene_buffer_->Resize(width, height);
-  }
-}
-
-void PostProcessManager::InitQuad() {
-  float quadVertices[] = {// positions   // texCoords
-                          -1.0f, 1.0f, 0.0f, 1.0f,  -1.0f, -1.0f,
-                          0.0f,  0.0f, 1.0f, -1.0f, 1.0f,  0.0f,
-
-                          -1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  -1.0f,
-                          1.0f,  0.0f, 1.0f, 1.0f,  1.0f,  1.0f};
+void StandardEffect::InitQuad() {
+  float quadVertices[] = {
+      -1.0f, 1.0f,  0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+      -1.0f, 1.0f,  0.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, 1.0f};
 
   glGenVertexArrays(1, &quad_vao_);
   glGenBuffers(1, &quad_vbo_);
   glBindVertexArray(quad_vao_);
   glBindBuffer(GL_ARRAY_BUFFER, quad_vbo_);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
-               GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                        (void*)(2 * sizeof(float)));
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+}
+
+void PostProcessManager::Init(int width, int height) {
+  width_ = width;
+  height_ = height;
+  scene_buffer_ = std::make_unique<Framebuffer>(width, height);
+  ping_pong_buffer_ = std::make_unique<Framebuffer>(width, height);
+
+  // Initialize with the standard effect for backward compatibility
+  auto standard = std::make_unique<StandardEffect>();
+  standard_effect_ = standard.get();
+  AddEffect(std::move(standard));
+}
+
+void PostProcessManager::Begin() {
+  if (scene_buffer_) {
+    scene_buffer_->Bind();
+  }
+}
+
+void PostProcessManager::End() {
+  if (!scene_buffer_ || effects_.empty()) {
+    return;
+  }
+
+  unsigned int current_input = scene_buffer_->texture_id();
+  Framebuffer* current_output = ping_pong_buffer_.get();
+
+  for (size_t i = 0; i < effects_.size(); ++i) {
+    bool last_effect = (i == effects_.size() - 1);
+    Framebuffer* output = last_effect ? nullptr : current_output;
+
+    effects_[i]->Apply(current_input, output);
+
+    if (!last_effect) {
+      current_input = current_output->texture_id();
+      // Swap ping-pong buffer if we have more effects
+      if (current_output == ping_pong_buffer_.get()) {
+        // We'd need another buffer for more than 2 effects if we don't want to re-render to the same ones.
+        // For simplicity, let's assume we can re-use scene_buffer_ as a ping-pong buffer.
+        current_output = scene_buffer_.get();
+      } else {
+        current_output = ping_pong_buffer_.get();
+      }
+    }
+  }
+}
+
+void PostProcessManager::OnResize(int width, int height) {
+  width_ = width;
+  height_ = height;
+  if (scene_buffer_) scene_buffer_->Resize(width, height);
+  if (ping_pong_buffer_) ping_pong_buffer_->Resize(width, height);
+  for (auto& effect : effects_) {
+    effect->OnResize(width, height);
+  }
+}
+
+void PostProcessManager::AddEffect(std::unique_ptr<IPostProcessEffect> effect) {
+  effect->OnResize(width_, height_);
+  effects_.push_back(std::move(effect));
+}
+
+void PostProcessManager::ClearEffects() {
+  effects_.clear();
+  standard_effect_ = nullptr;
+}
+
+void PostProcessManager::SetShake(float intensity) {
+  if (standard_effect_) standard_effect_->SetShake(intensity);
+}
+
+void PostProcessManager::SetFlash(const glm::vec3& color, float amount) {
+  if (standard_effect_) standard_effect_->SetFlash(color, amount);
+}
+
+void PostProcessManager::SetPalette(unsigned int texture_id) {
+  if (standard_effect_) standard_effect_->SetPalette(texture_id);
 }
 
 }  // namespace engine::graphics

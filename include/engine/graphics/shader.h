@@ -80,6 +80,14 @@ class Shader {
   void SetFloat(const std::string& name, float value);
 
   /**
+   * @brief Sets a 2-component float vector uniform variable in the shader.
+   *
+   * @param name The name of the uniform variable in the GLSL code.
+   * @param value The `glm::vec2` value to set.
+   */
+  void SetVec2(const std::string& name, glm::vec2 value);
+
+  /**
    * @brief Sets a 3-component float vector uniform variable in the shader.
    *
    * @param name The name of the uniform variable in the GLSL code.

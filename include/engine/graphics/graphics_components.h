@@ -34,6 +34,22 @@ struct SpriteComponent {
   bool visible = true;
 };
 
+/** @brief Component for a light source. */
+struct LightComponent {
+  glm::vec3 color = {1.0f, 1.0f, 1.0f};
+  float intensity = 1.0f;
+  float radius = 100.0f;
+  float angle = 360.0f;
+  float direction = 0.0f;
+  bool is_directional = false;
+  glm::vec2 dir_vector = {0.0f, -1.0f};
+};
+
+/** @brief Component for an object that casts shadows. */
+struct OccluderComponent {
+  glm::vec2 size = {32.0f, 32.0f};
+};
+
 }  // namespace engine::graphics
 
 #endif  // INCLUDE_ENGINE_GRAPHICS_GRAPHICS_COMPONENTS_H_
