@@ -8,6 +8,8 @@
 
 namespace engine::core {
 
+JobSystem::~JobSystem() { Shutdown(); }
+
 void JobSystem::Init() {
   main_thread_id_ = std::this_thread::get_id();
   unsigned int num_threads = std::thread::hardware_concurrency();
@@ -26,6 +28,7 @@ void JobSystem::Init() {
 void JobSystem::Shutdown() {
   {
     std::lock_guard<std::mutex> lock(queue_mutex_);
+    if (stop_) return;
     stop_ = true;
   }
   condition_.notify_all();

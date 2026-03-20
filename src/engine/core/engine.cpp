@@ -64,6 +64,11 @@ void Engine::Init(const EngineConfig& engine_config) {
   core::JobSystem::Get().Init();
 }
 
-void Engine::Shutdown() { core::JobSystem::Get().Shutdown(); }
+void Engine::Shutdown() {
+  if (internal_window_) {
+    glfwSetWindowShouldClose(internal_window_->native_handle(), GLFW_TRUE);
+  }
+  core::JobSystem::Get().Shutdown();
+}
 
 }  // namespace engine
