@@ -33,6 +33,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/util/logger.cpp"
     "${ENGINE_ROOT}/src/engine/util/easing.cpp"
     "${ENGINE_ROOT}/src/engine/util/tween_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/ai_system.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/entity_manager.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/buffer_utils.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/camera.cpp"
@@ -129,6 +130,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/lighting_demo)
     add_subdirectory(demos/jobsystemdemo)
     add_subdirectory(demos/ui_menu)
+    add_subdirectory(demos/aidemo)
     add_subdirectory(demos/common)
     add_subdirectory(demos/games)
 endif()
