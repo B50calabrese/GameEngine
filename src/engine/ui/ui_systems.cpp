@@ -171,7 +171,8 @@ void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
       graphics::RenderCommand cmd;
       cmd.position = transform.global_pos;
       cmd.size = transform.size;
-      cmd.texture_id = sprite.texture_id;
+      // UI system doesn't support named textures/sheets in RenderQueue yet,
+      // let's stick to Quad if it's not a raw texture ID
       cmd.color = sprite.tint;
       cmd.z_order = (float)transform.z_index;
       ui_render_queue_.Submit(cmd);

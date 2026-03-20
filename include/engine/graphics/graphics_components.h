@@ -27,8 +27,11 @@ struct QuadComponent {
 
 /** @brief Component for rendering a texture. */
 struct SpriteComponent {
-  unsigned int texture_id = 0;
+  std::string texture_name = "";
+  std::string sprite_sheet_name = "";
+  int sprite_index = 0;
   glm::vec4 tint = {1.0f, 1.0f, 1.0f, 1.0f};
+  bool visible = true;
 };
 
 }  // namespace engine::graphics

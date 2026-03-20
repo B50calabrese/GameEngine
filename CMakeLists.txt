@@ -27,6 +27,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/core/window.cpp"
     "${ENGINE_ROOT}/src/engine/input/input_manager.cpp"
     "${ENGINE_ROOT}/src/engine/input/action_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/physics/physics_system.cpp"
     "${ENGINE_ROOT}/src/engine/ui/ui_systems.cpp"
     "${ENGINE_ROOT}/src/engine/scene/scene_manager.cpp"
     "${ENGINE_ROOT}/src/engine/util/logger.cpp"
@@ -37,11 +38,13 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/graphics/camera.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/font.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/framebuffer.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/particle_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/post_processor.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/primitive_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/shader.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/sprite_animator.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/sprite_render_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/sprite_sheet.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/text_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/texture.cpp"
@@ -123,5 +126,6 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/post_effects)
     add_subdirectory(demos/jobsystemdemo)
     add_subdirectory(demos/ui_menu)
+    add_subdirectory(demos/common)
     add_subdirectory(demos/games)
 endif()

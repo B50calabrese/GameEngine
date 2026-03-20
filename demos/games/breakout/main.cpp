@@ -6,13 +6,16 @@
 
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
+#include <engine/core/transform.h>
 #include <engine/ecs/registry.h>
 #include <engine/graphics/graphics_components.h>
+#include <engine/graphics/particle_system.h>
 #include <engine/graphics/post_processor.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
+#include <engine/physics/physics_components.h>
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/ui/ui_components.h>
@@ -20,6 +23,7 @@
 #include <engine/util/collision.h>
 #include <engine/util/easing.h>
 #include <engine/util/tween_manager.h>
+#include "../../common/menu_scene.h"
 
 using namespace engine;
 
@@ -28,29 +32,14 @@ using namespace engine;
 struct PaddleComponent {
   float speed = 500.0f;
   glm::vec2 base_size = {120.0f, 20.0f};
-  glm::vec2 current_size = {120.0f, 20.0f};
-  float spring_velocity = 0.0f;
 };
 
 struct BallComponent {
-  glm::vec2 velocity = {300.0f, -300.0f};
   float radius = 10.0f;
 };
 
 struct BrickComponent {
   bool is_destroyed = false;
-  glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
-};
-
-struct Particle {
-  glm::vec2 position;
-  glm::vec2 velocity;
-  glm::vec4 color;
-  float lifetime;
-};
-
-struct ParticleEmitterComponent {
-  std::vector<Particle> particles;
 };
 
 // --- Scenes ---
@@ -73,13 +62,22 @@ class GameplayScene : public Scene {
 
     // Create Paddle
     paddle_ = registry().CreateEntity();
-    paddle_pos_ = {400.0f, 550.0f};
+    registry().AddComponent(paddle_, core::TransformComponent{{400.0f, 550.0f}, {120.0f, 20.0f}});
+    registry().AddComponent(paddle_, physics::VelocityComponent{});
+    // Paddle is NOT static so it can move via input, but resolution might move it.
+    // However, we set it as trigger to handle collision manually in this demo to preserve bouncing logic.
+    registry().AddComponent(paddle_, physics::ColliderComponent{{120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
     registry().AddComponent(paddle_, PaddleComponent{});
+    registry().AddComponent(paddle_, graphics::QuadComponent{{0.0f, 0.8f, 1.0f, 1.0f}});
 
     // Create Ball
     ball_ = registry().CreateEntity();
-    ball_pos_ = {400.0f, 500.0f};
+    registry().AddComponent(ball_, core::TransformComponent{{400.0f, 500.0f}, {20.0f, 20.0f}});
+    registry().AddComponent(ball_, physics::VelocityComponent{{300.0f, -300.0f}});
+    // Ball is also a trigger to handle its custom "bounce" resolution.
+    registry().AddComponent(ball_, physics::ColliderComponent{{20.0f, 20.0f}, {-10.0f, -10.0f}, false, true});
     registry().AddComponent(ball_, BallComponent{});
+    registry().AddComponent(ball_, graphics::QuadComponent{{1.0f, 1.0f, 0.0f, 1.0f}});
 
     // Create Bricks
     float brick_width = 75.0f;
@@ -97,13 +95,17 @@ class GameplayScene : public Scene {
                          start_y + r * (brick_height + padding)};
         glm::vec4 color = {0.2f + 0.15f * r, 0.8f - 0.15f * r, 0.5f, 1.0f};
         bricks_.push_back({brick, pos, {brick_width, brick_height}});
-        registry().AddComponent(brick, BrickComponent{false, color});
+        registry().AddComponent(brick, core::TransformComponent{pos, {brick_width, brick_height}});
+        // Bricks are static triggers
+        registry().AddComponent(brick, physics::ColliderComponent{{brick_width, brick_height}, {0, 0}, true, true});
+        registry().AddComponent(brick, BrickComponent{false});
+        registry().AddComponent(brick, graphics::QuadComponent{color});
       }
     }
 
     // Particle Emitter
     emitter_entity_ = registry().CreateEntity();
-    registry().AddComponent(emitter_entity_, ParticleEmitterComponent{});
+    registry().AddComponent(emitter_entity_, graphics::ParticleEmitterComponent{});
 
     // UI
     score_label_ = registry().CreateEntity();
@@ -134,7 +136,6 @@ class GameplayScene : public Scene {
 
     UpdatePaddle(dt);
     UpdateBall(dt);
-    UpdateParticles(dt);
 
     // Decrease screen shake over time
     if (shake_time_ > 0) {
@@ -146,116 +147,88 @@ class GameplayScene : public Scene {
   }
 
   void UpdatePaddle(float dt) {
+    auto& trans = registry().GetComponent<core::TransformComponent>(paddle_);
     auto& paddle = registry().GetComponent<PaddleComponent>(paddle_);
     float move = 0.0f;
     if (InputManager::Get().IsKeyDown(KeyCode::KC_A)) move -= 1.0f;
     if (InputManager::Get().IsKeyDown(KeyCode::KC_D)) move += 1.0f;
 
-    paddle_pos_.x += move * paddle.speed * dt;
-    paddle_pos_.x = std::clamp(paddle_pos_.x, paddle.base_size.x / 2.0f,
-                               800.0f - paddle.base_size.x / 2.0f);
+    trans.position.x += move * paddle.speed * dt;
+    trans.position.x = std::clamp(trans.position.x, paddle.base_size.x / 2.0f,
+                                  800.0f - paddle.base_size.x / 2.0f);
 
     // Spring effect
-    float target_scale_x = 1.0f + std::abs(move) * 0.2f;
-    float target_scale_y = 1.0f - std::abs(move) * 0.2f;
+    float target_scale_x = paddle.base_size.x * (1.0f + std::abs(move) * 0.2f);
+    float target_scale_y = paddle.base_size.y * (1.0f - std::abs(move) * 0.2f);
 
-    paddle.current_size.x = paddle.base_size.x * target_scale_x;
-    paddle.current_size.y = paddle.base_size.y * target_scale_y;
-
-    // If not moving, spring back
-    if (move == 0.0f) {
-      paddle.current_size.x +=
-          (paddle.base_size.x - paddle.current_size.x) * 10.0f * dt;
-      paddle.current_size.y +=
-          (paddle.base_size.y - paddle.current_size.y) * 10.0f * dt;
-    }
+    trans.scale.x += (target_scale_x - trans.scale.x) * 10.0f * dt;
+    trans.scale.y += (target_scale_y - trans.scale.y) * 10.0f * dt;
   }
 
   void UpdateBall(float dt) {
+    auto& trans = registry().GetComponent<core::TransformComponent>(ball_);
+    auto& vel = registry().GetComponent<physics::VelocityComponent>(ball_);
     auto& ball = registry().GetComponent<BallComponent>(ball_);
-    ball_pos_ += ball.velocity * dt;
 
-    // Wall collision
-    if (ball_pos_.x - ball.radius < 0 || ball_pos_.x + ball.radius > 800.0f) {
-      ball.velocity.x *= -1;
-      ball_pos_.x = std::clamp(ball_pos_.x, ball.radius, 800.0f - ball.radius);
+    // Wall collision (manual because window bounds aren't entities)
+    if (trans.position.x - ball.radius < 0 || trans.position.x + ball.radius > 800.0f) {
+      vel.velocity.x *= -1;
+      trans.position.x = std::clamp(trans.position.x, ball.radius, 800.0f - ball.radius);
     }
-    if (ball_pos_.y - ball.radius < 0) {
-      ball.velocity.y *= -1;
-      ball_pos_.y = ball.radius;
+    if (trans.position.y - ball.radius < 0) {
+      vel.velocity.y *= -1;
+      trans.position.y = ball.radius;
     }
-    if (ball_pos_.y + ball.radius > 600.0f) {
-      // Game Over
+    if (trans.position.y + ball.radius > 600.0f) {
       is_game_over_ = true;
       return;
     }
 
     // Paddle collision
-    auto& paddle = registry().GetComponent<PaddleComponent>(paddle_);
-    glm::vec2 p_size = paddle.current_size;
-    glm::vec2 p_pos = paddle_pos_ - p_size / 2.0f;
-    if (util::CheckAABB(ball_pos_ - glm::vec2(ball.radius),
-                        glm::vec2(ball.radius * 2), p_pos, p_size)) {
-      ball.velocity.y *= -1;
-      ball_pos_.y = paddle_pos_.y - p_size.y / 2.0f - ball.radius;
+    auto& p_trans = registry().GetComponent<core::TransformComponent>(paddle_);
+    if (util::CheckAABB(trans.position - glm::vec2(ball.radius),
+                        glm::vec2(ball.radius * 2),
+                        p_trans.position - p_trans.scale / 2.0f,
+                        p_trans.scale)) {
+      vel.velocity.y *= -1;
+      trans.position.y = p_trans.position.y - p_trans.scale.y / 2.0f - ball.radius;
 
-      // Screen Shake
       graphics::PostProcessManager::Get().SetShake(0.05f);
       shake_time_ = 0.2f;
 
-      // Add a bit of horizontal velocity based on where it hit the paddle
-      float hit_pos = (ball_pos_.x - paddle_pos_.x) / (p_size.x / 2.0f);
-      ball.velocity.x += hit_pos * 100.0f;
+      float hit_pos = (trans.position.x - p_trans.position.x) / (p_trans.scale.x / 2.0f);
+      vel.velocity.x += hit_pos * 100.0f;
     }
 
     // Brick collision
-    for (auto& b : bricks_) {
-      auto& bc = registry().GetComponent<BrickComponent>(b.id);
-      if (!bc.is_destroyed) {
-        if (util::CheckAABB(ball_pos_ - glm::vec2(ball.radius),
+    for (auto it = bricks_.begin(); it != bricks_.end(); ) {
+      auto& b = *it;
+      if (registry().IsAlive(b.id)) {
+        if (util::CheckAABB(trans.position - glm::vec2(ball.radius),
                             glm::vec2(ball.radius * 2), b.pos, b.size)) {
-          bc.is_destroyed = true;
-          ball.velocity.y *= -1;
+          vel.velocity.y *= -1;
           bricks_hit_++;
-          EmitParticles(b.pos + b.size / 2.0f, bc.color);
-          break;
+          auto& color = registry().GetComponent<graphics::QuadComponent>(b.id).color;
+          EmitParticles(b.pos + b.size / 2.0f, color);
+          registry().DeleteEntity(b.id);
+          it = bricks_.erase(it);
+          continue;
         }
+      } else {
+          it = bricks_.erase(it);
+          continue;
       }
+      ++it;
     }
   }
 
   void EmitParticles(glm::vec2 pos, glm::vec4 color) {
     auto& emitter =
-        registry().GetComponent<ParticleEmitterComponent>(emitter_entity_);
-    for (int i = 0; i < 10; ++i) {
-      Particle p;
-      p.position = pos;
-      float angle = (rand() % 360) * 3.14159f / 180.0f;
-      float speed = (rand() % 100) + 50.0f;
-      p.velocity = {cos(angle) * speed, sin(angle) * speed};
-      p.color = color;
-      p.lifetime = 0.5f;
-      emitter.particles.push_back(p);
-    }
-  }
-
-  void UpdateParticles(float dt) {
-    auto& emitter =
-        registry().GetComponent<ParticleEmitterComponent>(emitter_entity_);
-    for (auto it = emitter.particles.begin(); it != emitter.particles.end();) {
-      it->position += it->velocity * dt;
-      it->lifetime -= dt;
-      it->color.a = it->lifetime / 0.5f;
-      if (it->lifetime <= 0) {
-        it = emitter.particles.erase(it);
-      } else {
-        ++it;
-      }
-    }
+        registry().GetComponent<graphics::ParticleEmitterComponent>(emitter_entity_);
+    emitter.system.Emit(pos, 10, {0,0}, {50,50}, color, 0.5f);
   }
 
   void OnRender() override {
-    // Draw Background
     graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
                                        {0.05f, 0.05f, 0.1f, 1.0f});
 
@@ -266,35 +239,6 @@ class GameplayScene : public Scene {
       graphics::Renderer::Get().DrawText("default", "Press SPACE to Restart",
                                          {280.0f, 300.0f}, 0.0f, 1.0f,
                                          {1.0f, 1.0f, 1.0f, 1.0f});
-      graphics::Renderer::Get().Flush();
-      return;
-    }
-
-    // Draw Paddle
-    auto& paddle = registry().GetComponent<PaddleComponent>(paddle_);
-    graphics::Renderer::Get().DrawQuad(paddle_pos_ - paddle.current_size / 2.0f,
-                                       paddle.current_size,
-                                       {0.0f, 0.8f, 1.0f, 1.0f});
-
-    // Draw Ball
-    auto& ball = registry().GetComponent<BallComponent>(ball_);
-    graphics::Renderer::Get().DrawQuad(ball_pos_ - glm::vec2(ball.radius),
-                                       glm::vec2(ball.radius * 2),
-                                       {1.0f, 1.0f, 0.0f, 1.0f});
-
-    // Draw Bricks
-    for (auto& b : bricks_) {
-      auto& bc = registry().GetComponent<BrickComponent>(b.id);
-      if (!bc.is_destroyed) {
-        graphics::Renderer::Get().DrawQuad(b.pos, b.size, bc.color);
-      }
-    }
-
-    // Draw Particles
-    auto& emitter =
-        registry().GetComponent<ParticleEmitterComponent>(emitter_entity_);
-    for (auto& p : emitter.particles) {
-      graphics::Renderer::Get().DrawQuad(p.position, {4.0f, 4.0f}, p.color);
     }
 
     graphics::Renderer::Get().Flush();
@@ -312,50 +256,21 @@ class GameplayScene : public Scene {
   ecs::EntityID emitter_entity_;
   ecs::EntityID score_label_;
   std::vector<BrickInfo> bricks_;
-  glm::vec2 paddle_pos_;
-  glm::vec2 ball_pos_;
   int bricks_hit_ = 0;
   bool is_game_over_ = false;
   float shake_time_ = 0.0f;
 };
 
-class MenuScene : public Scene {
- public:
-  MenuScene(const std::string& name) : Scene(name) {}
-
-  void OnAttach() override {
-    graphics::TextRenderer::Get().Init();
-    graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-  }
-
-  void OnUpdate(float dt) override {
-    if (InputManager::Get().IsKeyDown(KeyCode::KC_SPACE)) {
-      SceneManager::Get().SetScene(std::make_unique<GameplayScene>("Gameplay"));
-    }
-  }
-
-  void OnRender() override {
-    // Draw Background
-    graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
-                                       {0.05f, 0.05f, 0.1f, 1.0f});
-
-    graphics::Renderer::Get().DrawText("default", "BREAKOUT DEMO",
-                                       {200.0f, 400.0f}, 0.0f, 2.0f,
-                                       {0.0f, 1.0f, 0.8f, 1.0f});
-    graphics::Renderer::Get().DrawText("default", "Press SPACE to Start",
-                                       {280.0f, 300.0f}, 0.0f, 1.0f,
-                                       {1.0f, 1.0f, 1.0f, 1.0f});
-    graphics::Renderer::Get().DrawText("default", "WASD to Move",
-                                       {330.0f, 200.0f}, 0.0f, 0.8f,
-                                       {0.7f, 0.7f, 0.7f, 1.0f});
-    graphics::Renderer::Get().Flush();
-  }
-};
-
 class BreakoutApp : public Application {
  public:
   void OnInit() override {
-    SceneManager::Get().SetScene(std::make_unique<MenuScene>("Menu"));
+    std::vector<demos::common::BaseMenuScene::MenuItem> items = {
+        {"Start Game", []() {
+           SceneManager::Get().SetScene(std::make_unique<GameplayScene>("Gameplay"));
+         }},
+        {"Quit", []() { Engine::Shutdown(); }}
+    };
+    SceneManager::Get().SetScene(std::make_unique<demos::common::BaseMenuScene>("BREAKOUT DEMO", items));
   }
   void OnShutdown() override {}
   void OnUpdate(double dt) override {

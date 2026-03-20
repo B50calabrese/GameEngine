@@ -7,14 +7,25 @@
 #include <engine/core/job_system.h>
 #include <engine/core/window.h>
 #include <engine/graphics/camera.h>
+#include <engine/graphics/particle_system.h>
 #include <engine/graphics/render_queue.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/sprite_render_system.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
+#include <engine/physics/physics_system.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/ui/ui_systems.h>
 
 namespace engine {
+
+static Application* s_instance = nullptr;
+
+Application& Application::Get() { return *s_instance; }
+
+Application::Application() {
+  if (s_instance == nullptr) s_instance = this;
+}
 
 void Application::Run() {
   OnInit();
@@ -43,6 +54,20 @@ void Application::Run() {
     Scene* active_scene = SceneManager::Get().GetActiveScene();
     if (active_scene) {
       ecs::Registry& reg = active_scene->registry();
+
+      // Engine Core Systems
+      physics::PhysicsSystem::Update(reg, static_cast<float>(delta_time));
+
+      // Particle Systems
+      reg.ForEach<graphics::ParticleEmitterComponent>(
+          [dt = static_cast<float>(delta_time)](
+              graphics::ParticleEmitterComponent& pec) {
+            if (pec.is_active) {
+              pec.system.Update(dt);
+            }
+          });
+
+      // UI Systems
       ui::UISyncSystem::Update(reg);
       ui::UIInputSystem::Update(reg);
       ui::UILayoutSystem::Update(reg, win.width(), win.height());
@@ -50,6 +75,13 @@ void Application::Run() {
 
     SceneManager::Get().RenderActiveScene();
     this->OnUpdate(delta_time);
+
+    // Render ECS-driven graphics
+    if (active_scene) {
+      graphics::SpriteRenderSystem::Render(active_scene->registry());
+      active_scene->registry().ForEach<graphics::ParticleEmitterComponent>(
+          [](graphics::ParticleEmitterComponent& pec) { pec.system.Render(); });
+    }
 
     core::JobSystem::Get().Wait();
 

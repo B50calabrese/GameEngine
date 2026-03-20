@@ -1,7 +1,9 @@
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/core/engine.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
+#include "../../common/menu_scene.h"
 
 #include "scenes.h"
 
@@ -18,11 +20,17 @@ void LevelCompleteScene::OnAttach() {
 void LevelCompleteScene::OnUpdate(float dt) {
   if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_SPACE) ||
       engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_ENTER)) {
-    if (level_ < 3) {
+    if (level_ < 2) { // We only have 2 levels
       engine::SceneManager::Get().SetScene(
           std::make_unique<GameplayScene>("Gameplay", level_ + 1));
     } else {
-      engine::SceneManager::Get().SetScene(std::make_unique<MenuScene>("Menu"));
+        std::vector<demos::common::BaseMenuScene::MenuItem> items = {
+            {"Level 1", []() { engine::SceneManager::Get().SetScene(std::make_unique<platformer::GameplayScene>("Gameplay", 1)); }},
+            {"Level 2", []() { engine::SceneManager::Get().SetScene(std::make_unique<platformer::GameplayScene>("Gameplay", 2)); }},
+            {"Quit", []() { engine::Engine::Shutdown(); }}
+        };
+        engine::SceneManager::Get().SetScene(
+            std::make_unique<demos::common::BaseMenuScene>("PLATFORMER DEMO", items));
     }
   }
 }

@@ -23,6 +23,12 @@ namespace engine {
  */
 class Application {
  public:
+  /** @brief Initializes the application instance. */
+  Application();
+
+  /** @brief Gets the singleton instance of the application. */
+  static Application& Get();
+
   /**
    * @brief Drives the main game loop.
    *
@@ -57,6 +63,9 @@ class Application {
 
   /** @brief Virtual destructor is crucial for proper inheritance cleanup. */
   virtual ~Application() = default;
+
+  /** @brief Gets the primary camera. */
+  engine::graphics::Camera& camera() { return *main_camera_; }
 
  protected:
   /**
