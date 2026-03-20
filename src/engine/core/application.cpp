@@ -4,6 +4,7 @@
  */
 
 #include <engine/core/application.h>
+#include <engine/core/engine.h>
 #include <engine/core/job_system.h>
 #include <engine/core/window.h>
 #include <engine/graphics/camera.h>
@@ -98,6 +99,7 @@ void Application::Run() {
     win.SwapBuffers();
   }
   OnShutdown();
+  Engine::Shutdown();
 }
 
 }  // namespace engine

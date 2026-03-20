@@ -14,6 +14,8 @@
 #include <thread>
 #include <vector>
 
+#include <engine/util/logger.h>
+
 namespace engine::core {
 
 /**
@@ -58,6 +60,10 @@ class JobSystem {
     std::future<ReturnType> res = task->get_future();
     {
       std::lock_guard<std::mutex> lock(queue_mutex_);
+      if (stop_) {
+        LOG_WARN("JobSystem::Execute called after shutdown. Task ignored.");
+        return std::future<ReturnType>();
+      }
       busy_tasks_++;
       tasks_.emplace([this, task]() {
         (*task)();
@@ -86,7 +92,7 @@ class JobSystem {
 
  private:
   JobSystem() = default;
-  ~JobSystem() = default;
+  ~JobSystem();
 
   // Prevent copy and move
   JobSystem(const JobSystem&) = delete;
@@ -120,7 +126,6 @@ class JobSystem {
 #else
 #include <cstdlib>
 
-#include <engine/util/logger.h>
 #define ASSERT_MAIN_THREAD()                                                  \
   do {                                                                        \
     if (!engine::core::JobSystem::Get().IsMainThread()) {                     \
