@@ -13,7 +13,7 @@ constexpr float HEIGHT = 600.0f;
 
 class SceneBOverlay : public engine::Scene {
  public:
-  explicit SceneBOverlay(const std::string& name) : Scene(name) {}
+  explicit SceneBOverlay(const std::string& name) : engine::Scene(name) {}
 
   void OnRender() override {
     // Draw a green rectangle on some of the screen.
@@ -23,7 +23,7 @@ class SceneBOverlay : public engine::Scene {
   }
 
   bool OnInput() override {
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_ESCAPE)) {
+    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kEscape)) {
       // Remove the current screen.
       engine::SceneManager::Get().PopScene();
     }
@@ -33,7 +33,7 @@ class SceneBOverlay : public engine::Scene {
 
 class SceneB : public engine::Scene {
  public:
-  explicit SceneB(const std::string& name) : Scene(name) {}
+  explicit SceneB(const std::string& name) : engine::Scene(name) {}
 
   void OnRender() override {
     // Draw a blue rectangle on the whole screen.
@@ -42,7 +42,7 @@ class SceneB : public engine::Scene {
   }
 
   bool OnInput() override {
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_ESCAPE)) {
+    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kEscape)) {
       // Push the overlay screen.
       engine::SceneManager::Get().PushScene(
           std::make_unique<SceneBOverlay>("SceneBOverlay"));
@@ -53,7 +53,7 @@ class SceneB : public engine::Scene {
 
 class SceneA : public engine::Scene {
  public:
-  explicit SceneA(const std::string& name) : Scene(name) {}
+  explicit SceneA(const std::string& name) : engine::Scene(name) {}
 
   void OnRender() override {
     // Draw a red rectangle on the whole screen.
@@ -62,7 +62,7 @@ class SceneA : public engine::Scene {
   }
 
   bool OnInput() override {
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_SPACE)) {
+    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace)) {
       engine::SceneManager::Get().SetScene(std::make_unique<SceneB>("SceneB"));
     }
     return true;
@@ -72,12 +72,12 @@ class SceneA : public engine::Scene {
 class MyApp : public engine::Application {
  public:
   void OnInit() override {
-    std::cout << "Initializing Application" << std::endl;
+    std::cout << "Initializing engine::Application" << std::endl;
     engine::SceneManager::Get().PushScene(std::make_unique<SceneA>("SceneA"));
   }
 
   void OnShutdown() override {
-    std::cout << "Shutting down Application" << std::endl;
+    std::cout << "Shutting down engine::Application" << std::endl;
   }
 
   void OnUpdate(double delta_time_seconds) override {}

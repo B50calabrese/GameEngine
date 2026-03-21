@@ -170,7 +170,9 @@ class TweenTask : public ITweenTask {
         on_complete_(on_complete) {}
 
   bool Update(float delta_time) override {
-    if (stopped_) return true;
+    if (stopped_) {
+      return true;
+    }
 
     if (delay_ > 0.0f) {
       delay_ -= delta_time;

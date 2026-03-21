@@ -11,7 +11,8 @@
 namespace engine::physics {
 
 /**
- * @brief Processes physics components and handles simple AABB collision resolution.
+ * @brief Processes physics components and handles simple AABB collision
+ * resolution.
  */
 class PhysicsSystem {
  public:
@@ -20,11 +21,12 @@ class PhysicsSystem {
    * @param registry The ECS registry containing entities to update.
    * @param dt Delta time since last frame.
    */
-  static void Update(ecs::Registry& registry, float dt);
+  static void Update(ecs::Registry* registry, float dt);
 
  private:
   /** @brief Resolves collisions between two entities. */
-  static void ResolveCollision(ecs::Registry& registry, ecs::EntityID entity_a, ecs::EntityID entity_b);
+  static void ResolveCollision(ecs::Registry& registry, ecs::EntityID entity_a,
+                               ecs::EntityID entity_b);
 };
 
 }  // namespace engine::physics

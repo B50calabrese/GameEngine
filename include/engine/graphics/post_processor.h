@@ -7,8 +7,8 @@
 #define INCLUDE_ENGINE_GRAPHICS_POST_PROCESSOR_H_
 
 #include <memory>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -36,7 +36,8 @@ class IPostProcessEffect {
    * @param input_texture The texture to process.
    * @param output_framebuffer The framebuffer to render into.
    */
-  virtual void Apply(unsigned int input_texture, Framebuffer* output_framebuffer) = 0;
+  virtual void Apply(unsigned int input_texture,
+                     Framebuffer* output_framebuffer) = 0;
 
   /** @brief Returns the name of the effect. */
   virtual std::string GetName() const = 0;
@@ -52,7 +53,8 @@ class StandardEffect : public IPostProcessEffect {
   ~StandardEffect() override;
 
   void OnResize(int width, int height) override {}
-  void Apply(unsigned int input_texture, Framebuffer* output_framebuffer) override;
+  void Apply(unsigned int input_texture,
+             Framebuffer* output_framebuffer) override;
   std::string GetName() const override { return "StandardEffect"; }
 
   void SetShake(float intensity) { shake_intensity_ = intensity; }
@@ -139,7 +141,8 @@ class PostProcessManager {
   std::unique_ptr<Framebuffer> ping_pong_buffer_;
 
   std::vector<std::unique_ptr<IPostProcessEffect>> effects_;
-  StandardEffect* standard_effect_ = nullptr; // Raw pointer to the effect in the vector for quick access
+  StandardEffect* standard_effect_ =
+      nullptr;  // Raw pointer to the effect in the vector for quick access
 
   int width_ = 0;
   int height_ = 0;

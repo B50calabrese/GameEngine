@@ -20,12 +20,14 @@
 
 namespace engine {
 
-static Application* s_instance = nullptr;
+static Application* g_application_instance = nullptr;
 
-Application& Application::Get() { return *s_instance; }
+Application& Application::Get() { return *g_application_instance; }
 
 Application::Application() {
-  if (s_instance == nullptr) s_instance = this;
+  if (g_application_instance == nullptr) {
+    g_application_instance = this;
+  }
 }
 
 void Application::Run() {
@@ -57,7 +59,7 @@ void Application::Run() {
       ecs::Registry& reg = active_scene->registry();
 
       // Engine Core Systems
-      physics::PhysicsSystem::Update(reg, static_cast<float>(delta_time));
+      physics::PhysicsSystem::Update(&reg, static_cast<float>(delta_time));
 
       // Particle Systems
       reg.ForEach<graphics::ParticleEmitterComponent>(
@@ -79,7 +81,7 @@ void Application::Run() {
 
     // Render ECS-driven graphics
     if (active_scene) {
-      graphics::SpriteRenderSystem::Render(active_scene->registry());
+      graphics::SpriteRenderSystem::Render(&active_scene->registry());
       active_scene->registry().ForEach<graphics::ParticleEmitterComponent>(
           [](graphics::ParticleEmitterComponent& pec) { pec.system.Render(); });
     }

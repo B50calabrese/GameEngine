@@ -23,9 +23,10 @@
 #include <engine/util/collision.h>
 #include <engine/util/easing.h>
 #include <engine/util/tween_manager.h>
+
 #include "../../common/menu_scene.h"
 
-using namespace engine;
+
 
 // --- Components ---
 
@@ -44,13 +45,13 @@ struct BrickComponent {
 
 // --- Scenes ---
 
-class GameplayScene : public Scene {
+class GameplayScene : public engine::Scene {
  public:
-  GameplayScene(const std::string& name) : Scene(name) {}
+  GameplayScene(const std::string& name) : engine::Scene(name) {}
 
   void OnAttach() override {
-    graphics::TextRenderer::Get().Init();
-    graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
+    engine::graphics::TextRenderer::Get().Init();
+    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
 
     ResetGame();
   }
@@ -62,22 +63,32 @@ class GameplayScene : public Scene {
 
     // Create Paddle
     paddle_ = registry().CreateEntity();
-    registry().AddComponent(paddle_, core::TransformComponent{{400.0f, 550.0f}, {120.0f, 20.0f}});
-    registry().AddComponent(paddle_, physics::VelocityComponent{});
-    // Paddle is NOT static so it can move via input, but resolution might move it.
-    // However, we set it as trigger to handle collision manually in this demo to preserve bouncing logic.
-    registry().AddComponent(paddle_, physics::ColliderComponent{{120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
+    registry().AddComponent(
+        paddle_, engine::core::TransformComponent{{400.0f, 550.0f}, {120.0f, 20.0f}});
+    registry().AddComponent(paddle_, engine::physics::VelocityComponent{});
+    // Paddle is NOT static so it can move via input, but resolution might move
+    // it. However, we set it as trigger to handle collision manually in this
+    // demo to preserve bouncing logic.
+    registry().AddComponent(
+        paddle_, engine::physics::ColliderComponent{
+                     {120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
     registry().AddComponent(paddle_, PaddleComponent{});
-    registry().AddComponent(paddle_, graphics::QuadComponent{{0.0f, 0.8f, 1.0f, 1.0f}});
+    registry().AddComponent(paddle_,
+                            engine::graphics::QuadComponent{{0.0f, 0.8f, 1.0f, 1.0f}});
 
     // Create Ball
     ball_ = registry().CreateEntity();
-    registry().AddComponent(ball_, core::TransformComponent{{400.0f, 500.0f}, {20.0f, 20.0f}});
-    registry().AddComponent(ball_, physics::VelocityComponent{{300.0f, -300.0f}});
+    registry().AddComponent(
+        ball_, engine::core::TransformComponent{{400.0f, 500.0f}, {20.0f, 20.0f}});
+    registry().AddComponent(ball_,
+                            engine::physics::VelocityComponent{{300.0f, -300.0f}});
     // Ball is also a trigger to handle its custom "bounce" resolution.
-    registry().AddComponent(ball_, physics::ColliderComponent{{20.0f, 20.0f}, {-10.0f, -10.0f}, false, true});
+    registry().AddComponent(ball_,
+                            engine::physics::ColliderComponent{
+                                {20.0f, 20.0f}, {-10.0f, -10.0f}, false, true});
     registry().AddComponent(ball_, BallComponent{});
-    registry().AddComponent(ball_, graphics::QuadComponent{{1.0f, 1.0f, 0.0f, 1.0f}});
+    registry().AddComponent(ball_,
+                            engine::graphics::QuadComponent{{1.0f, 1.0f, 0.0f, 1.0f}});
 
     // Create Bricks
     float brick_width = 75.0f;
@@ -95,39 +106,43 @@ class GameplayScene : public Scene {
                          start_y + r * (brick_height + padding)};
         glm::vec4 color = {0.2f + 0.15f * r, 0.8f - 0.15f * r, 0.5f, 1.0f};
         bricks_.push_back({brick, pos, {brick_width, brick_height}});
-        registry().AddComponent(brick, core::TransformComponent{pos, {brick_width, brick_height}});
+        registry().AddComponent(
+            brick, engine::core::TransformComponent{pos, {brick_width, brick_height}});
         // Bricks are static triggers
-        registry().AddComponent(brick, physics::ColliderComponent{{brick_width, brick_height}, {0, 0}, true, true});
+        registry().AddComponent(
+            brick, engine::physics::ColliderComponent{
+                       {brick_width, brick_height}, {0, 0}, true, true});
         registry().AddComponent(brick, BrickComponent{false});
-        registry().AddComponent(brick, graphics::QuadComponent{color});
+        registry().AddComponent(brick, engine::graphics::QuadComponent{color});
       }
     }
 
     // Particle Emitter
     emitter_entity_ = registry().CreateEntity();
-    registry().AddComponent(emitter_entity_, graphics::ParticleEmitterComponent{});
+    registry().AddComponent(emitter_entity_,
+                            engine::graphics::ParticleEmitterComponent{});
 
     // UI
     score_label_ = registry().CreateEntity();
-    ui::UITransform score_trans;
+    engine::ui::UITransform score_trans;
     score_trans.local_pos = {10.0f, 570.0f};
     registry().AddComponent(score_label_, score_trans);
-    ui::UIBinding score_binding;
+    engine::ui::UIBinding score_binding;
     score_binding.get_text = [this]() {
       return "Bricks Hit: " + std::to_string(bricks_hit_);
     };
     registry().AddComponent(score_label_, score_binding);
     registry().AddComponent(
         score_label_,
-        graphics::TextComponent{
+        engine::graphics::TextComponent{
             "Bricks Hit: 0", "default", 0.8f, {1.0f, 1.0f, 1.0f, 1.0f}});
   }
 
   void OnUpdate(float dt) override {
-    util::TweenManager::Get().Update(dt);
+    engine::util::TweenManager::Get().Update(dt);
 
     if (is_game_over_) {
-      if (InputManager::Get().IsKeyPressed(KeyCode::KC_SPACE)) {
+      if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace)) {
         is_game_over_ = false;
         ResetGame();
       }
@@ -141,17 +156,21 @@ class GameplayScene : public Scene {
     if (shake_time_ > 0) {
       shake_time_ -= dt;
       if (shake_time_ <= 0) {
-        graphics::PostProcessManager::Get().SetShake(0.0f);
+        engine::graphics::PostProcessManager::Get().SetShake(0.0f);
       }
     }
   }
 
   void UpdatePaddle(float dt) {
-    auto& trans = registry().GetComponent<core::TransformComponent>(paddle_);
+    auto& trans = registry().GetComponent<engine::core::TransformComponent>(paddle_);
     auto& paddle = registry().GetComponent<PaddleComponent>(paddle_);
     float move = 0.0f;
-    if (InputManager::Get().IsKeyDown(KeyCode::KC_A)) move -= 1.0f;
-    if (InputManager::Get().IsKeyDown(KeyCode::KC_D)) move += 1.0f;
+    if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kA)) {
+      move -= 1.0f;
+    }
+    if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kD)) {
+      move += 1.0f;
+    }
 
     trans.position.x += move * paddle.speed * dt;
     trans.position.x = std::clamp(trans.position.x, paddle.base_size.x / 2.0f,
@@ -166,14 +185,16 @@ class GameplayScene : public Scene {
   }
 
   void UpdateBall(float dt) {
-    auto& trans = registry().GetComponent<core::TransformComponent>(ball_);
-    auto& vel = registry().GetComponent<physics::VelocityComponent>(ball_);
+    auto& trans = registry().GetComponent<engine::core::TransformComponent>(ball_);
+    auto& vel = registry().GetComponent<engine::physics::VelocityComponent>(ball_);
     auto& ball = registry().GetComponent<BallComponent>(ball_);
 
     // Wall collision (manual because window bounds aren't entities)
-    if (trans.position.x - ball.radius < 0 || trans.position.x + ball.radius > 800.0f) {
+    if (trans.position.x - ball.radius < 0 ||
+        trans.position.x + ball.radius > 800.0f) {
       vel.velocity.x *= -1;
-      trans.position.x = std::clamp(trans.position.x, ball.radius, 800.0f - ball.radius);
+      trans.position.x =
+          std::clamp(trans.position.x, ball.radius, 800.0f - ball.radius);
     }
     if (trans.position.y - ball.radius < 0) {
       vel.velocity.y *= -1;
@@ -185,92 +206,96 @@ class GameplayScene : public Scene {
     }
 
     // Paddle collision
-    auto& p_trans = registry().GetComponent<core::TransformComponent>(paddle_);
-    if (util::CheckAABB(trans.position - glm::vec2(ball.radius),
-                        glm::vec2(ball.radius * 2),
-                        p_trans.position - p_trans.scale / 2.0f,
-                        p_trans.scale)) {
+    auto& p_trans = registry().GetComponent<engine::core::TransformComponent>(paddle_);
+    if (engine::util::CheckAABB(
+            trans.position - glm::vec2(ball.radius), glm::vec2(ball.radius * 2),
+            p_trans.position - p_trans.scale / 2.0f, p_trans.scale)) {
       vel.velocity.y *= -1;
-      trans.position.y = p_trans.position.y - p_trans.scale.y / 2.0f - ball.radius;
+      trans.position.y =
+          p_trans.position.y - p_trans.scale.y / 2.0f - ball.radius;
 
-      graphics::PostProcessManager::Get().SetShake(0.05f);
+      engine::graphics::PostProcessManager::Get().SetShake(0.05f);
       shake_time_ = 0.2f;
 
-      float hit_pos = (trans.position.x - p_trans.position.x) / (p_trans.scale.x / 2.0f);
+      float hit_pos =
+          (trans.position.x - p_trans.position.x) / (p_trans.scale.x / 2.0f);
       vel.velocity.x += hit_pos * 100.0f;
     }
 
     // Brick collision
-    for (auto it = bricks_.begin(); it != bricks_.end(); ) {
+    for (auto it = bricks_.begin(); it != bricks_.end();) {
       auto& b = *it;
       if (registry().IsAlive(b.id)) {
-        if (util::CheckAABB(trans.position - glm::vec2(ball.radius),
+        if (engine::util::CheckAABB(trans.position - glm::vec2(ball.radius),
                             glm::vec2(ball.radius * 2), b.pos, b.size)) {
           vel.velocity.y *= -1;
           bricks_hit_++;
-          auto& color = registry().GetComponent<graphics::QuadComponent>(b.id).color;
+          auto& color =
+              registry().GetComponent<engine::graphics::QuadComponent>(b.id).color;
           EmitParticles(b.pos + b.size / 2.0f, color);
           registry().DeleteEntity(b.id);
           it = bricks_.erase(it);
           continue;
         }
       } else {
-          it = bricks_.erase(it);
-          continue;
+        it = bricks_.erase(it);
+        continue;
       }
       ++it;
     }
   }
 
   void EmitParticles(glm::vec2 pos, glm::vec4 color) {
-    auto& emitter =
-        registry().GetComponent<graphics::ParticleEmitterComponent>(emitter_entity_);
-    emitter.system.Emit(pos, 10, {0,0}, {50,50}, color, 0.5f);
+    auto& emitter = registry().GetComponent<engine::graphics::ParticleEmitterComponent>(
+        emitter_entity_);
+    emitter.system.Emit(pos, 10, {0, 0}, {50, 50}, color, 0.5f);
   }
 
   void OnRender() override {
-    graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
+    engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
                                        {0.05f, 0.05f, 0.1f, 1.0f});
 
     if (is_game_over_) {
-      graphics::Renderer::Get().DrawText("default", "GAME OVER",
+      engine::graphics::Renderer::Get().DrawText("default", "GAME OVER",
                                          {250.0f, 350.0f}, 0.0f, 2.0f,
                                          {1.0f, 0.0f, 0.0f, 1.0f});
-      graphics::Renderer::Get().DrawText("default", "Press SPACE to Restart",
+      engine::graphics::Renderer::Get().DrawText("default", "Press SPACE to Restart",
                                          {280.0f, 300.0f}, 0.0f, 1.0f,
                                          {1.0f, 1.0f, 1.0f, 1.0f});
     }
 
-    graphics::Renderer::Get().Flush();
+    engine::graphics::Renderer::Get().Flush();
   }
 
  private:
   struct BrickInfo {
-    ecs::EntityID id;
+    engine::ecs::EntityID id;
     glm::vec2 pos;
     glm::vec2 size;
   };
 
-  ecs::EntityID paddle_;
-  ecs::EntityID ball_;
-  ecs::EntityID emitter_entity_;
-  ecs::EntityID score_label_;
+  engine::ecs::EntityID paddle_;
+  engine::ecs::EntityID ball_;
+  engine::ecs::EntityID emitter_entity_;
+  engine::ecs::EntityID score_label_;
   std::vector<BrickInfo> bricks_;
   int bricks_hit_ = 0;
   bool is_game_over_ = false;
   float shake_time_ = 0.0f;
 };
 
-class BreakoutApp : public Application {
+class BreakoutApp : public engine::Application {
  public:
   void OnInit() override {
     std::vector<demos::common::BaseMenuScene::MenuItem> items = {
-        {"Start Game", []() {
-           SceneManager::Get().SetScene(std::make_unique<GameplayScene>("Gameplay"));
+        {"Start Game",
+         []() {
+           engine::SceneManager::Get().SetScene(
+               std::make_unique<GameplayScene>("Gameplay"));
          }},
-        {"Quit", []() { Engine::Shutdown(); }}
-    };
-    SceneManager::Get().SetScene(std::make_unique<demos::common::BaseMenuScene>("BREAKOUT DEMO", items));
+        {"Quit", []() { engine::Engine::Shutdown(); }}};
+    engine::SceneManager::Get().SetScene(
+        std::make_unique<demos::common::BaseMenuScene>("BREAKOUT DEMO", items));
   }
   void OnShutdown() override {}
   void OnUpdate(double dt) override {
@@ -279,11 +304,11 @@ class BreakoutApp : public Application {
 };
 
 int main(void) {
-  EngineConfig config;
+  engine::EngineConfig config;
   config.window_width = 800;
   config.window_height = 600;
   config.asset_path = ENGINE_ASSETS_PATH;
-  Engine::Init(config);
+  engine::Engine::Init(config);
   BreakoutApp app;
   app.Run();
   return 0;

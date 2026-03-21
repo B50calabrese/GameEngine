@@ -8,9 +8,10 @@
 #include <GLFW/glfw3.h>
 // clang-format on
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <engine/graphics/lighting_effect.h>
 #include <engine/util/logger.h>
-#include <glm/gtc/type_ptr.hpp>
 
 namespace engine::graphics {
 
@@ -184,32 +185,38 @@ static const char* kLightingFragmentSource = R"(
     }
 )";
 
-LightingEffect::LightingEffect() {
-  InitResources();
-}
+LightingEffect::LightingEffect() { InitResources(); }
 
 LightingEffect::~LightingEffect() {
-  if (quad_vao_) glDeleteVertexArrays(1, &quad_vao_);
-  if (quad_vbo_) glDeleteBuffers(1, &quad_vbo_);
+  if (quad_vao_) {
+    glDeleteVertexArrays(1, &quad_vao_);
+  }
+  if (quad_vbo_) {
+    glDeleteBuffers(1, &quad_vbo_);
+  }
 }
 
 void LightingEffect::InitResources() {
-  lighting_shader_ = Shader::CreateFromSource(kLightingVertexSource, kLightingFragmentSource);
-  occluder_shader_ = Shader::CreateFromSource(kOccluderVertexSource, kOccluderFragmentSource);
+  lighting_shader_ =
+      Shader::CreateFromSource(kLightingVertexSource, kLightingFragmentSource);
+  occluder_shader_ =
+      Shader::CreateFromSource(kOccluderVertexSource, kOccluderFragmentSource);
 
-  float quadVertices[] = {
-      -1.0f, 1.0f,  0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-      -1.0f, 1.0f,  0.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, 1.0f};
+  float quadVertices[] = {-1.0f, 1.0f,  0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
+                          1.0f,  -1.0f, 1.0f, 0.0f, -1.0f, 1.0f,  0.0f, 1.0f,
+                          1.0f,  -1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  1.0f, 1.0f};
 
   glGenVertexArrays(1, &quad_vao_);
   glGenBuffers(1, &quad_vbo_);
   glBindVertexArray(quad_vao_);
   glBindBuffer(GL_ARRAY_BUFFER, quad_vbo_);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
+               GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                        (void*)(2 * sizeof(float)));
 }
 
 void LightingEffect::OnResize(int width, int height) {
@@ -219,7 +226,9 @@ void LightingEffect::OnResize(int width, int height) {
 }
 
 void LightingEffect::RenderOccluderMap() {
-  if (!occluder_map_ || !occluder_shader_) return;
+  if (!occluder_map_ || !occluder_shader_) {
+    return;
+  }
 
   occluder_map_->Bind();
   glViewport(0, 0, width_, height_);
@@ -231,15 +240,19 @@ void LightingEffect::RenderOccluderMap() {
   occluder_shader_->SetMat4("u_Projection", projection);
 
   // We need a simple quad for drawing occluders
-  // For now let's just use the shared quad if it was generic, but here we need world-space quads.
-  // We'll reuse the quad_vao but scale/translate it via u_Model.
+  // For now let's just use the shared quad if it was generic, but here we need
+  // world-space quads. We'll reuse the quad_vao but scale/translate it via
+  // u_Model.
   glBindVertexArray(quad_vao_);
 
   for (const auto& occluder : occluders_) {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(occluder.position, 0.0f));
-    model = glm::rotate(model, glm::radians(occluder.rotation), glm::vec3(0, 0, 1));
-    model = glm::scale(model, glm::vec3(occluder.size * 0.5f, 1.0f)); // 0.5 because our quad is -1 to 1
+    model =
+        glm::rotate(model, glm::radians(occluder.rotation), glm::vec3(0, 0, 1));
+    model =
+        glm::scale(model, glm::vec3(occluder.size * 0.5f,
+                                    1.0f));  // 0.5 because our quad is -1 to 1
 
     occluder_shader_->SetMat4("u_Model", model);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -249,7 +262,8 @@ void LightingEffect::RenderOccluderMap() {
   occluder_map_->Unbind();
 }
 
-void LightingEffect::Apply(unsigned int input_texture, Framebuffer* output_framebuffer) {
+void LightingEffect::Apply(unsigned int input_texture,
+                           Framebuffer* output_framebuffer) {
   RenderOccluderMap();
 
   if (output_framebuffer) {
@@ -289,10 +303,11 @@ void LightingEffect::Apply(unsigned int input_texture, Framebuffer* output_frame
     lighting_shader_->SetVec3(prefix + "color", lights_[i].color);
     lighting_shader_->SetFloat(prefix + "intensity", lights_[i].intensity);
     lighting_shader_->SetFloat(prefix + "radius", lights_[i].radius);
-      lighting_shader_->SetFloat(prefix + "angle", lights_[i].angle);
-      lighting_shader_->SetFloat(prefix + "direction", lights_[i].direction);
-      lighting_shader_->SetInt(prefix + "is_directional", lights_[i].is_directional ? 1 : 0);
-      lighting_shader_->SetVec2(prefix + "dir_vector", lights_[i].dir_vector);
+    lighting_shader_->SetFloat(prefix + "angle", lights_[i].angle);
+    lighting_shader_->SetFloat(prefix + "direction", lights_[i].direction);
+    lighting_shader_->SetInt(prefix + "is_directional",
+                             lights_[i].is_directional ? 1 : 0);
+    lighting_shader_->SetVec2(prefix + "dir_vector", lights_[i].dir_vector);
   }
 
   glBindVertexArray(quad_vao_);
@@ -302,4 +317,4 @@ void LightingEffect::Apply(unsigned int input_texture, Framebuffer* output_frame
   lighting_shader_->Unbind();
 }
 
-} // namespace engine::graphics
+}  // namespace engine::graphics

@@ -6,10 +6,10 @@
 #ifndef INCLUDE_ENGINE_UTIL_BEHAVIOR_TREE_H_
 #define INCLUDE_ENGINE_UTIL_BEHAVIOR_TREE_H_
 
-#include <engine/util/behavior_tree/node.h>
 #include <engine/util/behavior_tree/composite_nodes.h>
-#include <engine/util/behavior_tree/leaf_nodes.h>
 #include <engine/util/behavior_tree/decorator_nodes.h>
+#include <engine/util/behavior_tree/leaf_nodes.h>
+#include <engine/util/behavior_tree/node.h>
 
 namespace engine::util {
 
@@ -22,12 +22,16 @@ class BehaviorTree {
   Blackboard& GetBlackboard() { return blackboard_; }
 
   NodeStatus Tick(float dt) {
-    if (!root_) return NodeStatus::FAILURE;
+    if (!root_) {
+      return NodeStatus::FAILURE;
+    }
     return root_->Tick(dt, blackboard_);
   }
 
   void Reset() {
-    if (root_) root_->Reset();
+    if (root_) {
+      root_->Reset();
+    }
   }
 
  private:

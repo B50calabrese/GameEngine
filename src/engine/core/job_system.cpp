@@ -28,7 +28,9 @@ void JobSystem::Init() {
 void JobSystem::Shutdown() {
   {
     std::lock_guard<std::mutex> lock(queue_mutex_);
-    if (stop_) return;
+    if (stop_) {
+      return;
+    }
     stop_ = true;
   }
   condition_.notify_all();

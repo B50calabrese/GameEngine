@@ -8,18 +8,18 @@
 #include <engine/input/input_manager.h>
 #include <engine/util/tween_manager.h>
 
-using namespace engine;
-using namespace engine::graphics;
-using namespace engine::util;
+
+
+
 
 /** @brief Demo to showcase post-processing effects like Screen Shake and Flash.
  */
-class PostEffectsDemo : public Application {
+class PostEffectsDemo : public engine::Application {
  public:
   void OnInit() override {
     // Register actions
-    ActionManager::Get().BindAction("Shake", KeyCode::KC_S);
-    ActionManager::Get().BindAction("Flash", KeyCode::KC_F);
+    engine::ActionManager::Get().BindAction("Shake", engine::KeyCode::kS);
+    engine::ActionManager::Get().BindAction("Flash", engine::KeyCode::kF);
 
     std::cout << "Post-Effects Demo Initialized" << std::endl;
     std::cout << "Press 'S' for Screen Shake" << std::endl;
@@ -32,42 +32,42 @@ class PostEffectsDemo : public Application {
 
   void OnUpdate(double delta_time) override {
     // 1. Handle Input
-    if (ActionManager::Get().IsStarted("Shake")) {
-      TweenManager::Get()
+    if (engine::ActionManager::Get().IsStarted("Shake")) {
+      engine::util::TweenManager::Get()
           .Tween<float>(0.05f, 0.0f, 0.5f)
           .OnUpdate([](const float& value, float progress) {
-            PostProcessManager::Get().SetShake(value);
+            engine::graphics::PostProcessManager::Get().SetShake(value);
           })
           .Play();
     }
 
-    if (ActionManager::Get().IsStarted("Flash")) {
-      TweenManager::Get()
+    if (engine::ActionManager::Get().IsStarted("Flash")) {
+      engine::util::TweenManager::Get()
           .Tween<float>(1.0f, 0.0f, 0.2f)
           .OnUpdate([](const float& value, float progress) {
-            PostProcessManager::Get().SetFlash({1.0f, 1.0f, 1.0f}, value);
+            engine::graphics::PostProcessManager::Get().SetFlash({1.0f, 1.0f, 1.0f}, value);
           })
           .Play();
     }
 
     // 2. Update Tweens
-    TweenManager::Get().Update(static_cast<float>(delta_time));
+    engine::util::TweenManager::Get().Update(static_cast<float>(delta_time));
 
     // 3. Render some scene content to be post-processed
-    Renderer::Get().DrawRect(100.0f, 100.0f, 200.0f, 200.0f, 1.0f, 0.0f,
+    engine::graphics::Renderer::Get().DrawRect(100.0f, 100.0f, 200.0f, 200.0f, 1.0f, 0.0f,
                              0.0f);  // Red Box
-    Renderer::Get().DrawRect(400.0f, 300.0f, 150.0f, 150.0f, 0.0f, 1.0f,
+    engine::graphics::Renderer::Get().DrawRect(400.0f, 300.0f, 150.0f, 150.0f, 0.0f, 1.0f,
                              0.0f);  // Green Box
-    Renderer::Get().DrawRect(200.0f, 400.0f, 100.0f, 100.0f, 0.0f, 0.0f,
+    engine::graphics::Renderer::Get().DrawRect(200.0f, 400.0f, 100.0f, 100.0f, 0.0f, 0.0f,
                              1.0f);  // Blue Box
   }
 };
 
 int main() {
-  EngineConfig config;
+  engine::EngineConfig config;
   config.window_width = 800;
   config.window_height = 600;
-  Engine::Init(config);
+  engine::Engine::Init(config);
   PostEffectsDemo demo;
   demo.Run();
   return 0;

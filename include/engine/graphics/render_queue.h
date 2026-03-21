@@ -52,7 +52,9 @@ class RenderQueue {
     // Stable sort to preserve submission order for identical Z/Texture
     std::stable_sort(commands_.begin(), commands_.end(),
                      [](const RenderCommand& a, const RenderCommand& b) {
-                       if (a.z_order != b.z_order) return a.z_order < b.z_order;
+                       if (a.z_order != b.z_order) {
+                         return a.z_order < b.z_order;
+                       }
                        return a.texture_id < b.texture_id;
                      });
 

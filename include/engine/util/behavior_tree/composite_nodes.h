@@ -7,6 +7,7 @@
 #define INCLUDE_ENGINE_UTIL_BEHAVIOR_TREE_COMPOSITE_NODES_H_
 
 #include <vector>
+
 #include <engine/util/behavior_tree/node.h>
 
 namespace engine::util {
@@ -17,7 +18,9 @@ namespace engine::util {
  */
 class SequenceNode : public Node {
  public:
-  void AddChild(std::shared_ptr<Node> child) { children_.push_back(std::move(child)); }
+  void AddChild(std::shared_ptr<Node> child) {
+    children_.push_back(std::move(child));
+  }
 
   NodeStatus Tick(float dt, Blackboard& blackboard) override {
     for (size_t i = current_child_; i < children_.size(); ++i) {
@@ -53,7 +56,9 @@ class SequenceNode : public Node {
  */
 class SelectorNode : public Node {
  public:
-  void AddChild(std::shared_ptr<Node> child) { children_.push_back(std::move(child)); }
+  void AddChild(std::shared_ptr<Node> child) {
+    children_.push_back(std::move(child));
+  }
 
   NodeStatus Tick(float dt, Blackboard& blackboard) override {
     for (size_t i = current_child_; i < children_.size(); ++i) {

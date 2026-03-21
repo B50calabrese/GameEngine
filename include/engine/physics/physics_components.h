@@ -6,11 +6,11 @@
 #ifndef INCLUDE_ENGINE_PHYSICS_PHYSICS_COMPONENTS_H_
 #define INCLUDE_ENGINE_PHYSICS_PHYSICS_COMPONENTS_H_
 
-#include <engine/ecs/entity_manager.h>
-
 #include <functional>
 
 #include <glm/vec2.hpp>
+
+#include <engine/ecs/entity_manager.h>
 
 namespace engine::physics {
 
@@ -21,7 +21,7 @@ struct VelocityComponent {
 
 /** @brief Component that applies a gravity force to the entity. */
 struct GravityComponent {
-  float strength = 1500.0f; // Default gravity constant
+  float strength = 1500.0f;  // Default gravity constant
 };
 
 /** @brief Basic collider for detection and resolution. */

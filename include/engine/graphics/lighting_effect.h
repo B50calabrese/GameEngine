@@ -6,20 +6,18 @@
 #ifndef INCLUDE_ENGINE_GRAPHICS_LIGHTING_EFFECT_H_
 #define INCLUDE_ENGINE_GRAPHICS_LIGHTING_EFFECT_H_
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp>
-#include <engine/graphics/post_processor.h>
+
 #include <engine/graphics/framebuffer.h>
+#include <engine/graphics/post_processor.h>
 #include <engine/graphics/shader.h>
 
 namespace engine::graphics {
 
-enum class ShadowType {
-  Raymarch,
-  Polar
-};
+enum class ShadowType { Raymarch, Polar };
 
 struct Light {
   glm::vec2 position;
@@ -28,7 +26,7 @@ struct Light {
   float radius = 100.0f;
 
   // For Spotlights
-  float angle = 360.0f; // 360 = point light
+  float angle = 360.0f;  // 360 = point light
   float direction = 0.0f;
 
   bool is_directional = false;
@@ -47,7 +45,8 @@ class LightingEffect : public IPostProcessEffect {
   ~LightingEffect() override;
 
   void OnResize(int width, int height) override;
-  void Apply(unsigned int input_texture, Framebuffer* output_framebuffer) override;
+  void Apply(unsigned int input_texture,
+             Framebuffer* output_framebuffer) override;
   std::string GetName() const override { return "LightingEffect"; }
 
   void AddLight(const Light& light) { lights_.push_back(light); }
@@ -91,6 +90,6 @@ class LightingEffect : public IPostProcessEffect {
   int height_ = 0;
 };
 
-} // namespace engine::graphics
+}  // namespace engine::graphics
 
-#endif // INCLUDE_ENGINE_GRAPHICS_LIGHTING_EFFECT_H_
+#endif  // INCLUDE_ENGINE_GRAPHICS_LIGHTING_EFFECT_H_

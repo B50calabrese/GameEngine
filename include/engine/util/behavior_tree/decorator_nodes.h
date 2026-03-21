@@ -15,12 +15,17 @@ namespace engine::util {
  */
 class InverterNode : public Node {
  public:
-  explicit InverterNode(std::shared_ptr<Node> child) : child_(std::move(child)) {}
+  explicit InverterNode(std::shared_ptr<Node> child)
+      : child_(std::move(child)) {}
 
   NodeStatus Tick(float dt, Blackboard& blackboard) override {
     NodeStatus status = child_->Tick(dt, blackboard);
-    if (status == NodeStatus::SUCCESS) return NodeStatus::FAILURE;
-    if (status == NodeStatus::FAILURE) return NodeStatus::SUCCESS;
+    if (status == NodeStatus::SUCCESS) {
+      return NodeStatus::FAILURE;
+    }
+    if (status == NodeStatus::FAILURE) {
+      return NodeStatus::SUCCESS;
+    }
     return status;
   }
 

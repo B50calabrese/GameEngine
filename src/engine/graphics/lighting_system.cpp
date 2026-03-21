@@ -3,8 +3,8 @@
  * @brief Syncs ECS light components with the LightingEffect.
  */
 
-#include <engine/ecs/registry.h>
 #include <engine/core/transform.h>
+#include <engine/ecs/registry.h>
 #include <engine/graphics/graphics_components.h>
 #include <engine/graphics/lighting_effect.h>
 
@@ -15,17 +15,22 @@ namespace engine::graphics {
  * @param registry The ECS registry.
  * @param lighting_effect The lighting effect to update.
  */
-void UpdateLightingSystem(ecs::Registry& registry, LightingEffect* lighting_effect) {
-  if (!lighting_effect) return;
+void UpdateLightingSystem(ecs::Registry* registry,
+                          LightingEffect* lighting_effect) {
+  if (!registry || !lighting_effect) {
+    return;
+  }
 
   lighting_effect->ClearLights();
   lighting_effect->ClearOccluders();
 
   // Sync Lights
-  auto light_view = registry.GetView<core::TransformComponent, LightComponent>();
+  auto light_view =
+      registry->GetView<core::TransformComponent, LightComponent>();
   for (auto entity : light_view) {
-    const auto& transform = registry.GetComponent<core::TransformComponent>(entity);
-    const auto& light_comp = registry.GetComponent<LightComponent>(entity);
+    const auto& transform =
+        registry->GetComponent<core::TransformComponent>(entity);
+    const auto& light_comp = registry->GetComponent<LightComponent>(entity);
 
     Light light;
     light.position = transform.position;
@@ -41,10 +46,13 @@ void UpdateLightingSystem(ecs::Registry& registry, LightingEffect* lighting_effe
   }
 
   // Sync Occluders
-  auto occluder_view = registry.GetView<core::TransformComponent, OccluderComponent>();
+  auto occluder_view =
+      registry->GetView<core::TransformComponent, OccluderComponent>();
   for (auto entity : occluder_view) {
-    const auto& transform = registry.GetComponent<core::TransformComponent>(entity);
-    const auto& occluder_comp = registry.GetComponent<OccluderComponent>(entity);
+    const auto& transform =
+        registry->GetComponent<core::TransformComponent>(entity);
+    const auto& occluder_comp =
+        registry->GetComponent<OccluderComponent>(entity);
 
     Occluder occluder;
     occluder.position = transform.position;
@@ -55,4 +63,4 @@ void UpdateLightingSystem(ecs::Registry& registry, LightingEffect* lighting_effe
   }
 }
 
-} // namespace engine::graphics
+}  // namespace engine::graphics
