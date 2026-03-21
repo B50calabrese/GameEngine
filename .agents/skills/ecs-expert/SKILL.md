@@ -39,6 +39,7 @@ The ECS is built around three core classes:
 - **Reference Invalidation**: Storing a pointer or reference to a component across multiple `Registry` operations (like `AddComponent` or `DeleteEntity`) is strictly forbidden. Always re-fetch the component using `GetComponent<T>(entity)` if needed after a registry modification.
 - **Deferred Destruction**: Removing components or destroying entities during a `ForEach` or `View` loop can invalidate iterators or lead to processing "ghost" entities. Prefer marking entities for destruction and processing deletions at the end of the frame.
 - **Entity ID Recycling**: The `EntityManager` may recycle IDs after an entity is destroyed. Systems must not assume an ID's permanence across long durations (e.g., multiple scenes) without validation via `IsAlive(entity)`.
+- **System Method Signatures**: Core ECS systems (e.g., `Update`, `Render`) MUST take `ecs::Registry*` pointers for modified registries to follow Google Style and avoid accidental copying. Always check for `nullptr` if the pointer is not guaranteed.
 
 ## Validation
 

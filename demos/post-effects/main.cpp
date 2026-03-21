@@ -8,10 +8,6 @@
 #include <engine/input/input_manager.h>
 #include <engine/util/tween_manager.h>
 
-
-
-
-
 /** @brief Demo to showcase post-processing effects like Screen Shake and Flash.
  */
 class PostEffectsDemo : public engine::Application {
@@ -45,7 +41,8 @@ class PostEffectsDemo : public engine::Application {
       engine::util::TweenManager::Get()
           .Tween<float>(1.0f, 0.0f, 0.2f)
           .OnUpdate([](const float& value, float progress) {
-            engine::graphics::PostProcessManager::Get().SetFlash({1.0f, 1.0f, 1.0f}, value);
+            engine::graphics::PostProcessManager::Get().SetFlash(
+                {1.0f, 1.0f, 1.0f}, value);
           })
           .Play();
     }
@@ -54,12 +51,15 @@ class PostEffectsDemo : public engine::Application {
     engine::util::TweenManager::Get().Update(static_cast<float>(delta_time));
 
     // 3. Render some scene content to be post-processed
-    engine::graphics::Renderer::Get().DrawRect(100.0f, 100.0f, 200.0f, 200.0f, 1.0f, 0.0f,
-                             0.0f);  // Red Box
-    engine::graphics::Renderer::Get().DrawRect(400.0f, 300.0f, 150.0f, 150.0f, 0.0f, 1.0f,
-                             0.0f);  // Green Box
-    engine::graphics::Renderer::Get().DrawRect(200.0f, 400.0f, 100.0f, 100.0f, 0.0f, 0.0f,
-                             1.0f);  // Blue Box
+    engine::graphics::Renderer::Get().DrawRect(100.0f, 100.0f, 200.0f, 200.0f,
+                                               1.0f, 0.0f,
+                                               0.0f);  // Red Box
+    engine::graphics::Renderer::Get().DrawRect(400.0f, 300.0f, 150.0f, 150.0f,
+                                               0.0f, 1.0f,
+                                               0.0f);  // Green Box
+    engine::graphics::Renderer::Get().DrawRect(200.0f, 400.0f, 100.0f, 100.0f,
+                                               0.0f, 0.0f,
+                                               1.0f);  // Blue Box
   }
 };
 

@@ -6,10 +6,10 @@
 #ifndef INCLUDE_ENGINE_UTIL_BEHAVIOR_TREE_H_
 #define INCLUDE_ENGINE_UTIL_BEHAVIOR_TREE_H_
 
-#include <engine/util/behavior_tree/composite_nodes.h>
-#include <engine/util/behavior_tree/decorator_nodes.h>
-#include <engine/util/behavior_tree/leaf_nodes.h>
-#include <engine/util/behavior_tree/node.h>
+#include <engine/util/behavior-tree/composite_nodes.h>
+#include <engine/util/behavior-tree/decorator_nodes.h>
+#include <engine/util/behavior-tree/leaf_nodes.h>
+#include <engine/util/behavior-tree/node.h>
 
 namespace engine::util {
 

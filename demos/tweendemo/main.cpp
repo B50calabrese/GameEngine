@@ -6,10 +6,6 @@
 #include <engine/util/logger.h>
 #include <engine/util/tween_manager.h>
 
-
-
-
-
 struct DemoSquare {
   glm::vec2 pos;
   glm::vec4 color;
@@ -114,11 +110,12 @@ class TweenDemoApp : public engine::Application {
   void OnShutdown() override { engine::util::TweenManager::Get().Clear(); }
 
   void OnUpdate(double delta_time_seconds) override {
-    engine::util::TweenManager::Get().Update(static_cast<float>(delta_time_seconds));
+    engine::util::TweenManager::Get().Update(
+        static_cast<float>(delta_time_seconds));
 
     for (const auto& square : squares_) {
-      engine::graphics::Renderer::Get().DrawQuad(square.pos, {50.0f, 50.0f}, square.color,
-                               square.rotation);
+      engine::graphics::Renderer::Get().DrawQuad(square.pos, {50.0f, 50.0f},
+                                                 square.color, square.rotation);
     }
   }
 

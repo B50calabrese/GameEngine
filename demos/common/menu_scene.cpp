@@ -11,8 +11,6 @@
 
 namespace demos::common {
 
-
-
 BaseMenuScene::BaseMenuScene(const std::string& title,
                              const std::vector<MenuItem>& items)
     : engine::Scene("Menu"), title_(title), items_(items) {}
@@ -43,18 +41,18 @@ void BaseMenuScene::OnUpdate(float dt) {
 void BaseMenuScene::OnRender() {
   // Simple dark background
   engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
-                                     {0.05f, 0.05f, 0.1f, 1.0f});
+                                             {0.05f, 0.05f, 0.1f, 1.0f});
 
   // Title
-  engine::graphics::Renderer::Get().DrawText("default", title_, {200.0f, 450.0f}, 0.0f,
-                                     1.5f, title_color_);
+  engine::graphics::Renderer::Get().DrawText(
+      "default", title_, {200.0f, 450.0f}, 0.0f, 1.5f, title_color_);
 
   // Items
   for (int i = 0; i < items_.size(); ++i) {
     glm::vec4 color = (i == selected_index_) ? selected_color_ : item_color_;
     float y = 350.0f - (i * 40.0f);
-    engine::graphics::Renderer::Get().DrawText("default", items_[i].text, {250.0f, y},
-                                       0.0f, 1.0f, color);
+    engine::graphics::Renderer::Get().DrawText("default", items_[i].text,
+                                               {250.0f, y}, 0.0f, 1.0f, color);
   }
 
   engine::graphics::Renderer::Get().Flush();

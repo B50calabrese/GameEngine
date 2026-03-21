@@ -26,8 +26,6 @@
 
 #include "../../common/menu_scene.h"
 
-
-
 // --- Components ---
 
 struct PaddleComponent {
@@ -63,8 +61,8 @@ class GameplayScene : public engine::Scene {
 
     // Create Paddle
     paddle_ = registry().CreateEntity();
-    registry().AddComponent(
-        paddle_, engine::core::TransformComponent{{400.0f, 550.0f}, {120.0f, 20.0f}});
+    registry().AddComponent(paddle_, engine::core::TransformComponent{
+                                         {400.0f, 550.0f}, {120.0f, 20.0f}});
     registry().AddComponent(paddle_, engine::physics::VelocityComponent{});
     // Paddle is NOT static so it can move via input, but resolution might move
     // it. However, we set it as trigger to handle collision manually in this
@@ -73,22 +71,22 @@ class GameplayScene : public engine::Scene {
         paddle_, engine::physics::ColliderComponent{
                      {120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
     registry().AddComponent(paddle_, PaddleComponent{});
-    registry().AddComponent(paddle_,
-                            engine::graphics::QuadComponent{{0.0f, 0.8f, 1.0f, 1.0f}});
+    registry().AddComponent(
+        paddle_, engine::graphics::QuadComponent{{0.0f, 0.8f, 1.0f, 1.0f}});
 
     // Create Ball
     ball_ = registry().CreateEntity();
+    registry().AddComponent(ball_, engine::core::TransformComponent{
+                                       {400.0f, 500.0f}, {20.0f, 20.0f}});
     registry().AddComponent(
-        ball_, engine::core::TransformComponent{{400.0f, 500.0f}, {20.0f, 20.0f}});
-    registry().AddComponent(ball_,
-                            engine::physics::VelocityComponent{{300.0f, -300.0f}});
+        ball_, engine::physics::VelocityComponent{{300.0f, -300.0f}});
     // Ball is also a trigger to handle its custom "bounce" resolution.
     registry().AddComponent(ball_,
                             engine::physics::ColliderComponent{
                                 {20.0f, 20.0f}, {-10.0f, -10.0f}, false, true});
     registry().AddComponent(ball_, BallComponent{});
-    registry().AddComponent(ball_,
-                            engine::graphics::QuadComponent{{1.0f, 1.0f, 0.0f, 1.0f}});
+    registry().AddComponent(
+        ball_, engine::graphics::QuadComponent{{1.0f, 1.0f, 0.0f, 1.0f}});
 
     // Create Bricks
     float brick_width = 75.0f;
@@ -106,8 +104,8 @@ class GameplayScene : public engine::Scene {
                          start_y + r * (brick_height + padding)};
         glm::vec4 color = {0.2f + 0.15f * r, 0.8f - 0.15f * r, 0.5f, 1.0f};
         bricks_.push_back({brick, pos, {brick_width, brick_height}});
-        registry().AddComponent(
-            brick, engine::core::TransformComponent{pos, {brick_width, brick_height}});
+        registry().AddComponent(brick, engine::core::TransformComponent{
+                                           pos, {brick_width, brick_height}});
         // Bricks are static triggers
         registry().AddComponent(
             brick, engine::physics::ColliderComponent{
@@ -162,7 +160,8 @@ class GameplayScene : public engine::Scene {
   }
 
   void UpdatePaddle(float dt) {
-    auto& trans = registry().GetComponent<engine::core::TransformComponent>(paddle_);
+    auto& trans =
+        registry().GetComponent<engine::core::TransformComponent>(paddle_);
     auto& paddle = registry().GetComponent<PaddleComponent>(paddle_);
     float move = 0.0f;
     if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kA)) {
@@ -185,8 +184,10 @@ class GameplayScene : public engine::Scene {
   }
 
   void UpdateBall(float dt) {
-    auto& trans = registry().GetComponent<engine::core::TransformComponent>(ball_);
-    auto& vel = registry().GetComponent<engine::physics::VelocityComponent>(ball_);
+    auto& trans =
+        registry().GetComponent<engine::core::TransformComponent>(ball_);
+    auto& vel =
+        registry().GetComponent<engine::physics::VelocityComponent>(ball_);
     auto& ball = registry().GetComponent<BallComponent>(ball_);
 
     // Wall collision (manual because window bounds aren't entities)
@@ -206,7 +207,8 @@ class GameplayScene : public engine::Scene {
     }
 
     // Paddle collision
-    auto& p_trans = registry().GetComponent<engine::core::TransformComponent>(paddle_);
+    auto& p_trans =
+        registry().GetComponent<engine::core::TransformComponent>(paddle_);
     if (engine::util::CheckAABB(
             trans.position - glm::vec2(ball.radius), glm::vec2(ball.radius * 2),
             p_trans.position - p_trans.scale / 2.0f, p_trans.scale)) {
@@ -227,11 +229,13 @@ class GameplayScene : public engine::Scene {
       auto& b = *it;
       if (registry().IsAlive(b.id)) {
         if (engine::util::CheckAABB(trans.position - glm::vec2(ball.radius),
-                            glm::vec2(ball.radius * 2), b.pos, b.size)) {
+                                    glm::vec2(ball.radius * 2), b.pos,
+                                    b.size)) {
           vel.velocity.y *= -1;
           bricks_hit_++;
-          auto& color =
-              registry().GetComponent<engine::graphics::QuadComponent>(b.id).color;
+          auto& color = registry()
+                            .GetComponent<engine::graphics::QuadComponent>(b.id)
+                            .color;
           EmitParticles(b.pos + b.size / 2.0f, color);
           registry().DeleteEntity(b.id);
           it = bricks_.erase(it);
@@ -246,22 +250,23 @@ class GameplayScene : public engine::Scene {
   }
 
   void EmitParticles(glm::vec2 pos, glm::vec4 color) {
-    auto& emitter = registry().GetComponent<engine::graphics::ParticleEmitterComponent>(
-        emitter_entity_);
+    auto& emitter =
+        registry().GetComponent<engine::graphics::ParticleEmitterComponent>(
+            emitter_entity_);
     emitter.system.Emit(pos, 10, {0, 0}, {50, 50}, color, 0.5f);
   }
 
   void OnRender() override {
     engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
-                                       {0.05f, 0.05f, 0.1f, 1.0f});
+                                               {0.05f, 0.05f, 0.1f, 1.0f});
 
     if (is_game_over_) {
       engine::graphics::Renderer::Get().DrawText("default", "GAME OVER",
-                                         {250.0f, 350.0f}, 0.0f, 2.0f,
-                                         {1.0f, 0.0f, 0.0f, 1.0f});
-      engine::graphics::Renderer::Get().DrawText("default", "Press SPACE to Restart",
-                                         {280.0f, 300.0f}, 0.0f, 1.0f,
-                                         {1.0f, 1.0f, 1.0f, 1.0f});
+                                                 {250.0f, 350.0f}, 0.0f, 2.0f,
+                                                 {1.0f, 0.0f, 0.0f, 1.0f});
+      engine::graphics::Renderer::Get().DrawText(
+          "default", "Press SPACE to Restart", {280.0f, 300.0f}, 0.0f, 1.0f,
+          {1.0f, 1.0f, 1.0f, 1.0f});
     }
 
     engine::graphics::Renderer::Get().Flush();

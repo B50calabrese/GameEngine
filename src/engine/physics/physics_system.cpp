@@ -64,7 +64,8 @@ void PhysicsSystem::Update(ecs::Registry* registry, float dt) {
 
         // Resolve unless one is a trigger
         if (!col_a.is_trigger && !col_b.is_trigger) {
-          if (!col_a.is_static && registry->HasComponent<VelocityComponent>(a)) {
+          if (!col_a.is_static &&
+              registry->HasComponent<VelocityComponent>(a)) {
             auto& vel_a = registry->GetComponent<VelocityComponent>(a);
             if (vel_a.velocity.x > 0) {
               trans_a.position.x = trans_b.position.x + col_b.offset.x -
@@ -111,7 +112,8 @@ void PhysicsSystem::Update(ecs::Registry* registry, float dt) {
         }
 
         if (!col_a.is_trigger && !col_b.is_trigger) {
-          if (!col_a.is_static && registry->HasComponent<VelocityComponent>(a)) {
+          if (!col_a.is_static &&
+              registry->HasComponent<VelocityComponent>(a)) {
             auto& vel_a = registry->GetComponent<VelocityComponent>(a);
             if (vel_a.velocity.y < 0) {
               trans_a.position.y = trans_b.position.y + col_b.offset.y +

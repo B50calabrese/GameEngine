@@ -6,7 +6,7 @@
 #ifndef INCLUDE_ENGINE_UTIL_BEHAVIOR_TREE_DECORATOR_NODES_H_
 #define INCLUDE_ENGINE_UTIL_BEHAVIOR_TREE_DECORATOR_NODES_H_
 
-#include <engine/util/behavior_tree/node.h>
+#include <engine/util/behavior-tree/node.h>
 
 namespace engine::util {
 

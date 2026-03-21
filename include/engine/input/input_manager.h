@@ -64,10 +64,10 @@ enum class KeyCode {
   k9,
 
   // --- Functional Keys (Essential Game Controls) ---
-  kEscape,      // Crucial for menus, pausing, or quitting
-  kEnter,       // Confirming actions
-  kSpace,       // Common action key (e.g., end turn, skip dialog)
-  kTab,         // Toggling UI panels/map view
+  kEscape,     // Crucial for menus, pausing, or quitting
+  kEnter,      // Confirming actions
+  kSpace,      // Common action key (e.g., end turn, skip dialog)
+  kTab,        // Toggling UI panels/map view
   kLeftShift,  // Holding for multiple selection or speed
   kLeftControl,
   kLeftAlt,

@@ -15,8 +15,6 @@
 #include <engine/ui/ui_systems.h>
 #include <engine/util/tween_manager.h>
 
-
-
 class MenuScene : public engine::Scene {
  public:
   MenuScene(const std::string& name) : engine::Scene(name) {
@@ -41,8 +39,9 @@ class MenuScene : public engine::Scene {
     engine::ui::UIHierarchy gold_hier;
     gold_hier.parent = hud_root_;
     registry().AddComponent(gold_counter_, gold_hier);
-    registry().GetComponent<engine::ui::UIHierarchy>(hud_root_).children.push_back(
-        gold_counter_);
+    registry()
+        .GetComponent<engine::ui::UIHierarchy>(hud_root_)
+        .children.push_back(gold_counter_);
 
     engine::ui::UIBinding gold_binding;
     gold_binding.get_text = [this]() {
@@ -59,8 +58,8 @@ class MenuScene : public engine::Scene {
     btn_trans.local_pos = {700.0f, 550.0f};
     btn_trans.size = {80.0f, 40.0f};
     registry().AddComponent(pause_button_, btn_trans);
-    registry().AddComponent(pause_button_,
-                            engine::graphics::QuadComponent{{0.5f, 0.5f, 0.5f, 1.0f}});
+    registry().AddComponent(pause_button_, engine::graphics::QuadComponent{
+                                               {0.5f, 0.5f, 0.5f, 1.0f}});
     registry().AddComponent(pause_button_, engine::ui::UIHierarchy{});
 
     engine::ui::UIInteractable btn_inter;
@@ -71,7 +70,8 @@ class MenuScene : public engine::Scene {
       engine::util::TweenManager::Get()
           .Tween<float>(start_scale, end_scale, 0.1f)
           .OnUpdate([this](const float& val, float progress) {
-            auto& t = registry().GetComponent<engine::ui::UITransform>(pause_button_);
+            auto& t =
+                registry().GetComponent<engine::ui::UITransform>(pause_button_);
             t.size = {80.0f * val, 40.0f * val};
           })
           .Play();
@@ -99,8 +99,8 @@ class MenuScene : public engine::Scene {
     menu_trans.local_pos = {800.0f, 150.0f};  // Off-screen right
     menu_trans.size = {300.0f, 300.0f};
     registry().AddComponent(menu_panel_, menu_trans);
-    registry().AddComponent(menu_panel_,
-                            engine::graphics::QuadComponent{{0.2f, 0.2f, 0.2f, 0.9f}});
+    registry().AddComponent(
+        menu_panel_, engine::graphics::QuadComponent{{0.2f, 0.2f, 0.2f, 0.9f}});
     registry().AddComponent(menu_panel_, engine::ui::UIHierarchy{});
 
     engine::ecs::EntityID menu_text = registry().CreateEntity();
@@ -154,14 +154,14 @@ class MenuScene : public engine::Scene {
 
   void OnRender() override {
     engine::graphics::Renderer::Get().DrawQuad(player_pos_, {32.0f, 32.0f},
-                                       {0.0f, 1.0f, 0.0f, 1.0f});
+                                               {0.0f, 1.0f, 0.0f, 1.0f});
     engine::graphics::Renderer::Get().DrawText(
         "arial", "Use WASD to move, Space to get gold", {10.0f, 10.0f}, 0.0f,
         0.7f, {1.0f, 1.0f, 1.0f, 1.0f});
     if (engine::ActionManager::Get().IsConsumed()) {
-      engine::graphics::Renderer::Get().DrawText("arial", "INPUT CONSUMED BY UI",
-                                         {300.0f, 550.0f}, 0.0f, 0.8f,
-                                         {1.0f, 0.0f, 0.0f, 1.0f});
+      engine::graphics::Renderer::Get().DrawText(
+          "arial", "INPUT CONSUMED BY UI", {300.0f, 550.0f}, 0.0f, 0.8f,
+          {1.0f, 0.0f, 0.0f, 1.0f});
     }
     engine::graphics::Renderer::Get().Flush();
   }
@@ -175,7 +175,8 @@ class MenuScene : public engine::Scene {
         .Tween<float>(start_x, target_x, 0.5f)
         .Ease(engine::util::EaseType::OutCubic)
         .OnUpdate([this](const float& val, float progress) {
-          auto& t = registry().GetComponent<engine::ui::UITransform>(menu_panel_);
+          auto& t =
+              registry().GetComponent<engine::ui::UITransform>(menu_panel_);
           t.local_pos.x = val;
           t.is_dirty = true;
         })
@@ -196,7 +197,8 @@ class MenuScene : public engine::Scene {
 class MyApp : public engine::Application {
  public:
   void OnInit() override {
-    engine::SceneManager::Get().SetScene(std::make_unique<MenuScene>("UI Menu Demo"));
+    engine::SceneManager::Get().SetScene(
+        std::make_unique<MenuScene>("UI Menu Demo"));
   }
   void OnShutdown() override {}
   void OnUpdate(double delta_time_seconds) override {}

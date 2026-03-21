@@ -17,9 +17,6 @@
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 
-
-
-
 // Forward declaration of the system we created
 namespace engine::graphics {
 void UpdateLightingSystem(engine::ecs::Registry* registry,
@@ -46,44 +43,50 @@ class LightingDemo : public engine::Application {
     engine::core::TransformComponent light_transform;
     light_transform.position = glm::vec2(400.0f, 300.0f);
     registry_.AddComponent<engine::core::TransformComponent>(light_entity_,
-                                                     light_transform);
+                                                             light_transform);
 
     engine::graphics::LightComponent light_comp;
     light_comp.color = glm::vec3(1.0f, 0.8f, 0.4f);
     light_comp.intensity = 1.5f;
     light_comp.radius = 250.0f;
-    registry_.AddComponent<engine::graphics::LightComponent>(light_entity_, light_comp);
+    registry_.AddComponent<engine::graphics::LightComponent>(light_entity_,
+                                                             light_comp);
 
     // Some static occluders
     auto occluder1 = registry_.CreateEntity();
     engine::core::TransformComponent occ1_transform;
     occ1_transform.position = glm::vec2(200.0f, 200.0f);
-    registry_.AddComponent<engine::core::TransformComponent>(occluder1, occ1_transform);
+    registry_.AddComponent<engine::core::TransformComponent>(occluder1,
+                                                             occ1_transform);
     engine::graphics::OccluderComponent occ1_comp;
     occ1_comp.size = glm::vec2(50.0f, 50.0f);
-    registry_.AddComponent<engine::graphics::OccluderComponent>(occluder1, occ1_comp);
+    registry_.AddComponent<engine::graphics::OccluderComponent>(occluder1,
+                                                                occ1_comp);
 
     auto occluder2 = registry_.CreateEntity();
     engine::core::TransformComponent occ2_transform;
     occ2_transform.position = glm::vec2(600.0f, 400.0f);
-    registry_.AddComponent<engine::core::TransformComponent>(occluder2, occ2_transform);
+    registry_.AddComponent<engine::core::TransformComponent>(occluder2,
+                                                             occ2_transform);
     engine::graphics::OccluderComponent occ2_comp;
     occ2_comp.size = glm::vec2(80.0f, 30.0f);
-    registry_.AddComponent<engine::graphics::OccluderComponent>(occluder2, occ2_comp);
+    registry_.AddComponent<engine::graphics::OccluderComponent>(occluder2,
+                                                                occ2_comp);
 
     // Spotlight
     spotlight_entity_ = registry_.CreateEntity();
     engine::core::TransformComponent spot_transform;
     spot_transform.position = glm::vec2(100.0f, 500.0f);
     registry_.AddComponent<engine::core::TransformComponent>(spotlight_entity_,
-                                                     spot_transform);
+                                                             spot_transform);
     engine::graphics::LightComponent spot_comp;
     spot_comp.color = glm::vec3(0.2f, 1.0f, 0.2f);  // Green
     spot_comp.intensity = 2.0f;
     spot_comp.radius = 400.0f;
     spot_comp.angle = 45.0f;
     spot_comp.dir_vector = glm::vec2(1.0f, -1.0f);
-    registry_.AddComponent<engine::graphics::LightComponent>(spotlight_entity_, spot_comp);
+    registry_.AddComponent<engine::graphics::LightComponent>(spotlight_entity_,
+                                                             spot_comp);
 
     // Directional engine::graphics::Light (Ambient-ish but directional)
     dir_light_entity_ = registry_.CreateEntity();
@@ -92,10 +95,12 @@ class LightingDemo : public engine::Application {
     dir_comp.intensity = 0.5f;
     dir_comp.is_directional = true;
     dir_comp.dir_vector = glm::vec2(0.0f, -1.0f);
-    registry_.AddComponent<engine::graphics::LightComponent>(dir_light_entity_, dir_comp);
+    registry_.AddComponent<engine::graphics::LightComponent>(dir_light_entity_,
+                                                             dir_comp);
 
     // 3. Register Controls
-    engine::ActionManager::Get().BindAction("ToggleShadows", engine::KeyCode::kT);
+    engine::ActionManager::Get().BindAction("ToggleShadows",
+                                            engine::KeyCode::kT);
     engine::ActionManager::Get().BindAction("ToggleMode", engine::KeyCode::kM);
 
     std::cout << "2D Lighting Demo Initialized" << std::endl;
@@ -117,8 +122,8 @@ class LightingDemo : public engine::Application {
     auto& transform =
         registry_.GetComponent<engine::core::TransformComponent>(light_entity_);
     // In a real app this would be: transform.position =
-    // engine::InputManager::Get().mouse_screen_pos(); For headless capture we'll move
-    // it in a circle
+    // engine::InputManager::Get().mouse_screen_pos(); For headless capture
+    // we'll move it in a circle
     float time = static_cast<float>(glfwGetTime());
     transform.position =
         glm::vec2(400.0f + cos(time) * 100.0f, 300.0f + sin(time) * 100.0f);
@@ -151,7 +156,8 @@ class LightingDemo : public engine::Application {
 
     // Render engine::Scene
     // Background
-    engine::graphics::Renderer::Get().DrawRect(0, 0, 800, 600, 0.2f, 0.2f, 0.2f);
+    engine::graphics::Renderer::Get().DrawRect(0, 0, 800, 600, 0.2f, 0.2f,
+                                               0.2f);
 
     // Some "floor" tiles
     for (int x = 0; x < 800; x += 100) {
@@ -162,14 +168,16 @@ class LightingDemo : public engine::Application {
     }
 
     // Draw the occluders so we can see them
-    auto view =
-        registry_.GetView<engine::core::TransformComponent, engine::graphics::OccluderComponent>();
+    auto view = registry_.GetView<engine::core::TransformComponent,
+                                  engine::graphics::OccluderComponent>();
     for (auto entity : view) {
-      auto& t = registry_.GetComponent<engine::core::TransformComponent>(entity);
-      auto& o = registry_.GetComponent<engine::graphics::OccluderComponent>(entity);
-      engine::graphics::Renderer::Get().DrawRect(t.position.x - o.size.x / 2,
-                               t.position.y - o.size.y / 2, o.size.x, o.size.y,
-                               0.1f, 0.1f, 0.1f);
+      auto& t =
+          registry_.GetComponent<engine::core::TransformComponent>(entity);
+      auto& o =
+          registry_.GetComponent<engine::graphics::OccluderComponent>(entity);
+      engine::graphics::Renderer::Get().DrawRect(
+          t.position.x - o.size.x / 2, t.position.y - o.size.y / 2, o.size.x,
+          o.size.y, 0.1f, 0.1f, 0.1f);
     }
   }
 
