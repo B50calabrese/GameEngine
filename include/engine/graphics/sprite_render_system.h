@@ -19,7 +19,7 @@ class SpriteRenderSystem {
    * @brief Renders all visible sprites.
    * @param registry The ECS registry.
    */
-  static void Render(ecs::Registry& registry);
+  static void Render(ecs::Registry* registry);
 };
 
 }  // namespace engine::graphics

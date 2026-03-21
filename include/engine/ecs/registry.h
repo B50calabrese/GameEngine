@@ -95,7 +95,9 @@ class Registry {
   class View {
    public:
     View(Registry* registry) : registry_(registry) {
-      if (!registry_) return;
+      if (!registry_) {
+        return;
+      }
       for (EntityID entity = 0; entity < registry_->entity_manager_.next_id();
            ++entity) {
         if (registry_->entity_manager_.IsAlive(entity) &&
@@ -110,7 +112,9 @@ class Registry {
     template <typename Func>
     std::vector<EntityID> Filter(Func&& predicate) {
       std::vector<EntityID> result;
-      if (!registry_) return result;
+      if (!registry_) {
+        return result;
+      }
       for (auto entity : entities_) {
         if (registry_->entity_manager_.IsAlive(entity) &&
             (registry_->HasComponent<Components>(entity) && ...) &&

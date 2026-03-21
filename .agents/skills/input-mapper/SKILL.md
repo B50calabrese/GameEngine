@@ -32,6 +32,7 @@ author_persona: Senior Systems Architect
 
 - **Input Consumption**: UI elements can consume input events, preventing them from reaching game systems. Use `InputManager::IsConsumed()` or `ActionManager::IsConsumed()`.
 - **State Update Timing**: `InputManager::UpdateState()` must be called **exactly once** per frame, and it should be called **before** `glfwPollEvents()` to correctly preserve the previous frame's state for `IsKeyPressed` and `IsKeyReleased` checks. In this engine, this is handled automatically within `Window::PollEvents()`. Calling it again elsewhere (like in the main loop) will break single-frame event detection.
+- **KeyCode Naming**: The `KeyCode` enumerators follow the `kPascalCase` naming convention (e.g., `kSpace`, `kEscape`). Using `KC_` prefixes or all-caps is deprecated.
 
 ## Validation
 

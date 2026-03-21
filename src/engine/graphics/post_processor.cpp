@@ -70,11 +70,16 @@ StandardEffect::StandardEffect() {
 }
 
 StandardEffect::~StandardEffect() {
-  if (quad_vao_) glDeleteVertexArrays(1, &quad_vao_);
-  if (quad_vbo_) glDeleteBuffers(1, &quad_vbo_);
+  if (quad_vao_) {
+    glDeleteVertexArrays(1, &quad_vao_);
+  }
+  if (quad_vbo_) {
+    glDeleteBuffers(1, &quad_vbo_);
+  }
 }
 
-void StandardEffect::Apply(unsigned int input_texture, Framebuffer* output_framebuffer) {
+void StandardEffect::Apply(unsigned int input_texture,
+                           Framebuffer* output_framebuffer) {
   if (output_framebuffer) {
     output_framebuffer->Bind();
   } else {
@@ -109,19 +114,21 @@ void StandardEffect::Apply(unsigned int input_texture, Framebuffer* output_frame
 }
 
 void StandardEffect::InitQuad() {
-  float quadVertices[] = {
-      -1.0f, 1.0f,  0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-      -1.0f, 1.0f,  0.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, 1.0f};
+  float quadVertices[] = {-1.0f, 1.0f,  0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
+                          1.0f,  -1.0f, 1.0f, 0.0f, -1.0f, 1.0f,  0.0f, 1.0f,
+                          1.0f,  -1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  1.0f, 1.0f};
 
   glGenVertexArrays(1, &quad_vao_);
   glGenBuffers(1, &quad_vbo_);
   glBindVertexArray(quad_vao_);
   glBindBuffer(GL_ARRAY_BUFFER, quad_vbo_);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
+               GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                        (void*)(2 * sizeof(float)));
 }
 
 void PostProcessManager::Init(int width, int height) {
@@ -160,8 +167,9 @@ void PostProcessManager::End() {
       current_input = current_output->texture_id();
       // Swap ping-pong buffer if we have more effects
       if (current_output == ping_pong_buffer_.get()) {
-        // We'd need another buffer for more than 2 effects if we don't want to re-render to the same ones.
-        // For simplicity, let's assume we can re-use scene_buffer_ as a ping-pong buffer.
+        // We'd need another buffer for more than 2 effects if we don't want to
+        // re-render to the same ones. For simplicity, let's assume we can
+        // re-use scene_buffer_ as a ping-pong buffer.
         current_output = scene_buffer_.get();
       } else {
         current_output = ping_pong_buffer_.get();
@@ -173,8 +181,12 @@ void PostProcessManager::End() {
 void PostProcessManager::OnResize(int width, int height) {
   width_ = width;
   height_ = height;
-  if (scene_buffer_) scene_buffer_->Resize(width, height);
-  if (ping_pong_buffer_) ping_pong_buffer_->Resize(width, height);
+  if (scene_buffer_) {
+    scene_buffer_->Resize(width, height);
+  }
+  if (ping_pong_buffer_) {
+    ping_pong_buffer_->Resize(width, height);
+  }
   for (auto& effect : effects_) {
     effect->OnResize(width, height);
   }
@@ -191,15 +203,21 @@ void PostProcessManager::ClearEffects() {
 }
 
 void PostProcessManager::SetShake(float intensity) {
-  if (standard_effect_) standard_effect_->SetShake(intensity);
+  if (standard_effect_) {
+    standard_effect_->SetShake(intensity);
+  }
 }
 
 void PostProcessManager::SetFlash(const glm::vec3& color, float amount) {
-  if (standard_effect_) standard_effect_->SetFlash(color, amount);
+  if (standard_effect_) {
+    standard_effect_->SetFlash(color, amount);
+  }
 }
 
 void PostProcessManager::SetPalette(unsigned int texture_id) {
-  if (standard_effect_) standard_effect_->SetPalette(texture_id);
+  if (standard_effect_) {
+    standard_effect_->SetPalette(texture_id);
+  }
 }
 
 }  // namespace engine::graphics

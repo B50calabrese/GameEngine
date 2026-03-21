@@ -46,7 +46,9 @@ void UILayoutSystem::Update(ecs::Registry& reg, int window_width,
 void UILayoutSystem::UpdateBranch(ecs::Registry& reg, ecs::EntityID entity,
                                   const glm::vec2& parent_global_pos,
                                   const glm::vec2& parent_size) {
-  if (!reg.HasComponent<UITransform>(entity)) return;
+  if (!reg.HasComponent<UITransform>(entity)) {
+    return;
+  }
   auto& ui = reg.GetComponent<UITransform>(entity);
 
   // Calculate anchor position
@@ -91,7 +93,7 @@ void UISyncSystem::Update(ecs::Registry& reg) {
 void UIInputSystem::Update(ecs::Registry& reg) {
   auto& input = InputManager::Get();
   glm::vec2 mouse_pos = input.mouse_screen_pos();
-  bool mouse_pressed = input.IsKeyDown(KeyCode::KC_MOUSE_LEFT);
+  bool mouse_pressed = input.IsKeyDown(KeyCode::kMouseLeft);
 
   auto view = reg.GetView<UITransform, UIInteractable>();
   for (auto entity : view) {

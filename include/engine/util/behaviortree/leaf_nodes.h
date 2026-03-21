@@ -7,7 +7,8 @@
 #define INCLUDE_ENGINE_UTIL_BEHAVIOR_TREE_LEAF_NODES_H_
 
 #include <functional>
-#include <engine/util/behavior_tree/node.h>
+
+#include <engine/util/behaviortree/node.h>
 
 namespace engine::util {
 
@@ -33,7 +34,8 @@ class ActionNode : public Node {
 class ConditionNode : public Node {
  public:
   using Condition = std::function<bool(Blackboard&)>;
-  explicit ConditionNode(Condition condition) : condition_(std::move(condition)) {}
+  explicit ConditionNode(Condition condition)
+      : condition_(std::move(condition)) {}
 
   NodeStatus Tick(float dt, Blackboard& blackboard) override {
     return condition_(blackboard) ? NodeStatus::SUCCESS : NodeStatus::FAILURE;

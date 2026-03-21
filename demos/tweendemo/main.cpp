@@ -6,10 +6,6 @@
 #include <engine/util/logger.h>
 #include <engine/util/tween_manager.h>
 
-using namespace engine;
-using namespace engine::util;
-using namespace engine::graphics;
-
 struct DemoSquare {
   glm::vec2 pos;
   glm::vec4 color;
@@ -17,7 +13,7 @@ struct DemoSquare {
   std::string name;
 };
 
-class TweenDemoApp : public Application {
+class TweenDemoApp : public engine::Application {
  public:
   void OnInit() override {
     LOG_INFO("TweenDemoApp Init");
@@ -25,9 +21,9 @@ class TweenDemoApp : public Application {
     // 1. Moving Square with OutBounce
     squares_.push_back(
         {{50.0f, 500.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, 0.0f, "OutBounce"});
-    TweenManager::Get()
+    engine::util::TweenManager::Get()
         .Tween<glm::vec2>({50.0f, 500.0f}, {750.0f, 500.0f}, 3.0f)
-        .Ease(EaseType::OutBounce)
+        .Ease(engine::util::EaseType::OutBounce)
         .Loop()
         .OnUpdate([this](const glm::vec2& val, float progress) {
           squares_[0].pos = val;
@@ -39,9 +35,9 @@ class TweenDemoApp : public Application {
                         {0.0f, 1.0f, 0.0f, 1.0f},
                         0.0f,
                         "PingPong InOutQuad"});
-    TweenManager::Get()
+    engine::util::TweenManager::Get()
         .Tween<glm::vec2>({50.0f, 400.0f}, {750.0f, 400.0f}, 2.0f)
-        .Ease(EaseType::InOutQuad)
+        .Ease(engine::util::EaseType::InOutQuad)
         .PingPong()
         .OnUpdate([this](const glm::vec2& val, float progress) {
           squares_[1].pos = val;
@@ -53,19 +49,19 @@ class TweenDemoApp : public Application {
                         {0.0f, 0.0f, 1.0f, 1.0f},
                         0.0f,
                         "Elastic Rotate/Color"});
-    TweenManager::Get()
+    engine::util::TweenManager::Get()
         .Tween<float>(0.0f, 360.0f, 4.0f)
-        .Ease(EaseType::OutElastic)
+        .Ease(engine::util::EaseType::OutElastic)
         .Loop()
         .OnUpdate([this](const float& val, float progress) {
           squares_[2].rotation = val;
         })
         .Play();
 
-    TweenManager::Get()
+    engine::util::TweenManager::Get()
         .Tween<glm::vec4>({0.0f, 0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f, 1.0f},
                           2.0f)
-        .Ease(EaseType::Linear)
+        .Ease(engine::util::EaseType::Linear)
         .PingPong()
         .OnUpdate([this](const glm::vec4& val, float progress) {
           squares_[2].color = val;
@@ -75,9 +71,9 @@ class TweenDemoApp : public Application {
     // 4. Delayed tween
     squares_.push_back(
         {{50.0f, 200.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, 0.0f, "Delayed InSine"});
-    TweenManager::Get()
+    engine::util::TweenManager::Get()
         .Tween<glm::vec2>({50.0f, 200.0f}, {750.0f, 200.0f}, 2.0f)
-        .Ease(EaseType::InSine)
+        .Ease(engine::util::EaseType::InSine)
         .Delay(2.0f)
         .Loop()
         .OnUpdate([this](const glm::vec2& val, float progress) {
@@ -92,16 +88,16 @@ class TweenDemoApp : public Application {
   }
 
   void StartChainedTween() {
-    TweenManager::Get()
+    engine::util::TweenManager::Get()
         .Tween<glm::vec2>({50.0f, 100.0f}, {750.0f, 100.0f}, 1.5f)
-        .Ease(EaseType::InOutCubic)
+        .Ease(engine::util::EaseType::InOutCubic)
         .OnUpdate([this](const glm::vec2& val, float progress) {
           squares_[4].pos = val;
         })
         .OnComplete([this]() {
-          TweenManager::Get()
+          engine::util::TweenManager::Get()
               .Tween<glm::vec2>({750.0f, 100.0f}, {50.0f, 100.0f}, 1.5f)
-              .Ease(EaseType::InOutCubic)
+              .Ease(engine::util::EaseType::InOutCubic)
               .OnUpdate([this](const glm::vec2& val, float progress) {
                 squares_[4].pos = val;
               })
@@ -111,14 +107,15 @@ class TweenDemoApp : public Application {
         .Play();
   }
 
-  void OnShutdown() override { TweenManager::Get().Clear(); }
+  void OnShutdown() override { engine::util::TweenManager::Get().Clear(); }
 
   void OnUpdate(double delta_time_seconds) override {
-    TweenManager::Get().Update(static_cast<float>(delta_time_seconds));
+    engine::util::TweenManager::Get().Update(
+        static_cast<float>(delta_time_seconds));
 
     for (const auto& square : squares_) {
-      Renderer::Get().DrawQuad(square.pos, {50.0f, 50.0f}, square.color,
-                               square.rotation);
+      engine::graphics::Renderer::Get().DrawQuad(square.pos, {50.0f, 50.0f},
+                                                 square.color, square.rotation);
     }
   }
 
@@ -127,13 +124,13 @@ class TweenDemoApp : public Application {
 };
 
 int main() {
-  EngineConfig config;
+  engine::EngineConfig config;
   config.window_width = 800;
   config.window_height = 600;
   // We don't really need assets for this demo but let's set it.
   config.asset_path = "./";
 
-  Engine::Init(config);
+  engine::Engine::Init(config);
   TweenDemoApp app;
   app.Run();
   return 0;

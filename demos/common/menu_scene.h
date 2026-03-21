@@ -6,11 +6,13 @@
 #ifndef DEMOS_COMMON_MENU_SCENE_H_
 #define DEMOS_COMMON_MENU_SCENE_H_
 
-#include <engine/scene/scene.h>
+#include <functional>
 #include <string>
 #include <vector>
-#include <functional>
+
 #include <glm/vec4.hpp>
+
+#include <engine/scene/scene.h>
 
 namespace demos::common {
 

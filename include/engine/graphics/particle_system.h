@@ -7,6 +7,7 @@
 #define INCLUDE_ENGINE_GRAPHICS_PARTICLE_SYSTEM_H_
 
 #include <vector>
+
 #include <glm/glm.hpp>
 
 namespace engine::graphics {
@@ -36,10 +37,9 @@ class ParticleSystem {
    * @param lifetime_base Base lifetime.
    */
   void Emit(const glm::vec2& position, int count,
-            const glm::vec2& base_velocity = {0,0},
-            const glm::vec2& velocity_range = {50,50},
-            const glm::vec4& color = {1,1,1,1},
-            float lifetime_base = 1.0f);
+            const glm::vec2& base_velocity = {0, 0},
+            const glm::vec2& velocity_range = {50, 50},
+            const glm::vec4& color = {1, 1, 1, 1}, float lifetime_base = 1.0f);
 
   /**
    * @brief Updates particle positions and lifetimes.

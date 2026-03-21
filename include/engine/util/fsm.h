@@ -52,13 +52,19 @@ class LambdaState : public State {
         on_exit_(std::move(on_exit)) {}
 
   void OnEnter() override {
-    if (on_enter_) on_enter_();
+    if (on_enter_) {
+      on_enter_();
+    }
   }
   void OnUpdate(float dt) override {
-    if (on_update_) on_update_(dt);
+    if (on_update_) {
+      on_update_(dt);
+    }
   }
   void OnExit() override {
-    if (on_exit_) on_exit_();
+    if (on_exit_) {
+      on_exit_();
+    }
   }
 
  private:

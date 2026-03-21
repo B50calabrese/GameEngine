@@ -3,6 +3,8 @@
 #include <random>
 #include <vector>
 
+#include <glm/glm.hpp>
+
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
 #include <engine/core/transform.h>
@@ -16,9 +18,6 @@
 #include <engine/scene/scene_manager.h>
 #include <engine/util/behavior_tree.h>
 #include <engine/util/fsm.h>
-#include <glm/glm.hpp>
-
-using namespace engine;
 
 // --- Components ---
 struct NPCComponent {
@@ -28,78 +27,90 @@ struct NPCComponent {
   std::string status_text = "Idle";
 };
 
-// --- Demo Scene ---
-class AIDemoScene : public Scene {
+// --- Demo engine::Scene ---
+class AIDemoScene : public engine::Scene {
  public:
-  AIDemoScene() : Scene("AIDemo") {}
+  AIDemoScene() : engine::Scene("AIDemo") {}
 
   void OnAttach() override {
-    graphics::TextRenderer::Get().Init();
-    graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
+    engine::graphics::TextRenderer::Get().Init();
+    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
 
     // Create NPC entity
     npc_ = registry_.CreateEntity();
-    registry_.AddComponent<core::TransformComponent>(npc_, {{100, 100}, {1, 1}, 0});
+    registry_.AddComponent<engine::core::TransformComponent>(
+        npc_, {{100, 100}, {1, 1}, 0});
     registry_.AddComponent<NPCComponent>(npc_, NPCComponent());
-    registry_.AddComponent<ecs::StateMachineComponent>(npc_, ecs::StateMachineComponent());
-    registry_.AddComponent<ecs::BehaviorTreeComponent>(npc_, ecs::BehaviorTreeComponent());
+    registry_.AddComponent<engine::ecs::StateMachineComponent>(
+        npc_, engine::ecs::StateMachineComponent());
+    registry_.AddComponent<engine::ecs::BehaviorTreeComponent>(
+        npc_, engine::ecs::BehaviorTreeComponent());
 
-    SetupFSM(registry_.GetComponent<ecs::StateMachineComponent>(npc_).fsm, npc_);
-    SetupBT(registry_.GetComponent<ecs::BehaviorTreeComponent>(npc_).tree, npc_);
+    SetupFSM(
+        registry_.GetComponent<engine::ecs::StateMachineComponent>(npc_).fsm,
+        npc_);
+    SetupBT(
+        registry_.GetComponent<engine::ecs::BehaviorTreeComponent>(npc_).tree,
+        npc_);
 
-    registry_.GetComponent<ecs::StateMachineComponent>(npc_).fsm.ChangeState("Patrol");
+    registry_.GetComponent<engine::ecs::StateMachineComponent>(npc_)
+        .fsm.ChangeState("Patrol");
   }
 
-  void SetupFSM(util::StateMachine& fsm, ecs::EntityID entity) {
+  void SetupFSM(engine::util::StateMachine& fsm, engine::ecs::EntityID entity) {
     // Patrol State
-    auto patrol = std::make_shared<util::LambdaState>(
+    auto patrol = std::make_shared<engine::util::LambdaState>(
         [this, entity](float dt) {
-          auto& transform = registry_.GetComponent<core::TransformComponent>(entity);
+          auto& transform =
+              registry_.GetComponent<engine::core::TransformComponent>(entity);
           auto& npc = registry_.GetComponent<NPCComponent>(entity);
           npc.status_text = "State: Patrol (Using BT)";
 
           // In Patrol state, we let the BT handle movement.
           // But we check for "combat" trigger (e.g., proximity to mouse)
-          glm::vec2 mouse_pos = InputManager::Get().mouse_screen_pos();
+          glm::vec2 mouse_pos = engine::InputManager::Get().mouse_screen_pos();
           if (glm::distance(transform.position, mouse_pos) < 100.0f) {
-            registry_.GetComponent<ecs::StateMachineComponent>(entity).fsm.ChangeState("Combat");
+            registry_.GetComponent<engine::ecs::StateMachineComponent>(entity)
+                .fsm.ChangeState("Combat");
           }
         },
         [entity, this]() {
-           registry_.GetComponent<NPCComponent>(entity).speed = 100.0f;
-        }
-    );
+          registry_.GetComponent<NPCComponent>(entity).speed = 100.0f;
+        });
 
     // Combat State
-    auto combat = std::make_shared<util::LambdaState>(
+    auto combat = std::make_shared<engine::util::LambdaState>(
         [this, entity](float dt) {
-          auto& transform = registry_.GetComponent<core::TransformComponent>(entity);
+          auto& transform =
+              registry_.GetComponent<engine::core::TransformComponent>(entity);
           auto& npc = registry_.GetComponent<NPCComponent>(entity);
           npc.status_text = "State: Combat (Aggressive)";
 
-          glm::vec2 mouse_pos = InputManager::Get().mouse_screen_pos();
+          glm::vec2 mouse_pos = engine::InputManager::Get().mouse_screen_pos();
           glm::vec2 dir = glm::normalize(mouse_pos - transform.position);
           transform.position += dir * npc.speed * 1.5f * dt;
 
           if (glm::distance(transform.position, mouse_pos) > 200.0f) {
-            registry_.GetComponent<ecs::StateMachineComponent>(entity).fsm.ChangeState("Patrol");
+            registry_.GetComponent<engine::ecs::StateMachineComponent>(entity)
+                .fsm.ChangeState("Patrol");
           }
 
           // Simulate health loss in combat
           npc.health -= 5.0f * dt;
           if (npc.health < 20.0f) {
-             registry_.GetComponent<ecs::StateMachineComponent>(entity).fsm.ChangeState("Flee");
+            registry_.GetComponent<engine::ecs::StateMachineComponent>(entity)
+                .fsm.ChangeState("Flee");
           }
         },
         [entity, this]() {
-           registry_.GetComponent<NPCComponent>(entity).speed = 150.0f;
-        }
-    );
+          registry_.GetComponent<NPCComponent>(entity).speed = 150.0f;
+        });
 
     // Flee State
-    auto flee = std::make_shared<util::LambdaState>(
-        [this, entity](float dt) {
-          auto& transform = registry_.GetComponent<core::TransformComponent>(entity);
+    auto flee =
+        std::make_shared<engine::util::LambdaState>([this, entity](float dt) {
+          auto& transform =
+              registry_.GetComponent<engine::core::TransformComponent>(entity);
           auto& npc = registry_.GetComponent<NPCComponent>(entity);
           npc.status_text = "State: Flee (Low Health!)";
 
@@ -108,61 +119,67 @@ class AIDemoScene : public Scene {
           if (glm::length(dir) < 0.01f) dir = {1, 0};
           transform.position += dir * npc.speed * 2.0f * dt;
 
-          npc.health += 10.0f * dt; // Regenerate while fleeing
+          npc.health += 10.0f * dt;  // Regenerate while fleeing
           if (npc.health >= 100.0f) {
-             npc.health = 100.0f;
-             registry_.GetComponent<ecs::StateMachineComponent>(entity).fsm.ChangeState("Patrol");
+            npc.health = 100.0f;
+            registry_.GetComponent<engine::ecs::StateMachineComponent>(entity)
+                .fsm.ChangeState("Patrol");
           }
-        }
-    );
+        });
 
     fsm.AddState("Patrol", patrol);
     fsm.AddState("Combat", combat);
     fsm.AddState("Flee", flee);
   }
 
-  void SetupBT(util::BehaviorTree& tree, ecs::EntityID entity) {
-    auto root = std::make_shared<util::SelectorNode>();
+  void SetupBT(engine::util::BehaviorTree& tree, engine::ecs::EntityID entity) {
+    auto root = std::make_shared<engine::util::SelectorNode>();
 
     // Condition: Is in Patrol state?
-    auto is_patrolling = std::make_shared<util::ConditionNode>([this, entity](util::Blackboard& bb) {
-        auto& fsm = registry_.GetComponent<ecs::StateMachineComponent>(entity).fsm;
-        return fsm.GetCurrentStateName() == "Patrol";
-    });
+    auto is_patrolling = std::make_shared<engine::util::ConditionNode>(
+        [this, entity](engine::util::Blackboard& bb) {
+          auto& fsm =
+              registry_.GetComponent<engine::ecs::StateMachineComponent>(entity)
+                  .fsm;
+          return fsm.GetCurrentStateName() == "Patrol";
+        });
 
     // Sequence: Move to target
-    auto move_sequence = std::make_shared<util::SequenceNode>();
+    auto move_sequence = std::make_shared<engine::util::SequenceNode>();
 
-    auto find_target = std::make_shared<util::ActionNode>([this, entity](float dt, util::Blackboard& bb) {
-        if (!bb.Has("target")) {
+    auto find_target = std::make_shared<engine::util::ActionNode>(
+        [this, entity](float dt, engine::util::Blackboard& bb) {
+          if (!bb.Has("target")) {
             float rx = static_cast<float>(rand() % 600 + 100);
             float ry = static_cast<float>(rand() % 400 + 100);
             bb.Set<glm::vec2>("target", {rx, ry});
-            return util::NodeStatus::SUCCESS;
-        }
-        return util::NodeStatus::SUCCESS;
-    });
+            return engine::util::NodeStatus::SUCCESS;
+          }
+          return engine::util::NodeStatus::SUCCESS;
+        });
 
-    auto move_to_target = std::make_shared<util::ActionNode>([this, entity](float dt, util::Blackboard& bb) {
-        auto& transform = registry_.GetComponent<core::TransformComponent>(entity);
-        auto& npc = registry_.GetComponent<NPCComponent>(entity);
-        glm::vec2 target = bb.Get<glm::vec2>("target");
+    auto move_to_target = std::make_shared<engine::util::ActionNode>(
+        [this, entity](float dt, engine::util::Blackboard& bb) {
+          auto& transform =
+              registry_.GetComponent<engine::core::TransformComponent>(entity);
+          auto& npc = registry_.GetComponent<NPCComponent>(entity);
+          glm::vec2 target = bb.Get<glm::vec2>("target");
 
-        if (glm::distance(transform.position, target) < 5.0f) {
+          if (glm::distance(transform.position, target) < 5.0f) {
             bb.Remove("target");
-            return util::NodeStatus::SUCCESS;
-        }
+            return engine::util::NodeStatus::SUCCESS;
+          }
 
-        glm::vec2 dir = glm::normalize(target - transform.position);
-        transform.position += dir * npc.speed * dt;
-        return util::NodeStatus::RUNNING;
-    });
+          glm::vec2 dir = glm::normalize(target - transform.position);
+          transform.position += dir * npc.speed * dt;
+          return engine::util::NodeStatus::RUNNING;
+        });
 
     move_sequence->AddChild(find_target);
     move_sequence->AddChild(move_to_target);
 
     // Only move if patrolling
-    auto patrol_logic = std::make_shared<util::SequenceNode>();
+    auto patrol_logic = std::make_shared<engine::util::SequenceNode>();
     patrol_logic->AddChild(is_patrolling);
     patrol_logic->AddChild(move_sequence);
 
@@ -171,49 +188,59 @@ class AIDemoScene : public Scene {
   }
 
   void OnUpdate(float dt) override {
-    ecs::AISystem::Update(registry_, dt);
+    engine::ecs::AISystem::Update(&registry_, dt);
   }
 
   void OnRender() override {
-    auto& transform = registry_.GetComponent<core::TransformComponent>(npc_);
+    auto& transform =
+        registry_.GetComponent<engine::core::TransformComponent>(npc_);
     auto& npc = registry_.GetComponent<NPCComponent>(npc_);
 
     // Draw NPC
-    glm::vec4 color = {0, 1, 0, 1}; // Patrol
-    auto& fsm = registry_.GetComponent<ecs::StateMachineComponent>(npc_).fsm;
-    if (fsm.GetCurrentStateName() == "Combat") color = {1, 0, 0, 1};
-    else if (fsm.GetCurrentStateName() == "Flee") color = {1, 1, 0, 1};
+    glm::vec4 color = {0, 1, 0, 1};  // Patrol
+    auto& fsm =
+        registry_.GetComponent<engine::ecs::StateMachineComponent>(npc_).fsm;
+    if (fsm.GetCurrentStateName() == "Combat")
+      color = {1, 0, 0, 1};
+    else if (fsm.GetCurrentStateName() == "Flee")
+      color = {1, 1, 0, 1};
 
-    graphics::Renderer::Get().DrawQuad(transform.position, {30, 30}, color);
+    engine::graphics::Renderer::Get().DrawQuad(transform.position, {30, 30},
+                                               color);
 
     // Draw UI
-    graphics::Renderer::Get().DrawText("default", npc.status_text, {10, 570}, 0.0f, 0.7f, {1,1,1,1});
-    graphics::Renderer::Get().DrawText("default", "Health: " + std::to_string((int)npc.health), {10, 540}, 0.0f, 0.7f, {1,1,1,1});
-    graphics::Renderer::Get().DrawText("default", "Move mouse close to NPC to trigger Combat", {10, 20}, 0.0f, 0.5f, {0.7f, 0.7f, 0.7f, 1.0f});
+    engine::graphics::Renderer::Get().DrawText(
+        "default", npc.status_text, {10, 570}, 0.0f, 0.7f, {1, 1, 1, 1});
+    engine::graphics::Renderer::Get().DrawText(
+        "default", "Health: " + std::to_string((int)npc.health), {10, 540},
+        0.0f, 0.7f, {1, 1, 1, 1});
+    engine::graphics::Renderer::Get().DrawText(
+        "default", "Move mouse close to NPC to trigger Combat", {10, 20}, 0.0f,
+        0.5f, {0.7f, 0.7f, 0.7f, 1.0f});
 
-    graphics::Renderer::Get().Flush();
+    engine::graphics::Renderer::Get().Flush();
   }
 
  private:
-  ecs::Registry registry_;
-  ecs::EntityID npc_;
+  engine::ecs::Registry registry_;
+  engine::ecs::EntityID npc_;
 };
 
-class AIDemoApp : public Application {
+class AIDemoApp : public engine::Application {
  public:
   void OnInit() override {
-    SceneManager::Get().SetScene(std::make_unique<AIDemoScene>());
+    engine::SceneManager::Get().SetScene(std::make_unique<AIDemoScene>());
   }
   void OnShutdown() override {}
   void OnUpdate(double dt) override {}
 };
 
 int main() {
-  EngineConfig config;
+  engine::EngineConfig config;
   config.window_width = 800;
   config.window_height = 600;
   config.asset_path = ENGINE_ASSETS_PATH;
-  Engine::Init(config);
+  engine::Engine::Init(config);
   AIDemoApp app;
   app.Run();
   return 0;

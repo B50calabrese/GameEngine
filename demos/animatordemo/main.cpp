@@ -52,7 +52,7 @@ class AnimatorDemoApp : public engine::Application {
     float dt = static_cast<float>(delta_time_seconds);
 
     // Input handling to restart oneshot
-    if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::KC_SPACE)) {
+    if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kSpace)) {
       if (once_animator_.IsFinished()) {
         once_animator_.Play("once");
       }

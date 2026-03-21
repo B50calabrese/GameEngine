@@ -1,5 +1,5 @@
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>
@@ -20,24 +20,24 @@ void MenuScene::OnAttach() {
 
 void MenuScene::OnUpdate(float dt) {
   if (show_controls_) {
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_ESCAPE) ||
-        engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_SPACE) ||
-        engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_ENTER)) {
+    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kEscape) ||
+        engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace) ||
+        engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kEnter)) {
       show_controls_ = false;
     }
     return;
   }
 
-  if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_1) ||
-      engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_SPACE) ||
-      engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_ENTER)) {
+  if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::k1) ||
+      engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace) ||
+      engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kEnter)) {
     engine::SceneManager::Get().SetScene(
         std::make_unique<GameplayScene>("Gameplay", 1));
-  } else if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_2)) {
+  } else if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::k2)) {
     show_controls_ = true;
-  } else if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_3) ||
+  } else if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::k3) ||
              engine::InputManager::Get().IsKeyPressed(
-                 engine::KeyCode::KC_ESCAPE)) {
+                 engine::KeyCode::kEscape)) {
     glfwSetWindowShouldClose(engine::Engine::window().native_handle(),
                              GLFW_TRUE);
   }

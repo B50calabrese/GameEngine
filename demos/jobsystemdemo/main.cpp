@@ -32,21 +32,21 @@ class JobSystemDemo : public engine::Application {
     float delta_time = static_cast<float>(delta_time_seconds);
 
     // Handle input to increase/decrease particles
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_UP)) {
+    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kUp)) {
       ResetParticles(particles_.size() + 5000);
     }
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_DOWN)) {
+    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kDown)) {
       if (particles_.size() > 5000) {
         ResetParticles(particles_.size() - 5000);
       }
     }
 
     // Handle input to increase/decrease threads used for calculations
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_RIGHT)) {
+    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kRight)) {
       num_threads_++;
       LOG_INFO("Using %d threads for simulation", num_threads_);
     }
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::KC_LEFT)) {
+    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kLeft)) {
       if (num_threads_ > 1) {
         num_threads_--;
         LOG_INFO("Using %d threads for simulation", num_threads_);

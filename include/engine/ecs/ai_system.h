@@ -11,7 +11,8 @@
 namespace engine::ecs {
 
 /**
- * @brief System that updates all FSM and Behavior Tree components in the registry.
+ * @brief System that updates all FSM and Behavior Tree components in the
+ * registry.
  */
 class AISystem {
  public:
@@ -20,7 +21,7 @@ class AISystem {
    * @param registry The ECS registry.
    * @param dt Delta time since the last frame.
    */
-  static void Update(Registry& registry, float dt);
+  static void Update(Registry* registry, float dt);
 };
 
 }  // namespace engine::ecs

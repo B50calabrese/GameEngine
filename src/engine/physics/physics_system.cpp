@@ -3,35 +3,41 @@
  * @brief Implementation of the physics system.
  */
 
-#include <engine/physics/physics_system.h>
-#include <engine/physics/physics_components.h>
-#include <engine/core/transform.h>
-#include <engine/util/collision.h>
 #include <algorithm>
 #include <vector>
 
+#include <engine/core/transform.h>
+#include <engine/physics/physics_components.h>
+#include <engine/physics/physics_system.h>
+#include <engine/util/collision.h>
+
 namespace engine::physics {
 
-using namespace engine::core;
-
-void PhysicsSystem::Update(ecs::Registry& registry, float dt) {
+void PhysicsSystem::Update(ecs::Registry* registry, float dt) {
+  if (!registry) {
+    return;
+  }
   // 1. Apply Gravity
-  auto gravity_view = registry.GetView<TransformComponent, VelocityComponent, GravityComponent>();
+  auto gravity_view = registry->GetView<core::TransformComponent,
+                                        VelocityComponent, GravityComponent>();
   for (auto entity : gravity_view) {
-    auto& velocity = registry.GetComponent<VelocityComponent>(entity);
-    auto& gravity = registry.GetComponent<GravityComponent>(entity);
+    auto& velocity = registry->GetComponent<VelocityComponent>(entity);
+    auto& gravity = registry->GetComponent<GravityComponent>(entity);
     velocity.velocity.y -= gravity.strength * dt;
   }
 
   // 2. Perform Movement and Collision Resolution (Separated passes)
-  auto collider_view = registry.GetView<TransformComponent, ColliderComponent>();
-  std::vector<ecs::EntityID> colliders(collider_view.begin(), collider_view.end());
+  auto collider_view =
+      registry->GetView<core::TransformComponent, ColliderComponent>();
+  std::vector<ecs::EntityID> colliders(collider_view.begin(),
+                                       collider_view.end());
 
   // 2a. Update Positions (Horizontal)
-  auto velocity_view = registry.GetView<TransformComponent, VelocityComponent>();
+  auto velocity_view =
+      registry->GetView<core::TransformComponent, VelocityComponent>();
   for (auto entity : velocity_view) {
-    auto& transform = registry.GetComponent<TransformComponent>(entity);
-    auto& velocity = registry.GetComponent<VelocityComponent>(entity);
+    auto& transform = registry->GetComponent<core::TransformComponent>(entity);
+    auto& velocity = registry->GetComponent<VelocityComponent>(entity);
     transform.position.x += velocity.velocity.x * dt;
   }
 
@@ -41,26 +47,33 @@ void PhysicsSystem::Update(ecs::Registry& registry, float dt) {
       ecs::EntityID a = colliders[i];
       ecs::EntityID b = colliders[j];
 
-      auto& trans_a = registry.GetComponent<TransformComponent>(a);
-      auto& col_a = registry.GetComponent<ColliderComponent>(a);
-      auto& trans_b = registry.GetComponent<TransformComponent>(b);
-      auto& col_b = registry.GetComponent<ColliderComponent>(b);
+      auto& trans_a = registry->GetComponent<core::TransformComponent>(a);
+      auto& col_a = registry->GetComponent<ColliderComponent>(a);
+      auto& trans_b = registry->GetComponent<core::TransformComponent>(b);
+      auto& col_b = registry->GetComponent<ColliderComponent>(b);
 
       if (util::CheckAABB(trans_a.position + col_a.offset, col_a.size,
                           trans_b.position + col_b.offset, col_b.size)) {
-
         // Notify both parties of the collision (if callbacks are present)
-        if (col_a.on_collision) col_a.on_collision(a, b);
-        if (col_b.on_collision) col_b.on_collision(b, a);
+        if (col_a.on_collision) {
+          col_a.on_collision(a, b);
+        }
+        if (col_b.on_collision) {
+          col_b.on_collision(b, a);
+        }
 
         // Resolve unless one is a trigger
         if (!col_a.is_trigger && !col_b.is_trigger) {
-          if (!col_a.is_static && registry.HasComponent<VelocityComponent>(a)) {
-            auto& vel_a = registry.GetComponent<VelocityComponent>(a);
-            if (vel_a.velocity.x > 0)
-              trans_a.position.x = trans_b.position.x + col_b.offset.x - col_a.size.x - col_a.offset.x;
-            else if (vel_a.velocity.x < 0)
-              trans_a.position.x = trans_b.position.x + col_b.offset.x + col_b.size.x - col_a.offset.x;
+          if (!col_a.is_static &&
+              registry->HasComponent<VelocityComponent>(a)) {
+            auto& vel_a = registry->GetComponent<VelocityComponent>(a);
+            if (vel_a.velocity.x > 0) {
+              trans_a.position.x = trans_b.position.x + col_b.offset.x -
+                                   col_a.size.x - col_a.offset.x;
+            } else if (vel_a.velocity.x < 0) {
+              trans_a.position.x = trans_b.position.x + col_b.offset.x +
+                                   col_b.size.x - col_a.offset.x;
+            }
           }
         }
       }
@@ -69,8 +82,8 @@ void PhysicsSystem::Update(ecs::Registry& registry, float dt) {
 
   // 2c. Update Positions (Vertical)
   for (auto entity : velocity_view) {
-    auto& transform = registry.GetComponent<TransformComponent>(entity);
-    auto& velocity = registry.GetComponent<VelocityComponent>(entity);
+    auto& transform = registry->GetComponent<core::TransformComponent>(entity);
+    auto& velocity = registry->GetComponent<VelocityComponent>(entity);
     transform.position.y += velocity.velocity.y * dt;
   }
 
@@ -80,28 +93,35 @@ void PhysicsSystem::Update(ecs::Registry& registry, float dt) {
       ecs::EntityID a = colliders[i];
       ecs::EntityID b = colliders[j];
 
-      auto& trans_a = registry.GetComponent<TransformComponent>(a);
-      auto& col_a = registry.GetComponent<ColliderComponent>(a);
-      auto& trans_b = registry.GetComponent<TransformComponent>(b);
-      auto& col_b = registry.GetComponent<ColliderComponent>(b);
+      auto& trans_a = registry->GetComponent<core::TransformComponent>(a);
+      auto& col_a = registry->GetComponent<ColliderComponent>(a);
+      auto& trans_b = registry->GetComponent<core::TransformComponent>(b);
+      auto& col_b = registry->GetComponent<ColliderComponent>(b);
 
       if (util::CheckAABB(trans_a.position + col_a.offset, col_a.size,
                           trans_b.position + col_b.offset, col_b.size)) {
-
-        // Horizontal already called the on_collision callback if there was an overlap initially.
-        // However, if movement in Y creates a *new* overlap, we might need to notify here too.
-        // Let's call them anyway but it could be redundant for some frames.
-        if (col_a.on_collision) col_a.on_collision(a, b);
-        if (col_b.on_collision) col_b.on_collision(b, a);
+        // Horizontal already called the on_collision callback if there was an
+        // overlap initially. However, if movement in Y creates a *new* overlap,
+        // we might need to notify here too. Let's call them anyway but it could
+        // be redundant for some frames.
+        if (col_a.on_collision) {
+          col_a.on_collision(a, b);
+        }
+        if (col_b.on_collision) {
+          col_b.on_collision(b, a);
+        }
 
         if (!col_a.is_trigger && !col_b.is_trigger) {
-          if (!col_a.is_static && registry.HasComponent<VelocityComponent>(a)) {
-            auto& vel_a = registry.GetComponent<VelocityComponent>(a);
+          if (!col_a.is_static &&
+              registry->HasComponent<VelocityComponent>(a)) {
+            auto& vel_a = registry->GetComponent<VelocityComponent>(a);
             if (vel_a.velocity.y < 0) {
-              trans_a.position.y = trans_b.position.y + col_b.offset.y + col_b.size.y - col_a.offset.y;
+              trans_a.position.y = trans_b.position.y + col_b.offset.y +
+                                   col_b.size.y - col_a.offset.y;
               vel_a.velocity.y = 0;
             } else if (vel_a.velocity.y > 0) {
-              trans_a.position.y = trans_b.position.y + col_b.offset.y - col_a.size.y - col_a.offset.y;
+              trans_a.position.y = trans_b.position.y + col_b.offset.y -
+                                   col_a.size.y - col_a.offset.y;
               vel_a.velocity.y = 0;
             }
           }

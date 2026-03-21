@@ -19,86 +19,86 @@ namespace engine {
  */
 enum class KeyCode {
   // --- Mouse Buttons ---
-  KC_MOUSE_LEFT = 0,
-  KC_MOUSE_RIGHT = 1,
-  KC_MOUSE_MIDDLE = 2,
+  kMouseLeft = 0,
+  kMouseRight = 1,
+  kMouseMiddle = 2,
 
   // --- Alphabet Keys (Essential for Debug/Cheats/Chat) ---
-  KC_A,
-  KC_B,
-  KC_C,
-  KC_D,
-  KC_E,
-  KC_F,
-  KC_G,
-  KC_H,
-  KC_I,
-  KC_J,
-  KC_K,
-  KC_L,
-  KC_M,
-  KC_N,
-  KC_O,
-  KC_P,
-  KC_Q,
-  KC_R,
-  KC_S,
-  KC_T,
-  KC_U,
-  KC_V,
-  KC_W,
-  KC_X,
-  KC_Y,
-  KC_Z,
+  kA,
+  kB,
+  kC,
+  kD,
+  kE,
+  kF,
+  kG,
+  kH,
+  kI,
+  kJ,
+  kK,
+  kL,
+  kM,
+  kN,
+  kO,
+  kP,
+  kQ,
+  kR,
+  kS,
+  kT,
+  kU,
+  kV,
+  kW,
+  kX,
+  kY,
+  kZ,
 
   // --- Number Keys (Top Row) ---
-  KC_0,
-  KC_1,
-  KC_2,
-  KC_3,
-  KC_4,
-  KC_5,
-  KC_6,
-  KC_7,
-  KC_8,
-  KC_9,
+  k0,
+  k1,
+  k2,
+  k3,
+  k4,
+  k5,
+  k6,
+  k7,
+  k8,
+  k9,
 
   // --- Functional Keys (Essential Game Controls) ---
-  KC_ESCAPE,      // Crucial for menus, pausing, or quitting
-  KC_ENTER,       // Confirming actions
-  KC_SPACE,       // Common action key (e.g., end turn, skip dialog)
-  KC_TAB,         // Toggling UI panels/map view
-  KC_LEFT_SHIFT,  // Holding for multiple selection or speed
-  KC_LEFT_CONTROL,
-  KC_LEFT_ALT,
-  KC_BACKSPACE,  // Text input cleanup
-  KC_DELETE,
+  kEscape,     // Crucial for menus, pausing, or quitting
+  kEnter,      // Confirming actions
+  kSpace,      // Common action key (e.g., end turn, skip dialog)
+  kTab,        // Toggling UI panels/map view
+  kLeftShift,  // Holding for multiple selection or speed
+  kLeftControl,
+  kLeftAlt,
+  kBackspace,  // Text input cleanup
+  kDelete,
 
   // --- Navigation/Movement Keys (Even for 2D map movement) ---
-  KC_UP,
-  KC_DOWN,
-  KC_LEFT,
-  KC_RIGHT,
+  kUp,
+  kDown,
+  kLeft,
+  kRight,
 
   // --- System Keys (Useful for debugging) ---
-  KC_F1,
-  KC_F2,
-  KC_F3,
-  KC_F4,
-  KC_F5,
-  KC_F6,
-  KC_F7,
-  KC_F8,
-  KC_F9,
-  KC_F10,
-  KC_F11,
-  KC_F12,
+  kF1,
+  kF2,
+  kF3,
+  kF4,
+  kF5,
+  kF6,
+  kF7,
+  kF8,
+  kF9,
+  kF10,
+  kF11,
+  kF12,
 
   // --- Utility Keys ---
-  KC_HOME,
-  KC_END,
-  KC_PAGE_UP,
-  KC_PAGE_DOWN,
+  kHome,
+  kEnd,
+  kPageUp,
+  kPageDown,
 };
 
 /**

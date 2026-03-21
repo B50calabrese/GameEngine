@@ -11,9 +11,9 @@ class ActionMappingApp : public engine::Application {
  public:
   void OnInit() override {
     auto& am = engine::ActionManager::Get();
-    am.BindAction("MoveRight", engine::KeyCode::KC_D);
-    am.BindAction("MoveRight", engine::KeyCode::KC_RIGHT);
-    am.BindAction("Jump", engine::KeyCode::KC_SPACE);
+    am.BindAction("MoveRight", engine::KeyCode::kD);
+    am.BindAction("MoveRight", engine::KeyCode::kRight);
+    am.BindAction("Jump", engine::KeyCode::kSpace);
 
     LOG_INFO("ActionMapping Demo Initialized.");
     LOG_INFO("Hold 'D' or 'Right Arrow' to Move.");

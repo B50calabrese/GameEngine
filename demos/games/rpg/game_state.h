@@ -1,10 +1,10 @@
 #ifndef DEMOS_GAMES_RPG_GAME_STATE_H_
 #define DEMOS_GAMES_RPG_GAME_STATE_H_
 
-#include <string>
-#include <vector>
 #include <algorithm>
 #include <random>
+#include <string>
+#include <vector>
 
 struct Attack {
   std::string name;
@@ -14,7 +14,11 @@ struct Attack {
   int current_uses;
 
   Attack(std::string n, float dm, float hc, int mu)
-      : name(n), damage_multiplier(dm), hit_chance(hc), max_uses(mu), current_uses(mu) {}
+      : name(n),
+        damage_multiplier(dm),
+        hit_chance(hc),
+        max_uses(mu),
+        current_uses(mu) {}
 };
 
 struct Stats {
@@ -52,16 +56,17 @@ struct GameState {
 
   std::vector<Attack> GetRandomAttacks(int count) {
     std::vector<Attack> pool = {
-      {"Sunder", 1.2f, 0.85f, 8},
-      {"Drain", 0.7f, 0.90f, 6}, // Maybe add healing later
-      {"Execute", 2.0f, 0.50f, 3},
-      {"Flurry", 0.3f, 1.0f, 15}, // Needs multi-hit logic if we want to be fancy
-      {"Piercing Shot", 1.1f, 0.90f, 7},
-      {"Crushing Blow", 1.8f, 0.60f, 4}
-    };
+        {"Sunder", 1.2f, 0.85f, 8},
+        {"Drain", 0.7f, 0.90f, 6},  // Maybe add healing later
+        {"Execute", 2.0f, 0.50f, 3},
+        {"Flurry", 0.3f, 1.0f,
+         15},  // Needs multi-hit logic if we want to be fancy
+        {"Piercing Shot", 1.1f, 0.90f, 7},
+        {"Crushing Blow", 1.8f, 0.60f, 4}};
 
     std::vector<Attack> results;
-    std::shuffle(pool.begin(), pool.end(), std::mt19937(std::random_device()()));
+    std::shuffle(pool.begin(), pool.end(),
+                 std::mt19937(std::random_device()()));
     for (int i = 0; i < std::min(count, (int)pool.size()); ++i) {
       results.push_back(pool[i]);
     }
@@ -69,4 +74,4 @@ struct GameState {
   }
 };
 
-#endif // DEMOS_GAMES_RPG_GAME_STATE_H_
+#endif  // DEMOS_GAMES_RPG_GAME_STATE_H_
