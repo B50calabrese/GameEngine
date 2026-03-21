@@ -8,7 +8,7 @@
 
 #include <functional>
 
-#include <engine/util/behavior-tree/node.h>
+#include <engine/util/behaviortree/node.h>
 
 namespace engine::util {
 
