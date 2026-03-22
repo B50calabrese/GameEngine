@@ -7,6 +7,7 @@
 #include <engine/core/engine.h>
 #include <engine/core/job_system.h>
 #include <engine/core/window.h>
+#include <engine/ecs/script_system.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/particle_system.h>
 #include <engine/graphics/render_queue.h>
@@ -17,6 +18,7 @@
 #include <engine/physics/physics_system.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/ui/ui_systems.h>
+#include <engine/util/scripting/script_manager.h>
 
 namespace engine {
 
@@ -31,6 +33,7 @@ Application::Application() {
 }
 
 void Application::Run() {
+  util::ScriptManager::Get().Init();
   OnInit();
 
   Window& win = window();
@@ -57,6 +60,12 @@ void Application::Run() {
     Scene* active_scene = SceneManager::Get().GetActiveScene();
     if (active_scene) {
       ecs::Registry& reg = active_scene->registry();
+
+      // Initialize ScriptSystem for the current registry if needed
+      ecs::ScriptSystem::Init(&reg);
+
+      // Scripting System (Update logic before physics)
+      ecs::ScriptSystem::Update(&reg, static_cast<float>(delta_time));
 
       // Engine Core Systems
       physics::PhysicsSystem::Update(&reg, static_cast<float>(delta_time));
