@@ -2,6 +2,7 @@
 #define DEMOS_GAMES_TACTICAL_RPG_GRID_RENDERER_H_
 
 #include <glm/glm.hpp>
+
 #include "battle_grid.h"
 
 namespace tactical_rpg {

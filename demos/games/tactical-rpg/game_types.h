@@ -88,6 +88,13 @@ struct Character {
   glm::ivec2 grid_pos = {0, 0};
   bool is_downed = false;
 
+  struct StatusEffect {
+    std::string name;
+    int duration;
+    std::shared_ptr<Effect> tick_effect;
+  };
+  std::vector<StatusEffect> status_effects;
+
   // Turn state
   int movement_remaining = 0;
   bool action_used = false;

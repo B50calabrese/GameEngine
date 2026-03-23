@@ -9,13 +9,13 @@
 #include <engine/scene/scene_manager.h>
 #include <engine/util/logger.h>
 
+#include "character_renderer.h"
 #include "class_registry.h"
 #include "combat_rules.h"
+#include "effect.h"
 #include "enemy_ai.h"
 #include "game_manager.h"
 #include "grid_renderer.h"
-#include "character_renderer.h"
-#include "effect.h"
 
 namespace tactical_rpg {
 
@@ -137,18 +137,19 @@ void BattleScene::HandlePlayerTurn(float dt) {
 
             // For now, always check against AC for non-heal actions
             bool is_heal = false;
-            for(auto& effect : action.effects) {
-                if(std::dynamic_pointer_cast<HealEffect>(effect)) is_heal = true;
+            for (auto& effect : action.effects) {
+              if (std::dynamic_pointer_cast<HealEffect>(effect)) is_heal = true;
             }
 
             if (is_heal || roll + 5 >= target->stats.ac) {
-                last_log_ = "";
-                for(auto& effect : action.effects) {
-                    effect->Apply(active, target);
-                    if (!last_log_.empty()) last_log_ += ". ";
-                    last_log_ += effect->GetLogMessage(active, target);
-                }
-                if (last_log_.empty()) last_log_ = active->name + " used " + action.name;
+              last_log_ = "";
+              for (auto& effect : action.effects) {
+                effect->Apply(active, target);
+                if (!last_log_.empty()) last_log_ += ". ";
+                last_log_ += effect->GetLogMessage(active, target);
+              }
+              if (last_log_.empty())
+                last_log_ = active->name + " used " + action.name;
             } else {
               last_log_ = active->name + " missed!";
             }
@@ -188,21 +189,23 @@ void BattleScene::HandleEnemyAI() {
 
 void BattleScene::OnRender() {
   GridRenderer::Render(grid_, grid_offset_, tile_visual_size_, cursor_pos_);
-  CharacterRenderer::Render(party_, enemies_, turn_manager_.GetActiveCharacter(), grid_offset_, tile_visual_size_);
+  CharacterRenderer::Render(party_, enemies_,
+                            turn_manager_.GetActiveCharacter(), grid_offset_,
+                            tile_visual_size_);
   RenderUI();
 }
 
 void BattleScene::RenderUI() {
-  engine::graphics::TextRenderer::Get().DrawText("default", last_log_, {100, 650},
-                                             0.0f, 1.0f, {1, 1, 1, 1});
+  engine::graphics::TextRenderer::Get().DrawText(
+      "default", last_log_, {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
   auto* active = turn_manager_.GetActiveCharacter();
   if (active && !active->is_enemy) {
     std::string move_info =
         "Movement: " + std::to_string(active->movement_remaining) + "/" +
         std::to_string(active->stats.speed);
-    engine::graphics::TextRenderer::Get().DrawText("default", move_info, {700, 500},
-                                               0.0f, 0.7f, {1, 1, 1, 1});
+    engine::graphics::TextRenderer::Get().DrawText(
+        "default", move_info, {700, 500}, 0.0f, 0.7f, {1, 1, 1, 1});
 
     engine::graphics::TextRenderer::Get().DrawText(
         "default", "1: Move Mode", {700, 450}, 0.0f, 0.7f,

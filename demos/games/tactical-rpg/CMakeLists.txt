@@ -7,6 +7,7 @@ set(TACTICAL_RPG_SOURCES
     enemy_ai.cpp
     class_registry.cpp
     grid_renderer.cpp
+    map_node.cpp
     effect.cpp
     character_renderer.cpp
 )

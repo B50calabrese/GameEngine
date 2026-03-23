@@ -32,26 +32,11 @@ void GameManager::ShowMap() {
 
 void GameManager::EnterNode(int node_id) {
   current_node_id_ = node_id;
-  const auto& node = current_map_[node_id];
+  auto& node = current_map_[node_id];
+  node->OnEnter();
 
-  switch (node.type) {
-    case NodeType::Fight:
-    case NodeType::Boss:
-      engine::SceneManager::Get().PushScene(
-          std::make_unique<BattleScene>("Battle", party_, current_floor_));
-      break;
-    case NodeType::Rest:
-      for (auto& p : party_) {
-        p.stats.current_hp =
-            std::min(p.stats.max_hp, p.stats.current_hp + p.stats.max_hp / 2);
-        p.is_downed = false;
-      }
-      ShowMap();
-      break;
-    default:
-      // For minimal commit, others just show map again
-      ShowMap();
-      break;
+  if (node->GetType() != NodeType::Fight && node->GetType() != NodeType::Boss) {
+    ShowMap();
   }
 }
 

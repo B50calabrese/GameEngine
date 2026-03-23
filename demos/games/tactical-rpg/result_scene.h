@@ -39,8 +39,8 @@ class ResultScene : public engine::Scene {
     engine::graphics::TextRenderer::Get().DrawText(
         "default", is_victory_ ? "VICTORY" : "GAME OVER", {500, 500}, 0.0f,
         2.0f, is_victory_ ? glm::vec4(0, 1, 0, 1) : glm::vec4(1, 0, 0, 1));
-    engine::graphics::TextRenderer::Get().DrawText("default", message_, {400, 400},
-                                               0.0f, 1.0f, {1, 1, 1, 1});
+    engine::graphics::TextRenderer::Get().DrawText(
+        "default", message_, {400, 400}, 0.0f, 1.0f, {1, 1, 1, 1});
     engine::graphics::TextRenderer::Get().DrawText(
         "default", "Press SPACE to return to Main Menu", {400, 200}, 0.0f, 0.8f,
         {1, 1, 1, 1});

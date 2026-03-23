@@ -4,6 +4,7 @@
 #include <random>
 
 #include <glm/glm.hpp>
+
 #include "effect.h"
 
 namespace tactical_rpg {
@@ -48,7 +49,7 @@ void EnemyAI::ProcessTurn(Character* active, std::vector<Character>& party) {
       int attack_roll = std::uniform_int_distribution<int>(1, 20)(gen) + 2;
       if (attack_roll >= closest_player->stats.ac) {
         for (auto& effect : action.effects) {
-            effect->Apply(active, closest_player);
+          effect->Apply(active, closest_player);
         }
       }
     }

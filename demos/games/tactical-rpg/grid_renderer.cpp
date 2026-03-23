@@ -1,10 +1,11 @@
 #include "grid_renderer.h"
+
 #include <engine/graphics/renderer.h>
 
 namespace tactical_rpg {
 
 void GridRenderer::Render(const BattleGrid& grid, const glm::vec2& offset,
-                         float tile_size, const glm::ivec2& cursor_pos) {
+                          float tile_size, const glm::ivec2& cursor_pos) {
   for (int y = 0; y < BattleGrid::kSize; ++y) {
     for (int x = 0; x < BattleGrid::kSize; ++x) {
       glm::vec2 pos = offset + glm::vec2(x * tile_size, y * tile_size);

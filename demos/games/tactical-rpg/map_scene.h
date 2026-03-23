@@ -2,6 +2,7 @@
 #define DEMOS_GAMES_TACTICAL_RPG_MAP_SCENE_H_
 
 #include <algorithm>
+#include <memory>
 #include <vector>
 
 #include <engine/graphics/renderer.h>
@@ -10,13 +11,15 @@
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
 
+#include "map_node.h"
 #include "map_system.h"
 
 namespace tactical_rpg {
 
 class MapScene : public engine::Scene {
  public:
-  MapScene(const std::string& name, const std::vector<MapNode>& map,
+  MapScene(const std::string& name,
+           const std::vector<std::shared_ptr<MapNode>>& map,
            int current_node_id)
       : engine::Scene(name), map_(map), current_node_id_(current_node_id) {
     selected_node_index_ = -1;
@@ -26,9 +29,8 @@ class MapScene : public engine::Scene {
     engine::graphics::TextRenderer::Get().Init();
     engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
 
-    // Find available next nodes
     next_node_ids_.clear();
-    for (int conn : map_[current_node_id_].connections) {
+    for (int conn : map_[current_node_id_]->GetConnections()) {
       next_node_ids_.push_back(conn);
     }
     if (!next_node_ids_.empty()) selected_node_index_ = 0;
@@ -57,13 +59,11 @@ class MapScene : public engine::Scene {
     engine::graphics::TextRenderer::Get().DrawText(
         "default", "MAP SCREEN", {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
-    // Draw connections
     for (const auto& node : map_) {
-      for (int conn_id : node.connections) {
+      for (int conn_id : node->GetConnections()) {
         const auto& target = map_[conn_id];
-        // Just draw lines (quads for now)
-        glm::vec2 start = node.position;
-        glm::vec2 end = target.position;
+        glm::vec2 start = node->GetPosition();
+        glm::vec2 end = target->GetPosition();
         glm::vec2 diff = end - start;
         engine::graphics::Renderer::Get().DrawQuad(start + diff * 0.5f,
                                                    {glm::length(diff), 2.0f},
@@ -71,17 +71,16 @@ class MapScene : public engine::Scene {
       }
     }
 
-    // Draw nodes
     for (const auto& node : map_) {
       glm::vec4 color = {0.3f, 0.3f, 0.3f, 1.0f};
-      if (node.id == current_node_id_)
+      if (node->GetId() == current_node_id_)
         color = {1, 1, 0, 1};
       else {
-        auto it =
-            std::find(next_node_ids_.begin(), next_node_ids_.end(), node.id);
+        auto it = std::find(next_node_ids_.begin(), next_node_ids_.end(),
+                            node->GetId());
         if (it != next_node_ids_.end()) {
           if (selected_node_index_ != -1 &&
-              next_node_ids_[selected_node_index_] == node.id)
+              next_node_ids_[selected_node_index_] == node->GetId())
             color = {0, 1, 1, 1};
           else
             color = {0, 1, 0, 1};
@@ -89,7 +88,7 @@ class MapScene : public engine::Scene {
       }
 
       std::string label = "?";
-      switch (node.type) {
+      switch (node->GetType()) {
         case NodeType::Fight:
           label = "F";
           break;
@@ -110,10 +109,10 @@ class MapScene : public engine::Scene {
           break;
       }
 
-      engine::graphics::Renderer::Get().DrawQuad(node.position, {30, 30},
+      engine::graphics::Renderer::Get().DrawQuad(node->GetPosition(), {30, 30},
                                                  color);
       engine::graphics::TextRenderer::Get().DrawText(
-          "default", label, node.position - glm::vec2(5, 5), 0.0f, 0.5f,
+          "default", label, node->GetPosition() - glm::vec2(5, 5), 0.0f, 0.5f,
           {1, 1, 1, 1});
     }
 
@@ -121,7 +120,7 @@ class MapScene : public engine::Scene {
   }
 
  private:
-  const std::vector<MapNode>& map_;
+  const std::vector<std::shared_ptr<MapNode>>& map_;
   int current_node_id_;
   std::vector<int> next_node_ids_;
   int selected_node_index_ = -1;

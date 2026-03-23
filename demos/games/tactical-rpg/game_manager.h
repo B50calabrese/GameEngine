@@ -22,14 +22,15 @@ class GameManager {
   void CompleteBattle(bool victory);
 
   std::vector<Character>& GetParty() { return party_; }
-  const std::vector<MapNode>& GetMap() { return current_map_; }
+  const std::vector<std::shared_ptr<MapNode>>& GetMap() { return current_map_; }
   int GetCurrentNodeId() const { return current_node_id_; }
+  int GetCurrentFloor() const { return current_floor_; }
 
  private:
   GameManager() = default;
 
   std::vector<Character> party_;
-  std::vector<MapNode> current_map_;
+  std::vector<std::shared_ptr<MapNode>> current_map_;
   int current_node_id_ = 0;
   int current_floor_ = 0;
 };

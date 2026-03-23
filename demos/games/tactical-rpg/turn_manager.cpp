@@ -1,5 +1,7 @@
 #include "turn_manager.h"
 
+#include "effect.h"
+
 namespace tactical_rpg {
 
 void TurnManager::RollInitiative(std::vector<Character>& party,
@@ -29,12 +31,34 @@ void TurnManager::RollInitiative(std::vector<Character>& party,
 
 void TurnManager::NextTurn() {
   if (turn_order_.empty()) return;
+
+  // End previous turn
+  if (current_index_ >= 0) {
+    auto* prev = turn_order_[current_index_];
+    // Apply end-of-turn effects here
+  }
+
   current_index_ = (current_index_ + 1) % turn_order_.size();
   auto* active = turn_order_[current_index_];
 
   if (active->is_downed) {
     NextTurn();
     return;
+  }
+
+  // Start current turn
+  // Apply tick effects (like poison, etc.)
+  for (auto it = active->status_effects.begin();
+       it != active->status_effects.end();) {
+    if (it->tick_effect) {
+      it->tick_effect->Apply(active, active);
+    }
+    it->duration--;
+    if (it->duration <= 0) {
+      it = active->status_effects.erase(it);
+    } else {
+      ++it;
+    }
   }
 
   // Reset turn state

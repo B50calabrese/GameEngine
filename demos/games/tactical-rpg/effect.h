@@ -1,9 +1,10 @@
 #ifndef DEMOS_GAMES_TACTICAL_RPG_EFFECT_H_
 #define DEMOS_GAMES_TACTICAL_RPG_EFFECT_H_
 
-#include "game_types.h"
-#include <string>
 #include <memory>
+#include <string>
+
+#include "game_types.h"
 
 namespace tactical_rpg {
 
@@ -11,7 +12,8 @@ class Effect {
  public:
   virtual ~Effect() = default;
   virtual void Apply(Character* actor, Character* target) = 0;
-  virtual std::string GetLogMessage(Character* actor, Character* target) const = 0;
+  virtual std::string GetLogMessage(Character* actor,
+                                    Character* target) const = 0;
 };
 
 class DamageEffect : public Effect {
@@ -40,6 +42,6 @@ class HealEffect : public Effect {
   int last_heal_ = 0;
 };
 
-} // namespace tactical_rpg
+}  // namespace tactical_rpg
 
-#endif // DEMOS_GAMES_TACTICAL_RPG_EFFECT_H_
+#endif  // DEMOS_GAMES_TACTICAL_RPG_EFFECT_H_
