@@ -13,6 +13,7 @@
 #include "combat_rules.h"
 #include "enemy_ai.h"
 #include "game_manager.h"
+#include "grid_renderer.h"
 
 namespace tactical_rpg {
 
@@ -189,7 +190,7 @@ void BattleScene::HandleEnemyAI() {
 }
 
 void BattleScene::OnRender() {
-  grid_.Render(grid_offset_, tile_visual_size_, cursor_pos_);
+  GridRenderer::Render(grid_, grid_offset_, tile_visual_size_, cursor_pos_);
   RenderCharacters();
   RenderUI();
 }

@@ -6,6 +6,7 @@ set(TACTICAL_RPG_SOURCES
     turn_manager.cpp
     enemy_ai.cpp
     class_registry.cpp
+    grid_renderer.cpp
 )
 
 add_executable(TacticalRpg ${TACTICAL_RPG_SOURCES})

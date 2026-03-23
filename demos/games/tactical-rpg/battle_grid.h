@@ -25,9 +25,6 @@ class BattleGrid {
   bool IsWalkable(int x, int y) const;
   bool IsInBounds(int x, int y) const;
 
-  void Render(const glm::vec2& offset, float tile_size,
-              const glm::ivec2& cursor_pos);
-
  private:
   TerrainType grid_[kSize][kSize];
 };
