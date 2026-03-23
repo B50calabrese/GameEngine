@@ -1,12 +1,15 @@
 #ifndef DEMOS_GAMES_TACTICAL_RPG_GAME_TYPES_H_
 #define DEMOS_GAMES_TACTICAL_RPG_GAME_TYPES_H_
 
+#include <memory>
 #include <string>
 #include <vector>
 
 #include <glm/glm.hpp>
 
 namespace tactical_rpg {
+
+class Effect;
 
 enum class ClassType {
   Barbarian,
@@ -71,11 +74,9 @@ struct Action {
   std::string name;
   ActionType type;
   int range;
-  int damage_dice_sides;
-  int damage_dice_count;
-  int damage_modifier;
   bool is_bonus_action;
   std::string description;
+  std::vector<std::shared_ptr<Effect>> effects;
 };
 
 struct Character {

@@ -14,6 +14,8 @@
 #include "enemy_ai.h"
 #include "game_manager.h"
 #include "grid_renderer.h"
+#include "character_renderer.h"
+#include "effect.h"
 
 namespace tactical_rpg {
 
@@ -133,25 +135,20 @@ void BattleScene::HandlePlayerTurn(float dt) {
             std::mt19937 gen(std::random_device{}());
             int roll = std::uniform_int_distribution<int>(1, 20)(gen);
 
-            bool is_heal = (action.name == "Lay on Hands" || action.name == "Second Wind");
+            // For now, always check against AC for non-heal actions
+            bool is_heal = false;
+            for(auto& effect : action.effects) {
+                if(std::dynamic_pointer_cast<HealEffect>(effect)) is_heal = true;
+            }
 
-            if (is_heal) {
-              int heal_amount = action.damage_modifier;
-              if (action.name == "Second Wind") heal_amount = std::uniform_int_distribution<int>(1, 10)(gen) + 2;
-              target->stats.current_hp = std::min(target->stats.max_hp, target->stats.current_hp + heal_amount);
-              last_log_ = active->name + " healed " + target->name + " for " + std::to_string(heal_amount);
-            } else if (roll + 5 >= target->stats.ac) {
-              int damage = std::uniform_int_distribution<int>(
-                               1, action.damage_dice_sides)(gen) *
-                               action.damage_dice_count +
-                           action.damage_modifier;
-              target->stats.current_hp -= damage;
-              last_log_ = active->name + " hit " + target->name + " for " +
-                          std::to_string(damage);
-              if (target->stats.current_hp <= 0) {
-                target->is_downed = true;
-                target->stats.current_hp = 0;
-              }
+            if (is_heal || roll + 5 >= target->stats.ac) {
+                last_log_ = "";
+                for(auto& effect : action.effects) {
+                    effect->Apply(active, target);
+                    if (!last_log_.empty()) last_log_ += ". ";
+                    last_log_ += effect->GetLogMessage(active, target);
+                }
+                if (last_log_.empty()) last_log_ = active->name + " used " + action.name;
             } else {
               last_log_ = active->name + " missed!";
             }
@@ -191,36 +188,8 @@ void BattleScene::HandleEnemyAI() {
 
 void BattleScene::OnRender() {
   GridRenderer::Render(grid_, grid_offset_, tile_visual_size_, cursor_pos_);
-  RenderCharacters();
+  CharacterRenderer::Render(party_, enemies_, turn_manager_.GetActiveCharacter(), grid_offset_, tile_visual_size_);
   RenderUI();
-}
-
-void BattleScene::RenderCharacters() {
-  for (auto& p : party_) {
-    if (p.is_downed) continue;
-    glm::vec2 pos = grid_offset_ + glm::vec2(p.grid_pos.x * tile_visual_size_,
-                                             p.grid_pos.y * tile_visual_size_);
-    engine::graphics::Renderer::Get().DrawQuad(
-        pos + glm::vec2(5, 5), {tile_visual_size_ - 12, tile_visual_size_ - 12},
-        {0, 1, 0, 1});
-  }
-  for (auto& e : enemies_) {
-    if (e.is_downed) continue;
-    glm::vec2 pos = grid_offset_ + glm::vec2(e.grid_pos.x * tile_visual_size_,
-                                             e.grid_pos.y * tile_visual_size_);
-    engine::graphics::Renderer::Get().DrawQuad(
-        pos + glm::vec2(5, 5), {tile_visual_size_ - 12, tile_visual_size_ - 12},
-        {1, 0, 0, 1});
-  }
-
-  auto* active = turn_manager_.GetActiveCharacter();
-  if (active) {
-    glm::vec2 pos =
-        grid_offset_ + glm::vec2(active->grid_pos.x * tile_visual_size_,
-                                 active->grid_pos.y * tile_visual_size_);
-    engine::graphics::Renderer::Get().DrawQuad(
-        pos, {tile_visual_size_ - 2, tile_visual_size_ - 2}, {1, 1, 0, 0.3f});
-  }
 }
 
 void BattleScene::RenderUI() {

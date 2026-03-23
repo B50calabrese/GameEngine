@@ -4,6 +4,7 @@
 #include <random>
 
 #include <glm/glm.hpp>
+#include "effect.h"
 
 namespace tactical_rpg {
 
@@ -46,14 +47,8 @@ void EnemyAI::ProcessTurn(Character* active, std::vector<Character>& party) {
       std::mt19937 gen(std::random_device{}());
       int attack_roll = std::uniform_int_distribution<int>(1, 20)(gen) + 2;
       if (attack_roll >= closest_player->stats.ac) {
-        int damage = std::uniform_int_distribution<int>(
-                         1, action.damage_dice_sides)(gen) *
-                         action.damage_dice_count +
-                     action.damage_modifier;
-        closest_player->stats.current_hp -= damage;
-        if (closest_player->stats.current_hp <= 0) {
-          closest_player->is_downed = true;
-          closest_player->stats.current_hp = 0;
+        for (auto& effect : action.effects) {
+            effect->Apply(active, closest_player);
         }
       }
     }
