@@ -1,7 +1,8 @@
 #include <engine/core/application.h>
 #include <engine/core/transform.h>
+#include <engine/ecs/lua_data_component.h>
 #include <engine/ecs/registry.h>
-#include <engine/ecs/script_components.h>
+#include <engine/ecs/script_component.h>
 #include <engine/graphics/graphics_components.h>
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
@@ -44,6 +45,13 @@ class LuaDemoScene : public Scene {
 class LuaDemoApp : public Application {
  public:
   void OnInit() override {
+    // Register a custom binder to demonstrate extensibility
+    util::ScriptManager::Get().RegisterBinder([](sol::state& lua) {
+      lua["custom_engine_call"] = []() {
+        LOG_INFO("Custom engine call from Lua executed!");
+      };
+    });
+
     SceneManager::Get().SetScene(std::make_unique<LuaDemoScene>());
   }
 

@@ -6,7 +6,9 @@
 #ifndef INCLUDE_ENGINE_UTIL_SCRIPTING_SCRIPT_MANAGER_H_
 #define INCLUDE_ENGINE_UTIL_SCRIPTING_SCRIPT_MANAGER_H_
 
+#include <functional>
 #include <string>
+#include <vector>
 
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
@@ -33,6 +35,12 @@ class ScriptManager {
   void Init();
 
   /**
+   * @brief Registers a callback to bind custom client logic to Lua.
+   * @param binder Function that takes a sol::state& and performs bindings.
+   */
+  void RegisterBinder(std::function<void(sol::state&)> binder);
+
+  /**
    * @brief Loads and executes a Lua script from a file.
    * @param filepath Path to the Lua script.
    * @returns true if the script was loaded and executed successfully.
@@ -55,6 +63,12 @@ class ScriptManager {
 
   sol::state lua_;
   bool initialized_ = false;
+  std::vector<std::function<void(sol::state&)>> binders_;
+
+  void BindCore();
+  void BindMath();
+  void BindInput();
+  void BindScene();
 };
 
 }  // namespace engine::util

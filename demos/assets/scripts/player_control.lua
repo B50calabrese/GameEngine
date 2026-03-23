@@ -41,6 +41,7 @@ function script:on_update(dt)
     -- Create a new entity when space is pressed
     if Input.is_key_pressed(KeyCode.Space) then
         Log.info("Space pressed! Creating a new entity from Lua.")
+        custom_engine_call()
         local new_ent = registry:create_entity()
         add_transform(new_ent, pos.x, pos.y + 50.0)
         add_sprite(new_ent, "player.png")

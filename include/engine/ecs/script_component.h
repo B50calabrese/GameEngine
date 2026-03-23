@@ -1,13 +1,12 @@
 /**
- * @file script_components.h
- * @brief ECS components for Lua scripting.
+ * @file script_component.h
+ * @brief ECS component for linking an entity to a Lua script.
  */
 
-#ifndef INCLUDE_ENGINE_ECS_SCRIPT_COMPONENTS_H_
-#define INCLUDE_ENGINE_ECS_SCRIPT_COMPONENTS_H_
+#ifndef INCLUDE_ENGINE_ECS_SCRIPT_COMPONENT_H_
+#define INCLUDE_ENGINE_ECS_SCRIPT_COMPONENT_H_
 
 #include <string>
-#include <vector>
 
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
@@ -28,14 +27,6 @@ struct ScriptComponent {
   bool initialized = false;
 };
 
-/**
- * @brief Component that stores custom data for Lua scripts.
- */
-struct LuaDataComponent {
-  /** @brief Table for storing custom Lua properties. */
-  sol::table data;
-};
-
 }  // namespace engine::ecs
 
-#endif  // INCLUDE_ENGINE_ECS_SCRIPT_COMPONENTS_H_
+#endif  // INCLUDE_ENGINE_ECS_SCRIPT_COMPONENT_H_

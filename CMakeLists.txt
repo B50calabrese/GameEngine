@@ -53,6 +53,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/graphics/texture.cpp"
     "${ENGINE_ROOT}/src/engine/util/scripting/script_manager.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/script_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/ecs_bindings.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
 )
 

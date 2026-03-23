@@ -15,13 +15,34 @@ void ScriptManager::Init() {
   lua_.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math,
                       sol::lib::table, sol::lib::string);
 
-  // Bind Logger
+  BindCore();
+  BindMath();
+  BindInput();
+  BindScene();
+
+  // Run client-registered binders
+  for (const auto& binder : binders_) {
+    binder(lua_);
+  }
+
+  initialized_ = true;
+}
+
+void ScriptManager::RegisterBinder(std::function<void(sol::state&)> binder) {
+  if (initialized_) {
+    binder(lua_);
+  }
+  binders_.push_back(std::move(binder));
+}
+
+void ScriptManager::BindCore() {
   auto log = lua_["Log"].get_or_create<sol::table>();
   log["info"] = [](const std::string& msg) { LOG_INFO("%s", msg.c_str()); };
   log["warn"] = [](const std::string& msg) { LOG_WARN("%s", msg.c_str()); };
   log["err"] = [](const std::string& msg) { LOG_ERR("%s", msg.c_str()); };
+}
 
-  // Bind GLM types
+void ScriptManager::BindMath() {
   lua_.new_usertype<glm::vec2>(
       "vec2", sol::constructors<glm::vec2(), glm::vec2(float, float)>(), "x",
       &glm::vec2::x, "y", &glm::vec2::y, "r", &glm::vec2::x, "g", &glm::vec2::y,
@@ -60,8 +81,9 @@ void ScriptManager::Init() {
       [](const glm::vec4& a, float b) { return a * b; },
       sol::meta_function::division,
       [](const glm::vec4& a, float b) { return a / b; });
+}
 
-  // Bind InputManager
+void ScriptManager::BindInput() {
   lua_.new_enum<KeyCode>("KeyCode", {{"MouseLeft", KeyCode::kMouseLeft},
                                      {"MouseRight", KeyCode::kMouseRight},
                                      {"MouseMiddle", KeyCode::kMouseMiddle},
@@ -126,15 +148,11 @@ void ScriptManager::Init() {
     return InputManager::Get().IsKeyReleased(key);
   };
   input["mouse_pos"] = []() { return InputManager::Get().mouse_screen_pos(); };
+}
 
-  // Bind SceneManager
+void ScriptManager::BindScene() {
   auto scene = lua_["Scene"].get_or_create<sol::table>();
   scene["pop"] = []() { SceneManager::Get().PopScene(); };
-  // Note: SetScene and PushScene are harder because they take a unique_ptr<Scene>
-  // which Lua cannot easily create without more complex bindings or a factory.
-  // For now, let's just provide Pop.
-
-  initialized_ = true;
 }
 
 bool ScriptManager::RunFile(const std::string& filepath) {
