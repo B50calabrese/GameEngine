@@ -51,6 +51,9 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/graphics/sprite_sheet.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/text_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/texture.cpp"
+    "${ENGINE_ROOT}/src/engine/util/scripting/script_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/script_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/ecs_bindings.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
 )
 
@@ -87,8 +90,9 @@ else()
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GLFW REQUIRED glfw3)
     pkg_check_modules(FREETYPE REQUIRED freetype2)
-    target_link_libraries(GameEngine PUBLIC ${GLFW_LIBRARIES} ${FREETYPE_LIBRARIES} GL dl)
-    target_include_directories(GameEngine PUBLIC ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
+    pkg_check_modules(LUA REQUIRED lua5.4)
+    target_link_libraries(GameEngine PUBLIC ${GLFW_LIBRARIES} ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES} GL dl)
+    target_include_directories(GameEngine PUBLIC ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${LUA_INCLUDE_DIRS})
 endif()
 
 # --- 6. Add Demos (Optional when building as a library) ---
@@ -131,6 +135,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/jobsystemdemo)
     add_subdirectory(demos/uimenu)
     add_subdirectory(demos/aidemo)
+    add_subdirectory(demos/luademo)
     add_subdirectory(demos/common)
     add_subdirectory(demos/games)
 endif()
