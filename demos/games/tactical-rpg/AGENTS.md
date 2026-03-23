@@ -6,7 +6,11 @@ This demo implements a top-down tactical RPG with grid-based combat and a direct
 
 - **GameManager**: Singleton that manages the high-level game state (party, map, floor).
 - **ClassRegistry**: Central location for defining the 12 D&D classes, their stats, and starting actions.
-- **BattleScene**: Handles the NxN grid combat logic, turn management, and simple AI.
+- **BattleScene**: Coordinates the battle flow using the modular systems below.
+- **BattleGrid**: Manages the NxN grid, terrain, and rendering of the battlefield.
+- **TurnManager**: Handles initiative rolls and manages the current turn state for all characters.
+- **EnemyAI**: Implements basic tactical decision-making for enemy characters.
+- **CombatRules**: Centralized logic for validating movement, range, and other game rules.
 - **MapScene**: Handles the navigation through the generated directed graph.
 - **GameTypes**: Contains POD structs for `Character`, `Stats`, `Action`, etc.
 

@@ -54,7 +54,7 @@ class MapScene : public engine::Scene {
   void EnterNode(int node_id);
 
   void OnRender() override {
-    engine::graphics::Renderer::Get().DrawText(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", "MAP SCREEN", {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
     // Draw connections
@@ -112,7 +112,7 @@ class MapScene : public engine::Scene {
 
       engine::graphics::Renderer::Get().DrawQuad(node.position, {30, 30},
                                                  color);
-      engine::graphics::Renderer::Get().DrawText(
+      engine::graphics::TextRenderer::Get().DrawText(
           "default", label, node.position - glm::vec2(5, 5), 0.0f, 0.5f,
           {1, 1, 1, 1});
     }

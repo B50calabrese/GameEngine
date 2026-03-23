@@ -1,9 +1,7 @@
 #ifndef DEMOS_GAMES_TACTICAL_RPG_BATTLE_SCENE_H_
 #define DEMOS_GAMES_TACTICAL_RPG_BATTLE_SCENE_H_
 
-#include <algorithm>
 #include <memory>
-#include <random>
 #include <vector>
 
 #include <engine/graphics/renderer.h>
@@ -11,7 +9,9 @@
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>
 
+#include "battle_grid.h"
 #include "game_types.h"
+#include "turn_manager.h"
 
 namespace tactical_rpg {
 
@@ -26,15 +26,10 @@ class BattleScene : public engine::Scene {
   void OnRender() override;
 
  private:
-  void SetupGrid();
   void SetupEnemies();
-  void RollInitiative();
-  void NextTurn();
   void HandlePlayerTurn(float dt);
   void HandleEnemyAI();
-  void CheckVictoryLoss();
 
-  void RenderGrid();
   void RenderCharacters();
   void RenderUI();
 
@@ -42,20 +37,14 @@ class BattleScene : public engine::Scene {
   std::vector<Character> enemies_;
   int difficulty_;
 
-  // Grid
-  static const int kGridSize = 10;
-  TerrainType grid_[kGridSize][kGridSize];
+  BattleGrid grid_;
+  TurnManager turn_manager_;
+
   float tile_visual_size_ = 50.0f;
   glm::vec2 grid_offset_ = {100.0f, 100.0f};
 
-  // Turn management
-  std::vector<Character*> turn_order_;
-  int current_turn_index_ = 0;
-  Character* active_character_ = nullptr;
-
-  // Interaction
   glm::ivec2 cursor_pos_ = {0, 0};
-  int selected_action_index_ = -1;  // -1 means movement mode
+  int selected_action_index_ = -1;
 
   bool is_battle_over_ = false;
   std::string last_log_ = "Battle Start!";

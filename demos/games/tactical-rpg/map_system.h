@@ -36,7 +36,7 @@ class MapSystem {
     start.id = id_counter++;
     start.type = NodeType::Start;
     start.floor = 0;
-    start.position = {400.0f, 550.0f};  // Bottom center
+    start.position = {100.0f, 360.0f};  // Left center
     map.push_back(start);
 
     std::vector<int> last_floor_ids = {start.id};
@@ -62,9 +62,9 @@ class MapSystem {
           node.type = NodeType::Rest;
         }
 
-        // Position
-        float x_spacing = 800.0f / (nodes_per_floor + 1);
-        node.position = {(n + 1) * x_spacing, 550.0f - f * 100.0f};
+        // Position - Horizontal progression
+        float y_spacing = 600.0f / (nodes_per_floor + 1);
+        node.position = {100.0f + f * 100.0f, (n + 1) * y_spacing};
 
         // Connect from last floor
         // Simplification: each node in last floor connects to at least one in

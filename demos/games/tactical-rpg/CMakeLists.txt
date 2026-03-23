@@ -2,6 +2,10 @@ set(TACTICAL_RPG_SOURCES
     main.cpp
     battle_scene.cpp
     game_manager.cpp
+    battle_grid.cpp
+    turn_manager.cpp
+    enemy_ai.cpp
+    class_registry.cpp
 )
 
 add_executable(TacticalRpg ${TACTICAL_RPG_SOURCES})
