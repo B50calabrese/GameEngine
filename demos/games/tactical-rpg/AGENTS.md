@@ -14,10 +14,19 @@ This demo implements a top-down tactical RPG with grid-based combat and a direct
 - **MapScene**: Handles the navigation through the generated directed graph.
 - **GameTypes**: Contains POD structs for `Character`, `Stats`, `Action`, etc.
 
-## How to Extend
+## Development Skills
 
-### Adding New Actions/Spells
-Modify `ClassRegistry::GetBaseActions` to add more variety. Actions support range, damage dice, and whether they are bonus actions.
+### How to add a new Class
+1. Add a new entry to the `ClassType` enum in `game_types.h`.
+2. Update `ClassTypeToString` in `game_types.h` to include the new class.
+3. In `class_registry.cpp`, add a new block in `RegisterAll()` to define the base stats and initial actions for the new class.
+
+### How to add a new Action (Spell/Ability)
+1. If it's a completely new mechanic, you might need to add a new `ActionType` in `game_types.h`.
+2. Define the action in `ClassRegistry::RegisterAll()` by adding it to a class's `base_actions`.
+3. If the action has unique logic (like healing or a specific buff), update `BattleScene::HandlePlayerTurn` in `battle_scene.cpp` to handle the new action by its name or type.
+
+## How to Extend
 
 ### Adding New Enemies
 Currently, enemies are generated using the same `ClassRegistry` but with an `is_enemy` flag. You can create specialized enemy classes by adding new logic to `BattleScene::SetupEnemies`.
