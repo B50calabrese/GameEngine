@@ -10,6 +10,7 @@ set(TACTICAL_RPG_SOURCES
     map_node.cpp
     effect.cpp
     character_renderer.cpp
+    action_registry.cpp
 )
 
 add_executable(TacticalRpg ${TACTICAL_RPG_SOURCES})

@@ -14,6 +14,10 @@ class TurnManager {
   void RollInitiative(std::vector<Character>& party,
                       std::vector<Character>& enemies);
   void NextTurn();
+
+  void OnTurnStart(Character* character);
+  void OnTurnEnd(Character* character);
+
   Character* GetActiveCharacter() const;
   bool IsBattleOver(const std::vector<Character>& party,
                     const std::vector<Character>& enemies) const;

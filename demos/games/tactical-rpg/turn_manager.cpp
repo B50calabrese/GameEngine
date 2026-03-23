@@ -29,13 +29,36 @@ void TurnManager::RollInitiative(std::vector<Character>& party,
   current_index_ = -1;
 }
 
+void TurnManager::OnTurnStart(Character* character) {
+  // Apply tick effects (like poison, etc.)
+  for (auto it = character->status_effects.begin();
+       it != character->status_effects.end();) {
+    if (it->tick_effect) {
+      it->tick_effect->Apply(character, character);
+    }
+    it->duration--;
+    if (it->duration <= 0) {
+      it = character->status_effects.erase(it);
+    } else {
+      ++it;
+    }
+  }
+
+  // Reset turn state
+  character->movement_remaining = character->stats.speed;
+  character->action_used = false;
+  character->bonus_action_used = false;
+}
+
+void TurnManager::OnTurnEnd(Character* character) {
+  // End of turn logic
+}
+
 void TurnManager::NextTurn() {
   if (turn_order_.empty()) return;
 
-  // End previous turn
   if (current_index_ >= 0) {
-    auto* prev = turn_order_[current_index_];
-    // Apply end-of-turn effects here
+    OnTurnEnd(turn_order_[current_index_]);
   }
 
   current_index_ = (current_index_ + 1) % turn_order_.size();
@@ -46,25 +69,7 @@ void TurnManager::NextTurn() {
     return;
   }
 
-  // Start current turn
-  // Apply tick effects (like poison, etc.)
-  for (auto it = active->status_effects.begin();
-       it != active->status_effects.end();) {
-    if (it->tick_effect) {
-      it->tick_effect->Apply(active, active);
-    }
-    it->duration--;
-    if (it->duration <= 0) {
-      it = active->status_effects.erase(it);
-    } else {
-      ++it;
-    }
-  }
-
-  // Reset turn state
-  active->movement_remaining = active->stats.speed;
-  active->action_used = false;
-  active->bonus_action_used = false;
+  OnTurnStart(active);
 }
 
 Character* TurnManager::GetActiveCharacter() const {
