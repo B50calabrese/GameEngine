@@ -9,12 +9,18 @@
 
 namespace tactical_rpg {
 
+struct GridConfig {
+  float slow_chance = 0.1f;
+  float damage_chance = 0.05f;
+  float impassible_chance = 0.05f;
+};
+
 class BattleGrid {
  public:
   static const int kSize = 10;
 
   BattleGrid();
-  void Setup();
+  void Setup(const GridConfig& config = GridConfig());
   TerrainType GetTerrain(int x, int y) const;
   bool IsWalkable(int x, int y) const;
   bool IsInBounds(int x, int y) const;

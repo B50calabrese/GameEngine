@@ -9,18 +9,19 @@ namespace tactical_rpg {
 
 BattleGrid::BattleGrid() { Setup(); }
 
-void BattleGrid::Setup() {
+void BattleGrid::Setup(const GridConfig& config) {
   std::mt19937 gen(std::random_device{}());
   std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
   for (int y = 0; y < kSize; ++y) {
     for (int x = 0; x < kSize; ++x) {
       float r = dist(gen);
-      if (r < 0.1f)
+      if (r < config.slow_chance)
         grid_[y][x] = TerrainType::Slow;
-      else if (r < 0.15f)
+      else if (r < config.slow_chance + config.damage_chance)
         grid_[y][x] = TerrainType::Damage;
-      else if (r < 0.2f)
+      else if (r < config.slow_chance + config.damage_chance +
+                       config.impassible_chance)
         grid_[y][x] = TerrainType::Impassible;
       else
         grid_[y][x] = TerrainType::Normal;
