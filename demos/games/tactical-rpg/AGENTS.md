@@ -1,0 +1,45 @@
+# Tactical RPG Roguelike Demo - Agent Guidance
+
+This demo implements a top-down tactical RPG with grid-based combat and a directed graph map (Slay the Spire style).
+
+## Architecture
+
+- **GameManager**: Singleton that manages the high-level game state (party, map, floor).
+- **ClassRegistry**: Central location for defining the 12 D&D classes, their stats, and starting actions.
+- **BattleScene**: Handles the NxN grid combat logic, turn management, and simple AI.
+- **MapScene**: Handles the navigation through the generated directed graph.
+- **GameTypes**: Contains POD structs for `Character`, `Stats`, `Action`, etc.
+
+## How to Extend
+
+### Adding New Actions/Spells
+Modify `ClassRegistry::GetBaseActions` to add more variety. Actions support range, damage dice, and whether they are bonus actions.
+
+### Adding New Enemies
+Currently, enemies are generated using the same `ClassRegistry` but with an `is_enemy` flag. You can create specialized enemy classes by adding new logic to `BattleScene::SetupEnemies`.
+
+### Terrain Effects
+`BattleScene::HandlePlayerTurn` already checks for `TerrainType::Damage` (Lava). You can add more complex effects (like Slow reducing movement points) in the movement logic.
+
+### Assets
+The game currently uses primitive squares for characters and tiles.
+- Use `engine::graphics::SpriteComponent` and `engine::graphics::SpriteRenderSystem` to integrate textures.
+- You can find assets in `demos/assets/` or add new ones there.
+
+## Current Limitations (Minimal Commit)
+- **AI**: Very basic (moves toward closest player and attacks).
+- **Targeting**: Only cardinal for movement/cursor (as requested).
+- **Persistence**: Single session only.
+- **Balance**: Initial stats and damage values are estimated; need playtesting.
+
+## Development Commands
+Build the demo:
+```bash
+mkdir -p build && cd build
+cmake ..
+make TacticalRpg
+```
+Run the demo (requires X11/Headless setup):
+```bash
+./demos/TacticalRpg/TacticalRpg
+```
