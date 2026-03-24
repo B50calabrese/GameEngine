@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include <engine/ecs/registry.h>
 #include <glm/glm.hpp>
 
 #include "game_types.h"
@@ -11,9 +12,8 @@ namespace tactical_rpg {
 
 class CharacterRenderer {
  public:
-  static void Render(const std::vector<Character>& party,
-                     const std::vector<Character>& enemies,
-                     Character* active_character, const glm::vec2& offset,
+  static void Render(engine::ecs::Registry& registry,
+                     engine::ecs::EntityID active_char, const glm::vec2& offset,
                      float tile_size);
 };
 

@@ -1,6 +1,7 @@
 #ifndef DEMOS_GAMES_TACTICAL_RPG_GRID_RENDERER_H_
 #define DEMOS_GAMES_TACTICAL_RPG_GRID_RENDERER_H_
 
+#include <engine/ecs/registry.h>
 #include <glm/glm.hpp>
 
 #include "battle_grid.h"
@@ -9,7 +10,7 @@ namespace tactical_rpg {
 
 class GridRenderer {
  public:
-  static void Render(const BattleGrid& grid, const glm::vec2& offset,
+  static void Render(engine::ecs::Registry& registry, const glm::vec2& offset,
                      float tile_size, const glm::ivec2& cursor_pos);
 };
 

@@ -4,7 +4,9 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
+#include <engine/ecs/registry.h>
 #include "game_types.h"
 
 namespace tactical_rpg {
@@ -13,7 +15,7 @@ struct ClassDefinition {
   ClassType type;
   std::string name;
   Stats base_stats;
-  std::vector<Action> base_actions;
+  std::vector<std::string> base_actions;
 };
 
 class ClassRegistry {
@@ -23,20 +25,9 @@ class ClassRegistry {
     return instance;
   }
 
-  Character CreateCharacter(ClassType type, const std::string& name,
-                            bool is_enemy = false) {
-    Character c;
-    c.name = name;
-    c.class_type = type;
-    c.is_enemy = is_enemy;
-    c.is_downed = false;
-
-    const auto& def = definitions_[type];
-    c.stats = def.base_stats;
-    c.stats.current_hp = c.stats.max_hp;
-    c.actions = def.base_actions;
-    return c;
-  }
+  engine::ecs::EntityID CreateCharacter(engine::ecs::Registry& registry,
+                                        ClassType type, const std::string& name,
+                                        bool is_enemy = false);
 
  private:
   ClassRegistry() { RegisterAll(); }
@@ -46,8 +37,34 @@ class ClassRegistry {
     definitions_[def.type] = def;
   }
 
+  friend void RegisterBarbarian(ClassRegistry& registry);
+  friend void RegisterBard(ClassRegistry& registry);
+  friend void RegisterCleric(ClassRegistry& registry);
+  friend void RegisterDruid(ClassRegistry& registry);
+  friend void RegisterFighter(ClassRegistry& registry);
+  friend void RegisterMonk(ClassRegistry& registry);
+  friend void RegisterPaladin(ClassRegistry& registry);
+  friend void RegisterRanger(ClassRegistry& registry);
+  friend void RegisterRogue(ClassRegistry& registry);
+  friend void RegisterSorcerer(ClassRegistry& registry);
+  friend void RegisterWarlock(ClassRegistry& registry);
+  friend void RegisterWizard(ClassRegistry& registry);
+
   std::map<ClassType, ClassDefinition> definitions_;
 };
+
+void RegisterBarbarian(ClassRegistry& registry);
+void RegisterBard(ClassRegistry& registry);
+void RegisterCleric(ClassRegistry& registry);
+void RegisterDruid(ClassRegistry& registry);
+void RegisterFighter(ClassRegistry& registry);
+void RegisterMonk(ClassRegistry& registry);
+void RegisterPaladin(ClassRegistry& registry);
+void RegisterRanger(ClassRegistry& registry);
+void RegisterRogue(ClassRegistry& registry);
+void RegisterSorcerer(ClassRegistry& registry);
+void RegisterWarlock(ClassRegistry& registry);
+void RegisterWizard(ClassRegistry& registry);
 
 }  // namespace tactical_rpg
 

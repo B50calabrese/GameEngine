@@ -5,25 +5,25 @@
 #include <random>
 #include <vector>
 
+#include <engine/ecs/registry.h>
+
 #include "game_types.h"
 
 namespace tactical_rpg {
 
 class TurnManager {
  public:
-  void RollInitiative(std::vector<Character>& party,
-                      std::vector<Character>& enemies);
-  void NextTurn();
+  void RollInitiative(engine::ecs::Registry& registry);
+  void NextTurn(engine::ecs::Registry& registry);
 
-  void OnTurnStart(Character* character);
-  void OnTurnEnd(Character* character);
+  void OnTurnStart(engine::ecs::Registry& registry, engine::ecs::EntityID entity);
+  void OnTurnEnd(engine::ecs::Registry& registry, engine::ecs::EntityID entity);
 
-  Character* GetActiveCharacter() const;
-  bool IsBattleOver(const std::vector<Character>& party,
-                    const std::vector<Character>& enemies) const;
+  engine::ecs::EntityID GetActiveCharacter() const;
+  bool IsBattleOver(engine::ecs::Registry& registry) const;
 
  private:
-  std::vector<Character*> turn_order_;
+  std::vector<engine::ecs::EntityID> turn_order_;
   int current_index_ = -1;
 };
 

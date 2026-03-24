@@ -14,8 +14,10 @@ namespace tactical_rpg {
 void GameManager::StartNewRun(const std::vector<ClassType>& selected_classes) {
   party_.clear();
   for (auto type : selected_classes) {
-    party_.push_back(
-        ClassRegistry::Get().CreateCharacter(type, ClassTypeToString(type)));
+    Character c;
+    c.name = ClassTypeToString(type);
+    c.class_type = type;
+    party_.push_back(c);
   }
 
   current_floor_ = 1;

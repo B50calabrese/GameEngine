@@ -3,13 +3,16 @@
 
 #include <vector>
 
+#include <engine/ecs/registry.h>
+
 #include "game_types.h"
 
 namespace tactical_rpg {
 
 class EnemyAI {
  public:
-  static void ProcessTurn(Character* active, std::vector<Character>& party);
+  static void ProcessTurn(engine::ecs::Registry& registry,
+                          engine::ecs::EntityID active);
 };
 
 }  // namespace tactical_rpg

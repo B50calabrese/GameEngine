@@ -8,9 +8,22 @@ set(TACTICAL_RPG_SOURCES
     class_registry.cpp
     grid_renderer.cpp
     map_node.cpp
-    effect.cpp
+    systems/sync_transform_system.cpp
+    systems/combat_system.cpp
     character_renderer.cpp
     action_registry.cpp
+    classes/barbarian.cpp
+    classes/bard.cpp
+    classes/cleric.cpp
+    classes/druid.cpp
+    classes/fighter.cpp
+    classes/monk.cpp
+    classes/paladin.cpp
+    classes/ranger.cpp
+    classes/rogue.cpp
+    classes/sorcerer.cpp
+    classes/warlock.cpp
+    classes/wizard.cpp
 )
 
 add_executable(TacticalRpg ${TACTICAL_RPG_SOURCES})

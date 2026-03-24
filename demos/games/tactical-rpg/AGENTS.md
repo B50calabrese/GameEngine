@@ -6,12 +6,15 @@ This demo implements a top-down tactical RPG with grid-based combat and a direct
 
 - **GameManager**: Singleton that manages the high-level game state (party, map, floor).
 - **ClassRegistry**: Central location for defining the 12 D&D classes, their stats, and starting actions.
-- **BattleScene**: Coordinates the battle flow using the modular systems below.
-- **BattleGrid**: Manages the NxN grid, terrain, and state of the battlefield.
-- **GridRenderer**: Specialized utility for rendering the `BattleGrid`.
-- **TurnManager**: Handles initiative rolls and manages the current turn state for all characters.
-- **EnemyAI**: Implements basic tactical decision-making for enemy characters.
-- **CombatRules**: Centralized logic for validating movement, range, and other game rules.
+- **BattleScene**: Coordinates the battle flow using the modular systems below. Now manages entity IDs for the party and enemies.
+- **BattleGrid**: Manages the NxN grid using ECS. Each tile is an individual Entity with a `TileComponent`. A single Entity with `GridMapComponent` provides spatial lookups.
+- **GridRenderer**: Renders the `BattleGrid` by iterating over `GridMapComponent` and `TileComponent`.
+- **TurnManager**: Handles initiative rolls and manages the current turn state using `TurnStateComponent`. Operates on the ECS registry.
+- **EnemyAI**: Implements basic tactical decision-making. Now operates on Entity IDs and fetches data via components (`GridPositionComponent`, `Stats`, etc.).
+- **CombatRules**: Centralized logic for validating movement and range, operating on Entity IDs.
+- **Systems**: Decoupled gameplay logic moved to the `systems/` directory:
+  - `SyncTransformSystem`: Synchronizes `GridPositionComponent` to the engine's core `TransformComponent`.
+  - `CombatSystem`: Resolves data-driven combat effects (damage/heal) attached to Action entities.
 - **MapScene**: Handles the navigation through the generated directed graph.
 - **GameTypes**: Contains POD structs for `Character`, `Stats`, `Action`, etc.
 
@@ -29,7 +32,7 @@ The game currently uses primitive squares for characters and tiles.
 - You can find assets in `demos/assets/` or add new ones there.
 
 ## Current Limitations (Minimal Commit)
-- **Architecture**: Terrain types are currently part of the `BattleGrid` logic rather than being represented as ECS components.
+- **Architecture**: Refactored to ECS! Data is stored in components, and logic is handled by systems or Registry-aware managers.
 - **AI**: Very basic (moves toward closest player and attacks).
 - **Targeting**: Only cardinal for movement/cursor (as requested).
 - **Persistence**: Single session only.
