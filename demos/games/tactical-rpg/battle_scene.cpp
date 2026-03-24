@@ -9,6 +9,7 @@
 #include <engine/scene/scene_manager.h>
 #include <engine/util/logger.h>
 
+#include "action_registry.h"
 #include "character_renderer.h"
 #include "class_registry.h"
 #include "combat_rules.h"

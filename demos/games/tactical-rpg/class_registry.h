@@ -37,8 +37,34 @@ class ClassRegistry {
     definitions_[def.type] = def;
   }
 
+  friend void RegisterBarbarian(ClassRegistry& registry);
+  friend void RegisterBard(ClassRegistry& registry);
+  friend void RegisterCleric(ClassRegistry& registry);
+  friend void RegisterDruid(ClassRegistry& registry);
+  friend void RegisterFighter(ClassRegistry& registry);
+  friend void RegisterMonk(ClassRegistry& registry);
+  friend void RegisterPaladin(ClassRegistry& registry);
+  friend void RegisterRanger(ClassRegistry& registry);
+  friend void RegisterRogue(ClassRegistry& registry);
+  friend void RegisterSorcerer(ClassRegistry& registry);
+  friend void RegisterWarlock(ClassRegistry& registry);
+  friend void RegisterWizard(ClassRegistry& registry);
+
   std::map<ClassType, ClassDefinition> definitions_;
 };
+
+void RegisterBarbarian(ClassRegistry& registry);
+void RegisterBard(ClassRegistry& registry);
+void RegisterCleric(ClassRegistry& registry);
+void RegisterDruid(ClassRegistry& registry);
+void RegisterFighter(ClassRegistry& registry);
+void RegisterMonk(ClassRegistry& registry);
+void RegisterPaladin(ClassRegistry& registry);
+void RegisterRanger(ClassRegistry& registry);
+void RegisterRogue(ClassRegistry& registry);
+void RegisterSorcerer(ClassRegistry& registry);
+void RegisterWarlock(ClassRegistry& registry);
+void RegisterWizard(ClassRegistry& registry);
 
 }  // namespace tactical_rpg
 

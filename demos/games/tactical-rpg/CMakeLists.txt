@@ -11,6 +11,18 @@ set(TACTICAL_RPG_SOURCES
     systems.cpp
     character_renderer.cpp
     action_registry.cpp
+    classes/barbarian.cpp
+    classes/bard.cpp
+    classes/cleric.cpp
+    classes/druid.cpp
+    classes/fighter.cpp
+    classes/monk.cpp
+    classes/paladin.cpp
+    classes/ranger.cpp
+    classes/rogue.cpp
+    classes/sorcerer.cpp
+    classes/warlock.cpp
+    classes/wizard.cpp
 )
 
 add_executable(TacticalRpg ${TACTICAL_RPG_SOURCES})
