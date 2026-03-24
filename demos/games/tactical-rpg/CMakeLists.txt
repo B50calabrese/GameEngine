@@ -8,7 +8,8 @@ set(TACTICAL_RPG_SOURCES
     class_registry.cpp
     grid_renderer.cpp
     map_node.cpp
-    systems.cpp
+    systems/sync_transform_system.cpp
+    systems/combat_system.cpp
     character_renderer.cpp
     action_registry.cpp
     classes/barbarian.cpp
