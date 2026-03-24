@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include <engine/ecs/registry.h>
 #include <glm/glm.hpp>
 
 #include "game_types.h"
@@ -19,14 +20,12 @@ class BattleGrid {
  public:
   static const int kSize = 10;
 
-  BattleGrid();
-  void Setup(const GridConfig& config = GridConfig());
-  TerrainType GetTerrain(int x, int y) const;
-  bool IsWalkable(int x, int y) const;
-  bool IsInBounds(int x, int y) const;
+  static void Setup(engine::ecs::Registry& registry,
+                    const GridConfig& config = GridConfig());
 
- private:
-  TerrainType grid_[kSize][kSize];
+  static TerrainType GetTerrain(engine::ecs::Registry& registry, int x, int y);
+  static bool IsWalkable(engine::ecs::Registry& registry, int x, int y);
+  static bool IsInBounds(int x, int y);
 };
 
 }  // namespace tactical_rpg

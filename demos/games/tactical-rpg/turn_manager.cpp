@@ -1,92 +1,102 @@
 #include "turn_manager.h"
 
-#include "effect.h"
+#include <engine/ecs/registry.h>
+
+#include "components.h"
 
 namespace tactical_rpg {
 
-void TurnManager::RollInitiative(std::vector<Character>& party,
-                                 std::vector<Character>& enemies) {
+void TurnManager::RollInitiative(engine::ecs::Registry& registry) {
   std::mt19937 gen(std::random_device{}());
   std::uniform_int_distribution<int> d20(1, 20);
 
   turn_order_.clear();
-  for (auto& p : party) {
-    if (!p.is_downed) {
-      p.initiative_roll = d20(gen) + p.stats.initiative_mod;
-      turn_order_.push_back(&p);
+  auto view = registry.GetView<IdentityComponent, Stats, TurnStateComponent>();
+  for (auto entity : view) {
+    auto& stats = registry.GetComponent<Stats>(entity);
+    auto& turn_state = registry.GetComponent<TurnStateComponent>(entity);
+
+    if (!turn_state.is_downed) {
+      turn_state.initiative_roll = d20(gen) + stats.initiative_mod;
+      turn_order_.push_back(entity);
     }
-  }
-  for (auto& e : enemies) {
-    e.initiative_roll = d20(gen) + e.stats.initiative_mod;
-    turn_order_.push_back(&e);
   }
 
   std::sort(turn_order_.begin(), turn_order_.end(),
-            [](Character* a, Character* b) {
-              return a->initiative_roll > b->initiative_roll;
+            [&registry](engine::ecs::EntityID a, engine::ecs::EntityID b) {
+              return registry.GetComponent<TurnStateComponent>(a).initiative_roll >
+                     registry.GetComponent<TurnStateComponent>(b).initiative_roll;
             });
 
   current_index_ = -1;
 }
 
-void TurnManager::OnTurnStart(Character* character) {
-  // Apply tick effects (like poison, etc.)
-  for (auto it = character->status_effects.begin();
-       it != character->status_effects.end();) {
-    if (it->tick_effect) {
-      it->tick_effect->Apply(character, character);
-    }
-    it->duration--;
-    if (it->duration <= 0) {
-      it = character->status_effects.erase(it);
-    } else {
-      ++it;
+void TurnManager::OnTurnStart(engine::ecs::Registry& registry,
+                              engine::ecs::EntityID entity) {
+  auto& stats = registry.GetComponent<Stats>(entity);
+  auto& turn_state = registry.GetComponent<TurnStateComponent>(entity);
+
+  // Status effects tick would go here
+  if (registry.HasComponent<StatusEffectComponent>(entity)) {
+    auto& status = registry.GetComponent<StatusEffectComponent>(entity);
+    for (auto it = status.active_effects.begin(); it != status.active_effects.end();) {
+      // Effect logic...
+      it->duration--;
+      if (it->duration <= 0) it = status.active_effects.erase(it);
+      else ++it;
     }
   }
 
   // Reset turn state
-  character->movement_remaining = character->stats.speed;
-  character->action_used = false;
-  character->bonus_action_used = false;
+  turn_state.movement_remaining = stats.speed;
+  turn_state.action_used = false;
+  turn_state.bonus_action_used = false;
 }
 
-void TurnManager::OnTurnEnd(Character* character) {
+void TurnManager::OnTurnEnd(engine::ecs::Registry& registry,
+                            engine::ecs::EntityID entity) {
   // End of turn logic
 }
 
-void TurnManager::NextTurn() {
+void TurnManager::NextTurn(engine::ecs::Registry& registry) {
   if (turn_order_.empty()) return;
 
   if (current_index_ >= 0) {
-    OnTurnEnd(turn_order_[current_index_]);
+    OnTurnEnd(registry, turn_order_[current_index_]);
   }
 
   current_index_ = (current_index_ + 1) % turn_order_.size();
-  auto* active = turn_order_[current_index_];
+  auto active = turn_order_[current_index_];
 
-  if (active->is_downed) {
-    NextTurn();
+  if (registry.GetComponent<TurnStateComponent>(active).is_downed) {
+    NextTurn(registry);
     return;
   }
 
-  OnTurnStart(active);
+  OnTurnStart(registry, active);
 }
 
-Character* TurnManager::GetActiveCharacter() const {
+engine::ecs::EntityID TurnManager::GetActiveCharacter() const {
   if (current_index_ < 0 || current_index_ >= (int)turn_order_.size())
-    return nullptr;
+    return engine::ecs::INVALID_ENTITY;
   return turn_order_[current_index_];
 }
 
-bool TurnManager::IsBattleOver(const std::vector<Character>& party,
-                               const std::vector<Character>& enemies) const {
-  bool all_enemies_down =
-      std::all_of(enemies.begin(), enemies.end(),
-                  [](const Character& c) { return c.is_downed; });
-  bool all_party_down =
-      std::all_of(party.begin(), party.end(),
-                  [](const Character& c) { return c.is_downed; });
-  return all_enemies_down || all_party_down;
+bool TurnManager::IsBattleOver(engine::ecs::Registry& registry) const {
+  auto view = registry.GetView<IdentityComponent, TurnStateComponent>();
+  bool any_enemy_alive = false;
+  bool any_player_alive = false;
+
+  for (auto entity : view) {
+    auto& id = registry.GetComponent<IdentityComponent>(entity);
+    auto& turn_state = registry.GetComponent<TurnStateComponent>(entity);
+    if (!turn_state.is_downed) {
+      if (id.is_enemy) any_enemy_alive = true;
+      else any_player_alive = true;
+    }
+  }
+
+  return !any_enemy_alive || !any_player_alive;
 }
 
 }  // namespace tactical_rpg

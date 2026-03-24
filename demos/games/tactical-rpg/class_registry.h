@@ -4,7 +4,9 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
+#include <engine/ecs/registry.h>
 #include "game_types.h"
 
 namespace tactical_rpg {
@@ -13,7 +15,7 @@ struct ClassDefinition {
   ClassType type;
   std::string name;
   Stats base_stats;
-  std::vector<Action> base_actions;
+  std::vector<std::string> base_actions;
 };
 
 class ClassRegistry {
@@ -23,20 +25,9 @@ class ClassRegistry {
     return instance;
   }
 
-  Character CreateCharacter(ClassType type, const std::string& name,
-                            bool is_enemy = false) {
-    Character c;
-    c.name = name;
-    c.class_type = type;
-    c.is_enemy = is_enemy;
-    c.is_downed = false;
-
-    const auto& def = definitions_[type];
-    c.stats = def.base_stats;
-    c.stats.current_hp = c.stats.max_hp;
-    c.actions = def.base_actions;
-    return c;
-  }
+  engine::ecs::EntityID CreateCharacter(engine::ecs::Registry& registry,
+                                        ClassType type, const std::string& name,
+                                        bool is_enemy = false);
 
  private:
   ClassRegistry() { RegisterAll(); }

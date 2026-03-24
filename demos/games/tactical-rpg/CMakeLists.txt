@@ -8,7 +8,7 @@ set(TACTICAL_RPG_SOURCES
     class_registry.cpp
     grid_renderer.cpp
     map_node.cpp
-    effect.cpp
+    systems.cpp
     character_renderer.cpp
     action_registry.cpp
 )

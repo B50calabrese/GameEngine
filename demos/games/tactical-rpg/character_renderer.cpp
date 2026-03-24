@@ -1,34 +1,32 @@
 #include "character_renderer.h"
 
 #include <engine/graphics/renderer.h>
+#include "components.h"
 
 namespace tactical_rpg {
 
-void CharacterRenderer::Render(const std::vector<Character>& party,
-                               const std::vector<Character>& enemies,
-                               Character* active_character,
+void CharacterRenderer::Render(engine::ecs::Registry& registry,
+                               engine::ecs::EntityID active_char,
                                const glm::vec2& offset, float tile_size) {
-  for (const auto& p : party) {
-    if (p.is_downed) continue;
-    glm::vec2 pos =
-        offset + glm::vec2(p.grid_pos.x * tile_size, p.grid_pos.y * tile_size);
-    engine::graphics::Renderer::Get().DrawQuad(
-        pos + glm::vec2(5, 5), {tile_size - 12, tile_size - 12}, {0, 1, 0, 1});
-  }
-  for (const auto& e : enemies) {
-    if (e.is_downed) continue;
-    glm::vec2 pos =
-        offset + glm::vec2(e.grid_pos.x * tile_size, e.grid_pos.y * tile_size);
-    engine::graphics::Renderer::Get().DrawQuad(
-        pos + glm::vec2(5, 5), {tile_size - 12, tile_size - 12}, {1, 0, 0, 1});
-  }
+  auto view = registry.GetView<GridPositionComponent, IdentityComponent, TurnStateComponent>();
+  for (auto entity : view) {
+    auto& grid_pos = registry.GetComponent<GridPositionComponent>(entity);
+    auto& identity = registry.GetComponent<IdentityComponent>(entity);
+    auto& turn_state = registry.GetComponent<TurnStateComponent>(entity);
 
-  if (active_character) {
+    if (turn_state.is_downed) continue;
+
     glm::vec2 pos =
-        offset + glm::vec2(active_character->grid_pos.x * tile_size,
-                           active_character->grid_pos.y * tile_size);
+        offset + glm::vec2(grid_pos.pos.x * tile_size, grid_pos.pos.y * tile_size);
+    glm::vec4 color = identity.is_enemy ? glm::vec4(1, 0, 0, 1) : glm::vec4(0, 1, 0, 1);
+
     engine::graphics::Renderer::Get().DrawQuad(
-        pos, {tile_size - 2, tile_size - 2}, {1, 1, 0, 0.3f});
+        pos + glm::vec2(5, 5), {tile_size - 12, tile_size - 12}, color);
+
+    if (entity == active_char) {
+      engine::graphics::Renderer::Get().DrawQuad(
+          pos, {tile_size - 2, tile_size - 2}, {1, 1, 0, 0.3f});
+    }
   }
 }
 

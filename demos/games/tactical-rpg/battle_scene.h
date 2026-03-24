@@ -19,7 +19,7 @@ class BattleScene : public engine::Scene {
  public:
   BattleScene(const std::string& name, std::vector<Character>& party,
               int difficulty)
-      : engine::Scene(name), party_(party), difficulty_(difficulty) {}
+      : engine::Scene(name), party_data_(party), difficulty_(difficulty) {}
 
   void OnAttach() override;
   void OnUpdate(float dt) override;
@@ -33,11 +33,11 @@ class BattleScene : public engine::Scene {
   void RenderCharacters();
   void RenderUI();
 
-  std::vector<Character>& party_;
-  std::vector<Character> enemies_;
+  std::vector<Character>& party_data_;
+  std::vector<engine::ecs::EntityID> party_entities_;
+  std::vector<engine::ecs::EntityID> enemy_entities_;
   int difficulty_;
 
-  BattleGrid grid_;
   TurnManager turn_manager_;
 
   float tile_visual_size_ = 50.0f;

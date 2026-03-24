@@ -6,9 +6,26 @@
 #include <string>
 #include <vector>
 
+#include <engine/ecs/registry.h>
+
 #include "game_types.h"
 
 namespace tactical_rpg {
+
+struct RawAction {
+  std::string name;
+  ActionType type;
+  int range;
+  bool is_bonus_action;
+  std::string description;
+  struct Effect {
+    bool is_damage;
+    int dice_size;
+    int num_dice;
+    int modifier;
+  };
+  std::vector<Effect> effects;
+};
 
 class ActionRegistry {
  public:
@@ -17,23 +34,19 @@ class ActionRegistry {
     return instance;
   }
 
-  void RegisterAction(const Action& action) {
-    actions_[action.name] = action;
-  }
+  engine::ecs::EntityID GetOrCreateAction(engine::ecs::Registry& registry,
+                                          const std::string& name);
 
-  Action GetAction(const std::string& name) const {
-    auto it = actions_.find(name);
-    if (it != actions_.end()) {
-      return it->second;
-    }
-    return {};
-  }
+  void ClearCache() { action_cache_.clear(); }
 
  private:
   ActionRegistry() { RegisterAll(); }
   void RegisterAll();
 
-  std::map<std::string, Action> actions_;
+  void RegisterAction(const RawAction& action) { actions_[action.name] = action; }
+
+  std::map<std::string, RawAction> actions_;
+  std::map<std::string, engine::ecs::EntityID> action_cache_;
 };
 
 }  // namespace tactical_rpg
