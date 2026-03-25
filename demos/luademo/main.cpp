@@ -7,6 +7,7 @@
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/util/logger.h>
+#include <engine/util/scripting/script_manager.h>
 
 using namespace engine;
 
