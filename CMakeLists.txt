@@ -13,12 +13,17 @@ set(ENGINE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 set(THIRD_PARTY_DIR "${ENGINE_ROOT}/third_party")
 set(THIRD_PARTY_INCLUDE "${THIRD_PARTY_DIR}/include")
 set(THIRD_PARTY_LIBS "${THIRD_PARTY_DIR}/libs")
+set(LUA_DIR "${THIRD_PARTY_DIR}/lua")
 
 # Inform the linker where to find the library files (e.g., glfw3.lib)
 link_directories("${THIRD_PARTY_LIBS}")
 
 # 3. Sources
 # ----------
+
+# Lua Sources
+file(GLOB LUA_SOURCES "${LUA_DIR}/src/*.c")
+
 # We prefix these with ENGINE_ROOT to ensure they are found correctly
 set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/core/application.cpp"
@@ -65,6 +70,9 @@ file(GLOB_RECURSE INCLUDE_FILES
 
 # 4. Create Library
 # -----------------
+add_library(Lua STATIC ${LUA_SOURCES})
+target_include_directories(Lua PRIVATE "${LUA_DIR}/src")
+
 add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 
 # 5. Linking Dependencies & Includes
@@ -74,11 +82,13 @@ target_include_directories(GameEngine
     PRIVATE "${ENGINE_ROOT}/src"
     PUBLIC  "${THIRD_PARTY_INCLUDE}"
     PUBLIC  "${THIRD_PARTY_INCLUDE}/freetype"
+    PUBLIC  "${LUA_DIR}/include"
 )
 
 # Link the GLFW library and all necessary system libraries.
 if(WIN32)
     target_link_libraries(GameEngine PRIVATE
+        Lua
         "${THIRD_PARTY_LIBS}/glfw3.lib"
         "${THIRD_PARTY_LIBS}/freetype.lib"
         opengl32
@@ -90,9 +100,8 @@ else()
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GLFW REQUIRED glfw3)
     pkg_check_modules(FREETYPE REQUIRED freetype2)
-    pkg_check_modules(LUA REQUIRED lua5.4)
-    target_link_libraries(GameEngine PUBLIC ${GLFW_LIBRARIES} ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES} GL dl)
-    target_include_directories(GameEngine PUBLIC ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${LUA_INCLUDE_DIRS})
+    target_link_libraries(GameEngine PUBLIC Lua ${GLFW_LIBRARIES} ${FREETYPE_LIBRARIES} GL dl)
+    target_include_directories(GameEngine PUBLIC ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
 endif()
 
 # --- 6. Add Demos (Optional when building as a library) ---
