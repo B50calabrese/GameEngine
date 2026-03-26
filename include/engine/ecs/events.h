@@ -6,11 +6,10 @@
 #ifndef INCLUDE_ENGINE_ECS_EVENTS_H_
 #define INCLUDE_ENGINE_ECS_EVENTS_H_
 
-#include <engine/ecs/entity_manager.h>
+#include <engine/ecs/events/component_events.h>
+#include <engine/ecs/events/entity_events.h>
 
 namespace engine::ecs {
-
-class Registry;
 
 /**
  * @brief Base interface for event listeners.
@@ -26,56 +25,6 @@ class IEventListener {
    * @param event The event data.
    */
   virtual void OnEvent(const T& event) = 0;
-};
-
-/**
- * @brief Event triggered when a new entity is created.
- */
-struct EntityCreatedEvent {
-  EntityID entity;
-  Registry* registry;
-};
-
-/**
- * @brief Event triggered when an entity is about to be destroyed.
- */
-struct EntityDestroyedEvent {
-  EntityID entity;
-  Registry* registry;
-};
-
-/**
- * @brief Event triggered when a component is added to an entity.
- * @tparam T The type of component added.
- */
-template <typename T>
-struct ComponentAddedEvent {
-  EntityID entity;
-  T& component;
-  Registry* registry;
-};
-
-/**
- * @brief Event triggered when a component is about to be removed from an
- * entity.
- * @tparam T The type of component removed.
- */
-template <typename T>
-struct ComponentRemovedEvent {
-  EntityID entity;
-  T& component;
-  Registry* registry;
-};
-
-/**
- * @brief Event triggered when a component is modified.
- * @tparam T The type of component modified.
- */
-template <typename T>
-struct ComponentModifiedEvent {
-  EntityID entity;
-  T& component;
-  Registry* registry;
 };
 
 }  // namespace engine::ecs
