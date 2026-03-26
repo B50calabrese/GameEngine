@@ -9,8 +9,14 @@
 #include <unordered_map>
 
 #include <engine/ecs/entity_manager.h>
+#include <engine/ecs/events.h>
 
 namespace engine::ecs {
+
+/**
+ * @brief Base interface for generic storage.
+ */
+class Registry;
 
 /**
  * @brief Base interface for generic storage.
@@ -20,6 +26,8 @@ class IComponentStorage {
   virtual ~IComponentStorage() = default;
   virtual void Remove(EntityID entity) = 0;
   virtual void Clear() = 0;
+  virtual bool Has(EntityID entity) = 0;
+  virtual void NotifyRemoved(EntityID entity, Registry* registry) = 0;
 
  protected:
   IComponentStorage() = default;
@@ -54,12 +62,19 @@ class ComponentStorage : public IComponentStorage {
    * @brief Returns if the entity is in the storage.
    * @returns whether or not the entity is found in this storage.
    */
-  bool Has(EntityID entity) { return data_.find(entity) != data_.end(); }
+  bool Has(EntityID entity) override {
+    return data_.find(entity) != data_.end();
+  }
 
   /**
    * @brief Clears all components from this storage.
    */
   void Clear() override { data_.clear(); }
+
+  /**
+   * @brief Triggers a notification that a component is being removed.
+   */
+  void NotifyRemoved(EntityID entity, Registry* registry) override;
 
  private:
   std::unordered_map<EntityID, T> data_;

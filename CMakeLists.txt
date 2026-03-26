@@ -130,6 +130,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
 
     add_subdirectory(demos/applicationdemo)
     add_subdirectory(demos/ecsdemo)
+    add_subdirectory(demos/ecs-notifications)
     add_subdirectory(demos/rendererdemo)
     add_subdirectory(demos/renderqueuedemo)
     add_subdirectory(demos/scenedemo)
