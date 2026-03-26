@@ -31,6 +31,9 @@
 #include <engine/core/window.h>
 #include <engine/graphics/renderer.h>
 #include <engine/util/logger.h>
+#include <engine/util/scripting/script_manager.h>
+
+#include <cstdlib>
 
 namespace engine {
 namespace {
@@ -62,6 +65,15 @@ void Engine::Init(const EngineConfig& engine_config) {
   (graphics::Renderer::Get()).set_asset_root(engine_config.asset_path);
 
   core::JobSystem::Get().Init();
+
+  // Configure scripting
+  bool hot_reload = engine_config.hot_reload_enabled;
+  const char* hot_reload_env = std::getenv("ENGINE_HOT_RELOAD");
+  if (hot_reload_env && std::string(hot_reload_env) == "1") {
+    hot_reload = true;
+  }
+  util::ScriptManager::Get().set_hot_reload_enabled(hot_reload);
+  util::ScriptManager::Get().set_asset_path(engine_config.asset_path);
 }
 
 void Engine::Shutdown() {

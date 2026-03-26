@@ -44,6 +44,8 @@ struct EngineConfig {
   std::string window_title = "Title";
   /** @brief The default path for assets. */
   std::string asset_path = "";
+  /** @brief Whether to enable Lua script hot reloading. */
+  bool hot_reload_enabled = false;
 };
 
 /**

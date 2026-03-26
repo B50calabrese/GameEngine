@@ -25,6 +25,9 @@ struct ScriptComponent {
 
   /** @brief Whether the on_init hook has been called. */
   bool initialized = false;
+
+  /** @brief Whether to preserve non-function state during hot reload. */
+  bool preserve_state = true;
 };
 
 }  // namespace engine::ecs

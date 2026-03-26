@@ -6,8 +6,11 @@
 #ifndef INCLUDE_ENGINE_UTIL_SCRIPTING_SCRIPT_MANAGER_H_
 #define INCLUDE_ENGINE_UTIL_SCRIPTING_SCRIPT_MANAGER_H_
 
+#include <chrono>
+#include <filesystem>
 #include <functional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #define SOL_ALL_SAFETIES_ON 1
@@ -53,6 +56,25 @@ class ScriptManager {
    */
   sol::state& state() { return lua_; }
 
+  /**
+   * @brief Sets whether hot reloading is enabled.
+   * @param enabled True to enable hot reloading.
+   */
+  void set_hot_reload_enabled(bool enabled) { hot_reload_enabled_ = enabled; }
+
+  /**
+   * @brief Sets the asset path for script monitoring.
+   * @param path The base path for scripts.
+   */
+  void set_asset_path(const std::string& path) { asset_path_ = path; }
+
+  /**
+   * @brief Checks for changes in Lua script files.
+   * @param dt Delta time in seconds.
+   * @returns True if any file has changed.
+   */
+  bool CheckForChanges(float dt);
+
  private:
   ScriptManager() = default;
   ~ScriptManager() = default;
@@ -64,6 +86,11 @@ class ScriptManager {
   sol::state lua_;
   bool initialized_ = false;
   std::vector<std::function<void(sol::state&)>> binders_;
+
+  bool hot_reload_enabled_ = false;
+  std::string asset_path_;
+  float timer_ = 0.0f;
+  std::unordered_map<std::string, std::filesystem::file_time_type> file_times_;
 
   void BindCore();
   void BindMath();

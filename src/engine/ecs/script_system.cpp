@@ -29,18 +29,36 @@ void ScriptSystem::Update(Registry* registry, float dt) {
   auto& lua = util::ScriptManager::Get().state();
   ECSBindings::SetCurrentRegistry(lua, registry);
 
+  bool reload_all = util::ScriptManager::Get().CheckForChanges(dt);
+
   auto view = registry->GetView<ScriptComponent>();
 
   for (auto entity : view) {
     auto& comp = registry->GetComponent<ScriptComponent>(entity);
     if (comp.script_path.empty()) continue;
 
-    // Load script if not already loaded
-    if (!comp.script_instance.valid()) {
+    // Load script if not already loaded OR if hot reload triggered
+    if (!comp.script_instance.valid() || reload_all) {
+      sol::table old_instance = comp.script_instance;
       auto result = lua.script_file(comp.script_path);
       if (result.valid()) {
-        if (result.get_type() == sol::type::table) {
-          comp.script_instance = result;
+        sol::object obj = result;
+        if (obj.get_type() == sol::type::table) {
+          comp.script_instance = obj.as<sol::table>();
+
+          // Preserve state if requested
+          if (comp.preserve_state && old_instance.valid()) {
+            for (auto const& [key, value] : old_instance) {
+              // Only copy non-function values to preserve state while picking
+              // up new logic
+              if (value.get_type() != sol::type::function) {
+                comp.script_instance[key] = value;
+              }
+            }
+          }
+          if (reload_all) {
+            comp.initialized = false;
+          }
         } else {
           LOG_ERR("Lua script must return a table: %s",
                   comp.script_path.c_str());
