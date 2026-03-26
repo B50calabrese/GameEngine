@@ -7,6 +7,7 @@
 #include <random>
 
 #include <engine/graphics/particle_system.h>
+#include <engine/graphics/render_queue.h>
 #include <engine/graphics/renderer.h>
 
 namespace engine::graphics {
@@ -59,9 +60,15 @@ void ParticleSystem::Update(float dt) {
   }
 }
 
-void ParticleSystem::Render() const {
+void ParticleSystem::Render(float z_index) const {
   for (const auto& p : particles_) {
-    Renderer::Get().DrawQuad(p.position, {p.size, p.size}, p.color);
+    RenderCommand cmd;
+    cmd.z_order = z_index;
+    cmd.texture_id = 0;  // White texture slot
+    cmd.position = p.position;
+    cmd.size = {p.size, p.size};
+    cmd.color = p.color;
+    RenderQueue::Default().Submit(cmd);
   }
 }
 

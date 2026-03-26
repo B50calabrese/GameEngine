@@ -67,7 +67,7 @@ class TextRenderer {
    */
   void DrawText(const std::string& font_name, const std::string& text,
                 const glm::vec2& position, float rotation, float scale,
-                const glm::vec4& color);
+                const glm::vec4& color, float z_index = 0.0f);
 
  private:
   TextRenderer() = default;

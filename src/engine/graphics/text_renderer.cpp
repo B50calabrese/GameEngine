@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <engine/graphics/primitive_renderer.h>
+#include <engine/graphics/render_queue.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
 #include <engine/util/asset_manager.h>
@@ -34,8 +35,8 @@ void TextRenderer::AddFont(const std::string& name,
 
 void TextRenderer::DrawText(const std::string& font_name,
                             const std::string& text, const glm::vec2& position,
-                            float rotation, float scale,
-                            const glm::vec4& color) {
+                            float rotation, float scale, const glm::vec4& color,
+                            float z_index) {
   if (fonts_.find(font_name) == fonts_.end()) {
     return;
   }
@@ -60,9 +61,19 @@ void TextRenderer::DrawText(const std::string& font_name,
       float ry = char_rel_pos.x * sin_a + char_rel_pos.y * cos_a;
       char_rel_pos = glm::vec2(rx, ry);
     }
-    PrimitiveRenderer::SubmitTexturedQuad(
-        position + char_rel_pos, {w, h}, ch.texture_id, {0.0f, 1.0f},
-        {1.0f, 0.0f}, color, rotation, {0.0f, 0.0f}, /*is_font=*/true);
+
+    RenderCommand cmd;
+    cmd.z_order = z_index;
+    cmd.texture_id = ch.texture_id;
+    cmd.position = position + char_rel_pos;
+    cmd.size = {w, h};
+    cmd.color = color;
+    cmd.rotation = rotation;
+    cmd.uv_min = {0.0f, 1.0f};
+    cmd.uv_max = {1.0f, 0.0f};
+    cmd.is_font = true;
+    RenderQueue::Default().Submit(cmd);
+
     x_cursor += (ch.advance >> 6);
   }
 }

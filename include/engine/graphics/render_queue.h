@@ -12,6 +12,7 @@
 
 #include <glm/glm.hpp>
 
+#include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/renderer.h>
 
 namespace engine::graphics {
@@ -24,6 +25,10 @@ struct RenderCommand {
   glm::vec2 size;
   glm::vec4 color = glm::vec4(1.0f);
   float rotation = 0.0f;
+  glm::vec2 uv_min = {0.0f, 0.0f};
+  glm::vec2 uv_max = {1.0f, 1.0f};
+  glm::vec2 origin = {0.0f, 0.0f};
+  bool is_font = false;
 };
 
 /**
@@ -58,15 +63,13 @@ class RenderQueue {
                        return a.texture_id < b.texture_id;
                      });
 
-    auto& renderer = graphics::Renderer::Get();
     for (const auto& cmd : commands_) {
-      if (cmd.texture_id > 0) {
-        renderer.DrawTexturedQuad(cmd.position, cmd.size, cmd.texture_id,
-                                  cmd.rotation, cmd.color);
-      } else {
-        renderer.DrawQuad(cmd.position, cmd.size, cmd.color, cmd.rotation);
-      }
+      PrimitiveRenderer::SubmitTexturedQuad(cmd.position, cmd.size,
+                                            cmd.texture_id, cmd.uv_min,
+                                            cmd.uv_max, cmd.color, cmd.rotation,
+                                            cmd.origin, cmd.is_font);
     }
+    Clear();
   }
 
   /** @brief Clears the queue for the next frame. */

@@ -39,7 +39,7 @@ To maximize effectiveness, first identify your **Persona Context**:
 3.  **Directory Naming**: Use purely alphabetical characters for directory names (e.g., `uimenu` instead of `ui_menu` or `ui-menu`). No underscores or hyphens. Files can still use underscores.
 4.  **No `using namespace`**: Forbidden in headers. Avoid in source files; use explicit qualifiers or specific `using` declarations.
 5.  **Snapshot Iteration**: All ECS systems must assume the state is a snapshot. Never delete while iterating; use a `deferred_destruction` list.
-6.  **Queue-First Rendering**: Never call `Renderer` methods directly from game logic. All draw calls **must** pass through `RenderQueue`.
+6.  **Queue-First Rendering**: Never call `Renderer` methods directly from game or system logic. All draw calls **must** pass through `RenderQueue`. This ensures proper Z-sorting and texture batching.
 4.  **Self-Evolution**: If you find a bug or a new 'Gotcha' (e.g., a specific OpenGL driver quirk or a threading race condition), you are **mandated** to update the relevant `SKILL.md` before submitting your fix.
 5.  **Validation**: Run the relevant `scripts/validate.sh` before submission. Failure to validate is a failure of the persona.
 
