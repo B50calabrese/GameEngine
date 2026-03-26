@@ -165,4 +165,51 @@ bool ScriptManager::RunFile(const std::string& filepath) {
   return true;
 }
 
+bool ScriptManager::CheckForChanges(float dt) {
+  if (!hot_reload_enabled_ || asset_path_.empty()) {
+    return false;
+  }
+
+  timer_ += dt;
+  if (timer_ < 1.0f) {
+    return false;
+  }
+  timer_ = 0.0f;
+
+  bool changed = false;
+  namespace fs = std::filesystem;
+
+  try {
+    if (!fs::exists(asset_path_)) {
+      return false;
+    }
+
+    for (const auto& entry : fs::recursive_directory_iterator(asset_path_)) {
+      if (entry.is_regular_file() && entry.path().extension() == ".lua") {
+        std::string path = entry.path().string();
+        auto last_write = fs::last_write_time(entry);
+
+        if (file_times_.count(path)) {
+          if (file_times_[path] != last_write) {
+            file_times_[path] = last_write;
+            changed = true;
+            LOG_INFO("Detected change in script: %s", path.c_str());
+          }
+        } else {
+          file_times_[path] = last_write;
+        }
+      }
+    }
+  } catch (const std::exception& e) {
+    LOG_ERR("Error during script hot reload polling: %s", e.what());
+  }
+
+  if (changed) {
+    // Clear the Lua module cache to ensure 'require' picks up changed files
+    lua_["package"]["loaded"] = lua_.create_table();
+  }
+
+  return changed;
+}
+
 }  // namespace engine::util
