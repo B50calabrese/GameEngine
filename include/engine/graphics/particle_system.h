@@ -49,8 +49,9 @@ class ParticleSystem {
 
   /**
    * @brief Renders the particles.
+   * @param z_index The Z-order for sorting.
    */
-  void Render() const;
+  void Render(float z_index = 0.0f) const;
 
   /** @brief Clears all active particles. */
   void Clear();
@@ -63,6 +64,7 @@ class ParticleSystem {
 /** @brief ECS component to trigger particle emission. */
 struct ParticleEmitterComponent {
   ParticleSystem system;
+  float z_index = 0.0f;
   bool is_active = true;
 };
 

@@ -5,9 +5,11 @@
 
 #include <engine/core/transform.h>
 #include <engine/graphics/graphics_components.h>
+#include <engine/graphics/render_queue.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_render_system.h>
 #include <engine/graphics/sprite_sheet.h>
+#include <engine/graphics/texture.h>
 #include <engine/util/asset_manager.h>
 
 namespace engine::graphics {
@@ -28,10 +30,21 @@ void SpriteRenderSystem::Render(ecs::Registry* registry) {
         if (!sprite.sprite_sheet_name.empty()) {
           auto sheet =
               util::AssetManager<SpriteSheet>::Get(sprite.sprite_sheet_name);
-          if (sheet) {
-            Renderer::Get().DrawSprite(sheet.get(), sprite.sprite_index,
-                                       transform.position, transform.scale,
-                                       transform.rotation, sprite.tint, {0, 0});
+          if (sheet && sheet->texture()) {
+            glm::vec2 uv_min, uv_max;
+            sheet->GetUVs(sprite.sprite_index, &uv_min, &uv_max);
+
+            RenderCommand cmd;
+            cmd.z_order = sprite.z_index;
+            cmd.texture_id = sheet->texture()->renderer_id();
+            cmd.position = transform.position;
+            cmd.size = transform.scale;
+            cmd.rotation = transform.rotation;
+            cmd.color = sprite.tint;
+            cmd.uv_min = uv_min;
+            cmd.uv_max = uv_max;
+            cmd.origin = sprite.origin;
+            RenderQueue::Default().Submit(cmd);
           }
         }
       }
@@ -39,15 +52,22 @@ void SpriteRenderSystem::Render(ecs::Registry* registry) {
     // Quad Component (fallback)
     else if (registry->HasComponent<QuadComponent>(entity)) {
       auto& quad = registry->GetComponent<QuadComponent>(entity);
-      Renderer::Get().DrawQuad(transform.position, transform.scale, quad.color,
-                               transform.rotation);
+      RenderCommand cmd;
+      cmd.z_order = quad.z_index;
+      cmd.texture_id = 0;  // White texture slot
+      cmd.position = transform.position;
+      cmd.size = transform.scale;
+      cmd.rotation = transform.rotation;
+      cmd.color = quad.color;
+      RenderQueue::Default().Submit(cmd);
     }
 
     // Text Component (can be combined with Sprite/Quad)
     if (registry->HasComponent<TextComponent>(entity)) {
       auto& text = registry->GetComponent<TextComponent>(entity);
       Renderer::Get().DrawText(text.font_name, text.content, transform.position,
-                               transform.rotation, text.scale, text.color);
+                               transform.rotation, text.scale, text.color,
+                               text.z_index);
     }
   }
 }

@@ -92,7 +92,9 @@ void Application::Run() {
     if (active_scene) {
       graphics::SpriteRenderSystem::Render(&active_scene->registry());
       active_scene->registry().ForEach<graphics::ParticleEmitterComponent>(
-          [](graphics::ParticleEmitterComponent& pec) { pec.system.Render(); });
+          [](graphics::ParticleEmitterComponent& pec) {
+            pec.system.Render(pec.z_index);
+          });
     }
 
     core::JobSystem::Get().Wait();

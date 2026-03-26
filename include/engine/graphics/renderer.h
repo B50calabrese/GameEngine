@@ -184,10 +184,12 @@ class Renderer {
    * @param rotation The rotation in degrees (counter-clockwise).
    * @param scale The scale factor.
    * @param color The RGBA color.
+   * @param z_index The Z-order for sorting.
    */
   void DrawText(const std::string& font_name, const std::string& text,
                 const glm::vec2& position, float rotation = 0.0f,
-                float scale = 1.0f, const glm::vec4& color = glm::vec4(1.0f));
+                float scale = 1.0f, const glm::vec4& color = glm::vec4(1.0f),
+                float z_index = 0.0f);
 
   /**
    * @brief Takes a relative path and resolves to the full path.

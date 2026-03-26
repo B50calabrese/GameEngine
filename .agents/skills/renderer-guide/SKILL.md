@@ -8,7 +8,7 @@ author_persona: Senior Systems Architect
 # Renderer Skill
 
 <guiding_principles>
-- **Queue-First Submission**: Logic should prioritize `RenderQueue::Submit` over direct `Renderer` calls to leverage automatic Z-sorting and texture-based batching.
+- **Queue-First Submission**: Logic **must** use `RenderQueue::Submit` over direct `Renderer` calls to leverage automatic Z-sorting and texture-based batching. Direct `Renderer` calls bypass the optimization layer.
 - **Coordinate Consistency**: All spatial logic must adhere to the (0,0) bottom-left origin to remain compatible with the engine's orthographic projection.
 - **Lifecycle Encapsulation**: Post-processing and state management must be wrapped within `BeginFrame` and `EndFrame` blocks.
 - **Batched Rendering**: Avoid redundant `Flush` calls. Batch similar drawing commands whenever possible to minimize draw calls.
@@ -24,7 +24,7 @@ author_persona: Senior Systems Architect
 
 ### 🎮 Game Developer Context (Application Logic)
 - **Goal**: Use the rendering API for graphics and UI.
-- **Constraint**: Submit all 2D objects to the `RenderQueue::Default()`. Do not call `Renderer::Draw*` directly.
+- **Constraint**: Submit all 2D objects (Sprites, Quads, Particles, Text) to the `RenderQueue::Default()`. Do not call `Renderer::Draw*` directly. Use the `z_index` field in components to control draw order.
 - **Golden Samples**:
   - <golden_sample file="demos/rendererdemo/main.cpp" /> - Basic API usage.
   - <golden_sample file="demos/renderqueuedemo/main.cpp" /> - Optimized batching via `RenderQueue`.

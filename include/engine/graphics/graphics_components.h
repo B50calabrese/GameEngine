@@ -18,11 +18,13 @@ struct TextComponent {
   std::string font_name = "default";
   float scale = 1.0f;
   glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
+  float z_index = 0.0f;
 };
 
 /** @brief Component for rendering a simple colored quad. */
 struct QuadComponent {
   glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
+  float z_index = 0.0f;
 };
 
 /** @brief Component for rendering a texture. */
@@ -31,6 +33,8 @@ struct SpriteComponent {
   std::string sprite_sheet_name = "";
   int sprite_index = 0;
   glm::vec4 tint = {1.0f, 1.0f, 1.0f, 1.0f};
+  glm::vec2 origin = {0.0f, 0.0f};
+  float z_index = 0.0f;
   bool visible = true;
 };
 
