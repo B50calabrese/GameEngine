@@ -80,7 +80,8 @@ static const std::map<int, KeyCode>& GetKeyCodeMap() {
       {GLFW_KEY_HOME, KeyCode::kHome},
       {GLFW_KEY_END, KeyCode::kEnd},
       {GLFW_KEY_PAGE_UP, KeyCode::kPageUp},
-      {GLFW_KEY_PAGE_DOWN, KeyCode::kPageDown}};
+      {GLFW_KEY_PAGE_DOWN, KeyCode::kPageDown},
+      {GLFW_KEY_GRAVE_ACCENT, KeyCode::kTilde}};
   return s_KeyCodeMap;
 }
 }  // namespace
@@ -150,6 +151,12 @@ void InputManager::HandleMouseButton(int raw_button_code, int action) {
 void InputManager::HandleCursorPosition(double xpos, double ypos) {
   mouse_x_ = static_cast<float>(xpos);
   mouse_y_ = window_height_ - static_cast<float>(ypos);
+}
+
+void InputManager::HandleChar(unsigned int codepoint) {
+  if (codepoint < 128) {
+    text_input_ += static_cast<char>(codepoint);
+  }
 }
 
 KeyCode InputManager::MapRawCode(int raw_code) const {

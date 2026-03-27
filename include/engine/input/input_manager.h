@@ -99,6 +99,8 @@ enum class KeyCode {
   kEnd,
   kPageUp,
   kPageDown,
+
+  kTilde,  // For console toggle
 };
 
 /**
@@ -167,6 +169,18 @@ class InputManager {
    */
   void UpdateState();
 
+  /**
+   * @brief Retrieves the characters typed in the current frame.
+   *
+   * @return A string containing the characters.
+   */
+  const std::string& text_input() const { return text_input_; }
+
+  /**
+   * @brief Clears the text input buffer.
+   */
+  void ClearTextInput() { text_input_.clear(); }
+
   friend class Window;
 
  private:
@@ -189,6 +203,12 @@ class InputManager {
    * events.
    */
   void HandleCursorPosition(double xpos, double ypos);
+
+  /**
+   * @brief Raw event handler called by GLFW callbacks for character input.
+   */
+  void HandleChar(unsigned int codepoint);
+
   void HandleResize(int width, int height) {
     window_height_ = static_cast<float>(height);
   }
@@ -197,6 +217,7 @@ class InputManager {
   float mouse_y_ = 0.0f;
   float window_height_ = 600.0f;
   bool is_consumed_ = false;
+  std::string text_input_;
   std::map<KeyCode, bool> current_key_state_;
   std::map<KeyCode, bool> previous_key_state_;
 

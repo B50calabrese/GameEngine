@@ -18,6 +18,7 @@
 #include <engine/physics/physics_system.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/ui/ui_systems.h>
+#include <engine/util/console.h>
 #include <engine/util/scripting/script_manager.h>
 
 namespace engine {
@@ -48,7 +49,18 @@ void Application::Run() {
     win.PollEvents();
     ActionManager::Get().Update();
 
-    [[maybe_unused]] bool input_handled = SceneManager::Get().DispatchInput();
+    if (input.IsKeyPressed(util::Console::Get().GetToggleKey())) {
+      util::Console::Get().Toggle();
+    }
+
+    util::Console::Get().Update();
+
+    [[maybe_unused]] bool input_handled = false;
+    if (util::Console::Get().IsVisible()) {
+      input_handled = true;
+    } else {
+      input_handled = SceneManager::Get().DispatchInput();
+    }
 
     graphics::RenderQueue::Default().Clear();
 
@@ -64,29 +76,32 @@ void Application::Run() {
       // Initialize ScriptSystem for the current registry if needed
       ecs::ScriptSystem::Init(&reg);
 
-      // Scripting System (Update logic before physics)
-      ecs::ScriptSystem::Update(&reg, static_cast<float>(delta_time));
+      if (!util::Console::Get().IsPaused()) {
+        // Scripting System (Update logic before physics)
+        ecs::ScriptSystem::Update(&reg, static_cast<float>(delta_time));
 
-      // Engine Core Systems
-      physics::PhysicsSystem::Update(&reg, static_cast<float>(delta_time));
+        // Engine Core Systems
+        physics::PhysicsSystem::Update(&reg, static_cast<float>(delta_time));
 
-      // Particle Systems
-      reg.ForEach<graphics::ParticleEmitterComponent>(
-          [dt = static_cast<float>(delta_time)](
-              graphics::ParticleEmitterComponent& pec) {
-            if (pec.is_active) {
-              pec.system.Update(dt);
-            }
-          });
+        // Particle Systems
+        reg.ForEach<graphics::ParticleEmitterComponent>(
+            [dt = static_cast<float>(delta_time)](
+                graphics::ParticleEmitterComponent& pec) {
+              if (pec.is_active) {
+                pec.system.Update(dt);
+              }
+            });
 
-      // UI Systems
-      ui::UISyncSystem::Update(reg);
-      ui::UIInputSystem::Update(reg);
-      ui::UILayoutSystem::Update(reg, win.width(), win.height());
+        // UI Systems
+        ui::UISyncSystem::Update(reg);
+        ui::UIInputSystem::Update(reg);
+        ui::UILayoutSystem::Update(reg, win.width(), win.height());
+
+        this->OnUpdate(delta_time);
+      }
     }
 
     SceneManager::Get().RenderActiveScene();
-    this->OnUpdate(delta_time);
 
     // Render ECS-driven graphics
     if (active_scene) {
@@ -107,6 +122,8 @@ void Application::Run() {
       ui_render_system.Render(active_scene->registry(), win.width(),
                               win.height());
     }
+
+    util::Console::Get().Render();
 
     graphics::Renderer::Get().EndFrame();
     win.SwapBuffers();
