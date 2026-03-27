@@ -1,5 +1,3 @@
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_animator.h>
 #include <engine/graphics/sprite_sheet.h>
@@ -8,9 +6,11 @@
 #include <engine/util/asset_manager.h>
 #include <engine/util/logger.h>
 
-class AnimatorDemoApp : public engine::Application {
+#include "../common/demo_utils.h"
+
+class AnimatorDemoApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     // Load a sprite sheet. We'll use card_back.png as a 2x2 grid.
     auto tex = engine::graphics::Texture::Load("card_back.png");
     if (tex) {
@@ -46,9 +46,7 @@ class AnimatorDemoApp : public engine::Application {
     once_animator_.Play("once");
   }
 
-  void OnShutdown() override {}
-
-  void OnUpdate(double delta_time_seconds) override {
+  void OnDemoUpdate(double delta_time_seconds) override {
     float dt = static_cast<float>(delta_time_seconds);
 
     // Input handling to restart oneshot
@@ -97,8 +95,5 @@ int main(void) {
   engine_config.asset_path = ENGINE_ASSETS_PATH;
   engine_config.window_height = 600;
   engine_config.window_width = 800;
-  engine::Engine::Init(engine_config);
-  AnimatorDemoApp app;
-  app.Run();
-  return 0;
+  return demos::common::DemoRunner::Run<AnimatorDemoApp>(engine_config);
 }

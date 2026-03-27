@@ -18,11 +18,6 @@ class MainMenuScene : public engine::Scene {
  public:
   MainMenuScene(const std::string& name) : engine::Scene(name) {}
 
-  void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-  }
-
   void OnUpdate(float dt) override {
     auto& input = engine::InputManager::Get();
     if (input.IsKeyPressed(engine::KeyCode::kEnter)) {

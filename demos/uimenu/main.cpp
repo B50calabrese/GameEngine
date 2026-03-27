@@ -1,12 +1,8 @@
-#include <iostream>
 #include <memory>
 
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/ecs/registry.h>
 #include <engine/graphics/graphics_components.h>
 #include <engine/graphics/renderer.h>
-#include <engine/graphics/text_renderer.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>
@@ -14,6 +10,8 @@
 #include <engine/ui/ui_components.h>
 #include <engine/ui/ui_systems.h>
 #include <engine/util/tween_manager.h>
+
+#include "../common/demo_utils.h"
 
 class MenuScene : public engine::Scene {
  public:
@@ -50,7 +48,7 @@ class MenuScene : public engine::Scene {
     registry().AddComponent(gold_counter_, gold_binding);
     registry().AddComponent(
         gold_counter_, engine::graphics::TextComponent{
-                           "Gold: 0", "arial", 1.0f, {1.0f, 1.0f, 0.0f, 1.0f}});
+                           "Gold: 0", "default", 1.0f, {1.0f, 1.0f, 0.0f, 1.0f}});
 
     // 4. Pause Button
     pause_button_ = registry().CreateEntity();
@@ -85,7 +83,7 @@ class MenuScene : public engine::Scene {
     registry().AddComponent(btn_text, bt_trans);
     registry().AddComponent(
         btn_text, engine::graphics::TextComponent{
-                      "PAUSE", "arial", 0.8f, {1.0f, 1.0f, 1.0f, 1.0f}});
+                      "PAUSE", "default", 0.8f, {1.0f, 1.0f, 1.0f, 1.0f}});
     engine::ui::UIHierarchy bt_hier;
     bt_hier.parent = pause_button_;
     registry().AddComponent(btn_text, bt_hier);
@@ -109,7 +107,7 @@ class MenuScene : public engine::Scene {
     registry().AddComponent(menu_text, mt_trans);
     registry().AddComponent(
         menu_text, engine::graphics::TextComponent{
-                       "PAUSED", "arial", 1.5f, {1.0f, 1.0f, 1.0f, 1.0f}});
+                       "PAUSED", "default", 1.5f, {1.0f, 1.0f, 1.0f, 1.0f}});
     engine::ui::UIHierarchy mt_hier;
     mt_hier.parent = menu_panel_;
     registry().AddComponent(menu_text, mt_hier);
@@ -118,14 +116,7 @@ class MenuScene : public engine::Scene {
         .children.push_back(menu_text);
   }
 
-  void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("arial", "arial.ttf", 24);
-  }
-
   void OnUpdate(float delta_time_seconds) override {
-    engine::util::TweenManager::Get().Update(delta_time_seconds);
-
     if (!engine::ActionManager::Get().IsConsumed()) {
       if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kW))
         player_pos_.y += 200.0f * delta_time_seconds;
@@ -156,11 +147,11 @@ class MenuScene : public engine::Scene {
     engine::graphics::Renderer::Get().DrawQuad(player_pos_, {32.0f, 32.0f},
                                                {0.0f, 1.0f, 0.0f, 1.0f});
     engine::graphics::Renderer::Get().DrawText(
-        "arial", "Use WASD to move, Space to get gold", {10.0f, 10.0f}, 0.0f,
+        "default", "Use WASD to move, Space to get gold", {10.0f, 10.0f}, 0.0f,
         0.7f, {1.0f, 1.0f, 1.0f, 1.0f});
     if (engine::ActionManager::Get().IsConsumed()) {
       engine::graphics::Renderer::Get().DrawText(
-          "arial", "INPUT CONSUMED BY UI", {300.0f, 550.0f}, 0.0f, 0.8f,
+          "default", "INPUT CONSUMED BY UI", {300.0f, 550.0f}, 0.0f, 0.8f,
           {1.0f, 0.0f, 0.0f, 1.0f});
     }
     engine::graphics::Renderer::Get().Flush();
@@ -194,14 +185,12 @@ class MenuScene : public engine::Scene {
   bool is_menu_open_ = false;
 };
 
-class MyApp : public engine::Application {
+class UiMenuApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     engine::SceneManager::Get().SetScene(
         std::make_unique<MenuScene>("UI Menu Demo"));
   }
-  void OnShutdown() override {}
-  void OnUpdate(double delta_time_seconds) override {}
 };
 
 int main(void) {
@@ -209,8 +198,5 @@ int main(void) {
   config.window_width = 800;
   config.window_height = 600;
   config.asset_path = ENGINE_ASSETS_PATH;
-  engine::Engine::Init(config);
-  MyApp app;
-  app.Run();
-  return 0;
+  return demos::common::DemoRunner::Run<UiMenuApp>(config);
 }

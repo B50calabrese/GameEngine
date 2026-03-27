@@ -17,10 +17,7 @@ class ResultScene : public engine::Scene {
               bool is_victory)
       : engine::Scene(name), message_(message), is_victory_(is_victory) {}
 
-  void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-  }
+  void OnAttach() override {}
 
   void OnUpdate(float dt) override {
     if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace)) {

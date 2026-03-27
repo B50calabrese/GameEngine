@@ -1,14 +1,14 @@
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/util/logger.h>
 
-class MyApp : public engine::Application {
+#include "../common/demo_utils.h"
+
+class MyApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override { LOG_INFO("Initializing Application"); }
+  void OnDemoInit() override { LOG_INFO("Initializing Application"); }
 
-  void OnShutdown() override { LOG_INFO("Shutting down Application"); }
+  void OnDemoShutdown() override { LOG_INFO("Shutting down Application"); }
 
-  void OnUpdate(double delta_time_seconds) override {
+  void OnDemoUpdate(double delta_time_seconds) override {
     this->total_time_ = this->total_time_ + delta_time_seconds;
     if (this->total_time_ >= 1.0) {
       LOG_INFO("1 second has passed in the application.");
@@ -24,9 +24,6 @@ class MyApp : public engine::Application {
  * @brief Demo showing the full end-to-end management of an application.
  */
 int main(void) {
-  engine::EngineConfig engine_config;
-  engine::Engine::Init(engine_config);
-  MyApp my_app;
-  my_app.Run();
-  return 0;
+  engine::EngineConfig config;
+  return demos::common::DemoRunner::Run<MyApp>(config);
 }

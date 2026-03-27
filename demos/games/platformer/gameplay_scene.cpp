@@ -18,8 +18,6 @@ GameplayScene::GameplayScene(const std::string& name, int level)
     : engine::Scene(name), level_(level) {}
 
 void GameplayScene::OnAttach() {
-  engine::graphics::TextRenderer::Get().Init();
-  engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
   LoadLevel(level_);
 }
 

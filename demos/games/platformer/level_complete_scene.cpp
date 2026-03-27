@@ -12,10 +12,7 @@ namespace platformer {
 LevelCompleteScene::LevelCompleteScene(const std::string& name, int level)
     : engine::Scene(name), level_(level) {}
 
-void LevelCompleteScene::OnAttach() {
-  engine::graphics::TextRenderer::Get().Init();
-  engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-}
+void LevelCompleteScene::OnAttach() {}
 
 void LevelCompleteScene::OnUpdate(float dt) {
   if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace) ||

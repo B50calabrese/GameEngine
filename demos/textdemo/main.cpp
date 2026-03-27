@@ -1,32 +1,30 @@
-#include <iostream>
-
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
+#include <engine/util/logger.h>
 #include <engine/graphics/text_renderer.h>
 
-class MyApp : public engine::Application {
+#include "../common/demo_utils.h"
+
+class MyApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
-    std::cout << "Initializing Application" << std::endl;
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("arial", "arial.ttf", 16);
+  void OnDemoInit() override {
+    LOG_INFO("Initializing Application");
+    // "default" font is already loaded by BaseDemoApp
   }
 
-  void OnShutdown() override {
-    std::cout << "Shutting down Application" << std::endl;
+  void OnDemoShutdown() override {
+    LOG_INFO("Shutting down Application");
   }
 
-  void OnUpdate(double delta_time_seconds) override {
+  void OnDemoUpdate(double delta_time_seconds) override {
     engine::graphics::TextRenderer::Get().DrawText(
-        "arial", "HELLO WORLD!", glm::vec2(50.0f), /*rotation=*/0.0f,
+        "default", "HELLO WORLD!", glm::vec2(50.0f), /*rotation=*/0.0f,
         /*scale=*/1.0f, glm::vec4(1.0f));
 
     engine::graphics::TextRenderer::Get().DrawText(
-        "arial", "I am rotated!", glm::vec2(100.0f), /*rotation=*/45.0f,
+        "default", "I am rotated!", glm::vec2(100.0f), /*rotation=*/45.0f,
         /*scale=*/1.0f, glm::vec4(1.0f));
 
     engine::graphics::TextRenderer::Get().DrawText(
-        "arial", "I am rotated and scaled!", glm::vec2(200.0f),
+        "default", "I am rotated and scaled!", glm::vec2(200.0f),
         /*rotation=*/45.0f,
         /*scale=*/3.0f, glm::vec4(1.0f));
   }
@@ -40,8 +38,5 @@ class MyApp : public engine::Application {
 int main(void) {
   engine::EngineConfig engine_config;
   engine_config.asset_path = ENGINE_ASSETS_PATH;
-  engine::Engine::Init(engine_config);
-  MyApp my_app;
-  my_app.Run();
-  return 0;
+  return demos::common::DemoRunner::Run<MyApp>(engine_config);
 }

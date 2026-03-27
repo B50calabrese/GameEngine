@@ -1,15 +1,10 @@
-#include <iostream>
-
-#include <GLFW/glfw3.h>  // For raw key codes if needed, though we use KeyCode
-
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
-#include <engine/input/action_manager.h>
 #include <engine/util/logger.h>
 
-class ActionMappingApp : public engine::Application {
+#include "../common/demo_utils.h"
+
+class ActionMappingApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     auto& am = engine::ActionManager::Get();
     am.BindAction("MoveRight", engine::KeyCode::kD);
     am.BindAction("MoveRight", engine::KeyCode::kRight);
@@ -20,14 +15,12 @@ class ActionMappingApp : public engine::Application {
     LOG_INFO("Press 'Space' to Jump.");
   }
 
-  void OnShutdown() override {}
-
-  void OnUpdate(double delta_time_seconds) override {
+  void OnDemoUpdate(double delta_time_seconds) override {
     auto& am = engine::ActionManager::Get();
 
     if (am.IsOngoing("MoveRight")) {
       object_pos_x_ += move_speed_ * static_cast<float>(delta_time_seconds);
-      LOG_INFO("Moving Right... Position: %f", object_pos_x_);
+      LOG_INFO("Moving Right... Position: {}", object_pos_x_);
     }
 
     if (am.IsStarted("Jump")) {
@@ -51,10 +44,5 @@ int main(void) {
   engine_config.window_width = 800;
   engine_config.window_title = "Action Mapping Demo";
 
-  engine::Engine::Init(engine_config);
-
-  ActionMappingApp app;
-  app.Run();
-
-  return 0;
+  return demos::common::DemoRunner::Run<ActionMappingApp>(engine_config);
 }

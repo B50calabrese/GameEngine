@@ -1,11 +1,8 @@
 #include <algorithm>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/core/transform.h>
 #include <engine/ecs/registry.h>
 #include <engine/graphics/graphics_components.h>
@@ -24,6 +21,7 @@
 #include <engine/util/easing.h>
 #include <engine/util/tween_manager.h>
 
+#include "../../common/demo_utils.h"
 #include "../../common/menu_scene.h"
 
 // --- Components ---
@@ -48,9 +46,6 @@ class GameplayScene : public engine::Scene {
   GameplayScene(const std::string& name) : engine::Scene(name) {}
 
   void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-
     ResetGame();
   }
 
@@ -137,8 +132,6 @@ class GameplayScene : public engine::Scene {
   }
 
   void OnUpdate(float dt) override {
-    engine::util::TweenManager::Get().Update(dt);
-
     if (is_game_over_) {
       if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace)) {
         is_game_over_ = false;
@@ -289,9 +282,9 @@ class GameplayScene : public engine::Scene {
   float shake_time_ = 0.0f;
 };
 
-class BreakoutApp : public engine::Application {
+class BreakoutApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     std::vector<demos::common::BaseMenuScene::MenuItem> items = {
         {"Start Game",
          []() {
@@ -302,10 +295,6 @@ class BreakoutApp : public engine::Application {
     engine::SceneManager::Get().SetScene(
         std::make_unique<demos::common::BaseMenuScene>("BREAKOUT DEMO", items));
   }
-  void OnShutdown() override {}
-  void OnUpdate(double dt) override {
-    // Global updates if any
-  }
 };
 
 int main(void) {
@@ -313,8 +302,5 @@ int main(void) {
   config.window_width = 800;
   config.window_height = 600;
   config.asset_path = ENGINE_ASSETS_PATH;
-  engine::Engine::Init(config);
-  BreakoutApp app;
-  app.Run();
-  return 0;
+  return demos::common::DemoRunner::Run<BreakoutApp>(config);
 }

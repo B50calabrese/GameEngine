@@ -1,10 +1,10 @@
 #include <vector>
 
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>
 #include <engine/util/logger.h>
 #include <engine/util/tween_manager.h>
+
+#include "../common/demo_utils.h"
 
 struct DemoSquare {
   glm::vec2 pos;
@@ -13,9 +13,9 @@ struct DemoSquare {
   std::string name;
 };
 
-class TweenDemoApp : public engine::Application {
+class TweenDemoApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     LOG_INFO("TweenDemoApp Init");
 
     // 1. Moving Square with OutBounce
@@ -107,12 +107,9 @@ class TweenDemoApp : public engine::Application {
         .Play();
   }
 
-  void OnShutdown() override { engine::util::TweenManager::Get().Clear(); }
+  void OnDemoShutdown() override { engine::util::TweenManager::Get().Clear(); }
 
-  void OnUpdate(double delta_time_seconds) override {
-    engine::util::TweenManager::Get().Update(
-        static_cast<float>(delta_time_seconds));
-
+  void OnDemoUpdate(double delta_time_seconds) override {
     for (const auto& square : squares_) {
       engine::graphics::Renderer::Get().DrawQuad(square.pos, {50.0f, 50.0f},
                                                  square.color, square.rotation);
@@ -127,11 +124,6 @@ int main() {
   engine::EngineConfig config;
   config.window_width = 800;
   config.window_height = 600;
-  // We don't really need assets for this demo but let's set it.
-  config.asset_path = "./";
-
-  engine::Engine::Init(config);
-  TweenDemoApp app;
-  app.Run();
-  return 0;
+  config.asset_path = ENGINE_ASSETS_PATH;
+  return demos::common::DemoRunner::Run<TweenDemoApp>(config);
 }

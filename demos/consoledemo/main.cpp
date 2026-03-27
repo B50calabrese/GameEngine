@@ -1,40 +1,33 @@
-#include <iostream>
-
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
-#include <engine/graphics/text_renderer.h>
 #include <engine/util/console.h>
 #include <engine/util/logger.h>
 
-using namespace engine;
+#include "../common/demo_utils.h"
 
-class ConsoleDemo : public Application {
+class ConsoleDemo : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
+  void OnDemoInit() override {
     LOG_INFO("Console Demo Initialized");
 
-    util::Console::Get().RegisterCommand(
+    engine::util::Console::Get().RegisterCommand(
         "set_gold", [](const std::vector<std::string>& args) {
           if (args.empty()) {
-            util::Console::Get().Log("Usage: set_gold <amount>");
+            engine::util::Console::Get().Log("Usage: set_gold <amount>");
             return;
           }
           int amount = std::stoi(args[0]);
-          util::Console::Get().Log("Gold set to " + std::to_string(amount));
+          engine::util::Console::Get().Log("Gold set to " + std::to_string(amount));
         });
 
-    util::Console::Get().RegisterCommand(
+    engine::util::Console::Get().RegisterCommand(
         "spawn_enemy", [](const std::vector<std::string>& args) {
           std::string type = args.empty() ? "grunt" : args[0];
-          util::Console::Get().Log("Spawned enemy of type: " + type);
+          engine::util::Console::Get().Log("Spawned enemy of type: " + type);
         });
   }
 
-  void OnShutdown() override { LOG_INFO("Console Demo Shutdown"); }
+  void OnDemoShutdown() override { LOG_INFO("Console Demo Shutdown"); }
 
-  void OnUpdate(double dt) override {
+  void OnDemoUpdate(double dt) override {
     // This is skipped when console is paused
     static float timer = 0.0f;
     timer += (float)dt;
@@ -46,16 +39,11 @@ class ConsoleDemo : public Application {
 };
 
 int main() {
-  EngineConfig config;
+  engine::EngineConfig config;
   config.window_title = "Console Demo";
   config.window_width = 800;
   config.window_height = 600;
   config.asset_path = ENGINE_ASSETS_PATH;
 
-  Engine::Init(config);
-
-  ConsoleDemo app;
-  app.Run();
-
-  return 0;
+  return demos::common::DemoRunner::Run<ConsoleDemo>(config);
 }

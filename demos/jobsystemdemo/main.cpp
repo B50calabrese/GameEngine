@@ -3,13 +3,12 @@
 
 #include <glm/glm.hpp>
 
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/core/job_system.h>
-#include <engine/graphics/camera.h>
 #include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
 #include <engine/util/logger.h>
+
+#include "../common/demo_utils.h"
 
 struct Particle {
   glm::vec2 position;
@@ -17,39 +16,37 @@ struct Particle {
   glm::vec4 color;
 };
 
-class JobSystemDemo : public engine::Application {
+class JobSystemDemo : public demos::common::BaseDemoApp {
  public:
-  JobSystemDemo() {}
-
-  void OnInit() override {
+  void OnDemoInit() override {
     LOG_INFO("Initializing Job System Demo");
     ResetParticles(50000);
   }
 
-  void OnShutdown() override { LOG_INFO("Shutting down Job System Demo"); }
+  void OnDemoShutdown() override { LOG_INFO("Shutting down Job System Demo"); }
 
-  void OnUpdate(double delta_time_seconds) override {
+  void OnDemoUpdate(double delta_time_seconds) override {
     float delta_time = static_cast<float>(delta_time_seconds);
 
     // Handle input to increase/decrease particles
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kUp)) {
+    if (input_manager().IsKeyPressed(engine::KeyCode::kUp)) {
       ResetParticles(particles_.size() + 5000);
     }
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kDown)) {
+    if (input_manager().IsKeyPressed(engine::KeyCode::kDown)) {
       if (particles_.size() > 5000) {
         ResetParticles(particles_.size() - 5000);
       }
     }
 
     // Handle input to increase/decrease threads used for calculations
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kRight)) {
+    if (input_manager().IsKeyPressed(engine::KeyCode::kRight)) {
       num_threads_++;
-      LOG_INFO("Using %d threads for simulation", num_threads_);
+      LOG_INFO("Using {} threads for simulation", num_threads_);
     }
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kLeft)) {
+    if (input_manager().IsKeyPressed(engine::KeyCode::kLeft)) {
       if (num_threads_ > 1) {
         num_threads_--;
-        LOG_INFO("Using %d threads for simulation", num_threads_);
+        LOG_INFO("Using {} threads for simulation", num_threads_);
       }
     }
 
@@ -110,7 +107,7 @@ class JobSystemDemo : public engine::Application {
                             {vel(gen), vel(gen)},
                             {color(gen), color(gen), color(gen), 1.0f}});
     }
-    LOG_INFO("Simulating %zu particles", count);
+    LOG_INFO("Simulating {} particles", count);
   }
 
   std::vector<Particle> particles_;
@@ -119,9 +116,5 @@ class JobSystemDemo : public engine::Application {
 
 int main() {
   engine::EngineConfig engine_config;
-  engine::Engine::Init(engine_config);
-  JobSystemDemo demo;
-  demo.Run();
-  engine::Engine::Shutdown();
-  return 0;
+  return demos::common::DemoRunner::Run<JobSystemDemo>(engine_config);
 }
