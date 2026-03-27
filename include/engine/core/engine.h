@@ -46,6 +46,8 @@ struct EngineConfig {
   std::string asset_path = "";
   /** @brief Whether to enable Lua script hot reloading. */
   bool hot_reload_enabled = false;
+  /** @brief The key used to toggle the developer console. */
+  KeyCode console_toggle_key = KeyCode::kTilde;
 };
 
 /**

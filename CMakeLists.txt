@@ -59,6 +59,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/util/scripting/script_manager.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/script_system.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/ecs_bindings.cpp"
+    "${ENGINE_ROOT}/src/engine/util/console.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
 )
 
@@ -148,4 +149,5 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/luademo)
     add_subdirectory(demos/common)
     add_subdirectory(demos/games)
+    add_subdirectory(demos/consoledemo)
 endif()

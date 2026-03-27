@@ -25,15 +25,15 @@
 #include <GLFW/glfw3.h>
 // clang-format on
 
+#include <cstdlib>
 #include <memory>
 
 #include <engine/core/job_system.h>
 #include <engine/core/window.h>
 #include <engine/graphics/renderer.h>
+#include <engine/util/console.h>
 #include <engine/util/logger.h>
 #include <engine/util/scripting/script_manager.h>
-
-#include <cstdlib>
 
 namespace engine {
 namespace {
@@ -74,6 +74,9 @@ void Engine::Init(const EngineConfig& engine_config) {
   }
   util::ScriptManager::Get().set_hot_reload_enabled(hot_reload);
   util::ScriptManager::Get().set_asset_path(engine_config.asset_path);
+
+  // Configure console
+  util::Console::Get().SetToggleKey(engine_config.console_toggle_key);
 }
 
 void Engine::Shutdown() {

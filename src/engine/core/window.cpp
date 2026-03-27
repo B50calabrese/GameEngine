@@ -84,6 +84,12 @@ void Window::SetupCallbacks() {
       internal_window_, [](GLFWwindow* window, double xpos, double ypos) {
         InputManager::Get().HandleCursorPosition(xpos, ypos);
       });
+
+  // 4. GLFW Char Callback
+  glfwSetCharCallback(internal_window_,
+                      [](GLFWwindow* window, unsigned int codepoint) {
+                        InputManager::Get().HandleChar(codepoint);
+                      });
 }
 
 }  // namespace engine
