@@ -25,6 +25,7 @@
 #include <string>
 
 #include <engine/core/window.h>
+#include <engine/input/input_manager.h>
 
 /**
  * @namespace engine

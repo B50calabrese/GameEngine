@@ -7,6 +7,7 @@
 #define INCLUDE_ENGINE_INPUT_INPUT_MANAGER_H_
 
 #include <map>
+#include <string>
 
 #include <glm/glm.hpp>
 
