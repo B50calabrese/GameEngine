@@ -83,6 +83,12 @@ void Console::Update() {
     }
   }
 
+  // Handle Escape (Close console)
+  if (input.IsKeyPressed(KeyCode::kEscape)) {
+    Toggle();
+    return;
+  }
+
   // Handle character input
   const std::string& text = input.text_input();
   for (char c : text) {

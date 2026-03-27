@@ -96,9 +96,11 @@ void Application::Run() {
         ui::UISyncSystem::Update(reg);
         ui::UIInputSystem::Update(reg);
         ui::UILayoutSystem::Update(reg, win.width(), win.height());
-
-        this->OnUpdate(delta_time);
       }
+    }
+
+    if (!util::Console::Get().IsPaused()) {
+      this->OnUpdate(delta_time);
     }
 
     SceneManager::Get().RenderActiveScene();
@@ -125,6 +127,7 @@ void Application::Run() {
 
     util::Console::Get().Render();
 
+    graphics::RenderQueue::Default().Flush();
     graphics::Renderer::Get().EndFrame();
     win.SwapBuffers();
   }
