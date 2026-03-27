@@ -2,6 +2,7 @@
 
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
+#include <engine/graphics/text_renderer.h>
 #include <engine/util/console.h>
 #include <engine/util/logger.h>
 
@@ -10,6 +11,8 @@ using namespace engine;
 class ConsoleDemo : public Application {
  public:
   void OnInit() override {
+    engine::graphics::TextRenderer::Get().Init();
+    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
     LOG_INFO("Console Demo Initialized");
 
     util::Console::Get().RegisterCommand(
@@ -47,6 +50,7 @@ int main() {
   config.window_title = "Console Demo";
   config.window_width = 800;
   config.window_height = 600;
+  config.asset_path = ENGINE_ASSETS_PATH;
 
   Engine::Init(config);
 
