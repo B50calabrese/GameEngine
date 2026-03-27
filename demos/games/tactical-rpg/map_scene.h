@@ -26,9 +26,6 @@ class MapScene : public engine::Scene {
   }
 
   void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-
     next_node_ids_.clear();
     for (int conn : map_[current_node_id_]->GetConnections()) {
       next_node_ids_.push_back(conn);

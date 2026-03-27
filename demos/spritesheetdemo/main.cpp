@@ -1,13 +1,13 @@
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_sheet.h>
 #include <engine/graphics/texture.h>
 #include <engine/util/asset_manager.h>
 
-class SpriteSheetApp : public engine::Application {
+#include "../common/demo_utils.h"
+
+class SpriteSheetApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     // Let's assume card_back.png is a 2x2 sprite sheet for demonstration.
     // The actual image is probably just one card, but we can treat it as a
     // sheet. We'll use the AssetManager to load it with the new format.
@@ -27,9 +27,7 @@ class SpriteSheetApp : public engine::Application {
     time_ = 0.0;
   }
 
-  void OnShutdown() override {}
-
-  void OnUpdate(double delta_time_seconds) override {
+  void OnDemoUpdate(double delta_time_seconds) override {
     time_ += delta_time_seconds;
 
     if (sprite_sheet_) {
@@ -65,8 +63,5 @@ int main(void) {
   engine_config.asset_path = ENGINE_ASSETS_PATH;
   engine_config.window_height = 600;
   engine_config.window_width = 800;
-  engine::Engine::Init(engine_config);
-  SpriteSheetApp app;
-  app.Run();
-  return 0;
+  return demos::common::DemoRunner::Run<SpriteSheetApp>(engine_config);
 }

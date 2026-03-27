@@ -13,10 +13,7 @@ namespace platformer {
 
 MenuScene::MenuScene(const std::string& name) : engine::Scene(name) {}
 
-void MenuScene::OnAttach() {
-  engine::graphics::TextRenderer::Get().Init();
-  engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-}
+void MenuScene::OnAttach() {}
 
 void MenuScene::OnUpdate(float dt) {
   if (show_controls_) {

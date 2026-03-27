@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vector>
 
 // clang-format off
@@ -6,8 +5,6 @@
 #include <GLFW/glfw3.h>
 // clang-format on
 
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/core/transform.h>
 #include <engine/ecs/registry.h>
 #include <engine/graphics/graphics_components.h>
@@ -16,6 +13,9 @@
 #include <engine/graphics/renderer.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
+#include <engine/util/logger.h>
+
+#include "../common/demo_utils.h"
 
 // Forward declaration of the system we created
 namespace engine::graphics {
@@ -23,9 +23,9 @@ void UpdateLightingSystem(engine::ecs::Registry* registry,
                           engine::graphics::LightingEffect* lighting_effect);
 }
 
-class LightingDemo : public engine::Application {
+class LightingDemo : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     // 1. Setup Post-Processing with Lighting
     auto lighting = std::make_unique<engine::graphics::LightingEffect>();
     lighting_ptr_ = lighting.get();
@@ -103,21 +103,17 @@ class LightingDemo : public engine::Application {
                                             engine::KeyCode::kT);
     engine::ActionManager::Get().BindAction("ToggleMode", engine::KeyCode::kM);
 
-    std::cout << "2D Lighting Demo Initialized" << std::endl;
-    std::cout << "Move mouse to move the light" << std::endl;
-    std::cout
-        << "Press 'T' to toggle shadows (by clearing occluders in this demo)"
-        << std::endl;
-    std::cout
-        << "Press 'M' to toggle between Additive and Multiplicative blending"
-        << std::endl;
+    LOG_INFO("2D Lighting Demo Initialized");
+    LOG_INFO("Move mouse to move the light");
+    LOG_INFO("Press 'T' to toggle shadows (by clearing occluders in this demo)");
+    LOG_INFO("Press 'M' to toggle between Additive and Multiplicative blending");
   }
 
-  void OnShutdown() override {
-    std::cout << "2D Lighting Demo Shutting Down" << std::endl;
+  void OnDemoShutdown() override {
+    LOG_INFO("2D Lighting Demo Shutting Down");
   }
 
-  void OnUpdate(double delta_time) override {
+  void OnDemoUpdate(double delta_time) override {
     // Update light position to mouse (mocking movement for headless capture)
     auto& transform =
         registry_.GetComponent<engine::core::TransformComponent>(light_entity_);
@@ -141,7 +137,7 @@ class LightingDemo : public engine::Application {
     }
 
     // Cycle shadow type
-    if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kB)) {
+    if (input_manager().IsKeyPressed(engine::KeyCode::kB)) {
       shadow_blur_ = (shadow_blur_ == 0.0f) ? 0.05f : 0.0f;
       lighting_ptr_->SetShadowBlur(shadow_blur_);
     }
@@ -196,8 +192,5 @@ int main() {
   engine::EngineConfig config;
   config.window_width = 800;
   config.window_height = 600;
-  engine::Engine::Init(config);
-  LightingDemo demo;
-  demo.Run();
-  return 0;
+  return demos::common::DemoRunner::Run<LightingDemo>(config);
 }

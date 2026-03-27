@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/ecs/registry.h>
 #include <engine/graphics/graphics_components.h>
 #include <engine/graphics/renderer.h>
@@ -18,6 +16,7 @@
 #include <engine/ui/ui_systems.h>
 #include <engine/util/tween_manager.h>
 
+#include "../../common/demo_utils.h"
 #include "../../common/menu_scene.h"
 #include "game_state.h"
 #include "map_generator.h"
@@ -31,41 +30,6 @@ class LevelUpOverlay;
 const float TILE_SIZE = 40.0f;
 const int MAP_WIDTH = 20;
 const int MAP_HEIGHT = 15;
-
-// --- Helper Functions ---
-void DrawLegend(float x, float y) {
-  float size = 20.0f;
-  float spacing = 25.0f;
-
-  engine::graphics::Renderer::Get().DrawQuad({x, y}, {size, size},
-                                             {0.0f, 1.0f, 0.0f, 1.0f});
-  engine::graphics::Renderer::Get().DrawText(
-      "default", "Player", {x + size + 5, y}, 0.0f, 0.5f, {1, 1, 1, 1});
-
-  engine::graphics::Renderer::Get().DrawQuad({x, y - spacing}, {size, size},
-                                             {0.3f, 0.3f, 0.3f, 1.0f});
-  engine::graphics::Renderer::Get().DrawText("default", "Floor",
-                                             {x + size + 5, y - spacing}, 0.0f,
-                                             0.5f, {1, 1, 1, 1});
-
-  engine::graphics::Renderer::Get().DrawQuad({x, y - 2 * spacing}, {size, size},
-                                             {0.1f, 0.1f, 0.1f, 1.0f});
-  engine::graphics::Renderer::Get().DrawText("default", "Wall",
-                                             {x + size + 5, y - 2 * spacing},
-                                             0.0f, 0.5f, {1, 1, 1, 1});
-
-  engine::graphics::Renderer::Get().DrawQuad({x, y - 3 * spacing}, {size, size},
-                                             {1.0f, 0.8f, 0.0f, 1.0f});
-  engine::graphics::Renderer::Get().DrawText("default", "Chest",
-                                             {x + size + 5, y - 3 * spacing},
-                                             0.0f, 0.5f, {1, 1, 1, 1});
-
-  engine::graphics::Renderer::Get().DrawQuad({x, y - 4 * spacing}, {size, size},
-                                             {0.0f, 0.5f, 1.0f, 1.0f});
-  engine::graphics::Renderer::Get().DrawText("default", "Stairs",
-                                             {x + size + 5, y - 4 * spacing},
-                                             0.0f, 0.5f, {1, 1, 1, 1});
-}
 
 class MapScene : public engine::Scene {
  public:
@@ -85,10 +49,6 @@ class MapScene : public engine::Scene {
 class VictoryOverlay : public engine::Scene {
  public:
   VictoryOverlay() : engine::Scene("VictoryOverlay") {}
-  void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-  }
   void OnUpdate(float dt) override {
     if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace)) {
       engine::SceneManager::Get().SetScene(
@@ -131,8 +91,6 @@ class BattleScene : public engine::Scene {
   }
 
   void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
     RefreshSelection();
   }
 
@@ -270,11 +228,6 @@ class LevelUpOverlay : public engine::Scene {
   LevelUpOverlay() : engine::Scene("LevelUpOverlay") {
     pending_attacks_ = GameState::Get().GetRandomAttacks(3);
     options_count_ = 3;  // Initially ATK, DEF, HP
-  }
-
-  void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
   }
 
   void OnUpdate(float dt) override {
@@ -463,9 +416,9 @@ void MapScene::OnRender() {
   engine::graphics::Renderer::Get().Flush();
 }
 
-class RpgApp : public engine::Application {
+class RpgApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     std::vector<demos::common::BaseMenuScene::MenuItem> items = {
         {"New Run",
          []() {
@@ -478,10 +431,6 @@ class RpgApp : public engine::Application {
         std::make_unique<demos::common::BaseMenuScene>("RPG ROGUELIKE DEMO",
                                                        items));
   }
-  void OnShutdown() override {}
-  void OnUpdate(double dt) override {
-    engine::util::TweenManager::Get().Update(static_cast<float>(dt));
-  }
 };
 
 int main(void) {
@@ -489,8 +438,5 @@ int main(void) {
   config.window_width = 800;
   config.window_height = 600;
   config.asset_path = ENGINE_ASSETS_PATH;
-  engine::Engine::Init(config);
-  RpgApp app;
-  app.Run();
-  return 0;
+  return demos::common::DemoRunner::Run<RpgApp>(config);
 }

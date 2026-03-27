@@ -118,7 +118,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     # Helper function to add a demo executable
     function(add_engine_demo DEMO_NAME SOURCE_FILES)
         add_executable(${DEMO_NAME} ${SOURCE_FILES})
-        target_link_libraries(${DEMO_NAME} PRIVATE GameEngine)
+        target_link_libraries(${DEMO_NAME} PRIVATE GameEngine DemosCommon)
 
         # All demos use the shared assets directory
         target_compile_definitions(${DEMO_NAME} PRIVATE ENGINE_ASSETS_PATH="${COMMON_ASSETS_BUILD_DIR}/")

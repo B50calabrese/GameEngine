@@ -1,23 +1,22 @@
-#include <iostream>
 #include <memory>
 #include <random>
 #include <vector>
 
 #include <glm/glm.hpp>
 
-#include <engine/core/application.h>
-#include <engine/core/engine.h>
 #include <engine/core/transform.h>
 #include <engine/ecs/ai_components.h>
 #include <engine/ecs/ai_system.h>
 #include <engine/ecs/registry.h>
 #include <engine/graphics/renderer.h>
-#include <engine/graphics/text_renderer.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/util/behavior_tree.h>
 #include <engine/util/fsm.h>
+#include <engine/util/logger.h>
+
+#include "../common/demo_utils.h"
 
 // --- Components ---
 struct NPCComponent {
@@ -33,9 +32,6 @@ class AIDemoScene : public engine::Scene {
   AIDemoScene() : engine::Scene("AIDemo") {}
 
   void OnAttach() override {
-    engine::graphics::TextRenderer::Get().Init();
-    engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-
     // Create NPC entity
     npc_ = registry_.CreateEntity();
     registry_.AddComponent<engine::core::TransformComponent>(
@@ -226,13 +222,11 @@ class AIDemoScene : public engine::Scene {
   engine::ecs::EntityID npc_;
 };
 
-class AIDemoApp : public engine::Application {
+class AIDemoApp : public demos::common::BaseDemoApp {
  public:
-  void OnInit() override {
+  void OnDemoInit() override {
     engine::SceneManager::Get().SetScene(std::make_unique<AIDemoScene>());
   }
-  void OnShutdown() override {}
-  void OnUpdate(double dt) override {}
 };
 
 int main() {
@@ -240,8 +234,5 @@ int main() {
   config.window_width = 800;
   config.window_height = 600;
   config.asset_path = ENGINE_ASSETS_PATH;
-  engine::Engine::Init(config);
-  AIDemoApp app;
-  app.Run();
-  return 0;
+  return demos::common::DemoRunner::Run<AIDemoApp>(config);
 }

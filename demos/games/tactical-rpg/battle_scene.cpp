@@ -22,9 +22,6 @@
 namespace tactical_rpg {
 
 void BattleScene::OnAttach() {
-  engine::graphics::TextRenderer::Get().Init();
-  engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
-
   ActionRegistry::Get().ClearCache();
   BattleGrid::Setup(registry());
   SetupEnemies();
