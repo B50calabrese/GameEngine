@@ -6,9 +6,12 @@
 #include <engine/graphics/graphics_components.h>
 #include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/sprite_sheet.h>
+#include <engine/graphics/texture.h>
 #include <engine/input/input_manager.h>
 #include <engine/ui/ui_components.h>
 #include <engine/ui/ui_systems.h>
+#include <engine/util/asset_manager.h>
 
 namespace engine::ui {
 
@@ -173,10 +176,23 @@ void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
       graphics::RenderCommand cmd;
       cmd.position = transform.global_pos;
       cmd.size = transform.size;
-      // UI system doesn't support named textures/sheets in RenderQueue yet,
-      // let's stick to Quad if it's not a raw texture ID
       cmd.color = sprite.tint;
       cmd.z_order = (float)transform.z_index;
+
+      if (!sprite.sprite_sheet_name.empty()) {
+        auto sheet =
+            util::AssetManager<graphics::SpriteSheet>::Get(sprite.sprite_sheet_name);
+        if (sheet && sheet->texture()) {
+          cmd.texture_id = sheet->texture()->renderer_id();
+          sheet->GetUVs(sprite.sprite_index, &cmd.uv_min, &cmd.uv_max);
+        }
+      } else if (!sprite.texture_name.empty()) {
+        auto tex = util::AssetManager<graphics::Texture>::Get(sprite.texture_name);
+        if (tex) {
+          cmd.texture_id = tex->renderer_id();
+        }
+      }
+
       ui_render_queue_.Submit(cmd);
     }
   }
