@@ -1,5 +1,5 @@
-#include <engine/util/logger.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/util/logger.h>
 
 #include "../common/demo_utils.h"
 
@@ -10,9 +10,7 @@ class MyApp : public demos::common::BaseDemoApp {
     // "default" font is already loaded by BaseDemoApp
   }
 
-  void OnDemoShutdown() override {
-    LOG_INFO("Shutting down Application");
-  }
+  void OnDemoShutdown() override { LOG_INFO("Shutting down Application"); }
 
   void OnDemoUpdate(double delta_time_seconds) override {
     engine::graphics::TextRenderer::Get().DrawText(

@@ -3,16 +3,17 @@
 #include <string>
 #include <vector>
 
-#include <engine/core/transform.h>
+#include <engine/ecs/components/graphics_components.h>
+#include <engine/ecs/components/particle_emitter.h>
+#include <engine/ecs/components/physics_components.h>
+#include <engine/ecs/components/transform.h>
 #include <engine/ecs/registry.h>
-#include <engine/graphics/graphics_components.h>
-#include <engine/graphics/particle_system.h>
 #include <engine/graphics/post_processor.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/graphics/utils/particle_system.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
-#include <engine/physics/physics_components.h>
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/ui/ui_components.h>
@@ -45,9 +46,7 @@ class GameplayScene : public engine::Scene {
  public:
   GameplayScene(const std::string& name) : engine::Scene(name) {}
 
-  void OnAttach() override {
-    ResetGame();
-  }
+  void OnAttach() override { ResetGame(); }
 
   void ResetGame() {
     registry().Clear();
@@ -56,32 +55,32 @@ class GameplayScene : public engine::Scene {
 
     // Create Paddle
     paddle_ = registry().CreateEntity();
-    registry().AddComponent(paddle_, engine::core::TransformComponent{
+    registry().AddComponent(paddle_, engine::ecs::components::Transform{
                                          {400.0f, 550.0f}, {120.0f, 20.0f}});
-    registry().AddComponent(paddle_, engine::physics::VelocityComponent{});
+    registry().AddComponent(paddle_, engine::ecs::components::Velocity{});
     // Paddle is NOT static so it can move via input, but resolution might move
     // it. However, we set it as trigger to handle collision manually in this
     // demo to preserve bouncing logic.
     registry().AddComponent(
-        paddle_, engine::physics::ColliderComponent{
+        paddle_, engine::ecs::components::Collider{
                      {120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
     registry().AddComponent(paddle_, PaddleComponent{});
     registry().AddComponent(
-        paddle_, engine::graphics::QuadComponent{{0.0f, 0.8f, 1.0f, 1.0f}});
+        paddle_, engine::ecs::components::Quad{{0.0f, 0.8f, 1.0f, 1.0f}});
 
     // Create Ball
     ball_ = registry().CreateEntity();
-    registry().AddComponent(ball_, engine::core::TransformComponent{
+    registry().AddComponent(ball_, engine::ecs::components::Transform{
                                        {400.0f, 500.0f}, {20.0f, 20.0f}});
     registry().AddComponent(
-        ball_, engine::physics::VelocityComponent{{300.0f, -300.0f}});
+        ball_, engine::ecs::components::Velocity{{300.0f, -300.0f}});
     // Ball is also a trigger to handle its custom "bounce" resolution.
     registry().AddComponent(ball_,
-                            engine::physics::ColliderComponent{
+                            engine::ecs::components::Collider{
                                 {20.0f, 20.0f}, {-10.0f, -10.0f}, false, true});
     registry().AddComponent(ball_, BallComponent{});
     registry().AddComponent(
-        ball_, engine::graphics::QuadComponent{{1.0f, 1.0f, 0.0f, 1.0f}});
+        ball_, engine::ecs::components::Quad{{1.0f, 1.0f, 0.0f, 1.0f}});
 
     // Create Bricks
     float brick_width = 75.0f;
@@ -99,21 +98,21 @@ class GameplayScene : public engine::Scene {
                          start_y + r * (brick_height + padding)};
         glm::vec4 color = {0.2f + 0.15f * r, 0.8f - 0.15f * r, 0.5f, 1.0f};
         bricks_.push_back({brick, pos, {brick_width, brick_height}});
-        registry().AddComponent(brick, engine::core::TransformComponent{
+        registry().AddComponent(brick, engine::ecs::components::Transform{
                                            pos, {brick_width, brick_height}});
         // Bricks are static triggers
         registry().AddComponent(
-            brick, engine::physics::ColliderComponent{
+            brick, engine::ecs::components::Collider{
                        {brick_width, brick_height}, {0, 0}, true, true});
         registry().AddComponent(brick, BrickComponent{false});
-        registry().AddComponent(brick, engine::graphics::QuadComponent{color});
+        registry().AddComponent(brick, engine::ecs::components::Quad{color});
       }
     }
 
     // Particle Emitter
     emitter_entity_ = registry().CreateEntity();
     registry().AddComponent(emitter_entity_,
-                            engine::graphics::ParticleEmitterComponent{});
+                            engine::ecs::components::ParticleEmitter{});
 
     // UI
     score_label_ = registry().CreateEntity();
@@ -127,7 +126,7 @@ class GameplayScene : public engine::Scene {
     registry().AddComponent(score_label_, score_binding);
     registry().AddComponent(
         score_label_,
-        engine::graphics::TextComponent{
+        engine::ecs::components::Text{
             "Bricks Hit: 0", "default", 0.8f, {1.0f, 1.0f, 1.0f, 1.0f}});
   }
 
@@ -154,7 +153,7 @@ class GameplayScene : public engine::Scene {
 
   void UpdatePaddle(float dt) {
     auto& trans =
-        registry().GetComponent<engine::core::TransformComponent>(paddle_);
+        registry().GetComponent<engine::ecs::components::Transform>(paddle_);
     auto& paddle = registry().GetComponent<PaddleComponent>(paddle_);
     float move = 0.0f;
     if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kA)) {
@@ -178,9 +177,9 @@ class GameplayScene : public engine::Scene {
 
   void UpdateBall(float dt) {
     auto& trans =
-        registry().GetComponent<engine::core::TransformComponent>(ball_);
+        registry().GetComponent<engine::ecs::components::Transform>(ball_);
     auto& vel =
-        registry().GetComponent<engine::physics::VelocityComponent>(ball_);
+        registry().GetComponent<engine::ecs::components::Velocity>(ball_);
     auto& ball = registry().GetComponent<BallComponent>(ball_);
 
     // Wall collision (manual because window bounds aren't entities)
@@ -201,7 +200,7 @@ class GameplayScene : public engine::Scene {
 
     // Paddle collision
     auto& p_trans =
-        registry().GetComponent<engine::core::TransformComponent>(paddle_);
+        registry().GetComponent<engine::ecs::components::Transform>(paddle_);
     if (engine::util::CheckAABB(
             trans.position - glm::vec2(ball.radius), glm::vec2(ball.radius * 2),
             p_trans.position - p_trans.scale / 2.0f, p_trans.scale)) {
@@ -227,7 +226,7 @@ class GameplayScene : public engine::Scene {
           vel.velocity.y *= -1;
           bricks_hit_++;
           auto& color = registry()
-                            .GetComponent<engine::graphics::QuadComponent>(b.id)
+                            .GetComponent<engine::ecs::components::Quad>(b.id)
                             .color;
           EmitParticles(b.pos + b.size / 2.0f, color);
           registry().DeleteEntity(b.id);
@@ -244,7 +243,7 @@ class GameplayScene : public engine::Scene {
 
   void EmitParticles(glm::vec2 pos, glm::vec4 color) {
     auto& emitter =
-        registry().GetComponent<engine::graphics::ParticleEmitterComponent>(
+        registry().GetComponent<engine::ecs::components::ParticleEmitter>(
             emitter_entity_);
     emitter.system.Emit(pos, 10, {0, 0}, {50, 50}, color, 0.5f);
   }

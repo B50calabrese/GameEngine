@@ -3,7 +3,7 @@
  * @brief Implementation of UI systems.
  */
 
-#include <engine/graphics/graphics_components.h>
+#include <engine/ecs/components/graphics_components.h>
 #include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_sheet.h>
@@ -76,13 +76,13 @@ void UILayoutSystem::UpdateBranch(ecs::Registry& reg, ecs::EntityID entity,
 }
 
 void UISyncSystem::Update(ecs::Registry& reg) {
-  auto view = reg.GetView<UIBinding, graphics::TextComponent>();
+  auto view = reg.GetView<UIBinding, ecs::components::Text>();
   for (auto entity : view) {
     if (!reg.IsAlive(entity) || !reg.HasComponent<UIBinding>(entity) ||
-        !reg.HasComponent<graphics::TextComponent>(entity))
+        !reg.HasComponent<ecs::components::Text>(entity))
       continue;
     auto& binding = reg.GetComponent<UIBinding>(entity);
-    auto& text = reg.GetComponent<graphics::TextComponent>(entity);
+    auto& text = reg.GetComponent<ecs::components::Text>(entity);
     if (binding.get_text) {
       std::string current = binding.get_text();
       if (current != binding.last_value) {
@@ -154,16 +154,16 @@ void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
       continue;
     auto& transform = reg.GetComponent<UITransform>(entity);
 
-    if (reg.HasComponent<graphics::TextComponent>(entity)) {
-      auto& text = reg.GetComponent<graphics::TextComponent>(entity);
+    if (reg.HasComponent<ecs::components::Text>(entity)) {
+      auto& text = reg.GetComponent<ecs::components::Text>(entity);
       graphics::Renderer::Get().DrawText(text.font_name, text.content,
                                          transform.global_pos, 0.0f, text.scale,
                                          text.color);
     }
 
-    if (reg.HasComponent<graphics::QuadComponent>(entity)) {
-      auto& quad = reg.GetComponent<graphics::QuadComponent>(entity);
-      graphics::RenderCommand cmd;
+    if (reg.HasComponent<ecs::components::Quad>(entity)) {
+      auto& quad = reg.GetComponent<ecs::components::Quad>(entity);
+      graphics::utils::RenderCommand cmd;
       cmd.position = transform.global_pos;
       cmd.size = transform.size;
       cmd.color = quad.color;
@@ -171,23 +171,24 @@ void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
       ui_render_queue_.Submit(cmd);
     }
 
-    if (reg.HasComponent<graphics::SpriteComponent>(entity)) {
-      auto& sprite = reg.GetComponent<graphics::SpriteComponent>(entity);
-      graphics::RenderCommand cmd;
+    if (reg.HasComponent<ecs::components::Sprite>(entity)) {
+      auto& sprite = reg.GetComponent<ecs::components::Sprite>(entity);
+      graphics::utils::RenderCommand cmd;
       cmd.position = transform.global_pos;
       cmd.size = transform.size;
       cmd.color = sprite.tint;
       cmd.z_order = (float)transform.z_index;
 
       if (!sprite.sprite_sheet_name.empty()) {
-        auto sheet =
-            util::AssetManager<graphics::SpriteSheet>::Get(sprite.sprite_sheet_name);
+        auto sheet = util::AssetManager<graphics::SpriteSheet>::Get(
+            sprite.sprite_sheet_name);
         if (sheet && sheet->texture()) {
           cmd.texture_id = sheet->texture()->renderer_id();
           sheet->GetUVs(sprite.sprite_index, &cmd.uv_min, &cmd.uv_max);
         }
       } else if (!sprite.texture_name.empty()) {
-        auto tex = util::AssetManager<graphics::Texture>::Get(sprite.texture_name);
+        auto tex =
+            util::AssetManager<graphics::Texture>::Get(sprite.texture_name);
         if (tex) {
           cmd.texture_id = tex->renderer_id();
         }

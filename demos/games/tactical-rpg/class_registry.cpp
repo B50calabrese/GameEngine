@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include <engine/core/transform.h>
-#include <engine/graphics/graphics_components.h>
+#include <engine/ecs/components/graphics_components.h>
+#include <engine/ecs/components/transform.h>
 
 #include "action_registry.h"
 #include "components.h"
@@ -35,7 +35,8 @@ engine::ecs::EntityID ClassRegistry::CreateCharacter(
   Stats stats = def.base_stats;
   stats.current_hp = stats.max_hp;
   registry.AddComponent(entity, stats);
-  registry.AddComponent(entity, TurnStateComponent{stats.speed, false, false, 0, false});
+  registry.AddComponent(
+      entity, TurnStateComponent{stats.speed, false, false, 0, false});
 
   ActionListComponent action_list;
   for (const auto& action_name : def.base_actions) {
@@ -48,7 +49,7 @@ engine::ecs::EntityID ClassRegistry::CreateCharacter(
   registry.AddComponent(entity, action_list);
 
   // Engine components
-  registry.AddComponent(entity, ::engine::core::TransformComponent());
+  registry.AddComponent(entity, ::engine::ecs::components::Transform());
 
   return entity;
 }

@@ -14,7 +14,7 @@
 #include <vector>
 
 #include <engine/ecs/entity_manager.h>
-#include <engine/ecs/events.h>
+#include <engine/ecs/events/events.h>
 
 namespace engine::ecs {
 
@@ -44,13 +44,13 @@ class Registry {
   template <typename T>
   class EventDispatcher : public IEventDispatcher {
    public:
-    void Subscribe(IEventListener<T>* listener, bool one_shot) {
+    void Subscribe(events::IEventListener<T>* listener, bool one_shot) {
       listeners_.push_back({listener, one_shot, [listener](const void* event) {
                               listener->OnEvent(*static_cast<const T*>(event));
                             }});
     }
 
-    void Unsubscribe(IEventListener<T>* listener) {
+    void Unsubscribe(events::IEventListener<T>* listener) {
       listeners_.erase(std::remove_if(listeners_.begin(), listeners_.end(),
                                       [listener](const ListenerEntry& entry) {
                                         return entry.listener == listener;
@@ -97,7 +97,7 @@ class Registry {
    */
   EntityID CreateEntity() {
     EntityID entity = entity_manager_.CreateEntity();
-    Publish<EntityCreatedEvent>({entity, this});
+    Publish<events::EntityCreatedEvent>({entity, this});
     return entity;
   }
 
@@ -215,7 +215,7 @@ class Registry {
    * after one event.
    */
   template <typename T>
-  void Subscribe(IEventListener<T>* listener, bool one_shot = false) {
+  void Subscribe(events::IEventListener<T>* listener, bool one_shot = false) {
     GetDispatcher<T>()->Subscribe(listener, one_shot);
   }
 
@@ -224,7 +224,7 @@ class Registry {
    * @param listener The listener to unsubscribe.
    */
   template <typename T>
-  void Unsubscribe(IEventListener<T>* listener) {
+  void Unsubscribe(events::IEventListener<T>* listener) {
     GetDispatcher<T>()->Unsubscribe(listener);
   }
 
@@ -240,7 +240,7 @@ class Registry {
   }
 
   /**
-   * @brief Modifies a component and triggers a ComponentModifiedEvent.
+   * @brief Modifies a component and triggers a events::ComponentModifiedEvent.
    * @param entity The entity whose component to modify.
    * @param func A function that receives a reference to the component.
    */
@@ -249,7 +249,7 @@ class Registry {
     if (HasComponent<T>(entity)) {
       T& component = GetComponent<T>(entity);
       func(component);
-      Publish<ComponentModifiedEvent<T>>({entity, component, this});
+      Publish<events::ComponentModifiedEvent<T>>({entity, component, this});
     }
   }
 
@@ -302,7 +302,7 @@ class Registry {
 namespace engine::ecs {
 
 inline void Registry::DeleteEntity(EntityID entity) {
-  Publish<EntityDestroyedEvent>({entity, this});
+  Publish<events::EntityDestroyedEvent>({entity, this});
   for (auto& [type, storage] : storages_) {
     if (storage->Has(entity)) {
       storage->NotifyRemoved(entity, this);
@@ -336,13 +336,15 @@ ComponentStorage<T>* Registry::GetStorage() {
 template <typename T>
 void Registry::AddComponent(EntityID entity, T component) {
   GetStorage<T>()->Add(entity, component);
-  Publish<ComponentAddedEvent<T>>({entity, GetComponent<T>(entity), this});
+  Publish<events::ComponentAddedEvent<T>>(
+      {entity, GetComponent<T>(entity), this});
 }
 
 template <typename T>
 void Registry::RemoveComponent(EntityID entity) {
   if (HasComponent<T>(entity)) {
-    Publish<ComponentRemovedEvent<T>>({entity, GetComponent<T>(entity), this});
+    Publish<events::ComponentRemovedEvent<T>>(
+        {entity, GetComponent<T>(entity), this});
     GetStorage<T>()->Remove(entity);
   }
 }
@@ -360,7 +362,7 @@ bool Registry::HasComponent(EntityID entity) {
 template <typename T>
 void ComponentStorage<T>::NotifyRemoved(EntityID entity, Registry* registry) {
   if (Has(entity)) {
-    registry->Publish<ComponentRemovedEvent<T>>(
+    registry->Publish<events::ComponentRemovedEvent<T>>(
         {entity, Get(entity), registry});
   }
 }

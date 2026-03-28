@@ -40,7 +40,8 @@ class DemoRunner {
  public:
   /**
    * @brief Initializes the engine and runs the specified application.
-   * @tparam T The application class to run (must inherit from engine::Application).
+   * @tparam T The application class to run (must inherit from
+   * engine::Application).
    * @param config The engine configuration.
    * @return Exit code.
    */

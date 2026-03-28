@@ -3,10 +3,10 @@
  * @brief Implementation of the developer console.
  */
 
-#include <GLFW/glfw3.h>
-
 #include <algorithm>
 #include <sstream>
+
+#include <GLFW/glfw3.h>
 
 #include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>

@@ -26,8 +26,10 @@ class CombatRules {
     auto view = registry.GetView<GridPositionComponent, TurnStateComponent>();
     for (auto entity : view) {
       if (entity == character_entity) continue;
-      auto& other_grid_pos = registry.GetComponent<GridPositionComponent>(entity);
-      auto& other_turn_state = registry.GetComponent<TurnStateComponent>(entity);
+      auto& other_grid_pos =
+          registry.GetComponent<GridPositionComponent>(entity);
+      auto& other_turn_state =
+          registry.GetComponent<TurnStateComponent>(entity);
       if (!other_turn_state.is_downed && other_grid_pos.pos.x == x &&
           other_grid_pos.pos.y == y) {
         return false;

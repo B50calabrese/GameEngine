@@ -21,8 +21,6 @@ void BaseDemoApp::OnUpdate(double dt) {
   OnDemoUpdate(dt);
 }
 
-void BaseDemoApp::OnShutdown() {
-  OnDemoShutdown();
-}
+void BaseDemoApp::OnShutdown() { OnDemoShutdown(); }
 
 }  // namespace demos::common

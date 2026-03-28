@@ -3,8 +3,9 @@
 
 #include <vector>
 
-#include <engine/ecs/registry.h>
 #include <glm/glm.hpp>
+
+#include <engine/ecs/registry.h>
 
 #include "game_types.h"
 

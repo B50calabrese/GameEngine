@@ -1,8 +1,10 @@
 #ifndef DEMOS_GAMES_TACTICAL_RPG_COMPONENTS_GRID_COMPONENTS_H_
 #define DEMOS_GAMES_TACTICAL_RPG_COMPONENTS_GRID_COMPONENTS_H_
 
-#include <engine/ecs/entity_manager.h>
 #include <glm/glm.hpp>
+
+#include <engine/ecs/entity_manager.h>
+
 #include "../game_types.h"
 
 namespace tactical_rpg {

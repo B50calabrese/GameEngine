@@ -1,8 +1,8 @@
-#include <engine/core/transform.h>
-#include <engine/ecs/lua_data_component.h>
+#include <engine/ecs/components/graphics_components.h>
+#include <engine/ecs/components/lua_data_component.h>
+#include <engine/ecs/components/script_component.h>
+#include <engine/ecs/components/transform.h>
 #include <engine/ecs/registry.h>
-#include <engine/ecs/script_component.h>
-#include <engine/graphics/graphics_components.h>
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/util/logger.h>
@@ -19,18 +19,19 @@ class LuaDemoScene : public engine::Scene {
 
     // Create an entity controlled by Lua
     auto player = registry().CreateEntity();
+    registry().AddComponent(player, engine::ecs::components::Transform{
+                                        {400.0f, 300.0f}, {64.0f, 64.0f}});
+    registry().AddComponent(player,
+                            engine::ecs::components::Sprite{"player.png"});
     registry().AddComponent(
-        player, engine::core::TransformComponent{{400.0f, 300.0f}, {64.0f, 64.0f}});
-    registry().AddComponent(player, engine::graphics::SpriteComponent{"player.png"});
-    registry().AddComponent(
-        player,
-        engine::ecs::ScriptComponent{ENGINE_ASSETS_PATH "scripts/player_control.lua"});
+        player, engine::ecs::components::Script{ENGINE_ASSETS_PATH
+                                                "scripts/player_control.lua"});
 
     // Create a static entity
     auto wall = registry().CreateEntity();
-    registry().AddComponent(
-        wall, engine::core::TransformComponent{{200.0f, 200.0f}, {100.0f, 100.0f}});
-    registry().AddComponent(wall, engine::graphics::SpriteComponent{"wall.png"});
+    registry().AddComponent(wall, engine::ecs::components::Transform{
+                                      {200.0f, 200.0f}, {100.0f, 100.0f}});
+    registry().AddComponent(wall, engine::ecs::components::Sprite{"wall.png"});
 
     LOG_INFO("Lua Demo Scene initialized");
   }

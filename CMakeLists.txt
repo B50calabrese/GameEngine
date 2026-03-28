@@ -32,32 +32,32 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/core/window.cpp"
     "${ENGINE_ROOT}/src/engine/input/input_manager.cpp"
     "${ENGINE_ROOT}/src/engine/input/action_manager.cpp"
-    "${ENGINE_ROOT}/src/engine/physics/physics_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/systems/physics_system.cpp"
     "${ENGINE_ROOT}/src/engine/ui/ui_systems.cpp"
     "${ENGINE_ROOT}/src/engine/scene/scene_manager.cpp"
     "${ENGINE_ROOT}/src/engine/util/logger.cpp"
     "${ENGINE_ROOT}/src/engine/util/easing.cpp"
     "${ENGINE_ROOT}/src/engine/util/tween_manager.cpp"
-    "${ENGINE_ROOT}/src/engine/ecs/ai_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/systems/ai_system.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/entity_manager.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/buffer_utils.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/camera.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/font.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/framebuffer.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/particle_system.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/utils/particle_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/post_processor.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/lighting_effect.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/lighting_system.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/ecs/lighting_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/primitive_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/shader.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/sprite_animator.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/sprite_render_system.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/utils/sprite_animator.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/ecs/sprite_render_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/sprite_sheet.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/text_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/texture.cpp"
     "${ENGINE_ROOT}/src/engine/util/scripting/script_manager.cpp"
-    "${ENGINE_ROOT}/src/engine/ecs/script_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/systems/script_system.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/ecs_bindings.cpp"
     "${ENGINE_ROOT}/src/engine/util/console.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
@@ -129,14 +129,9 @@ if(PROJECT_NAME STREQUAL "GameEngine")
         )
     endfunction()
 
-    add_subdirectory(demos/applicationdemo)
-    add_subdirectory(demos/ecsdemo)
     add_subdirectory(demos/ecs-notifications)
-    add_subdirectory(demos/rendererdemo)
-    add_subdirectory(demos/renderqueuedemo)
     add_subdirectory(demos/scenedemo)
     add_subdirectory(demos/textdemo)
-    add_subdirectory(demos/windowdemo)
     add_subdirectory(demos/actionmapping)
     add_subdirectory(demos/tweendemo)
     add_subdirectory(demos/spritesheetdemo)

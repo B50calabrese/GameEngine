@@ -9,9 +9,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <engine/graphics/primitive_renderer.h>
-#include <engine/graphics/render_queue.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/graphics/utils/render_queue.h>
 #include <engine/util/asset_manager.h>
 
 namespace engine::graphics {
@@ -62,7 +62,7 @@ void TextRenderer::DrawText(const std::string& font_name,
       char_rel_pos = glm::vec2(rx, ry);
     }
 
-    RenderCommand cmd;
+    utils::RenderCommand cmd;
     cmd.z_order = z_index;
     cmd.texture_id = ch.texture_id;
     cmd.position = position + char_rel_pos;
@@ -72,7 +72,7 @@ void TextRenderer::DrawText(const std::string& font_name,
     cmd.uv_min = {0.0f, 1.0f};
     cmd.uv_max = {1.0f, 0.0f};
     cmd.is_font = true;
-    RenderQueue::Default().Submit(cmd);
+    utils::RenderQueue::Default().Submit(cmd);
 
     x_cursor += (ch.advance >> 6);
   }

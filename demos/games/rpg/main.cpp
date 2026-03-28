@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
+#include <engine/ecs/components/graphics_components.h>
 #include <engine/ecs/registry.h>
-#include <engine/graphics/graphics_components.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
 #include <engine/input/action_manager.h>
@@ -90,9 +90,7 @@ class BattleScene : public engine::Scene {
     flee_difficulty_ = 0.3f + (GameState::Get().current_floor * 0.05f);
   }
 
-  void OnAttach() override {
-    RefreshSelection();
-  }
+  void OnAttach() override { RefreshSelection(); }
 
   void RefreshSelection() {
     options_count_ =

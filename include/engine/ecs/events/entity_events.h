@@ -8,7 +8,7 @@
 
 #include <engine/ecs/entity_manager.h>
 
-namespace engine::ecs {
+namespace engine::ecs::events {
 
 class Registry;
 
@@ -28,6 +28,6 @@ struct EntityDestroyedEvent {
   Registry* registry;
 };
 
-}  // namespace engine::ecs
+}  // namespace engine::ecs::events
 
 #endif  // INCLUDE_ENGINE_ECS_EVENTS_ENTITY_EVENTS_H_

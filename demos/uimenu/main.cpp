@@ -1,7 +1,7 @@
 #include <memory>
 
+#include <engine/ecs/components/graphics_components.h>
 #include <engine/ecs/registry.h>
-#include <engine/graphics/graphics_components.h>
 #include <engine/graphics/renderer.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
@@ -47,8 +47,9 @@ class MenuScene : public engine::Scene {
     };
     registry().AddComponent(gold_counter_, gold_binding);
     registry().AddComponent(
-        gold_counter_, engine::graphics::TextComponent{
-                           "Gold: 0", "default", 1.0f, {1.0f, 1.0f, 0.0f, 1.0f}});
+        gold_counter_,
+        engine::ecs::components::Text{
+            "Gold: 0", "default", 1.0f, {1.0f, 1.0f, 0.0f, 1.0f}});
 
     // 4. Pause Button
     pause_button_ = registry().CreateEntity();
@@ -56,8 +57,8 @@ class MenuScene : public engine::Scene {
     btn_trans.local_pos = {700.0f, 550.0f};
     btn_trans.size = {80.0f, 40.0f};
     registry().AddComponent(pause_button_, btn_trans);
-    registry().AddComponent(pause_button_, engine::graphics::QuadComponent{
-                                               {0.5f, 0.5f, 0.5f, 1.0f}});
+    registry().AddComponent(
+        pause_button_, engine::ecs::components::Quad{{0.5f, 0.5f, 0.5f, 1.0f}});
     registry().AddComponent(pause_button_, engine::ui::UIHierarchy{});
 
     engine::ui::UIInteractable btn_inter;
@@ -82,7 +83,7 @@ class MenuScene : public engine::Scene {
     bt_trans.local_pos = {5.0f, 10.0f};
     registry().AddComponent(btn_text, bt_trans);
     registry().AddComponent(
-        btn_text, engine::graphics::TextComponent{
+        btn_text, engine::ecs::components::Text{
                       "PAUSE", "default", 0.8f, {1.0f, 1.0f, 1.0f, 1.0f}});
     engine::ui::UIHierarchy bt_hier;
     bt_hier.parent = pause_button_;
@@ -98,7 +99,7 @@ class MenuScene : public engine::Scene {
     menu_trans.size = {300.0f, 300.0f};
     registry().AddComponent(menu_panel_, menu_trans);
     registry().AddComponent(
-        menu_panel_, engine::graphics::QuadComponent{{0.2f, 0.2f, 0.2f, 0.9f}});
+        menu_panel_, engine::ecs::components::Quad{{0.2f, 0.2f, 0.2f, 0.9f}});
     registry().AddComponent(menu_panel_, engine::ui::UIHierarchy{});
 
     engine::ecs::EntityID menu_text = registry().CreateEntity();
@@ -106,7 +107,7 @@ class MenuScene : public engine::Scene {
     mt_trans.local_pos = {50.0f, 250.0f};
     registry().AddComponent(menu_text, mt_trans);
     registry().AddComponent(
-        menu_text, engine::graphics::TextComponent{
+        menu_text, engine::ecs::components::Text{
                        "PAUSED", "default", 1.5f, {1.0f, 1.0f, 1.0f, 1.0f}});
     engine::ui::UIHierarchy mt_hier;
     mt_hier.parent = menu_panel_;
@@ -135,7 +136,7 @@ class MenuScene : public engine::Scene {
     auto& btn_inter =
         registry().GetComponent<engine::ui::UIInteractable>(pause_button_);
     auto& btn_quad =
-        registry().GetComponent<engine::graphics::QuadComponent>(pause_button_);
+        registry().GetComponent<engine::ecs::components::Quad>(pause_button_);
     if (btn_inter.is_hovered) {
       btn_quad.color = {0.7f, 0.7f, 0.7f, 1.0f};
     } else {

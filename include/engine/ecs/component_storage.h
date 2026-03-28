@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 #include <engine/ecs/entity_manager.h>
-#include <engine/ecs/events.h>
+#include <engine/ecs/events/events.h>
 
 namespace engine::ecs {
 

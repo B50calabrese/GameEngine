@@ -22,11 +22,12 @@ void TurnManager::RollInitiative(engine::ecs::Registry& registry) {
     }
   }
 
-  std::sort(turn_order_.begin(), turn_order_.end(),
-            [&registry](engine::ecs::EntityID a, engine::ecs::EntityID b) {
-              return registry.GetComponent<TurnStateComponent>(a).initiative_roll >
-                     registry.GetComponent<TurnStateComponent>(b).initiative_roll;
-            });
+  std::sort(
+      turn_order_.begin(), turn_order_.end(),
+      [&registry](engine::ecs::EntityID a, engine::ecs::EntityID b) {
+        return registry.GetComponent<TurnStateComponent>(a).initiative_roll >
+               registry.GetComponent<TurnStateComponent>(b).initiative_roll;
+      });
 
   current_index_ = -1;
 }
@@ -39,11 +40,14 @@ void TurnManager::OnTurnStart(engine::ecs::Registry& registry,
   // Status effects tick would go here
   if (registry.HasComponent<StatusEffectComponent>(entity)) {
     auto& status = registry.GetComponent<StatusEffectComponent>(entity);
-    for (auto it = status.active_effects.begin(); it != status.active_effects.end();) {
+    for (auto it = status.active_effects.begin();
+         it != status.active_effects.end();) {
       // Effect logic...
       it->duration--;
-      if (it->duration <= 0) it = status.active_effects.erase(it);
-      else ++it;
+      if (it->duration <= 0)
+        it = status.active_effects.erase(it);
+      else
+        ++it;
     }
   }
 
@@ -91,8 +95,10 @@ bool TurnManager::IsBattleOver(engine::ecs::Registry& registry) const {
     auto& id = registry.GetComponent<IdentityComponent>(entity);
     auto& turn_state = registry.GetComponent<TurnStateComponent>(entity);
     if (!turn_state.is_downed) {
-      if (id.is_enemy) any_enemy_alive = true;
-      else any_player_alive = true;
+      if (id.is_enemy)
+        any_enemy_alive = true;
+      else
+        any_player_alive = true;
     }
   }
 
