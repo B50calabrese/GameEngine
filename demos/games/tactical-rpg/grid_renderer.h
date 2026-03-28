@@ -1,8 +1,9 @@
 #ifndef DEMOS_GAMES_TACTICAL_RPG_GRID_RENDERER_H_
 #define DEMOS_GAMES_TACTICAL_RPG_GRID_RENDERER_H_
 
-#include <engine/ecs/registry.h>
 #include <glm/glm.hpp>
+
+#include <engine/ecs/registry.h>
 
 #include "battle_grid.h"
 

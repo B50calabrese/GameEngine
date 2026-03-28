@@ -64,7 +64,8 @@ class OneShotListener : public IEventListener<GameEvent> {
 class EcsNotificationsDemo : public demos::common::BaseDemoApp {
  public:
   void OnDemoInit() override {
-    EntityLogger* logger = new EntityLogger(); // Keep it alive for simplicity in demo
+    EntityLogger* logger =
+        new EntityLogger();  // Keep it alive for simplicity in demo
     OneShotListener* one_shot = new OneShotListener();
 
     registry_.Subscribe<EntityCreatedEvent>(logger);
@@ -110,7 +111,8 @@ class EcsNotificationsDemo : public demos::common::BaseDemoApp {
   }
 
   void OnDemoUpdate(double dt) override {
-    // Already shut down the demo logic in Init for this specific non-interactive demo
+    // Already shut down the demo logic in Init for this specific
+    // non-interactive demo
     engine::Engine::Shutdown();
   }
 

@@ -1,7 +1,8 @@
 #include "combat_system.h"
 
-#include <engine/ecs/registry.h>
 #include <random>
+
+#include <engine/ecs/registry.h>
 
 #include "../components.h"
 

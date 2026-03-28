@@ -7,15 +7,15 @@
 #include <engine/core/engine.h>
 #include <engine/core/job_system.h>
 #include <engine/core/window.h>
-#include <engine/ecs/script_system.h>
+#include <engine/ecs/systems/physics_system.h>
+#include <engine/ecs/systems/script_system.h>
 #include <engine/graphics/camera.h>
-#include <engine/graphics/particle_system.h>
-#include <engine/graphics/render_queue.h>
+#include <engine/graphics/ecs/particle_system.h>
+#include <engine/graphics/ecs/sprite_render_system.h>
 #include <engine/graphics/renderer.h>
-#include <engine/graphics/sprite_render_system.h>
+#include <engine/graphics/utils/render_queue.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
-#include <engine/physics/physics_system.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/ui/ui_systems.h>
 #include <engine/util/console.h>
@@ -62,7 +62,7 @@ void Application::Run() {
       input_handled = SceneManager::Get().DispatchInput();
     }
 
-    graphics::RenderQueue::Default().Clear();
+    graphics::utils::RenderQueue::Default().Clear();
 
     graphics::Renderer::Get().BeginFrame(*main_camera_);
     graphics::Renderer::Get().Clear();
@@ -71,22 +71,24 @@ void Application::Run() {
 
     Scene* active_scene = SceneManager::Get().GetActiveScene();
     if (active_scene) {
-      ecs::Registry& reg = active_scene->registry();
+      Registry& reg = active_scene->registry();
 
       // Initialize ScriptSystem for the current registry if needed
-      ecs::ScriptSystem::Init(&reg);
+      ecs::systems::ScriptSystem::Init(&reg);
 
       if (!util::Console::Get().IsPaused()) {
         // Scripting System (Update logic before physics)
-        ecs::ScriptSystem::Update(&reg, static_cast<float>(delta_time));
+        ecs::systems::ScriptSystem::Update(&reg,
+                                           static_cast<float>(delta_time));
 
         // Engine Core Systems
-        physics::PhysicsSystem::Update(&reg, static_cast<float>(delta_time));
+        ecs::systems::PhysicsSystem::Update(&reg,
+                                            static_cast<float>(delta_time));
 
         // Particle Systems
-        reg.ForEach<graphics::ParticleEmitterComponent>(
+        reg.ForEach<ecs::components::ParticleEmitter>(
             [dt = static_cast<float>(delta_time)](
-                graphics::ParticleEmitterComponent& pec) {
+                ecs::components::ParticleEmitter& pec) {
               if (pec.is_active) {
                 pec.system.Update(dt);
               }
@@ -107,16 +109,16 @@ void Application::Run() {
 
     // Render ECS-driven graphics
     if (active_scene) {
-      graphics::SpriteRenderSystem::Render(&active_scene->registry());
-      active_scene->registry().ForEach<graphics::ParticleEmitterComponent>(
-          [](graphics::ParticleEmitterComponent& pec) {
+      graphics::ecs::SpriteRenderSystem::Render(&active_scene->registry());
+      active_scene->registry().ForEach<ecs::components::ParticleEmitter>(
+          [](ecs::components::ParticleEmitter& pec) {
             pec.system.Render(pec.z_index);
           });
     }
 
     core::JobSystem::Get().Wait();
 
-    graphics::RenderQueue::Default().Flush();
+    graphics::utils::RenderQueue::Default().Flush();
     graphics::Renderer::Get().Flush();
 
     if (active_scene) {
@@ -127,7 +129,7 @@ void Application::Run() {
 
     util::Console::Get().Render();
 
-    graphics::RenderQueue::Default().Flush();
+    graphics::utils::RenderQueue::Default().Flush();
     graphics::Renderer::Get().EndFrame();
     win.SwapBuffers();
   }

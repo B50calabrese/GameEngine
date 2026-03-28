@@ -3,8 +3,11 @@
 
 #include <string>
 #include <vector>
-#include <engine/ecs/entity_manager.h>
+
 #include <glm/glm.hpp>
+
+#include <engine/ecs/entity_manager.h>
+
 #include "../game_types.h"
 
 namespace tactical_rpg {

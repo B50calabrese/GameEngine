@@ -15,7 +15,8 @@ class ConsoleDemo : public demos::common::BaseDemoApp {
             return;
           }
           int amount = std::stoi(args[0]);
-          engine::util::Console::Get().Log("Gold set to " + std::to_string(amount));
+          engine::util::Console::Get().Log("Gold set to " +
+                                           std::to_string(amount));
         });
 
     engine::util::Console::Get().RegisterCommand(

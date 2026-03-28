@@ -1,8 +1,8 @@
-#include <engine/core/transform.h>
+#include <engine/ecs/components/graphics_components.h>
+#include <engine/ecs/components/physics_components.h>
+#include <engine/ecs/components/transform.h>
 #include <engine/ecs/ecs_bindings.h>
 #include <engine/ecs/registry.h>
-#include <engine/graphics/graphics_components.h>
-#include <engine/physics/physics_components.h>
 
 namespace engine::ecs {
 
@@ -15,60 +15,58 @@ void ECSBindings::BindCore(sol::state& lua) {
 
 void ECSBindings::BindComponents(sol::state& lua) {
   // Bind Component Types
-  lua.new_usertype<core::TransformComponent>(
-      "TransformComponent", "position", &core::TransformComponent::position,
-      "scale", &core::TransformComponent::scale, "rotation",
-      &core::TransformComponent::rotation);
+  lua.new_usertype<components::Transform>(
+      "TransformComponent", "position", &components::Transform::position,
+      "scale", &components::Transform::scale, "rotation",
+      &components::Transform::rotation);
 
-  lua.new_usertype<graphics::SpriteComponent>(
-      "SpriteComponent", "texture_name",
-      &graphics::SpriteComponent::texture_name, "sprite_sheet_name",
-      &graphics::SpriteComponent::sprite_sheet_name, "sprite_index",
-      &graphics::SpriteComponent::sprite_index, "tint",
-      &graphics::SpriteComponent::tint, "visible",
-      &graphics::SpriteComponent::visible);
+  lua.new_usertype<components::Sprite>(
+      "SpriteComponent", "texture_name", &components::Sprite::texture_name,
+      "sprite_sheet_name", &components::Sprite::sprite_sheet_name,
+      "sprite_index", &components::Sprite::sprite_index, "tint",
+      &components::Sprite::tint, "visible", &components::Sprite::visible);
 
-  lua.new_usertype<physics::VelocityComponent>(
-      "VelocityComponent", "velocity", &physics::VelocityComponent::velocity);
+  lua.new_usertype<components::Velocity>("VelocityComponent", "velocity",
+                                         &components::Velocity::velocity);
 
   // Helper functions for adding/getting components from Lua
-  lua["get_transform"] = [&lua](EntityID entity) -> core::TransformComponent& {
+  lua["get_transform"] = [&lua](EntityID entity) -> components::Transform& {
     Registry* reg = lua["registry"];
-    return reg->GetComponent<core::TransformComponent>(entity);
+    return reg->GetComponent<components::Transform>(entity);
   };
   lua["has_transform"] = [&lua](EntityID entity) {
     Registry* reg = lua["registry"];
-    return reg->HasComponent<core::TransformComponent>(entity);
+    return reg->HasComponent<components::Transform>(entity);
   };
   lua["add_transform"] = [&lua](EntityID entity, float x, float y) {
     Registry* reg = lua["registry"];
-    reg->AddComponent(entity, core::TransformComponent{{x, y}});
+    reg->AddComponent(entity, components::Transform{{x, y}});
   };
 
-  lua["get_sprite"] = [&lua](EntityID entity) -> graphics::SpriteComponent& {
+  lua["get_sprite"] = [&lua](EntityID entity) -> components::Sprite& {
     Registry* reg = lua["registry"];
-    return reg->GetComponent<graphics::SpriteComponent>(entity);
+    return reg->GetComponent<components::Sprite>(entity);
   };
   lua["has_sprite"] = [&lua](EntityID entity) {
     Registry* reg = lua["registry"];
-    return reg->HasComponent<graphics::SpriteComponent>(entity);
+    return reg->HasComponent<components::Sprite>(entity);
   };
   lua["add_sprite"] = [&lua](EntityID entity, const std::string& texture) {
     Registry* reg = lua["registry"];
-    reg->AddComponent(entity, graphics::SpriteComponent{texture});
+    reg->AddComponent(entity, components::Sprite{texture});
   };
 
-  lua["get_velocity"] = [&lua](EntityID entity) -> physics::VelocityComponent& {
+  lua["get_velocity"] = [&lua](EntityID entity) -> components::Velocity& {
     Registry* reg = lua["registry"];
-    return reg->GetComponent<physics::VelocityComponent>(entity);
+    return reg->GetComponent<components::Velocity>(entity);
   };
   lua["has_velocity"] = [&lua](EntityID entity) {
     Registry* reg = lua["registry"];
-    return reg->HasComponent<physics::VelocityComponent>(entity);
+    return reg->HasComponent<components::Velocity>(entity);
   };
   lua["add_velocity"] = [&lua](EntityID entity, float vx, float vy) {
     Registry* reg = lua["registry"];
-    reg->AddComponent(entity, physics::VelocityComponent{{vx, vy}});
+    reg->AddComponent(entity, components::Velocity{{vx, vy}});
   };
 }
 

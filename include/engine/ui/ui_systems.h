@@ -8,7 +8,7 @@
 
 #include <engine/ecs/registry.h>
 #include <engine/graphics/camera.h>
-#include <engine/graphics/render_queue.h>
+#include <engine/graphics/utils/render_queue.h>
 
 namespace engine::ui {
 
@@ -51,7 +51,7 @@ class UIRenderSystem {
 
  private:
   std::unique_ptr<graphics::Camera> ui_camera_;
-  graphics::RenderQueue ui_render_queue_;
+  graphics::utils::RenderQueue ui_render_queue_;
 };
 
 }  // namespace engine::ui

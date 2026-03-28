@@ -1,8 +1,9 @@
 #ifndef DEMOS_GAMES_TACTICAL_RPG_SYSTEMS_SYNC_TRANSFORM_SYSTEM_H_
 #define DEMOS_GAMES_TACTICAL_RPG_SYSTEMS_SYNC_TRANSFORM_SYSTEM_H_
 
-#include <engine/ecs/registry.h>
 #include <glm/glm.hpp>
+
+#include <engine/ecs/registry.h>
 
 namespace tactical_rpg {
 

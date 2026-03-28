@@ -8,7 +8,7 @@
 
 #include <engine/ecs/entity_manager.h>
 
-namespace engine::ecs {
+namespace engine::ecs::events {
 
 class Registry;
 
@@ -46,6 +46,6 @@ struct ComponentModifiedEvent {
   Registry* registry;
 };
 
-}  // namespace engine::ecs
+}  // namespace engine::ecs::events
 
 #endif  // INCLUDE_ENGINE_ECS_EVENTS_COMPONENT_EVENTS_H_

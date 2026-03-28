@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <engine/ecs/registry.h>
+
 #include "game_types.h"
 
 namespace tactical_rpg {

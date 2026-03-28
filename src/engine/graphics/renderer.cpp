@@ -19,10 +19,10 @@
 
 #include <engine/core/job_system.h>
 #include <engine/graphics/camera.h>
+#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/graphics/post_processor.h>
 #include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/sprite_sheet.h>
-#include <engine/graphics/text_renderer.h>
 #include <engine/graphics/texture.h>
 #include <engine/util/logger.h>
 
@@ -124,8 +124,8 @@ void Renderer::DrawText(const std::string& font_name, const std::string& text,
                         const glm::vec2& position, float rotation, float scale,
                         const glm::vec4& color, float z_index) {
   ASSERT_MAIN_THREAD();
-  TextRenderer::Get().DrawText(font_name, text, position, rotation, scale, color,
-                               z_index);
+  TextRenderer::Get().DrawText(font_name, text, position, rotation, scale,
+                               color, z_index);
 }
 
 std::string Renderer::ResolveAssetPath(const std::string& relative_path) const {

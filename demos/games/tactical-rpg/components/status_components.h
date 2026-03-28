@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+
 #include <engine/ecs/entity_manager.h>
 
 namespace tactical_rpg {

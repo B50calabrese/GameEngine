@@ -8,7 +8,7 @@
 
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
-#include <engine/graphics/text_renderer.h>
+#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/util/tween_manager.h>
 
 namespace demos::common {
@@ -40,7 +40,8 @@ class DemoRunner {
  public:
   /**
    * @brief Initializes the engine and runs the specified application.
-   * @tparam T The application class to run (must inherit from engine::Application).
+   * @tparam T The application class to run (must inherit from
+   * engine::Application).
    * @param config The engine configuration.
    * @return Exit code.
    */

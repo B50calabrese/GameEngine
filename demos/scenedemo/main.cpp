@@ -75,9 +75,7 @@ class SceneApp : public demos::common::BaseDemoApp {
     engine::SceneManager::Get().PushScene(std::make_unique<SceneA>("SceneA"));
   }
 
-  void OnDemoShutdown() override {
-    LOG_INFO("Shutting down Scene Demo");
-  }
+  void OnDemoShutdown() override { LOG_INFO("Shutting down Scene Demo"); }
 };
 
 /**

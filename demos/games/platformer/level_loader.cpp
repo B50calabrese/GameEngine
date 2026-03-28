@@ -6,9 +6,9 @@
 
 #include <glm/geometric.hpp>
 
-#include <engine/core/transform.h>
-#include <engine/graphics/graphics_components.h>
-#include <engine/physics/physics_components.h>
+#include <engine/ecs/components/graphics_components.h>
+#include <engine/ecs/components/physics_components.h>
+#include <engine/ecs/components/transform.h>
 
 #include "components.h"
 
@@ -39,16 +39,16 @@ void LevelLoader::Load(const std::string& path,
         ss >> x >> y >> w >> h >> p_type;
 
         auto entity = registry.CreateEntity();
-        registry.AddComponent(entity,
-                              engine::core::TransformComponent{{x, y}, {w, h}});
-        registry.AddComponent(entity, engine::physics::ColliderComponent{
+        registry.AddComponent(
+            entity, engine::ecs::components::Transform{{x, y}, {w, h}});
+        registry.AddComponent(entity, engine::ecs::components::Collider{
                                           {w, h}, {0, 0}, true, false});
 
         PlatformComponent pc;
         switch (p_type) {
           case 'S':
             pc.type = PlatformType::Stationary;
-            registry.AddComponent(entity, engine::graphics::QuadComponent{
+            registry.AddComponent(entity, engine::ecs::components::Quad{
                                               {0.4f, 0.4f, 0.4f, 1.0f}});
             break;
           case 'M': {
@@ -59,14 +59,14 @@ void LevelLoader::Load(const std::string& path,
             pc.end_pos = {ex, ey};
             registry.AddComponent(
                 entity,
-                engine::physics::VelocityComponent{
+                engine::ecs::components::Velocity{
                     glm::normalize(pc.end_pos - pc.start_pos) * 150.0f});
-            registry.AddComponent(entity, engine::graphics::QuadComponent{
+            registry.AddComponent(entity, engine::ecs::components::Quad{
                                               {0.2f, 0.6f, 0.8f, 1.0f}});
           } break;
           case 'T':
             pc.type = PlatformType::Temporary;
-            registry.AddComponent(entity, engine::graphics::QuadComponent{
+            registry.AddComponent(entity, engine::ecs::components::Quad{
                                               {0.8f, 0.4f, 0.2f, 1.0f}});
             break;
         }
@@ -81,9 +81,9 @@ void LevelLoader::Load(const std::string& path,
 
         auto entity = registry.CreateEntity();
         registry.AddComponent(
-            entity, engine::core::TransformComponent{{x, y}, {30.0f, 30.0f}});
+            entity, engine::ecs::components::Transform{{x, y}, {30.0f, 30.0f}});
         registry.AddComponent(
-            entity, engine::graphics::QuadComponent{{1.0f, 0.0f, 0.0f, 1.0f}});
+            entity, engine::ecs::components::Quad{{1.0f, 0.0f, 0.0f, 1.0f}});
 
         EnemyComponent ec;
         switch (e_type) {
@@ -98,7 +98,7 @@ void LevelLoader::Load(const std::string& path,
             ec.end_pos = {ex, ey};
             registry.AddComponent(
                 entity,
-                engine::physics::VelocityComponent{
+                engine::ecs::components::Velocity{
                     glm::normalize(ec.end_pos - ec.start_pos) * 100.0f});
           } break;
         }
@@ -111,9 +111,9 @@ void LevelLoader::Load(const std::string& path,
 
         auto entity = registry.CreateEntity();
         registry.AddComponent(
-            entity, engine::core::TransformComponent{{x, y}, {40.0f, 40.0f}});
+            entity, engine::ecs::components::Transform{{x, y}, {40.0f, 40.0f}});
         registry.AddComponent(
-            entity, engine::graphics::QuadComponent{{1.0f, 1.0f, 0.0f, 1.0f}});
+            entity, engine::ecs::components::Quad{{1.0f, 1.0f, 0.0f, 1.0f}});
         registry.AddComponent(entity, GoalComponent{});
       } break;
     }

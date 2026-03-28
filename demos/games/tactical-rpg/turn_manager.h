@@ -16,7 +16,8 @@ class TurnManager {
   void RollInitiative(engine::ecs::Registry& registry);
   void NextTurn(engine::ecs::Registry& registry);
 
-  void OnTurnStart(engine::ecs::Registry& registry, engine::ecs::EntityID entity);
+  void OnTurnStart(engine::ecs::Registry& registry,
+                   engine::ecs::EntityID entity);
   void OnTurnEnd(engine::ecs::Registry& registry, engine::ecs::EntityID entity);
 
   engine::ecs::EntityID GetActiveCharacter() const;

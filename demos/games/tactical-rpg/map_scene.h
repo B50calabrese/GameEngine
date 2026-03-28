@@ -5,8 +5,8 @@
 #include <memory>
 #include <vector>
 
+#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/graphics/renderer.h>
-#include <engine/graphics/text_renderer.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
@@ -53,7 +53,7 @@ class MapScene : public engine::Scene {
   void EnterNode(int node_id);
 
   void OnRender() override {
-    engine::graphics::TextRenderer::Get().DrawText(
+    engine::graphics::ecs::TextRenderer::Get().DrawText(
         "default", "MAP SCREEN", {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
     for (const auto& node : map_) {
@@ -108,7 +108,7 @@ class MapScene : public engine::Scene {
 
       engine::graphics::Renderer::Get().DrawQuad(node->GetPosition(), {30, 30},
                                                  color);
-      engine::graphics::TextRenderer::Get().DrawText(
+      engine::graphics::ecs::TextRenderer::Get().DrawText(
           "default", label, node->GetPosition() - glm::vec2(5, 5), 0.0f, 0.5f,
           {1, 1, 1, 1});
     }

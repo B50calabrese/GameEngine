@@ -43,7 +43,9 @@ class ActionRegistry {
   ActionRegistry() { RegisterAll(); }
   void RegisterAll();
 
-  void RegisterAction(const RawAction& action) { actions_[action.name] = action; }
+  void RegisterAction(const RawAction& action) {
+    actions_[action.name] = action;
+  }
 
   std::map<std::string, RawAction> actions_;
   std::map<std::string, engine::ecs::EntityID> action_cache_;
