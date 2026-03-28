@@ -6,11 +6,12 @@
 #include <algorithm>
 #include <random>
 
-#include <engine/graphics/ecs/particle_system.h>
+#include <engine/ecs/components/particle_emitter.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/utils/particle_system.h>
 #include <engine/graphics/utils/render_queue.h>
 
-namespace engine::graphics::ecs {
+namespace engine::graphics::utils {
 
 ParticleSystem::ParticleSystem(size_t max_particles)
     : max_particles_(max_particles) {
@@ -74,4 +75,4 @@ void ParticleSystem::Render(float z_index) const {
 
 void ParticleSystem::Clear() { particles_.clear(); }
 
-}  // namespace engine::graphics::ecs
+}  // namespace engine::graphics::utils

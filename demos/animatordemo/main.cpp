@@ -1,7 +1,7 @@
-#include <engine/graphics/ecs/sprite_animator.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_sheet.h>
 #include <engine/graphics/texture.h>
+#include <engine/graphics/utils/sprite_animator.h>
 #include <engine/input/input_manager.h>
 #include <engine/util/asset_manager.h>
 #include <engine/util/logger.h>
@@ -86,8 +86,8 @@ class AnimatorDemoApp : public demos::common::BaseDemoApp {
 
  private:
   std::shared_ptr<engine::graphics::SpriteSheet> sprite_sheet_;
-  engine::graphics::ecs::SpriteAnimator loop_animator_;
-  engine::graphics::ecs::SpriteAnimator once_animator_;
+  engine::graphics::utils::SpriteAnimator loop_animator_;
+  engine::graphics::utils::SpriteAnimator once_animator_;
 };
 
 int main(void) {

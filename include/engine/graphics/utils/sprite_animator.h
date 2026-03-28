@@ -3,14 +3,14 @@
  * @brief Sprite animation management and playback.
  */
 
-#ifndef INCLUDE_ENGINE_GRAPHICS_SPRITE_ANIMATOR_H_
-#define INCLUDE_ENGINE_GRAPHICS_SPRITE_ANIMATOR_H_
+#ifndef INCLUDE_ENGINE_GRAPHICS_UTILS_SPRITE_ANIMATOR_H_
+#define INCLUDE_ENGINE_GRAPHICS_UTILS_SPRITE_ANIMATOR_H_
 
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-namespace engine::graphics::ecs {
+namespace engine::graphics::utils {
 
 /**
  * @brief Defines a sequence of sprite indices and playback properties.
@@ -98,6 +98,6 @@ class SpriteAnimator {
   bool finished_ = false;
 };
 
-}  // namespace engine::graphics::ecs
+}  // namespace engine::graphics::utils
 
-#endif  // INCLUDE_ENGINE_GRAPHICS_SPRITE_ANIMATOR_H_
+#endif  // INCLUDE_ENGINE_GRAPHICS_UTILS_SPRITE_ANIMATOR_H_

@@ -28,7 +28,7 @@ Currently, enemies are generated using the same `ClassRegistry` but with an `is_
 
 ### Assets
 The game currently uses primitive squares for characters and tiles.
-- Use `engine::ecs::components::Sprite` and `engine::graphics::ecs::SpriteRenderSystem` to integrate textures.
+- Use `engine::ecs::components::Sprite` and `engine::graphics::utils::SpriteRenderSystem` to integrate textures.
 - You can find assets in `demos/assets/` or add new ones there.
 
 ## Current Limitations (Minimal Commit)

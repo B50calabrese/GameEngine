@@ -8,7 +8,7 @@
 
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
-#include <engine/graphics/ecs/text_renderer.h>
+#include <engine/graphics/text_renderer.h>
 #include <engine/util/tween_manager.h>
 
 namespace demos::common {

@@ -6,8 +6,8 @@
 
 #include <engine/ecs/components/graphics_components.h>
 #include <engine/ecs/registry.h>
-#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/text_renderer.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>

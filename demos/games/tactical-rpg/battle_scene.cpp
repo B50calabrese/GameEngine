@@ -237,7 +237,7 @@ void BattleScene::OnRender() {
 }
 
 void BattleScene::RenderUI() {
-  engine::graphics::ecs::TextRenderer::Get().DrawText(
+  engine::graphics::TextRenderer::Get().DrawText(
       "default", last_log_, {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
   auto active = turn_manager_.GetActiveCharacter();
@@ -252,10 +252,10 @@ void BattleScene::RenderUI() {
     std::string move_info =
         "Movement: " + std::to_string(turn_state.movement_remaining) + "/" +
         std::to_string(stats.speed);
-    engine::graphics::ecs::TextRenderer::Get().DrawText(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", move_info, {700, 500}, 0.0f, 0.7f, {1, 1, 1, 1});
 
-    engine::graphics::ecs::TextRenderer::Get().DrawText(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", "1: Move Mode", {700, 450}, 0.0f, 0.7f,
         (selected_action_index_ == -1 ? glm::vec4(1, 1, 0, 1)
                                       : glm::vec4(1, 1, 1, 1)));
@@ -266,14 +266,14 @@ void BattleScene::RenderUI() {
           registry().GetComponent<ActionDataComponent>(action_entity);
       glm::vec4 color = (selected_action_index_ == i ? glm::vec4(1, 1, 0, 1)
                                                      : glm::vec4(1, 1, 1, 1));
-      engine::graphics::ecs::TextRenderer::Get().DrawText(
+      engine::graphics::TextRenderer::Get().DrawText(
           "default", std::to_string(i + 2) + ": " + action_data.name,
           {700, 400 - i * 40.0f}, 0.0f, 0.7f, color);
     }
 
-    engine::graphics::ecs::TextRenderer::Get().DrawText(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", "ENTER: End Turn", {700, 100}, 0.0f, 0.7f, {1, 1, 1, 1});
-    engine::graphics::ecs::TextRenderer::Get().DrawText(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default",
         id.name + " HP: " + std::to_string(stats.current_hp) + "/" +
             std::to_string(stats.max_hp),

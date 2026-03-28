@@ -4,13 +4,14 @@
 #include <vector>
 
 #include <engine/ecs/components/graphics_components.h>
+#include <engine/ecs/components/particle_emitter.h>
 #include <engine/ecs/components/physics_components.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/ecs/registry.h>
-#include <engine/graphics/ecs/particle_system.h>
-#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/graphics/post_processor.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/text_renderer.h>
+#include <engine/graphics/utils/particle_system.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>

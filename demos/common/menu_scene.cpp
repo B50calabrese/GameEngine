@@ -5,8 +5,8 @@
 
 #include "menu_scene.h"
 
-#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/text_renderer.h>
 #include <engine/input/input_manager.h>
 
 namespace demos::common {
@@ -16,9 +16,8 @@ BaseMenuScene::BaseMenuScene(const std::string& title,
     : engine::Scene("Menu"), title_(title), items_(items) {}
 
 void BaseMenuScene::OnAttach() {
-  engine::graphics::ecs::TextRenderer::Get().Init();
-  engine::graphics::ecs::TextRenderer::Get().LoadFont("default", "arial.ttf",
-                                                      24);
+  engine::graphics::TextRenderer::Get().Init();
+  engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
 }
 
 void BaseMenuScene::OnUpdate(float dt) {

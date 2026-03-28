@@ -3,14 +3,14 @@
  * @brief Generic particle system for effects.
  */
 
-#ifndef INCLUDE_ENGINE_GRAPHICS_PARTICLE_SYSTEM_H_
-#define INCLUDE_ENGINE_GRAPHICS_PARTICLE_SYSTEM_H_
+#ifndef INCLUDE_ENGINE_GRAPHICS_UTILS_PARTICLE_SYSTEM_H_
+#define INCLUDE_ENGINE_GRAPHICS_UTILS_PARTICLE_SYSTEM_H_
 
 #include <vector>
 
 #include <glm/glm.hpp>
 
-namespace engine::graphics::ecs {
+namespace engine::graphics::utils {
 
 /** @brief Representation of a single particle. */
 struct Particle {
@@ -61,13 +61,6 @@ class ParticleSystem {
   size_t max_particles_;
 };
 
-/** @brief ECS component to trigger particle emission. */
-struct ParticleEmitter {
-  ParticleSystem system;
-  float z_index = 0.0f;
-  bool is_active = true;
-};
+}  // namespace engine::graphics::utils
 
-}  // namespace engine::graphics::ecs
-
-#endif  // INCLUDE_ENGINE_GRAPHICS_PARTICLE_SYSTEM_H_
+#endif  // INCLUDE_ENGINE_GRAPHICS_UTILS_PARTICLE_SYSTEM_H_

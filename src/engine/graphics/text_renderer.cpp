@@ -8,13 +8,13 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/text_renderer.h>
 #include <engine/graphics/utils/render_queue.h>
 #include <engine/util/asset_manager.h>
 
-namespace engine::graphics::ecs {
+namespace engine::graphics {
 
 void TextRenderer::Init() {}
 void TextRenderer::Shutdown() { fonts_.clear(); }
@@ -78,4 +78,4 @@ void TextRenderer::DrawText(const std::string& font_name,
   }
 }
 
-}  // namespace engine::graphics::ecs
+}  // namespace engine::graphics

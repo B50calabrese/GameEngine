@@ -19,10 +19,10 @@
 
 #include <engine/core/job_system.h>
 #include <engine/graphics/camera.h>
-#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/graphics/post_processor.h>
 #include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/sprite_sheet.h>
+#include <engine/graphics/text_renderer.h>
 #include <engine/graphics/texture.h>
 #include <engine/util/logger.h>
 

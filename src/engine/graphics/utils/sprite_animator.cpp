@@ -6,10 +6,10 @@
 #include <algorithm>
 #include <cmath>
 
-#include <engine/graphics/ecs/sprite_animator.h>
+#include <engine/graphics/utils/sprite_animator.h>
 #include <engine/util/logger.h>
 
-namespace engine::graphics::ecs {
+namespace engine::graphics::utils {
 
 // --- AnimationManager Implementation ---
 
@@ -91,4 +91,4 @@ int SpriteAnimator::GetCurrentFrame() const {
   return current_clip_->frames[index];
 }
 
-}  // namespace engine::graphics::ecs
+}  // namespace engine::graphics::utils

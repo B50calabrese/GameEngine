@@ -8,10 +8,9 @@
 namespace demos::common {
 
 void BaseDemoApp::OnInit() {
-  engine::graphics::ecs::TextRenderer::Get().Init();
+  engine::graphics::TextRenderer::Get().Init();
   // Load default font for all demos.
-  engine::graphics::ecs::TextRenderer::Get().LoadFont("default", "arial.ttf",
-                                                      24);
+  engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
 
   OnDemoInit();
 }

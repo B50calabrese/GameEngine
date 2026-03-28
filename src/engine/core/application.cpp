@@ -7,12 +7,13 @@
 #include <engine/core/engine.h>
 #include <engine/core/job_system.h>
 #include <engine/core/window.h>
+#include <engine/ecs/components/particle_emitter.h>
 #include <engine/ecs/systems/physics_system.h>
 #include <engine/ecs/systems/script_system.h>
 #include <engine/graphics/camera.h>
-#include <engine/graphics/ecs/particle_system.h>
 #include <engine/graphics/ecs/sprite_render_system.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/utils/particle_system.h>
 #include <engine/graphics/utils/render_queue.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>

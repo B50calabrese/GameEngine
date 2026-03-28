@@ -1,6 +1,6 @@
 #include <engine/core/engine.h>
-#include <engine/graphics/ecs/text_renderer.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/text_renderer.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
 

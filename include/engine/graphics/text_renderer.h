@@ -14,7 +14,7 @@
 
 #include <engine/graphics/font.h>
 
-namespace engine::graphics::ecs {
+namespace engine::graphics {
 
 /**
  * @brief Renders text using font files.
@@ -75,6 +75,6 @@ class TextRenderer {
   std::map<std::string, std::shared_ptr<Font>> fonts_;
 };
 
-}  // namespace engine::graphics::ecs
+}  // namespace engine::graphics
 
 #endif  // INCLUDE_ENGINE_GRAPHICS_TEXT_RENDERER_H_
