@@ -46,6 +46,21 @@ void SpriteRenderSystem::Render(ecs::Registry* registry) {
             cmd.origin = sprite.origin;
             RenderQueue::Default().Submit(cmd);
           }
+        } else if (!sprite.texture_name.empty()) {
+          auto tex = util::AssetManager<Texture>::Get(sprite.texture_name);
+          if (tex) {
+            RenderCommand cmd;
+            cmd.z_order = sprite.z_index;
+            cmd.texture_id = tex->renderer_id();
+            cmd.position = transform.position;
+            cmd.size = transform.scale;
+            cmd.rotation = transform.rotation;
+            cmd.color = sprite.tint;
+            cmd.uv_min = {0.0f, 0.0f};
+            cmd.uv_max = {1.0f, 1.0f};
+            cmd.origin = sprite.origin;
+            RenderQueue::Default().Submit(cmd);
+          }
         }
       }
     }

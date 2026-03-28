@@ -168,6 +168,11 @@ void PrimitiveRenderer::Init() {
   uint32_t whiteData = 0xffffffff;
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                &whiteData);
+
+  // Set filtering to NEAREST to ensure it's "complete" for a 1x1 texture
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
   texture_slots_[0] = whiteTex;
 
   // Compile Built-in Shaders
@@ -246,6 +251,12 @@ void PrimitiveRenderer::RenderBatch() {
 }
 
 int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
+  // A texture_id of 0 usually means "no texture" or "solid color",
+  // so we map it to our white texture in slot 0.
+  if (texture_id == 0) {
+    return 0;
+  }
+
   // Search if texture is already in a slot
   for (uint32_t i = 0; i < texture_slot_index_; i++) {
     if (texture_slots_[i] == texture_id) {
