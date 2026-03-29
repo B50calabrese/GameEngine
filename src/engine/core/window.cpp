@@ -15,6 +15,8 @@
 #include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
 
+#include <imgui.h>
+
 namespace engine {
 
 Window::Window(int width, int height, std::string name)
@@ -68,6 +70,10 @@ void Window::SetupCallbacks() {
   // 1. GLFW Key Callback
   glfwSetKeyCallback(internal_window_, [](GLFWwindow* window, int key,
                                           int scancode, int action, int mods) {
+    if (ImGui::GetCurrentContext() != nullptr &&
+        ImGui::GetIO().WantCaptureKeyboard) {
+      return;
+    }
     // Forward the raw event to the InputManager singleton
     InputManager::Get().HandleKey(key, action);
   });
@@ -76,6 +82,10 @@ void Window::SetupCallbacks() {
   glfwSetMouseButtonCallback(
       internal_window_,
       [](GLFWwindow* window, int button, int action, int mods) {
+        if (ImGui::GetCurrentContext() != nullptr &&
+            ImGui::GetIO().WantCaptureMouse) {
+          return;
+        }
         InputManager::Get().HandleMouseButton(button, action);
       });
 
@@ -88,6 +98,10 @@ void Window::SetupCallbacks() {
   // 4. GLFW Char Callback
   glfwSetCharCallback(internal_window_,
                       [](GLFWwindow* window, unsigned int codepoint) {
+                        if (ImGui::GetCurrentContext() != nullptr &&
+                            ImGui::GetIO().WantCaptureKeyboard) {
+                          return;
+                        }
                         InputManager::Get().HandleChar(codepoint);
                       });
 }

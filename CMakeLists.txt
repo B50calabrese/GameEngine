@@ -14,6 +14,8 @@ set(THIRD_PARTY_DIR "${ENGINE_ROOT}/third_party")
 set(THIRD_PARTY_INCLUDE "${THIRD_PARTY_DIR}/include")
 set(THIRD_PARTY_LIBS "${THIRD_PARTY_DIR}/libs")
 set(LUA_DIR "${THIRD_PARTY_DIR}/lua")
+set(IMGUI_DIR "${THIRD_PARTY_DIR}/imgui")
+set(JSON_DIR "${THIRD_PARTY_DIR}/json")
 
 # Inform the linker where to find the library files (e.g., glfw3.lib)
 link_directories("${THIRD_PARTY_LIBS}")
@@ -23,6 +25,17 @@ link_directories("${THIRD_PARTY_LIBS}")
 
 # Lua Sources
 file(GLOB LUA_SOURCES "${LUA_DIR}/src/*.c")
+
+# ImGui Sources
+set(IMGUI_SOURCES
+    "${IMGUI_DIR}/imgui.cpp"
+    "${IMGUI_DIR}/imgui_draw.cpp"
+    "${IMGUI_DIR}/imgui_tables.cpp"
+    "${IMGUI_DIR}/imgui_widgets.cpp"
+    "${IMGUI_DIR}/imgui_demo.cpp"
+    "${IMGUI_DIR}/backends/imgui_impl_glfw.cpp"
+    "${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp"
+)
 
 # We prefix these with ENGINE_ROOT to ensure they are found correctly
 set(SOURCE_FILES
@@ -60,7 +73,10 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/ecs/systems/script_system.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/ecs_bindings.cpp"
     "${ENGINE_ROOT}/src/engine/util/console.cpp"
+    "${ENGINE_ROOT}/src/leveleditor/component_registry.cpp"
+    "${ENGINE_ROOT}/src/leveleditor/level_editor.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
+    ${IMGUI_SOURCES}
 )
 
 # Use GLOB_RECURSE relative to CURRENT_SOURCE_DIR
@@ -80,11 +96,18 @@ add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 # ----------------------------------
 target_include_directories(GameEngine 
     PUBLIC  "${ENGINE_ROOT}/include"
+    PUBLIC  "${ENGINE_ROOT}/include/leveleditor"
     PRIVATE "${ENGINE_ROOT}/src"
     PUBLIC  "${THIRD_PARTY_INCLUDE}"
     PUBLIC  "${THIRD_PARTY_INCLUDE}/freetype"
     PUBLIC  "${LUA_DIR}/include"
+    PUBLIC  "${IMGUI_DIR}"
+    PUBLIC  "${IMGUI_DIR}/backends"
+    PUBLIC  "${JSON_DIR}/include"
 )
+
+target_compile_definitions(GameEngine PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
+target_compile_definitions(GameEngine PUBLIC GLFW_INCLUDE_NONE)
 
 # Link the GLFW library and all necessary system libraries.
 if(WIN32)
@@ -98,11 +121,20 @@ if(WIN32)
         user32
     )
 else()
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(GLFW REQUIRED glfw3)
-    pkg_check_modules(FREETYPE REQUIRED freetype2)
-    target_link_libraries(GameEngine PUBLIC Lua ${GLFW_LIBRARIES} ${FREETYPE_LIBRARIES} GL dl)
-    target_include_directories(GameEngine PUBLIC ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
+    find_package(PkgConfig)
+    if(PKG_CONFIG_FOUND)
+        pkg_check_modules(GLFW glfw3)
+        pkg_check_modules(FREETYPE freetype2)
+    endif()
+
+    if(GLFW_FOUND AND FREETYPE_FOUND)
+        target_link_libraries(GameEngine PUBLIC Lua ${GLFW_LIBRARIES} ${FREETYPE_LIBRARIES} GL dl)
+        target_include_directories(GameEngine PUBLIC ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
+    else()
+        # Fallback for missing pkg-config or headless environments
+        message(STATUS "Using fallback linking for GLFW/Freetype")
+        target_link_libraries(GameEngine PUBLIC Lua glfw3 freetype GL dl)
+    endif()
 endif()
 
 # --- 6. Add Demos (Optional when building as a library) ---
@@ -142,6 +174,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/uimenu)
     add_subdirectory(demos/aidemo)
     add_subdirectory(demos/luademo)
+    add_subdirectory(demos/leveleditor)
     add_subdirectory(demos/common)
     add_subdirectory(demos/games)
     add_subdirectory(demos/consoledemo)
