@@ -3,6 +3,10 @@
  * @brief Application class implementation.
  */
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include <engine/core/application.h>
 #include <engine/core/engine.h>
 #include <engine/core/job_system.h>
@@ -36,9 +40,23 @@ Application::Application() {
 
 void Application::Run() {
   util::ScriptManager::Get().Init();
-  OnInit();
 
   Window& win = window();
+
+  // Initialize ImGui
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO();
+  (void)io;
+  io.ConfigFlags |=
+      ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+
+  ImGui::StyleColorsDark();
+
+  ImGui_ImplGlfw_InitForOpenGL(win.native_handle(), true);
+  ImGui_ImplOpenGL3_Init("#version 330");
+
+  OnInit();
   InputManager& input = input_manager();
   main_camera_ = std::make_unique<engine::graphics::Camera>(
       0.0f, static_cast<float>(win.width()), 0.0f,
@@ -48,6 +66,12 @@ void Application::Run() {
     double delta_time = win.delta_time();
 
     win.PollEvents();
+
+    // Start ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
     ActionManager::Get().Update();
 
     if (input.IsKeyPressed(util::Console::Get().GetToggleKey())) {
@@ -72,7 +96,7 @@ void Application::Run() {
 
     Scene* active_scene = SceneManager::Get().GetActiveScene();
     if (active_scene) {
-      Registry& reg = active_scene->registry();
+      engine::ecs::Registry& reg = active_scene->registry();
 
       // Initialize ScriptSystem for the current registry if needed
       ecs::systems::ScriptSystem::Init(&reg);
@@ -130,11 +154,21 @@ void Application::Run() {
 
     util::Console::Get().Render();
 
+    // Render ImGui
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
     graphics::utils::RenderQueue::Default().Flush();
     graphics::Renderer::Get().EndFrame();
     win.SwapBuffers();
   }
   OnShutdown();
+
+  // Cleanup ImGui
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+
   Engine::Shutdown();
 }
 
