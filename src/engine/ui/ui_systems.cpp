@@ -76,13 +76,13 @@ void UILayoutSystem::UpdateBranch(ecs::Registry& reg, ecs::EntityID entity,
 }
 
 void UISyncSystem::Update(ecs::Registry& reg) {
-  auto view = reg.GetView<UIBinding, ecs::components::Text>();
+  auto view = reg.GetView<UIBinding, engine::ecs::components::Text>();
   for (auto entity : view) {
     if (!reg.IsAlive(entity) || !reg.HasComponent<UIBinding>(entity) ||
-        !reg.HasComponent<ecs::components::Text>(entity))
+        !reg.HasComponent<engine::ecs::components::Text>(entity))
       continue;
     auto& binding = reg.GetComponent<UIBinding>(entity);
-    auto& text = reg.GetComponent<ecs::components::Text>(entity);
+    auto& text = reg.GetComponent<engine::ecs::components::Text>(entity);
     if (binding.get_text) {
       std::string current = binding.get_text();
       if (current != binding.last_value) {
@@ -154,15 +154,15 @@ void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
       continue;
     auto& transform = reg.GetComponent<UITransform>(entity);
 
-    if (reg.HasComponent<ecs::components::Text>(entity)) {
-      auto& text = reg.GetComponent<ecs::components::Text>(entity);
+    if (reg.HasComponent<engine::ecs::components::Text>(entity)) {
+      auto& text = reg.GetComponent<engine::ecs::components::Text>(entity);
       graphics::Renderer::Get().DrawText(text.font_name, text.content,
                                          transform.global_pos, 0.0f, text.scale,
                                          text.color);
     }
 
-    if (reg.HasComponent<ecs::components::Quad>(entity)) {
-      auto& quad = reg.GetComponent<ecs::components::Quad>(entity);
+    if (reg.HasComponent<engine::ecs::components::Quad>(entity)) {
+      auto& quad = reg.GetComponent<engine::ecs::components::Quad>(entity);
       graphics::utils::RenderCommand cmd;
       cmd.position = transform.global_pos;
       cmd.size = transform.size;
@@ -171,8 +171,8 @@ void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
       ui_render_queue_.Submit(cmd);
     }
 
-    if (reg.HasComponent<ecs::components::Sprite>(entity)) {
-      auto& sprite = reg.GetComponent<ecs::components::Sprite>(entity);
+    if (reg.HasComponent<engine::ecs::components::Sprite>(entity)) {
+      auto& sprite = reg.GetComponent<engine::ecs::components::Sprite>(entity);
       graphics::utils::RenderCommand cmd;
       cmd.position = transform.global_pos;
       cmd.size = transform.size;
