@@ -73,8 +73,8 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/ecs/systems/script_system.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/ecs_bindings.cpp"
     "${ENGINE_ROOT}/src/engine/util/console.cpp"
-    "${ENGINE_ROOT}/src/leveleditor/component_registry.cpp"
-    "${ENGINE_ROOT}/src/leveleditor/level_editor.cpp"
+    "${ENGINE_ROOT}/src/tools/leveleditor/component_registry.cpp"
+    "${ENGINE_ROOT}/src/tools/leveleditor/level_editor.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
     ${IMGUI_SOURCES}
 )
@@ -96,7 +96,6 @@ add_library(GameEngine STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 # ----------------------------------
 target_include_directories(GameEngine 
     PUBLIC  "${ENGINE_ROOT}/include"
-    PUBLIC  "${ENGINE_ROOT}/include/leveleditor"
     PRIVATE "${ENGINE_ROOT}/src"
     PUBLIC  "${THIRD_PARTY_INCLUDE}"
     PUBLIC  "${THIRD_PARTY_INCLUDE}/freetype"
@@ -174,8 +173,15 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/uimenu)
     add_subdirectory(demos/aidemo)
     add_subdirectory(demos/luademo)
-    add_subdirectory(demos/leveleditor)
     add_subdirectory(demos/common)
     add_subdirectory(demos/games)
     add_subdirectory(demos/consoledemo)
 endif()
+
+# --- 7. Tools ---
+add_executable(leveleditor "${ENGINE_ROOT}/src/tools/leveleditor/main.cpp")
+target_link_libraries(leveleditor PRIVATE GameEngine DemosCommon)
+target_compile_definitions(leveleditor PRIVATE ENGINE_ASSETS_PATH="${COMMON_ASSETS_BUILD_DIR}/")
+set_target_properties(leveleditor PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tools"
+)
