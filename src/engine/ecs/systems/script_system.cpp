@@ -31,10 +31,11 @@ void ScriptSystem::Update(Registry* registry, float dt) {
 
   bool reload_all = util::ScriptManager::Get().CheckForChanges(dt);
 
-  auto view = registry->GetView<components::Script>();
+  auto view = registry->GetView<engine::ecs::components::Script>();
 
   for (auto entity : view) {
-    auto& comp = registry->GetComponent<components::Script>(entity);
+    auto& comp =
+        registry->GetComponent<engine::ecs::components::Script>(entity);
     if (comp.script_path.empty()) continue;
 
     // Load script if not already loaded OR if hot reload triggered

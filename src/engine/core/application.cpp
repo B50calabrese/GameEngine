@@ -87,9 +87,9 @@ void Application::Run() {
                                             static_cast<float>(delta_time));
 
         // Particle Systems
-        reg.ForEach<ecs::components::ParticleEmitter>(
+        reg.ForEach<engine::ecs::components::ParticleEmitter>(
             [dt = static_cast<float>(delta_time)](
-                ecs::components::ParticleEmitter& pec) {
+                engine::ecs::components::ParticleEmitter& pec) {
               if (pec.is_active) {
                 pec.system.Update(dt);
               }
@@ -111,8 +111,8 @@ void Application::Run() {
     // Render ECS-driven graphics
     if (active_scene) {
       graphics::ecs::SpriteRenderSystem::Render(&active_scene->registry());
-      active_scene->registry().ForEach<ecs::components::ParticleEmitter>(
-          [](ecs::components::ParticleEmitter& pec) {
+      active_scene->registry().ForEach<engine::ecs::components::ParticleEmitter>(
+          [](engine::ecs::components::ParticleEmitter& pec) {
             pec.system.Render(pec.z_index);
           });
     }

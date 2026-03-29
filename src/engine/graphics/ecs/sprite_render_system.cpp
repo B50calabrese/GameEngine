@@ -19,14 +19,15 @@ void SpriteRenderSystem::Render(engine::ecs::Registry* registry) {
     return;
   }
   // 1. Render entities with Transform and Sprite/Quad
-  auto trans_view = registry->GetView<ecs::components::Transform>();
+  auto trans_view = registry->GetView<engine::ecs::components::Transform>();
   for (auto entity : trans_view) {
     auto& transform =
-        registry->GetComponent<ecs::components::Transform>(entity);
+        registry->GetComponent<engine::ecs::components::Transform>(entity);
 
     // Sprite Component (takes priority)
-    if (registry->HasComponent<ecs::components::Sprite>(entity)) {
-      auto& sprite = registry->GetComponent<ecs::components::Sprite>(entity);
+    if (registry->HasComponent<engine::ecs::components::Sprite>(entity)) {
+      auto& sprite =
+          registry->GetComponent<engine::ecs::components::Sprite>(entity);
       if (sprite.visible) {
         if (!sprite.sprite_sheet_name.empty()) {
           auto sheet =
@@ -66,8 +67,9 @@ void SpriteRenderSystem::Render(engine::ecs::Registry* registry) {
       }
     }
     // Quad Component (fallback)
-    else if (registry->HasComponent<ecs::components::Quad>(entity)) {
-      auto& quad = registry->GetComponent<ecs::components::Quad>(entity);
+    else if (registry->HasComponent<engine::ecs::components::Quad>(entity)) {
+      auto& quad =
+          registry->GetComponent<engine::ecs::components::Quad>(entity);
       utils::RenderCommand cmd;
       cmd.z_order = quad.z_index;
       cmd.texture_id = 0;  // White texture slot
@@ -79,8 +81,9 @@ void SpriteRenderSystem::Render(engine::ecs::Registry* registry) {
     }
 
     // Text Component (can be combined with Sprite/Quad)
-    if (registry->HasComponent<ecs::components::Text>(entity)) {
-      auto& text = registry->GetComponent<ecs::components::Text>(entity);
+    if (registry->HasComponent<engine::ecs::components::Text>(entity)) {
+      auto& text =
+          registry->GetComponent<engine::ecs::components::Text>(entity);
       Renderer::Get().DrawText(text.font_name, text.content, transform.position,
                                transform.rotation, text.scale, text.color,
                                text.z_index);

@@ -25,15 +25,15 @@ void UpdateLightingSystem(engine::ecs::Registry* registry,
   lighting_effect->ClearOccluders();
 
   // Sync Lights
-  auto light_view =
-      registry->GetView<ecs::components::Transform, ecs::components::Light>();
+  auto light_view = registry->GetView<engine::ecs::components::Transform,
+                                      engine::ecs::components::Light>();
   for (auto entity : light_view) {
     const auto& transform =
-        registry->GetComponent<ecs::components::Transform>(entity);
+        registry->GetComponent<engine::ecs::components::Transform>(entity);
     const auto& light_comp =
-        registry->GetComponent<ecs::components::Light>(entity);
+        registry->GetComponent<engine::ecs::components::Light>(entity);
 
-    Light light;
+    engine::graphics::Light light;
     light.position = transform.position;
     light.color = light_comp.color;
     light.intensity = light_comp.intensity;
@@ -47,16 +47,15 @@ void UpdateLightingSystem(engine::ecs::Registry* registry,
   }
 
   // Sync Occluders
-  auto occluder_view =
-      registry
-          ->GetView<ecs::components::Transform, ecs::components::Occluder>();
+  auto occluder_view = registry->GetView<engine::ecs::components::Transform,
+                                         engine::ecs::components::Occluder>();
   for (auto entity : occluder_view) {
     const auto& transform =
-        registry->GetComponent<ecs::components::Transform>(entity);
+        registry->GetComponent<engine::ecs::components::Transform>(entity);
     const auto& occluder_comp =
-        registry->GetComponent<ecs::components::Occluder>(entity);
+        registry->GetComponent<engine::ecs::components::Occluder>(entity);
 
-    Occluder occluder;
+    engine::graphics::Occluder occluder;
     occluder.position = transform.position;
     occluder.size = occluder_comp.size * transform.scale;
     occluder.rotation = transform.rotation;

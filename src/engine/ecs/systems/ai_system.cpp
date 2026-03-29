@@ -8,12 +8,16 @@ void AISystem::Update(Registry* registry, float dt) {
     return;
   }
   // Update State Machines
-  registry->ForEach<components::StateMachine>(
-      [dt](components::StateMachine& comp) { comp.fsm.Update(dt); });
+  registry->ForEach<engine::ecs::components::StateMachine>(
+      [dt](engine::ecs::components::StateMachine& comp) {
+        comp.fsm.Update(dt);
+      });
 
   // Update Behavior Trees
-  registry->ForEach<components::BehaviorTree>(
-      [dt](components::BehaviorTree& comp) { comp.tree.Tick(dt); });
+  registry->ForEach<engine::ecs::components::BehaviorTree>(
+      [dt](engine::ecs::components::BehaviorTree& comp) {
+        comp.tree.Tick(dt);
+      });
 }
 
 }  // namespace engine::ecs::systems

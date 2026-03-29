@@ -15,58 +15,65 @@ void ECSBindings::BindCore(sol::state& lua) {
 
 void ECSBindings::BindComponents(sol::state& lua) {
   // Bind Component Types
-  lua.new_usertype<components::Transform>(
-      "TransformComponent", "position", &components::Transform::position,
-      "scale", &components::Transform::scale, "rotation",
-      &components::Transform::rotation);
+  lua.new_usertype<engine::ecs::components::Transform>(
+      "TransformComponent", "position",
+      &engine::ecs::components::Transform::position, "scale",
+      &engine::ecs::components::Transform::scale, "rotation",
+      &engine::ecs::components::Transform::rotation);
 
-  lua.new_usertype<components::Sprite>(
-      "SpriteComponent", "texture_name", &components::Sprite::texture_name,
-      "sprite_sheet_name", &components::Sprite::sprite_sheet_name,
-      "sprite_index", &components::Sprite::sprite_index, "tint",
-      &components::Sprite::tint, "visible", &components::Sprite::visible);
+  lua.new_usertype<engine::ecs::components::Sprite>(
+      "SpriteComponent", "texture_name",
+      &engine::ecs::components::Sprite::texture_name, "sprite_sheet_name",
+      &engine::ecs::components::Sprite::sprite_sheet_name, "sprite_index",
+      &engine::ecs::components::Sprite::sprite_index, "tint",
+      &engine::ecs::components::Sprite::tint, "visible",
+      &engine::ecs::components::Sprite::visible);
 
-  lua.new_usertype<components::Velocity>("VelocityComponent", "velocity",
-                                         &components::Velocity::velocity);
+  lua.new_usertype<engine::ecs::components::Velocity>(
+      "VelocityComponent", "velocity",
+      &engine::ecs::components::Velocity::velocity);
 
   // Helper functions for adding/getting components from Lua
-  lua["get_transform"] = [&lua](EntityID entity) -> components::Transform& {
+  lua["get_transform"] =
+      [&lua](EntityID entity) -> engine::ecs::components::Transform& {
     Registry* reg = lua["registry"];
-    return reg->GetComponent<components::Transform>(entity);
+    return reg->GetComponent<engine::ecs::components::Transform>(entity);
   };
   lua["has_transform"] = [&lua](EntityID entity) {
     Registry* reg = lua["registry"];
-    return reg->HasComponent<components::Transform>(entity);
+    return reg->HasComponent<engine::ecs::components::Transform>(entity);
   };
   lua["add_transform"] = [&lua](EntityID entity, float x, float y) {
     Registry* reg = lua["registry"];
-    reg->AddComponent(entity, components::Transform{{x, y}});
+    reg->AddComponent(entity, engine::ecs::components::Transform{{x, y}});
   };
 
-  lua["get_sprite"] = [&lua](EntityID entity) -> components::Sprite& {
+  lua["get_sprite"] =
+      [&lua](EntityID entity) -> engine::ecs::components::Sprite& {
     Registry* reg = lua["registry"];
-    return reg->GetComponent<components::Sprite>(entity);
+    return reg->GetComponent<engine::ecs::components::Sprite>(entity);
   };
   lua["has_sprite"] = [&lua](EntityID entity) {
     Registry* reg = lua["registry"];
-    return reg->HasComponent<components::Sprite>(entity);
+    return reg->HasComponent<engine::ecs::components::Sprite>(entity);
   };
   lua["add_sprite"] = [&lua](EntityID entity, const std::string& texture) {
     Registry* reg = lua["registry"];
-    reg->AddComponent(entity, components::Sprite{texture});
+    reg->AddComponent(entity, engine::ecs::components::Sprite{texture});
   };
 
-  lua["get_velocity"] = [&lua](EntityID entity) -> components::Velocity& {
+  lua["get_velocity"] =
+      [&lua](EntityID entity) -> engine::ecs::components::Velocity& {
     Registry* reg = lua["registry"];
-    return reg->GetComponent<components::Velocity>(entity);
+    return reg->GetComponent<engine::ecs::components::Velocity>(entity);
   };
   lua["has_velocity"] = [&lua](EntityID entity) {
     Registry* reg = lua["registry"];
-    return reg->HasComponent<components::Velocity>(entity);
+    return reg->HasComponent<engine::ecs::components::Velocity>(entity);
   };
   lua["add_velocity"] = [&lua](EntityID entity, float vx, float vy) {
     Registry* reg = lua["registry"];
-    reg->AddComponent(entity, components::Velocity{{vx, vy}});
+    reg->AddComponent(entity, engine::ecs::components::Velocity{{vx, vy}});
   };
 }
 
