@@ -1,3 +1,9 @@
 [submodule "third_party/m.css"]
 	path = third_party/m.css
 	url = https://github.com/mosra/m.css.git
+[submodule "third_party/imgui"]
+	path = third_party/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "third_party/json"]
+	path = third_party/json
+	url = https://github.com/nlohmann/json.git
