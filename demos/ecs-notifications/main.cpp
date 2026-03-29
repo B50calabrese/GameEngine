@@ -6,6 +6,7 @@
 #include "../common/demo_utils.h"
 
 using namespace engine::ecs;
+using namespace engine::ecs::events;
 
 struct Position {
   float x, y;

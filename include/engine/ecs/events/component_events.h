@@ -8,9 +8,11 @@
 
 #include <engine/ecs/entity_manager.h>
 
-namespace engine::ecs::events {
-
+namespace engine::ecs {
 class Registry;
+}
+
+namespace engine::ecs::events {
 
 /**
  * @brief Event triggered when a component is added to an entity.
@@ -20,7 +22,7 @@ template <typename T>
 struct ComponentAddedEvent {
   EntityID entity;
   T& component;
-  Registry* registry;
+  engine::ecs::Registry* registry;
 };
 
 /**
@@ -32,7 +34,7 @@ template <typename T>
 struct ComponentRemovedEvent {
   EntityID entity;
   T& component;
-  Registry* registry;
+  engine::ecs::Registry* registry;
 };
 
 /**
@@ -43,7 +45,7 @@ template <typename T>
 struct ComponentModifiedEvent {
   EntityID entity;
   T& component;
-  Registry* registry;
+  engine::ecs::Registry* registry;
 };
 
 }  // namespace engine::ecs::events
