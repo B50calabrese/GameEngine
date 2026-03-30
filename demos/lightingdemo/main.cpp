@@ -13,15 +13,10 @@
 #include <engine/graphics/renderer.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
+#include <engine/graphics/ecs/lighting_system.h>
 #include <engine/util/logger.h>
 
 #include "../common/demo_utils.h"
-
-// Forward declaration of the system we created
-namespace engine::graphics {
-void UpdateLightingSystem(engine::ecs::Registry* registry,
-                          engine::graphics::LightingEffect* lighting_effect);
-}
 
 class LightingDemo : public demos::common::BaseDemoApp {
  public:
@@ -145,9 +140,9 @@ class LightingDemo : public demos::common::BaseDemoApp {
 
     // Sync ECS to Lighting Effect
     if (shadows_enabled_) {
-      engine::graphics::utils::UpdateLightingSystem(&registry_, lighting_ptr_);
+      engine::graphics::ecs::UpdateLightingSystem(&registry_, lighting_ptr_);
     } else {
-      engine::graphics::utils::UpdateLightingSystem(&registry_, lighting_ptr_);
+      engine::graphics::ecs::UpdateLightingSystem(&registry_, lighting_ptr_);
       lighting_ptr_->ClearOccluders();
     }
 
