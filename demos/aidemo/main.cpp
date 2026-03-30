@@ -191,7 +191,7 @@ class AIDemoScene : public engine::Scene {
   }
 
   void OnUpdate(float dt) override {
-    engine::ecs::AISystem::Update(&registry_, dt);
+    engine::ecs::systems::AISystem::Update(&registry_, dt);
   }
 
   void OnRender() override {

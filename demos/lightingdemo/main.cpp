@@ -145,9 +145,9 @@ class LightingDemo : public demos::common::BaseDemoApp {
 
     // Sync ECS to Lighting Effect
     if (shadows_enabled_) {
-      engine::graphics::utils::UpdateLightingSystem(&registry_, lighting_ptr_);
+      engine::graphics::ecs::UpdateLightingSystem(&registry_, lighting_ptr_);
     } else {
-      engine::graphics::utils::UpdateLightingSystem(&registry_, lighting_ptr_);
+      engine::graphics::ecs::UpdateLightingSystem(&registry_, lighting_ptr_);
       lighting_ptr_->ClearOccluders();
     }
 
