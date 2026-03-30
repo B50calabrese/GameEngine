@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <engine/input/input_manager.h>
+
 namespace engine::util {
 
 /**
@@ -39,6 +41,9 @@ class Console {
 
   /** @brief Renders the console overlay. */
   void Render();
+
+  /** @brief Sets whether the game should be paused when the console is open. */
+  void SetPaused(bool paused) { paused_ = paused; }
 
   /** @brief Sets the key used to toggle the console. */
   void SetToggleKey(KeyCode key) { toggle_key_ = key; }

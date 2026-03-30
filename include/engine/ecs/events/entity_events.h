@@ -8,16 +8,18 @@
 
 #include <engine/ecs/entity_manager.h>
 
-namespace engine::ecs::events {
-
+namespace engine::ecs {
 class Registry;
+}
+
+namespace engine::ecs::events {
 
 /**
  * @brief Event triggered when a new entity is created.
  */
 struct EntityCreatedEvent {
   EntityID entity;
-  Registry* registry;
+  engine::ecs::Registry* registry;
 };
 
 /**
@@ -25,7 +27,7 @@ struct EntityCreatedEvent {
  */
 struct EntityDestroyedEvent {
   EntityID entity;
-  Registry* registry;
+  engine::ecs::Registry* registry;
 };
 
 }  // namespace engine::ecs::events
