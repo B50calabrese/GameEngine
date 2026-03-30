@@ -3,6 +3,8 @@
  * @brief Syncs ECS light components with the LightingEffect.
  */
 
+#include <engine/graphics/ecs/lighting_system.h>
+
 #include <engine/ecs/components/graphics_components.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/ecs/registry.h>

@@ -18,10 +18,69 @@
 
 namespace engine::ecs {
 
-class IComponentStorage;
+class Registry;
 
+/**
+ * @brief Base interface for generic storage.
+ */
+class IComponentStorage {
+ public:
+  virtual ~IComponentStorage() = default;
+  virtual void Remove(EntityID entity) = 0;
+  virtual void Clear() = 0;
+  virtual bool Has(EntityID entity) = 0;
+  virtual void NotifyRemoved(EntityID entity, Registry* registry) = 0;
+
+ protected:
+  IComponentStorage() = default;
+};
+
+/**
+ * @brief Implementation of the interface for a given type.
+ */
 template <typename T>
-class ComponentStorage;
+class ComponentStorage : public IComponentStorage {
+ public:
+  /**
+   * @brief Stores the component for the given entity.
+   * @param entity The entity to store the component on.
+   * @param component The component being added.
+   */
+  void Add(EntityID entity, T component) { data_[entity] = component; }
+
+  /**
+   * @brief Returns the component for the given entity.
+   * @returns the component.
+   */
+  T& Get(EntityID entity) { return data_.at(entity); }
+
+  /**
+   * @brief Removes the entity from this given storage.
+   * @param entity The entity to remove.
+   */
+  void Remove(EntityID entity) override { data_.erase(entity); }
+
+  /**
+   * @brief Returns if the entity is in the storage.
+   * @returns whether or not the entity is found in this storage.
+   */
+  bool Has(EntityID entity) override {
+    return data_.find(entity) != data_.end();
+  }
+
+  /**
+   * @brief Clears all components from this storage.
+   */
+  void Clear() override { data_.clear(); }
+
+  /**
+   * @brief Triggers a notification that a component is being removed.
+   */
+  void NotifyRemoved(EntityID entity, Registry* registry) override;
+
+ private:
+  std::unordered_map<EntityID, T> data_;
+};
 
 /**
  * @brief Orchestrates the entities and components associated with those
@@ -105,7 +164,18 @@ class Registry {
    * @brief Deletes the entity and associated data.
    * @param entity the ID of the entity to delete.
    */
-  void DeleteEntity(EntityID entity);
+  void DeleteEntity(EntityID entity) {
+    Publish<events::EntityDestroyedEvent>({entity, this});
+    for (auto& [type, storage] : storages_) {
+      if (storage->Has(entity)) {
+        storage->NotifyRemoved(entity, this);
+      }
+    }
+    for (auto& [type, storage] : storages_) {
+      storage->Remove(entity);
+    }
+    entity_manager_.DestroyEntity(entity);
+  }
 
   /**
    * @brief Indicates if an entity is alive.
@@ -122,14 +192,24 @@ class Registry {
    * @param component the component to add to the entity.
    */
   template <typename T>
-  void AddComponent(EntityID entity, T component);
+  void AddComponent(EntityID entity, T component) {
+    GetStorage<T>()->Add(entity, component);
+    Publish<events::ComponentAddedEvent<T>>(
+        {entity, GetComponent<T>(entity), this});
+  }
 
   /**
    * @brief Removes a component from the given entity.
    * @param entity the ID of the entity to remove.
    */
   template <typename T>
-  void RemoveComponent(EntityID entity);
+  void RemoveComponent(EntityID entity) {
+    if (HasComponent<T>(entity)) {
+      Publish<events::ComponentRemovedEvent<T>>(
+          {entity, GetComponent<T>(entity), this});
+      GetStorage<T>()->Remove(entity);
+    }
+  }
 
   /**
    * @brief Retrieves the component for the entity.
@@ -137,7 +217,9 @@ class Registry {
    * @returns the component of the given type.
    */
   template <typename T>
-  T& GetComponent(EntityID entity);
+  T& GetComponent(EntityID entity) {
+    return GetStorage<T>()->Get(entity);
+  }
 
   /**
    * @brief Returns `true` if the component exists on the entity.
@@ -145,7 +227,9 @@ class Registry {
    * @returns `true` if the component exists.
    */
   template <typename T>
-  bool HasComponent(EntityID entity);
+  bool HasComponent(EntityID entity) {
+    return GetStorage<T>()->Has(entity);
+  }
 
   /**
    * @brief A view of entities that have a specific set of components.
@@ -265,7 +349,15 @@ class Registry {
   /**
    * @brief Clears all entities and components from the registry.
    */
-  void Clear();
+  void Clear() {
+    for (auto& [type, storage] : storages_) {
+      storage->Clear();
+    }
+    for (auto& [type, dispatcher] : dispatchers_) {
+      dispatcher->Clear();
+    }
+    entity_manager_.Clear();
+  }
 
  private:
   /**
@@ -273,7 +365,13 @@ class Registry {
    * @returns the ComponentStorage for the template type.
    */
   template <typename T>
-  ComponentStorage<T>* GetStorage();
+  ComponentStorage<T>* GetStorage() {
+    auto type = std::type_index(typeid(T));
+    if (storages_.find(type) == storages_.end()) {
+      storages_[type] = std::make_unique<ComponentStorage<T>>();
+    }
+    return static_cast<ComponentStorage<T>*>(storages_[type].get());
+  }
 
   /**
    * @brief Gets the appropriate EventDispatcher for the given type.
@@ -294,70 +392,6 @@ class Registry {
   std::unordered_map<std::type_index, std::unique_ptr<IEventDispatcher>>
       dispatchers_;
 };
-
-}  // namespace engine::ecs
-
-#include <engine/ecs/component_storage.h>
-
-namespace engine::ecs {
-
-inline void Registry::DeleteEntity(EntityID entity) {
-  Publish<events::EntityDestroyedEvent>({entity, this});
-  for (auto& [type, storage] : storages_) {
-    if (storage->Has(entity)) {
-      storage->NotifyRemoved(entity, this);
-    }
-  }
-  for (auto& [type, storage] : storages_) {
-    storage->Remove(entity);
-  }
-  entity_manager_.DestroyEntity(entity);
-}
-
-inline void Registry::Clear() {
-  for (auto& [type, storage] : storages_) {
-    storage->Clear();
-  }
-  for (auto& [type, dispatcher] : dispatchers_) {
-    dispatcher->Clear();
-  }
-  entity_manager_.Clear();
-}
-
-template <typename T>
-ComponentStorage<T>* Registry::GetStorage() {
-  auto type = std::type_index(typeid(T));
-  if (storages_.find(type) == storages_.end()) {
-    storages_[type] = std::make_unique<ComponentStorage<T>>();
-  }
-  return static_cast<ComponentStorage<T>*>(storages_[type].get());
-}
-
-template <typename T>
-void Registry::AddComponent(EntityID entity, T component) {
-  GetStorage<T>()->Add(entity, component);
-  Publish<events::ComponentAddedEvent<T>>(
-      {entity, GetComponent<T>(entity), this});
-}
-
-template <typename T>
-void Registry::RemoveComponent(EntityID entity) {
-  if (HasComponent<T>(entity)) {
-    Publish<events::ComponentRemovedEvent<T>>(
-        {entity, GetComponent<T>(entity), this});
-    GetStorage<T>()->Remove(entity);
-  }
-}
-
-template <typename T>
-T& Registry::GetComponent(EntityID entity) {
-  return GetStorage<T>()->Get(entity);
-}
-
-template <typename T>
-bool Registry::HasComponent(EntityID entity) {
-  return GetStorage<T>()->Has(entity);
-}
 
 template <typename T>
 void ComponentStorage<T>::NotifyRemoved(EntityID entity, Registry* registry) {

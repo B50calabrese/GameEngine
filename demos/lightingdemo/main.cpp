@@ -13,15 +13,10 @@
 #include <engine/graphics/renderer.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
+#include <engine/graphics/ecs/lighting_system.h>
 #include <engine/util/logger.h>
 
 #include "../common/demo_utils.h"
-
-// Forward declaration of the system we created
-namespace engine::graphics {
-void UpdateLightingSystem(engine::ecs::Registry* registry,
-                          engine::graphics::LightingEffect* lighting_effect);
-}
 
 class LightingDemo : public demos::common::BaseDemoApp {
  public:
