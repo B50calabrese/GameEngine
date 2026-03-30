@@ -107,6 +107,7 @@ target_include_directories(GameEngine
 
 target_compile_definitions(GameEngine PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_compile_definitions(GameEngine PUBLIC GLFW_INCLUDE_NONE)
+target_compile_definitions(GameEngine PRIVATE IMGUI_IMPL_GLFW_DISABLE_WAYLAND)
 
 # Link the GLFW library and all necessary system libraries.
 if(WIN32)
@@ -160,6 +161,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
         )
     endfunction()
 
+    add_subdirectory(demos/common)
     add_subdirectory(demos/ecs-notifications)
     add_subdirectory(demos/scenedemo)
     add_subdirectory(demos/textdemo)
@@ -173,7 +175,6 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/uimenu)
     add_subdirectory(demos/aidemo)
     add_subdirectory(demos/luademo)
-    add_subdirectory(demos/common)
     add_subdirectory(demos/games)
     add_subdirectory(demos/consoledemo)
 endif()
