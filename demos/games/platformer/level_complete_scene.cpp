@@ -1,3 +1,4 @@
+#include <engine/core/application.h>
 #include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
@@ -53,8 +54,9 @@ void LevelCompleteScene::OnRender() {
       "default", msg, {cam_pos.x + 200.0f, cam_pos.y + 400.0f}, 0.0f, 2.0f,
       {1.0f, 1.0f, 0.0f, 1.0f});
   engine::graphics::Renderer::Get().DrawText(
-      "default", "Press SPACE to Continue", {cam_pos.x + 250.0f, cam_pos.y + 300.0f},
-      0.0f, 1.0f, {1.0f, 1.0f, 1.0f, 1.0f});
+      "default", "Press SPACE to Continue",
+      {cam_pos.x + 250.0f, cam_pos.y + 300.0f}, 0.0f, 1.0f,
+      {1.0f, 1.0f, 1.0f, 1.0f});
   engine::graphics::Renderer::Get().Flush();
 }
 
