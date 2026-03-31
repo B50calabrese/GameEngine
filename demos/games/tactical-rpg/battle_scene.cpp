@@ -24,14 +24,14 @@ namespace tactical_rpg {
 
 void BattleScene::OnAttach() {
   ActionRegistry::Get().ClearCache();
-  BattleGrid::Setup(registry());
+  BattleGrid::Setup(GetRegistry());
   SetupEnemies();
-  turn_manager_.RollInitiative(registry());
-  turn_manager_.NextTurn(registry());
+  turn_manager_.RollInitiative(GetRegistry());
+  turn_manager_.NextTurn(GetRegistry());
 
   auto active = turn_manager_.GetActiveCharacter();
-  if (registry().IsAlive(active)) {
-    cursor_pos_ = registry().GetComponent<GridPositionComponent>(active).pos;
+  if (GetRegistry().IsAlive(active)) {
+    cursor_pos_ = GetRegistry().GetComponent<GridPositionComponent>(active).pos;
   }
 }
 
@@ -44,8 +44,8 @@ void BattleScene::SetupEnemies() {
   for (int i = 0; i < num_enemies; ++i) {
     ClassType type = static_cast<ClassType>(class_dist(gen));
     auto entity = ClassRegistry::Get().CreateCharacter(
-        registry(), type, "Enemy " + std::to_string(i + 1), true);
-    registry().AddComponent(
+        GetRegistry(), type, "Enemy " + std::to_string(i + 1), true);
+    GetRegistry().AddComponent(
         entity, GridPositionComponent{{i * 2, BattleGrid::kSize - 1}});
     enemy_entities_.push_back(entity);
   }
@@ -53,14 +53,14 @@ void BattleScene::SetupEnemies() {
   party_entities_.clear();
   for (int i = 0; i < (int)party_data_.size(); ++i) {
     auto entity = ClassRegistry::Get().CreateCharacter(
-        registry(), party_data_[i].class_type, party_data_[i].name, false);
-    registry().AddComponent(entity, GridPositionComponent{{i * 2, 0}});
+        GetRegistry(), party_data_[i].class_type, party_data_[i].name, false);
+    GetRegistry().AddComponent(entity, GridPositionComponent{{i * 2, 0}});
     party_entities_.push_back(entity);
   }
 }
 
 void BattleScene::OnUpdate(float dt) {
-  SyncTransformSystem::Update(registry(), tile_visual_size_, grid_offset_);
+  SyncTransformSystem::Update(GetRegistry(), tile_visual_size_, grid_offset_);
 
   for (auto it = floating_texts_.begin(); it != floating_texts_.end();) {
     it->lifetime -= dt;
@@ -74,11 +74,12 @@ void BattleScene::OnUpdate(float dt) {
 
   if (is_battle_over_) {
     if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace)) {
-      auto view = registry().GetView<IdentityComponent, TurnStateComponent>();
+      auto view =
+          GetRegistry().GetView<IdentityComponent, TurnStateComponent>();
       bool any_enemy_alive = false;
       for (auto entity : view) {
-        if (registry().GetComponent<IdentityComponent>(entity).is_enemy &&
-            !registry().GetComponent<TurnStateComponent>(entity).is_downed) {
+        if (GetRegistry().GetComponent<IdentityComponent>(entity).is_enemy &&
+            !GetRegistry().GetComponent<TurnStateComponent>(entity).is_downed) {
           any_enemy_alive = true;
           break;
         }
@@ -89,21 +90,21 @@ void BattleScene::OnUpdate(float dt) {
   }
 
   auto active = turn_manager_.GetActiveCharacter();
-  if (!registry().IsAlive(active)) return;
+  if (!GetRegistry().IsAlive(active)) return;
 
-  if (!registry().GetComponent<IdentityComponent>(active).is_enemy) {
+  if (!GetRegistry().GetComponent<IdentityComponent>(active).is_enemy) {
     HandlePlayerTurn(dt);
   } else {
     HandleEnemyAI();
   }
 
-  if (turn_manager_.IsBattleOver(registry())) {
+  if (turn_manager_.IsBattleOver(GetRegistry())) {
     is_battle_over_ = true;
-    auto view = registry().GetView<IdentityComponent, TurnStateComponent>();
+    auto view = GetRegistry().GetView<IdentityComponent, TurnStateComponent>();
     bool any_enemy_alive = false;
     for (auto entity : view) {
-      if (registry().GetComponent<IdentityComponent>(entity).is_enemy &&
-          !registry().GetComponent<TurnStateComponent>(entity).is_downed) {
+      if (GetRegistry().GetComponent<IdentityComponent>(entity).is_enemy &&
+          !GetRegistry().GetComponent<TurnStateComponent>(entity).is_downed) {
         any_enemy_alive = true;
         break;
       }
@@ -117,10 +118,11 @@ void BattleScene::HandlePlayerTurn(float dt) {
   auto& input = engine::InputManager::Get();
   auto active = turn_manager_.GetActiveCharacter();
   auto& active_grid_pos =
-      registry().GetComponent<GridPositionComponent>(active);
-  auto& active_turn_state = registry().GetComponent<TurnStateComponent>(active);
-  auto& active_stats = registry().GetComponent<Stats>(active);
-  auto& active_id = registry().GetComponent<IdentityComponent>(active);
+      GetRegistry().GetComponent<GridPositionComponent>(active);
+  auto& active_turn_state =
+      GetRegistry().GetComponent<TurnStateComponent>(active);
+  auto& active_stats = GetRegistry().GetComponent<Stats>(active);
+  auto& active_id = GetRegistry().GetComponent<IdentityComponent>(active);
 
   // Movement
   if (input.IsKeyPressed(engine::KeyCode::kW))
@@ -139,57 +141,59 @@ void BattleScene::HandlePlayerTurn(float dt) {
 
   if (input.IsKeyPressed(engine::KeyCode::kSpace)) {
     if (selected_action_index_ == -1) {
-      if (CombatRules::CanMoveTo(registry(), active, cursor_pos_.x,
+      if (CombatRules::CanMoveTo(GetRegistry(), active, cursor_pos_.x,
                                  cursor_pos_.y)) {
         int dist = std::abs(cursor_pos_.x - active_grid_pos.pos.x) +
                    std::abs(cursor_pos_.y - active_grid_pos.pos.y);
         active_grid_pos.pos = cursor_pos_;
         active_turn_state.movement_remaining -= dist;
 
-        if (BattleGrid::GetTerrain(registry(), cursor_pos_.x, cursor_pos_.y) ==
-            TerrainType::Damage) {
+        if (BattleGrid::GetTerrain(GetRegistry(), cursor_pos_.x,
+                                   cursor_pos_.y) == TerrainType::Damage) {
           active_stats.current_hp -= 2;
           last_log_ = active_id.name + " took damage!";
-          auto& trans = registry().GetComponent<engine::ecs::components::Transform>(active);
+          auto& trans =
+              GetRegistry().GetComponent<engine::ecs::components::Transform>(
+                  active);
           AddFloatingText("-2", trans.position, {1, 0, 0, 1});
         }
       }
     } else {
       auto& actions =
-          registry().GetComponent<ActionListComponent>(active).actions;
+          GetRegistry().GetComponent<ActionListComponent>(active).actions;
       if (selected_action_index_ < (int)actions.size()) {
         auto action_entity = actions[selected_action_index_];
         auto& action_data =
-            registry().GetComponent<ActionDataComponent>(action_entity);
+            GetRegistry().GetComponent<ActionDataComponent>(action_entity);
         bool can_use =
             (action_data.is_bonus_action ? !active_turn_state.bonus_action_used
                                          : !active_turn_state.action_used);
 
         if (can_use) {
           // Find target
-          engine::ecs::EntityID target = engine::ecs::INVALID_ENTITY;
-          auto view =
-              registry().GetView<GridPositionComponent, TurnStateComponent>();
+          engine::ecs::EntityID target = engine::ecs::kInvalidEntity;
+          auto view = GetRegistry()
+                          .GetView<GridPositionComponent, TurnStateComponent>();
           for (auto entity : view) {
-            if (!registry()
+            if (!GetRegistry()
                      .GetComponent<TurnStateComponent>(entity)
                      .is_downed &&
-                registry().GetComponent<GridPositionComponent>(entity).pos ==
+                GetRegistry().GetComponent<GridPositionComponent>(entity).pos ==
                     cursor_pos_) {
               target = entity;
               break;
             }
           }
 
-          if (registry().IsAlive(target) &&
-              CombatRules::IsInRange(registry(), active, target,
+          if (GetRegistry().IsAlive(target) &&
+              CombatRules::IsInRange(GetRegistry(), active, target,
                                      action_data.range)) {
             std::mt19937 gen(std::random_device{}());
             int roll = std::uniform_int_distribution<int>(1, 20)(gen);
 
-            auto& target_stats = registry().GetComponent<Stats>(target);
+            auto& target_stats = GetRegistry().GetComponent<Stats>(target);
             auto& target_id =
-                registry().GetComponent<IdentityComponent>(target);
+                GetRegistry().GetComponent<IdentityComponent>(target);
 
             // For now, always check against AC for non-heal actions
             bool is_heal = (action_data.type == ActionType::Ability &&
@@ -198,12 +202,17 @@ void BattleScene::HandlePlayerTurn(float dt) {
 
             if (is_heal || roll + 5 >= target_stats.ac) {
               last_log_ = active_id.name + " used " + action_data.name;
-              int result = CombatSystem::ApplyEffect(registry(), action_entity, target);
-              auto& trans = registry().GetComponent<engine::ecs::components::Transform>(target);
+              int result = CombatSystem::ApplyEffect(GetRegistry(),
+                                                     action_entity, target);
+              auto& trans =
+                  GetRegistry()
+                      .GetComponent<engine::ecs::components::Transform>(target);
               if (result < 0) {
-                AddFloatingText(std::to_string(result), trans.position, {1, 0, 0, 1});
+                AddFloatingText(std::to_string(result), trans.position,
+                                {1, 0, 0, 1});
               } else if (result > 0) {
-                AddFloatingText("+" + std::to_string(result), trans.position, {0, 1, 0, 1});
+                AddFloatingText("+" + std::to_string(result), trans.position,
+                                {0, 1, 0, 1});
               }
 
               if (target_stats.current_hp <= 0) {
@@ -224,40 +233,42 @@ void BattleScene::HandlePlayerTurn(float dt) {
   }
 
   if (input.IsKeyPressed(engine::KeyCode::kEnter)) {
-    turn_manager_.NextTurn(registry());
+    turn_manager_.NextTurn(GetRegistry());
     auto next = turn_manager_.GetActiveCharacter();
-    if (registry().IsAlive(next)) {
-      cursor_pos_ = registry().GetComponent<GridPositionComponent>(next).pos;
+    if (GetRegistry().IsAlive(next)) {
+      cursor_pos_ = GetRegistry().GetComponent<GridPositionComponent>(next).pos;
       last_log_ =
-          registry().GetComponent<IdentityComponent>(next).name + "'s Turn!";
+          GetRegistry().GetComponent<IdentityComponent>(next).name + "'s Turn!";
     }
   }
 }
 
 void BattleScene::HandleEnemyAI() {
   auto active = turn_manager_.GetActiveCharacter();
-  EnemyAI::ProcessTurn(registry(), active,
-                       [this](const std::string& text, glm::vec2 pos,
-                              glm::vec4 color) { AddFloatingText(text, pos, color); });
+  EnemyAI::ProcessTurn(
+      GetRegistry(), active,
+      [this](const std::string& text, glm::vec2 pos, glm::vec4 color) {
+        AddFloatingText(text, pos, color);
+      });
 
   // Auto end turn
-  turn_manager_.NextTurn(registry());
+  turn_manager_.NextTurn(GetRegistry());
   auto next = turn_manager_.GetActiveCharacter();
-  if (registry().IsAlive(next)) {
-    cursor_pos_ = registry().GetComponent<GridPositionComponent>(next).pos;
+  if (GetRegistry().IsAlive(next)) {
+    cursor_pos_ = GetRegistry().GetComponent<GridPositionComponent>(next).pos;
     last_log_ =
-        registry().GetComponent<IdentityComponent>(next).name + "'s Turn!";
+        GetRegistry().GetComponent<IdentityComponent>(next).name + "'s Turn!";
   }
 }
 
 void BattleScene::OnRender() {
-  GridRenderer::Render(registry(), grid_offset_, tile_visual_size_,
+  GridRenderer::Render(GetRegistry(), grid_offset_, tile_visual_size_,
                        cursor_pos_);
-  CharacterRenderer::Render(registry(), turn_manager_.GetActiveCharacter(),
+  CharacterRenderer::Render(GetRegistry(), turn_manager_.GetActiveCharacter(),
                             grid_offset_, tile_visual_size_);
 
   for (const auto& ft : floating_texts_) {
-    engine::graphics::TextRenderer::Get().DrawText(
+    engine::graphics::utils::RenderQueue::Default().Submit(
         "default", ft.text, ft.position, 0.0f, 0.5f, ft.color);
   }
 
@@ -265,14 +276,15 @@ void BattleScene::OnRender() {
 }
 
 void BattleScene::RenderUI() {
-  engine::graphics::TextRenderer::Get().DrawText(
+  engine::graphics::utils::RenderQueue::Default().Submit(
       "default", last_log_, {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
   // Tile Tooltip
-  TerrainType terrain = BattleGrid::GetTerrain(registry(), cursor_pos_.x, cursor_pos_.y);
+  TerrainType terrain =
+      BattleGrid::GetTerrain(GetRegistry(), cursor_pos_.x, cursor_pos_.y);
   std::string terrain_name = "Unknown";
   std::string terrain_desc = "";
-  switch(terrain) {
+  switch (terrain) {
     case TerrainType::Normal:
       terrain_name = "Grass";
       terrain_desc = "Normal terrain.";
@@ -290,27 +302,29 @@ void BattleScene::RenderUI() {
       terrain_desc = "Cannot pass.";
       break;
   }
-  engine::graphics::TextRenderer::Get().DrawText(
-      "default", "Tile: " + terrain_name, {100, 600}, 0.0f, 0.6f, {0.7f, 0.7f, 1.0f, 1.0f});
-  engine::graphics::TextRenderer::Get().DrawText(
-      "default", terrain_desc, {100, 580}, 0.0f, 0.4f, {0.6f, 0.6f, 0.9f, 1.0f});
+  engine::graphics::utils::RenderQueue::Default().Submit(
+      "default", "Tile: " + terrain_name, {100, 600}, 0.0f, 0.6f,
+      {0.7f, 0.7f, 1.0f, 1.0f});
+  engine::graphics::utils::RenderQueue::Default().Submit(
+      "default", terrain_desc, {100, 580}, 0.0f, 0.4f,
+      {0.6f, 0.6f, 0.9f, 1.0f});
 
   auto active = turn_manager_.GetActiveCharacter();
-  if (registry().IsAlive(active) &&
-      !registry().GetComponent<IdentityComponent>(active).is_enemy) {
-    auto& turn_state = registry().GetComponent<TurnStateComponent>(active);
-    auto& stats = registry().GetComponent<Stats>(active);
-    auto& id = registry().GetComponent<IdentityComponent>(active);
+  if (GetRegistry().IsAlive(active) &&
+      !GetRegistry().GetComponent<IdentityComponent>(active).is_enemy) {
+    auto& turn_state = GetRegistry().GetComponent<TurnStateComponent>(active);
+    auto& stats = GetRegistry().GetComponent<Stats>(active);
+    auto& id = GetRegistry().GetComponent<IdentityComponent>(active);
     auto& actions =
-        registry().GetComponent<ActionListComponent>(active).actions;
+        GetRegistry().GetComponent<ActionListComponent>(active).actions;
 
     std::string move_info =
         "Movement: " + std::to_string(turn_state.movement_remaining) + "/" +
         std::to_string(stats.speed);
-    engine::graphics::TextRenderer::Get().DrawText(
+    engine::graphics::utils::RenderQueue::Default().Submit(
         "default", move_info, {700, 500}, 0.0f, 0.7f, {1, 1, 1, 1});
 
-    engine::graphics::TextRenderer::Get().DrawText(
+    engine::graphics::utils::RenderQueue::Default().Submit(
         "default", "1: Move Mode", {700, 450}, 0.0f, 0.7f,
         (selected_action_index_ == -1 ? glm::vec4(1, 1, 0, 1)
                                       : glm::vec4(1, 1, 1, 1)));
@@ -318,40 +332,42 @@ void BattleScene::RenderUI() {
     for (int i = 0; i < (int)actions.size(); ++i) {
       auto action_entity = actions[i];
       auto& action_data =
-          registry().GetComponent<ActionDataComponent>(action_entity);
+          GetRegistry().GetComponent<ActionDataComponent>(action_entity);
       bool is_selected = (selected_action_index_ == i);
-      glm::vec4 color = (is_selected ? glm::vec4(1, 1, 0, 1)
-                                     : glm::vec4(1, 1, 1, 1));
-      engine::graphics::TextRenderer::Get().DrawText(
+      glm::vec4 color =
+          (is_selected ? glm::vec4(1, 1, 0, 1) : glm::vec4(1, 1, 1, 1));
+      engine::graphics::utils::RenderQueue::Default().Submit(
           "default", std::to_string(i + 2) + ": " + action_data.name,
           {700, 400 - i * 40.0f}, 0.0f, 0.7f, color);
 
       if (is_selected) {
         std::string desc = action_data.description;
         auto& effects =
-            registry().GetComponent<EffectsListComponent>(action_entity);
+            GetRegistry().GetComponent<EffectsListComponent>(action_entity);
         for (auto effect : effects.effects) {
-          if (registry().HasComponent<DamageEffectComponent>(effect)) {
-            auto& dmg = registry().GetComponent<DamageEffectComponent>(effect);
+          if (GetRegistry().HasComponent<DamageEffectComponent>(effect)) {
+            auto& dmg =
+                GetRegistry().GetComponent<DamageEffectComponent>(effect);
             desc += " (Damage: " + std::to_string(dmg.num_dice) + "d" +
                     std::to_string(dmg.dice_size) + "+" +
                     std::to_string(dmg.modifier) + ")";
-          } else if (registry().HasComponent<HealEffectComponent>(effect)) {
-            auto& heal = registry().GetComponent<HealEffectComponent>(effect);
+          } else if (GetRegistry().HasComponent<HealEffectComponent>(effect)) {
+            auto& heal =
+                GetRegistry().GetComponent<HealEffectComponent>(effect);
             desc += " (Heal: " + std::to_string(heal.num_dice) + "d" +
                     std::to_string(heal.dice_size) + "+" +
                     std::to_string(heal.modifier) + ")";
           }
         }
-        engine::graphics::TextRenderer::Get().DrawText(
+        engine::graphics::utils::RenderQueue::Default().Submit(
             "default", desc, {700, 370 - i * 40.0f}, 0.0f, 0.5f,
             {0.8f, 0.8f, 0.8f, 1.0f});
       }
     }
 
-    engine::graphics::TextRenderer::Get().DrawText(
+    engine::graphics::utils::RenderQueue::Default().Submit(
         "default", "ENTER: End Turn", {700, 100}, 0.0f, 0.7f, {1, 1, 1, 1});
-    engine::graphics::TextRenderer::Get().DrawText(
+    engine::graphics::utils::RenderQueue::Default().Submit(
         "default",
         id.name + " HP: " + std::to_string(stats.current_hp) + "/" +
             std::to_string(stats.max_hp),
@@ -361,7 +377,8 @@ void BattleScene::RenderUI() {
   engine::graphics::Renderer::Get().Flush();
 }
 
-void BattleScene::AddFloatingText(const std::string& text, glm::vec2 pos, glm::vec4 color) {
+void BattleScene::AddFloatingText(const std::string& text, glm::vec2 pos,
+                                  glm::vec4 color) {
   floating_texts_.push_back({text, pos, 1.0f, color});
 }
 

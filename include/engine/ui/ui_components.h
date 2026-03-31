@@ -32,7 +32,7 @@ struct UITransform {
 
 /** @brief Relationship component for nesting. */
 struct UIHierarchy {
-  ecs::EntityID parent = ecs::INVALID_ENTITY;
+  ecs::EntityID parent = ecs::kInvalidEntity;
   std::vector<ecs::EntityID> children;
 };
 

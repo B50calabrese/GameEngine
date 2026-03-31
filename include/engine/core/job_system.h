@@ -19,39 +19,23 @@
 namespace engine::core {
 
 /**
- * @brief Singleton class that manages a pool of worker threads for parallel
- * task execution.
+ * @brief Singleton class that manages a pool of worker threads.
  */
 class JobSystem {
  public:
-  /**
-   * @brief Returns the singleton instance of the JobSystem.
-   * @return Reference to the JobSystem.
-   */
+  /** @brief Returns the singleton instance. */
   static JobSystem& Get() {
     static JobSystem instance;
     return instance;
   }
 
-  /**
-   * @brief Initializes the job system and spawns worker threads.
-   *
-   * The number of threads is determined by the system's hardware concurrency.
-   */
+  /** @brief Initializes the job system. */
   void Init();
 
-  /**
-   * @brief Shuts down the job system and joins all worker threads.
-   */
+  /** @brief Shuts down the job system. */
   void Shutdown();
 
-  /**
-   * @brief Submits a task to be executed asynchronously by a worker thread.
-   *
-   * @tparam F The type of the callable task.
-   * @param f The callable task to execute.
-   * @return A std::future that will contain the result of the task.
-   */
+  /** @brief Submits a task to be executed asynchronously. */
   template <typename F>
   auto Execute(F&& f) -> std::future<decltype(f())> {
     using ReturnType = decltype(f());
@@ -78,29 +62,20 @@ class JobSystem {
     return res;
   }
 
-  /**
-   * @brief Blocks until all submitted tasks have completed.
-   */
+  /** @brief Blocks until all tasks have completed. */
   void Wait();
 
-  /**
-   * @brief Checks if the current thread is the thread that initialized the
-   * JobSystem.
-   * @return True if the current thread is the main thread, false otherwise.
-   */
+  /** @brief Returns true if the current thread is the main thread. */
   [[nodiscard]] bool IsMainThread() const;
 
  private:
   JobSystem() = default;
   ~JobSystem();
 
-  // Prevent copy and move
   JobSystem(const JobSystem&) = delete;
   JobSystem& operator=(const JobSystem&) = delete;
 
-  /**
-   * @brief The main loop for worker threads.
-   */
+  /** @brief The main loop for worker threads. */
   void WorkerLoop();
 
   std::vector<std::thread> workers_;
@@ -117,10 +92,6 @@ class JobSystem {
 
 }  // namespace engine::core
 
-/**
- * @brief Macro to ensure a function is called from the main thread.
- * Fails in debug builds if called from any other thread.
- */
 #ifdef NDEBUG
 #define ASSERT_MAIN_THREAD() ((void)0)
 #else

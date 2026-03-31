@@ -3,9 +3,6 @@
 #include <engine/ecs/components/physics_components.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/graphics/renderer.h>
-#include <engine/graphics/text_renderer.h>
-#include <engine/input/action_manager.h>
-#include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/util/collision.h>
 
@@ -20,26 +17,27 @@ GameplayScene::GameplayScene(const std::string& name, int level)
 void GameplayScene::OnAttach() { LoadLevel(level_); }
 
 void GameplayScene::LoadLevel(int level) {
-  registry().Clear();
+  GetRegistry().Clear();
   camera_x_ = 0.0f;
 
-  // Create Player
-  player_entity_ = registry().CreateEntity();
-  registry().AddComponent(player_entity_, engine::ecs::components::Transform{
-                                              {50.0f, 100.0f}, {30.0f, 30.0f}});
-  registry().AddComponent(player_entity_, engine::ecs::components::Velocity{});
-  registry().AddComponent(player_entity_, engine::ecs::components::Gravity{});
-  // Player is a physics-resolved object
-  registry().AddComponent(
+  player_entity_ = GetRegistry().CreateEntity();
+  GetRegistry().AddComponent(
+      player_entity_,
+      engine::ecs::components::Transform{{50.0f, 100.0f}, {30.0f, 30.0f}});
+  GetRegistry().AddComponent(player_entity_,
+                             engine::ecs::components::Velocity{});
+  GetRegistry().AddComponent(player_entity_,
+                             engine::ecs::components::Gravity{});
+  GetRegistry().AddComponent(
       player_entity_,
       engine::ecs::components::Collider{{30.0f, 30.0f}, {0, 0}, false, false});
-  registry().AddComponent(
+  GetRegistry().AddComponent(
       player_entity_, engine::ecs::components::Quad{{1.0f, 1.0f, 1.0f, 1.0f}});
-  registry().AddComponent(player_entity_, PlayerComponent{});
+  GetRegistry().AddComponent(player_entity_, PlayerComponent{});
 
   std::string level_path = engine::graphics::Renderer::Get().ResolveAssetPath(
       "platformer_level" + std::to_string(level) + ".txt");
-  LevelLoader::Load(level_path, registry());
+  LevelLoader::Load(level_path, GetRegistry());
 }
 
 void GameplayScene::OnUpdate(float dt) {
@@ -49,9 +47,9 @@ void GameplayScene::OnUpdate(float dt) {
   UpdateCamera();
 
   auto& player_trans =
-      registry().GetComponent<engine::ecs::components::Transform>(
+      GetRegistry().GetComponent<engine::ecs::components::Transform>(
           player_entity_);
-  registry().ForEach<GoalComponent, engine::ecs::components::Transform>(
+  GetRegistry().ForEach<GoalComponent, engine::ecs::components::Transform>(
       [this, &player_trans](GoalComponent& gc,
                             engine::ecs::components::Transform& gt) {
         if (engine::util::CheckAABB(player_trans.position, player_trans.scale,
@@ -63,14 +61,12 @@ void GameplayScene::OnUpdate(float dt) {
 }
 
 void GameplayScene::UpdatePlatforms(float dt) {
-  registry()
+  GetRegistry()
       .ForEach<PlatformComponent, engine::ecs::components::Transform,
                engine::ecs::components::Velocity>(
           [dt](PlatformComponent& pc, engine::ecs::components::Transform& tc,
                engine::ecs::components::Velocity& vc) {
-            if (!pc.active) {
-              return;
-            }
+            if (!pc.active) return;
             if (pc.type == PlatformType::Moving) {
               if (glm::distance(tc.position, pc.start_pos) < 5.0f) {
                 vc.velocity =
@@ -92,10 +88,10 @@ void GameplayScene::UpdatePlatforms(float dt) {
 }
 
 void GameplayScene::UpdatePlayer(float dt) {
-  auto& player = registry().GetComponent<PlayerComponent>(player_entity_);
-  auto& trans = registry().GetComponent<engine::ecs::components::Transform>(
+  auto& player = GetRegistry().GetComponent<PlayerComponent>(player_entity_);
+  auto& trans = GetRegistry().GetComponent<engine::ecs::components::Transform>(
       player_entity_);
-  auto& vel = registry().GetComponent<engine::ecs::components::Velocity>(
+  auto& vel = GetRegistry().GetComponent<engine::ecs::components::Velocity>(
       player_entity_);
 
   if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kLeft)) {
@@ -106,8 +102,6 @@ void GameplayScene::UpdatePlayer(float dt) {
     vel.velocity.x = 0;
   }
 
-  // We check if grounded by looking at velocity (simplified)
-  // In a real engine we'd check if the collider is resting on something.
   player.is_grounded = (vel.velocity.y == 0);
 
   if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace) &&
@@ -115,9 +109,7 @@ void GameplayScene::UpdatePlayer(float dt) {
     vel.velocity.y = player.jump_force;
   }
 
-  // Handle temporary platform touch (as they are triggers/stat-less resolved
-  // objects)
-  registry().ForEach<PlatformComponent, engine::ecs::components::Transform>(
+  GetRegistry().ForEach<PlatformComponent, engine::ecs::components::Transform>(
       [&](PlatformComponent& pc, engine::ecs::components::Transform& tc) {
         if (pc.type == PlatformType::Temporary && pc.active) {
           if (engine::util::CheckAABB(trans.position, trans.scale, tc.position,
@@ -127,24 +119,20 @@ void GameplayScene::UpdatePlayer(float dt) {
         }
       });
 
-  if (trans.position.x < camera_x_) {
-    trans.position.x = camera_x_;
-  }
-  if (trans.position.y < -100.0f) {
-    ResetPlayer();
-  }
+  if (trans.position.x < camera_x_) trans.position.x = camera_x_;
+  if (trans.position.y < -100.0f) ResetPlayer();
 }
 
 void GameplayScene::UpdateEnemies(float dt) {
   auto& player_trans =
-      registry().GetComponent<engine::ecs::components::Transform>(
+      GetRegistry().GetComponent<engine::ecs::components::Transform>(
           player_entity_);
-  registry()
+  GetRegistry()
       .ForEach<EnemyComponent, engine::ecs::components::Transform,
                engine::ecs::components::Velocity>(
-          [this, dt, &player_trans](EnemyComponent& ec,
-                                    engine::ecs::components::Transform& tc,
-                                    engine::ecs::components::Velocity& vc) {
+          [this, &player_trans](EnemyComponent& ec,
+                                engine::ecs::components::Transform& tc,
+                                engine::ecs::components::Velocity& vc) {
             if (ec.is_patrolling) {
               if (glm::distance(tc.position, ec.start_pos) < 5.0f) {
                 vc.velocity =
@@ -165,7 +153,7 @@ void GameplayScene::UpdateEnemies(float dt) {
 
 void GameplayScene::UpdateCamera() {
   auto& player_trans =
-      registry().GetComponent<engine::ecs::components::Transform>(
+      GetRegistry().GetComponent<engine::ecs::components::Transform>(
           player_entity_);
   float center_x = camera_x_ + 400.0f;
   if (player_trans.position.x > center_x) {
@@ -174,14 +162,14 @@ void GameplayScene::UpdateCamera() {
 }
 
 void GameplayScene::ResetPlayer() {
-  auto& trans = registry().GetComponent<engine::ecs::components::Transform>(
+  auto& trans = GetRegistry().GetComponent<engine::ecs::components::Transform>(
       player_entity_);
-  auto& vel = registry().GetComponent<engine::ecs::components::Velocity>(
+  auto& vel = GetRegistry().GetComponent<engine::ecs::components::Velocity>(
       player_entity_);
   trans.position = {50.0f, 100.0f};
   camera_x_ = 0.0f;
   vel.velocity = {0, 0};
-  registry().ForEach<PlatformComponent>([](PlatformComponent& pc) {
+  GetRegistry().ForEach<PlatformComponent>([](PlatformComponent& pc) {
     if (pc.type == PlatformType::Temporary) {
       pc.active = true;
       pc.touched = false;
@@ -191,13 +179,13 @@ void GameplayScene::ResetPlayer() {
 }
 
 void GameplayScene::OnRender() {
-  engine::graphics::Camera& cam = engine::Application::Get().camera();
-  cam.set_position({camera_x_, 0.0f, 0.0f});
+  engine::graphics::Camera& cam = engine::Application::Get().GetCamera();
+  cam.SetPosition({camera_x_, 0.0f, 0.0f});
 
   engine::graphics::Renderer::Get().DrawQuad(
       {camera_x_, 0.0f}, {800.0f, 600.0f}, {0.1f, 0.1f, 0.2f, 1.0f});
 
-  engine::graphics::Renderer::Get().DrawText(
+  engine::graphics::Renderer::Get().DrawQuad(
       "default", "Level: " + std::to_string(level_),
       {camera_x_ + 10.0f, 570.0f}, 0.0f, 0.8f, {1.0f, 1.0f, 1.0f, 1.0f});
 

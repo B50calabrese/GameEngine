@@ -53,7 +53,7 @@ class MapScene : public engine::Scene {
   void EnterNode(int node_id);
 
   void OnRender() override {
-    engine::graphics::TextRenderer::Get().DrawText(
+    engine::graphics::utils::RenderQueue::Default().Submit(
         "default", "MAP SCREEN", {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
     for (const auto& node : map_) {
@@ -62,9 +62,9 @@ class MapScene : public engine::Scene {
         glm::vec2 start = node->GetPosition();
         glm::vec2 end = target->GetPosition();
         glm::vec2 diff = end - start;
-        engine::graphics::Renderer::Get().DrawQuad(start + diff * 0.5f,
-                                                   {glm::length(diff), 2.0f},
-                                                   {0.5f, 0.5f, 0.5f, 1.0f});
+        engine::graphics::utils::RenderQueue::Default().Submit(
+            start + diff * 0.5f, {glm::length(diff), 2.0f},
+            {0.5f, 0.5f, 0.5f, 1.0f});
       }
     }
 
@@ -108,7 +108,7 @@ class MapScene : public engine::Scene {
 
       engine::graphics::Renderer::Get().DrawQuad(node->GetPosition(), {30, 30},
                                                  color);
-      engine::graphics::TextRenderer::Get().DrawText(
+      engine::graphics::utils::RenderQueue::Default().Submit(
           "default", label, node->GetPosition() - glm::vec2(5, 5), 0.0f, 0.5f,
           {1, 1, 1, 1});
     }

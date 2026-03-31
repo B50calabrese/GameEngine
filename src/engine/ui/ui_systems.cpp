@@ -18,7 +18,7 @@ namespace engine::ui {
 void UILayoutSystem::Update(ecs::Registry& reg, int window_width,
                             int window_height) {
   auto roots = reg.GetView<UITransform, UIHierarchy>().Filter(
-      [&](auto& t, auto& h) { return h.parent == ecs::INVALID_ENTITY; });
+      [&](auto& t, auto& h) { return h.parent == ecs::kInvalidEntity; });
 
   // If no roots with UIHierarchy, try entities with just UITransform but no
   // UIHierarchy
@@ -27,7 +27,7 @@ void UILayoutSystem::Update(ecs::Registry& reg, int window_width,
   for (auto entity : all_transforms) {
     bool has_hierarchy = reg.HasComponent<UIHierarchy>(entity);
     if (!has_hierarchy ||
-        reg.GetComponent<UIHierarchy>(entity).parent == ecs::INVALID_ENTITY) {
+        reg.GetComponent<UIHierarchy>(entity).parent == ecs::kInvalidEntity) {
       // Check if already in all_roots
       if (std::find(all_roots.begin(), all_roots.end(), entity) ==
           all_roots.end()) {
@@ -143,10 +143,11 @@ UIRenderSystem::UIRenderSystem() {
 
 void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
                             int window_height) {
-  ui_camera_->set_projection(0, (float)window_width, 0, (float)window_height);
+  ui_camera_->SetProjection(0, (float)window_width, 0, (float)window_height);
   ui_render_queue_.Clear();
 
-  graphics::PrimitiveRenderer::StartBatch(ui_camera_->view_projection_matrix());
+  graphics::PrimitiveRenderer::StartBatch(
+      ui_camera_->GetViewProjectionMatrix());
 
   auto view = reg.GetView<UITransform>();
   for (auto entity : view) {
@@ -156,9 +157,9 @@ void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
 
     if (reg.HasComponent<engine::ecs::components::Text>(entity)) {
       auto& text = reg.GetComponent<engine::ecs::components::Text>(entity);
-      graphics::Renderer::Get().DrawText(text.font_name, text.content,
-                                         transform.global_pos, 0.0f, text.scale,
-                                         text.color);
+      graphics::graphics::utils::RenderQueue::Default().Submit(
+          text.font_name, text.content, transform.global_pos, 0.0f, text.scale,
+          text.color);
     }
 
     if (reg.HasComponent<engine::ecs::components::Quad>(entity)) {

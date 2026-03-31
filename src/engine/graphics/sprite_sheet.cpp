@@ -66,8 +66,8 @@ void SpriteSheet::GetUVs(int index, glm::vec2* uv_min,
   int col = index % cols_;
   int row = index / cols_;
 
-  float tex_w = static_cast<float>(texture_->width());
-  float tex_h = static_cast<float>(texture_->height());
+  float tex_w = static_cast<float>(texture_->GetWidth());
+  float tex_h = static_cast<float>(texture_->GetHeight());
 
   // Top-left origin in texture coordinates (0,0 is bottom-left in OpenGL,
   // but we want index 0 to be top-left of the image).

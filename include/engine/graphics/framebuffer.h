@@ -55,13 +55,13 @@ class Framebuffer {
    * @brief Gets the width of the framebuffer.
    * @return The width.
    */
-  [[nodiscard]] int width() const { return width_; }
+  [[nodiscard]] int GetWidth() const { return width_; }
 
   /**
    * @brief Gets the height of the framebuffer.
    * @return The height.
    */
-  [[nodiscard]] int height() const { return height_; }
+  [[nodiscard]] int GetHeight() const { return height_; }
 
  private:
   /** @brief Recreates the FBO and its attachments. */

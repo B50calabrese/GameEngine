@@ -1,10 +1,12 @@
-#ifndef DEMOS_GAMES_RPG_GAME_STATE_H_
-#define DEMOS_GAMES_RPG_GAME_STATE_H_
+#ifndef RPG_GAME_STATE_H_
+#define RPG_GAME_STATE_H_
 
 #include <algorithm>
 #include <random>
 #include <string>
 #include <vector>
+
+namespace rpg {
 
 struct Attack {
   std::string name;
@@ -28,7 +30,8 @@ struct Stats {
   int def;
 };
 
-struct GameState {
+class GameState {
+ public:
   Stats player_stats = {10, 10, 1, 1};
   std::vector<Attack> player_attacks;
   int current_floor = 1;
@@ -56,13 +59,9 @@ struct GameState {
 
   std::vector<Attack> GetRandomAttacks(int count) {
     std::vector<Attack> pool = {
-        {"Sunder", 1.2f, 0.85f, 8},
-        {"Drain", 0.7f, 0.90f, 6},  // Maybe add healing later
-        {"Execute", 2.0f, 0.50f, 3},
-        {"Flurry", 0.3f, 1.0f,
-         15},  // Needs multi-hit logic if we want to be fancy
-        {"Piercing Shot", 1.1f, 0.90f, 7},
-        {"Crushing Blow", 1.8f, 0.60f, 4}};
+        {"Sunder", 1.2f, 0.85f, 8},        {"Drain", 0.7f, 0.90f, 6},
+        {"Execute", 2.0f, 0.50f, 3},       {"Flurry", 0.3f, 1.0f, 15},
+        {"Piercing Shot", 1.1f, 0.90f, 7}, {"Crushing Blow", 1.8f, 0.60f, 4}};
 
     std::vector<Attack> results;
     std::shuffle(pool.begin(), pool.end(),
@@ -72,6 +71,11 @@ struct GameState {
     }
     return results;
   }
+
+ private:
+  GameState() = default;
 };
 
-#endif  // DEMOS_GAMES_RPG_GAME_STATE_H_
+}  // namespace rpg
+
+#endif  // RPG_GAME_STATE_H_

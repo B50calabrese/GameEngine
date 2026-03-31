@@ -212,12 +212,12 @@ class AIDemoScene : public engine::Scene {
                                                color);
 
     // Draw UI
-    engine::graphics::Renderer::Get().DrawText(
+    engine::graphics::Renderer::Get().DrawQuad(
         "default", npc.status_text, {10, 570}, 0.0f, 0.7f, {1, 1, 1, 1});
-    engine::graphics::Renderer::Get().DrawText(
+    engine::graphics::Renderer::Get().DrawQuad(
         "default", "Health: " + std::to_string((int)npc.health), {10, 540},
         0.0f, 0.7f, {1, 1, 1, 1});
-    engine::graphics::Renderer::Get().DrawText(
+    engine::graphics::Renderer::Get().DrawQuad(
         "default", "Move mouse close to NPC to trigger Combat", {10, 20}, 0.0f,
         0.5f, {0.7f, 0.7f, 0.7f, 1.0f});
 

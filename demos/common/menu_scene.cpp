@@ -44,14 +44,14 @@ void BaseMenuScene::OnRender() {
                                              {0.05f, 0.05f, 0.1f, 1.0f});
 
   // Title
-  engine::graphics::Renderer::Get().DrawText(
+  engine::graphics::Renderer::Get().DrawQuad(
       "default", title_, {200.0f, 450.0f}, 0.0f, 1.5f, title_color_);
 
   // Items
   for (int i = 0; i < items_.size(); ++i) {
     glm::vec4 color = (i == selected_index_) ? selected_color_ : item_color_;
     float y = 350.0f - (i * 40.0f);
-    engine::graphics::Renderer::Get().DrawText("default", items_[i].text,
+    engine::graphics::Renderer::Get().DrawQuad("default", items_[i].text,
                                                {250.0f, y}, 0.0f, 1.0f, color);
   }
 

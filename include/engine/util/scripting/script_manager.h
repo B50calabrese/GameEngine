@@ -23,63 +23,37 @@ namespace engine::util {
  */
 class ScriptManager {
  public:
-  /**
-   * @brief Gets the singleton instance.
-   * @returns Reference to the ScriptManager.
-   */
+  /** @brief Gets the singleton instance. */
   static ScriptManager& Get() {
     static ScriptManager instance;
     return instance;
   }
 
-  /**
-   * @brief Initializes the Lua state and binds engine utilities.
-   */
+  /** @brief Initializes the Lua state. */
   void Init();
 
-  /**
-   * @brief Registers a callback to bind custom client logic to Lua.
-   * @param binder Function that takes a sol::state& and performs bindings.
-   */
+  /** @brief Registers a binder callback. */
   void RegisterBinder(std::function<void(sol::state&)> binder);
 
-  /**
-   * @brief Loads and executes a Lua script from a file.
-   * @param filepath Path to the Lua script.
-   * @returns true if the script was loaded and executed successfully.
-   */
+  /** @brief Runs a Lua file. */
   bool RunFile(const std::string& filepath);
 
-  /**
-   * @brief Gets the underlying Lua state.
-   * @returns Reference to the sol::state.
-   */
-  sol::state& state() { return lua_; }
+  /** @brief Gets the Lua state. */
+  sol::state& GetState() { return lua_; }
 
-  /**
-   * @brief Sets whether hot reloading is enabled.
-   * @param enabled True to enable hot reloading.
-   */
-  void set_hot_reload_enabled(bool enabled) { hot_reload_enabled_ = enabled; }
+  /** @brief Enables hot reloading. */
+  void SetHotReloadEnabled(bool enabled) { hot_reload_enabled_ = enabled; }
 
-  /**
-   * @brief Sets the asset path for script monitoring.
-   * @param path The base path for scripts.
-   */
-  void set_asset_path(const std::string& path) { asset_path_ = path; }
+  /** @brief Sets the asset path. */
+  void SetAssetPath(const std::string& path) { asset_path_ = path; }
 
-  /**
-   * @brief Checks for changes in Lua script files.
-   * @param dt Delta time in seconds.
-   * @returns True if any file has changed.
-   */
+  /** @brief Checks for script changes. */
   bool CheckForChanges(float dt);
 
  private:
   ScriptManager() = default;
   ~ScriptManager() = default;
 
-  // Delete copy constructor and assignment operator
   ScriptManager(const ScriptManager&) = delete;
   ScriptManager& operator=(const ScriptManager&) = delete;
 

@@ -46,7 +46,7 @@ void SpriteRenderSystem::Render(engine::ecs::Registry* registry) {
             cmd.uv_min = uv_min;
             cmd.uv_max = uv_max;
             cmd.origin = sprite.origin;
-            utils::RenderQueue::Default().Submit(cmd);
+            graphics::utils::RenderQueue::Default().Submit(cmd);
           }
         } else if (!sprite.texture_name.empty()) {
           auto tex = util::AssetManager<Texture>::Get(sprite.texture_name);
@@ -61,7 +61,7 @@ void SpriteRenderSystem::Render(engine::ecs::Registry* registry) {
             cmd.uv_min = {0.0f, 0.0f};
             cmd.uv_max = {1.0f, 1.0f};
             cmd.origin = sprite.origin;
-            utils::RenderQueue::Default().Submit(cmd);
+            graphics::utils::RenderQueue::Default().Submit(cmd);
           }
         }
       }
@@ -77,16 +77,16 @@ void SpriteRenderSystem::Render(engine::ecs::Registry* registry) {
       cmd.size = transform.scale;
       cmd.rotation = transform.rotation;
       cmd.color = quad.color;
-      utils::RenderQueue::Default().Submit(cmd);
+      graphics::utils::RenderQueue::Default().Submit(cmd);
     }
 
     // Text Component (can be combined with Sprite/Quad)
     if (registry->HasComponent<engine::ecs::components::Text>(entity)) {
       auto& text =
           registry->GetComponent<engine::ecs::components::Text>(entity);
-      Renderer::Get().DrawText(text.font_name, text.content, transform.position,
-                               transform.rotation, text.scale, text.color,
-                               text.z_index);
+      graphics::utils::RenderQueue::Default().Submit(
+          text.font_name, text.content, transform.position, transform.rotation,
+          text.scale, text.color, text.z_index);
     }
   }
 }

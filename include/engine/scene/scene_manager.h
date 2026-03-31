@@ -21,22 +21,31 @@ class Application;
  */
 class SceneManager {
  public:
+  /** @brief Gets the singleton instance. */
   static SceneManager& Get() {
     static SceneManager instance;
     return instance;
   }
 
+  /** @brief Sets the current scene, clearing the stack. */
   void SetScene(std::unique_ptr<Scene> new_scene);
+
+  /** @brief Pushes a new scene onto the stack. */
   void PushScene(std::unique_ptr<Scene> overlay);
+
+  /** @brief Pops the top scene from the stack. */
   void PopScene();
 
+  /** @brief Gets the active (top) scene. */
   Scene* GetActiveScene();
 
- private:
-  friend class Application;
-
+  /** @brief Updates the active scene. */
   void UpdateActiveScene(float delta_time);
+
+  /** @brief Renders the entire scene stack. */
   void RenderActiveScene();
+
+  /** @brief Dispatches input to the active scene. */
   bool DispatchInput();
 
  private:
@@ -45,6 +54,7 @@ class SceneManager {
 
   std::vector<std::unique_ptr<Scene>> scene_stack_;
 };
+
 }  // namespace engine
 
 #endif  // INCLUDE_ENGINE_SCENE_SCENE_MANAGER_H_

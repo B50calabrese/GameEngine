@@ -8,8 +8,8 @@ namespace tactical_rpg {
 class CombatSystem {
  public:
   static int ApplyEffect(engine::ecs::Registry& registry,
-                          engine::ecs::EntityID action_entity,
-                          engine::ecs::EntityID target_entity);
+                         engine::ecs::EntityID action_entity,
+                         engine::ecs::EntityID target_entity);
 };
 
 }  // namespace tactical_rpg

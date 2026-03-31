@@ -14,7 +14,6 @@ void ECSBindings::BindCore(sol::state& lua) {
 }
 
 void ECSBindings::BindComponents(sol::state& lua) {
-  // Bind Component Types
   lua.new_usertype<engine::ecs::components::Transform>(
       "TransformComponent", "position",
       &engine::ecs::components::Transform::position, "scale",
@@ -33,7 +32,6 @@ void ECSBindings::BindComponents(sol::state& lua) {
       "VelocityComponent", "velocity",
       &engine::ecs::components::Velocity::velocity);
 
-  // Helper functions for adding/getting components from Lua
   lua["get_transform"] =
       [&lua](EntityID entity) -> engine::ecs::components::Transform& {
     Registry* reg = lua["registry"];

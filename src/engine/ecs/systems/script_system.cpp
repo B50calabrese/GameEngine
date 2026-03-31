@@ -14,7 +14,7 @@ void ScriptSystem::Init(Registry* registry) {
     return;
   }
 
-  auto& lua = util::ScriptManager::Get().state();
+  auto& lua = util::ScriptManager::Get().GetState();
 
   ECSBindings::BindCore(lua);
   ECSBindings::BindComponents(lua);
@@ -26,7 +26,7 @@ void ScriptSystem::Init(Registry* registry) {
 void ScriptSystem::Update(Registry* registry, float dt) {
   if (!registry) return;
 
-  auto& lua = util::ScriptManager::Get().state();
+  auto& lua = util::ScriptManager::Get().GetState();
   ECSBindings::SetCurrentRegistry(lua, registry);
 
   bool reload_all = util::ScriptManager::Get().CheckForChanges(dt);

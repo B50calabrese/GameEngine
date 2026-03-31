@@ -13,66 +13,42 @@
 namespace engine {
 
 /**
- * @brief Abstract base class for all scenes in a game.
- *
- * The client inherits from this to create specific screens (Menu, Levels, etc).
+ * @brief Abstract base class for game scenes.
  */
 class Scene {
  public:
-  /**
-   * @brief Constructs a new Scene.
-   * @param name The debug name of the scene.
-   */
-  Scene(const std::string& name) : debug_name_(name) {}
+  /** @brief Constructs a new Scene. */
+  explicit Scene(std::string name) : name_(std::move(name)) {}
 
   /** @brief Virtual destructor. */
   virtual ~Scene() = default;
 
-  /**
-   * @brief Called when the scene is added to the manager (e.g., loading
-   * assets).
-   */
+  /** @brief Called when the scene is attached. */
   virtual void OnAttach() {}
 
-  /**
-   * @brief Called when the scene is removed from the manager (e.g., clearing
-   * assets).
-   */
+  /** @brief Called when the scene is detached. */
   virtual void OnDetach() {}
 
-  /**
-   * @brief Called every frame for logic updates.
-   * @param delta_time_seconds The time elapsed since the last frame, in
-   * seconds.
-   */
-  virtual void OnUpdate(float delta_time_seconds) {}
+  /** @brief Called for logic updates. */
+  virtual void OnUpdate(float delta_time) {}
 
-  /** @brief Called every frame for drawing calls. */
+  /** @brief Called for rendering. */
   virtual void OnRender() {}
 
-  /**
-   * @brief Called by the application when an input event occurs.
-   * @return `true` if the event was "handled" and shouldn't propagate.
-   */
+  /** @brief Called for input handling. */
   virtual bool OnInput() { return false; }
 
-  /**
-   * @brief Gets the debug name of the scene.
-   * @return The debug name.
-   */
-  inline const std::string& name() const { return debug_name_; }
+  /** @brief Gets the debug name. */
+  const std::string& GetName() const { return name_; }
 
-  /**
-   * @brief Returns the registry associated with this scene.
-   */
-  ecs::Registry& registry() { return registry_; }
+  /** @brief Gets the ECS registry. */
+  ecs::Registry& GetRegistry() { return registry_; }
 
  protected:
-  /** @brief The debug name of the scene. */
-  std::string debug_name_;
-  /** @brief The ECS registry for this scene. */
+  std::string name_;
   ecs::Registry registry_;
 };
+
 }  // namespace engine
 
 #endif  // INCLUDE_ENGINE_SCENE_SCENE_H_

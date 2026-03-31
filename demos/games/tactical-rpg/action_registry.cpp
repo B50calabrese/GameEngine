@@ -138,7 +138,7 @@ engine::ecs::EntityID ActionRegistry::GetOrCreateAction(
   if (action_cache_.count(name)) return action_cache_[name];
 
   auto it = actions_.find(name);
-  if (it == actions_.end()) return engine::ecs::INVALID_ENTITY;
+  if (it == actions_.end()) return engine::ecs::kInvalidEntity;
 
   const auto& raw = it->second;
   auto action_entity = registry.CreateEntity();

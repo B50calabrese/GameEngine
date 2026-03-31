@@ -268,7 +268,8 @@ void LightingEffect::Apply(unsigned int input_texture,
 
   if (output_framebuffer) {
     output_framebuffer->Bind();
-    glViewport(0, 0, output_framebuffer->width(), output_framebuffer->height());
+    glViewport(0, 0, output_framebuffer->GetWidth(),
+               output_framebuffer->GetHeight());
   } else {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, width_, height_);

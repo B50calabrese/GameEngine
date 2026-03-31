@@ -51,9 +51,6 @@ class Console {
   /** @brief Gets the key used to toggle the console. */
   KeyCode GetToggleKey() const { return toggle_key_; }
 
-  /** @brief Returns true if the console is visible. */
-  bool is_visible() const { return visible_; }
-
   /** @brief Appends text to the console output. */
   void Log(const std::string& message);
 

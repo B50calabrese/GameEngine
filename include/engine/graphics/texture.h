@@ -45,13 +45,13 @@ class Texture {
    * @brief Gets the width of the texture.
    * @return Width in pixels.
    */
-  inline int width() const { return width_; }
+  inline int GetWidth() const { return width_; }
 
   /**
    * @brief Gets the height of the texture.
    * @return Height in pixels.
    */
-  inline int height() const { return height_; }
+  inline int GetHeight() const { return height_; }
 
  private:
   Texture(unsigned int id, int w, int h, const std::string& p)

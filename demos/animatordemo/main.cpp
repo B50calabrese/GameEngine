@@ -14,8 +14,8 @@ class AnimatorDemoApp : public demos::common::BaseDemoApp {
     // Load a sprite sheet. We'll use card_back.png as a 2x2 grid.
     auto tex = engine::graphics::Texture::Load("card_back.png");
     if (tex) {
-      int sw = tex->width() / 2;
-      int sh = tex->height() / 2;
+      int sw = tex->GetWidth() / 2;
+      int sh = tex->GetHeight() / 2;
       std::string load_path = "card_back.png:" + std::to_string(sw) + ":" +
                               std::to_string(sh) + ":2:2";
       sprite_sheet_ =
@@ -61,7 +61,7 @@ class AnimatorDemoApp : public demos::common::BaseDemoApp {
 
     if (sprite_sheet_) {
       // Draw looping animation
-      engine::graphics::Renderer::Get().DrawText(
+      engine::graphics::Renderer::Get().DrawQuad(
           "default", "Looping Animation (4 FPS)", {100.0f, 450.0f}, 0.0f, 0.5f);
       engine::graphics::Renderer::Get().DrawSprite(
           sprite_sheet_.get(), loop_animator_.GetCurrentFrame(),
@@ -72,13 +72,13 @@ class AnimatorDemoApp : public demos::common::BaseDemoApp {
       if (once_animator_.IsFinished()) {
         once_label += " - FINISHED";
       }
-      engine::graphics::Renderer::Get().DrawText("default", once_label,
+      engine::graphics::Renderer::Get().DrawQuad("default", once_label,
                                                  {450.0f, 450.0f}, 0.0f, 0.5f);
       engine::graphics::Renderer::Get().DrawSprite(
           sprite_sheet_.get(), once_animator_.GetCurrentFrame(),
           {500.0f, 250.0f}, {200.0f, 200.0f});
 
-      engine::graphics::Renderer::Get().DrawText(
+      engine::graphics::Renderer::Get().DrawQuad(
           "default", "Press SPACE to restart oneshot", {100.0f, 100.0f}, 0.0f,
           0.5f);
     }

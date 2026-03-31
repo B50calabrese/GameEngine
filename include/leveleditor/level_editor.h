@@ -1,8 +1,9 @@
 #ifndef INCLUDE_LEVELEDITOR_LEVEL_EDITOR_H_
 #define INCLUDE_LEVELEDITOR_LEVEL_EDITOR_H_
 
-#include <engine/ecs/registry.h>
 #include <string>
+
+#include <engine/ecs/registry.h>
 
 namespace leveleditor {
 

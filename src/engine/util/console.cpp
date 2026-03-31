@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <sstream>
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>
@@ -37,7 +37,7 @@ Console::Console() {
     Log(paused_ ? "Game paused" : "Game unpaused");
   });
   RegisterCommand("exit", [](const std::vector<std::string>&) {
-    glfwSetWindowShouldClose(Engine::window().native_handle(), GLFW_TRUE);
+    glfwSetWindowShouldClose(Engine::GetWindow().GetNativeHandle(), GLFW_TRUE);
   });
 
   Log("Developer Console Initialized. Type 'help' for commands.");
@@ -116,7 +116,7 @@ void Console::Execute(const std::string& line) {
     it->second(args);
   } else {
     // Try Lua
-    sol::state& lua = ScriptManager::Get().state();
+    sol::state& lua = ScriptManager::Get().GetState();
     auto result = lua.safe_script(line, sol::script_pass_on_error);
     if (!result.valid()) {
       sol::error err = result;
@@ -129,8 +129,8 @@ void Console::Render() {
   if (!visible_) return;
 
   auto& renderer = graphics::Renderer::Get();
-  int width = Engine::window().width();
-  int height = Engine::window().height();
+  int width = Engine::GetWindow().GetWidth();
+  int height = Engine::GetWindow().GetHeight();
 
   float console_height = height * 0.4f;
 

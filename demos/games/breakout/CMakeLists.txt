@@ -1,1 +1,1 @@
-add_engine_demo(Breakout "main.cpp")
+add_engine_demo(Breakout "main.cpp;gameplay_scene.cpp")

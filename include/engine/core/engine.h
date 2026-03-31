@@ -3,21 +3,6 @@
  * @brief Main engine entry point and configuration.
  */
 
-/**
- * @dir include
- * @brief Root include directory.
- */
-
-/**
- * @dir include/engine
- * @brief Public engine headers.
- */
-
-/**
- * @dir include/engine/core
- * @brief Core engine functionality (application, window, engine lifecycle).
- */
-
 #ifndef INCLUDE_ENGINE_CORE_ENGINE_H_
 #define INCLUDE_ENGINE_CORE_ENGINE_H_
 
@@ -27,60 +12,38 @@
 #include <engine/core/window.h>
 #include <engine/input/input_manager.h>
 
-/**
- * @namespace engine
- * @brief The core namespace for the Game Engine.
- */
 namespace engine {
 
 /**
  * @brief Holds the configuration for the engine's initialization.
  */
 struct EngineConfig {
-  /** @brief The height of the main application window. */
   int window_height = 720;
-  /** @brief The width of the main application window. */
   int window_width = 1280;
-  /** @brief The title of the main application window. */
   std::string window_title = "Title";
-  /** @brief The default path for assets. */
   std::string asset_path = "";
-  /** @brief Whether to enable Lua script hot reloading. */
   bool hot_reload_enabled = false;
-  /** @brief The key used to toggle the developer console. */
   KeyCode console_toggle_key = KeyCode::kTilde;
 };
 
 /**
- * @brief The static `Engine` class provides the core functionality of the game
- * engine, including initialization, shutdown, and access to engine-managed
- * systems.
+ * @brief The static `Engine` class provides core lifecycle management.
  */
 class Engine {
  public:
-  /**
-   * @brief Initializes the engine, including the window, graphics context, and
-   * other core systems. This must be called before any other engine functions.
-   *
-   * @param config The `EngineConfig` struct containing initialization
-   * settings.
-   */
+  /** @brief Initializes core systems. */
   static void Init(const EngineConfig& config);
 
-  /**
-   * @brief Gracefully shuts down the engine and releases all resources.
-   */
+  /** @brief Shuts down core systems. */
   static void Shutdown();
 
-  /**
-   * @brief Provides access to the main application window.
-   * @return Reference to the main Window.
-   */
-  static Window& window() { return *internal_window_; }
+  /** @brief Gets the main window. */
+  static Window& GetWindow() { return *window_; }
 
  private:
-  static std::unique_ptr<Window> internal_window_;
+  static std::unique_ptr<Window> window_;
 };
+
 }  // namespace engine
 
 #endif  // INCLUDE_ENGINE_CORE_ENGINE_H_
