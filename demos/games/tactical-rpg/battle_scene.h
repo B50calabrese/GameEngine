@@ -48,6 +48,16 @@ class BattleScene : public engine::Scene {
 
   bool is_battle_over_ = false;
   std::string last_log_ = "Battle Start!";
+
+  struct FloatingText {
+    std::string text;
+    glm::vec2 position;
+    float lifetime;
+    glm::vec4 color;
+  };
+  std::vector<FloatingText> floating_texts_;
+
+  void AddFloatingText(const std::string& text, glm::vec2 pos, glm::vec4 color);
 };
 
 }  // namespace tactical_rpg

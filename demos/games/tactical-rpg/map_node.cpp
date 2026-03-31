@@ -8,7 +8,7 @@
 namespace tactical_rpg {
 
 void FightNode::OnEnter() {
-  engine::SceneManager::Get().PushScene(std::make_unique<BattleScene>(
+  engine::SceneManager::Get().SetScene(std::make_unique<BattleScene>(
       "Battle", GameManager::Get().GetParty(), GetFloor()));
 }
 

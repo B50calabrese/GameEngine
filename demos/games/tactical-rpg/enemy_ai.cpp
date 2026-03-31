@@ -5,13 +5,17 @@
 
 #include <glm/glm.hpp>
 
+#include <engine/ecs/components/transform.h>
+
 #include "components.h"
 #include "systems.h"
 
 namespace tactical_rpg {
 
-void EnemyAI::ProcessTurn(engine::ecs::Registry& registry,
-                          engine::ecs::EntityID active) {
+void EnemyAI::ProcessTurn(
+    engine::ecs::Registry& registry, engine::ecs::EntityID active,
+    std::function<void(const std::string&, glm::vec2, glm::vec4)>
+        on_effect_callback) {
   auto& active_grid_pos = registry.GetComponent<GridPositionComponent>(active);
   auto& active_stats = registry.GetComponent<Stats>(active);
 
@@ -66,7 +70,15 @@ void EnemyAI::ProcessTurn(engine::ecs::Registry& registry,
         int attack_roll = std::uniform_int_distribution<int>(1, 20)(gen) + 2;
         auto& target_stats = registry.GetComponent<Stats>(closest_player);
         if (attack_roll >= target_stats.ac) {
-          CombatSystem::ApplyEffect(registry, action_entity, closest_player);
+          int result = CombatSystem::ApplyEffect(registry, action_entity, closest_player);
+          if (on_effect_callback) {
+            auto& trans = registry.GetComponent<engine::ecs::components::Transform>(closest_player);
+            if (result < 0) {
+              on_effect_callback(std::to_string(result), trans.position, {1, 0, 0, 1});
+            } else if (result > 0) {
+              on_effect_callback("+" + std::to_string(result), trans.position, {0, 1, 0, 1});
+            }
+          }
         }
       }
     }

@@ -4,6 +4,7 @@
 #include <random>
 
 #include <engine/core/engine.h>
+#include <engine/ecs/components/transform.h>
 #include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
@@ -60,6 +61,16 @@ void BattleScene::SetupEnemies() {
 
 void BattleScene::OnUpdate(float dt) {
   SyncTransformSystem::Update(registry(), tile_visual_size_, grid_offset_);
+
+  for (auto it = floating_texts_.begin(); it != floating_texts_.end();) {
+    it->lifetime -= dt;
+    it->position.y += 20.0f * dt;
+    if (it->lifetime <= 0) {
+      it = floating_texts_.erase(it);
+    } else {
+      ++it;
+    }
+  }
 
   if (is_battle_over_) {
     if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace)) {
@@ -139,6 +150,8 @@ void BattleScene::HandlePlayerTurn(float dt) {
             TerrainType::Damage) {
           active_stats.current_hp -= 2;
           last_log_ = active_id.name + " took damage!";
+          auto& trans = registry().GetComponent<engine::ecs::components::Transform>(active);
+          AddFloatingText("-2", trans.position, {1, 0, 0, 1});
         }
       }
     } else {
@@ -185,7 +198,14 @@ void BattleScene::HandlePlayerTurn(float dt) {
 
             if (is_heal || roll + 5 >= target_stats.ac) {
               last_log_ = active_id.name + " used " + action_data.name;
-              CombatSystem::ApplyEffect(registry(), action_entity, target);
+              int result = CombatSystem::ApplyEffect(registry(), action_entity, target);
+              auto& trans = registry().GetComponent<engine::ecs::components::Transform>(target);
+              if (result < 0) {
+                AddFloatingText(std::to_string(result), trans.position, {1, 0, 0, 1});
+              } else if (result > 0) {
+                AddFloatingText("+" + std::to_string(result), trans.position, {0, 1, 0, 1});
+              }
+
               if (target_stats.current_hp <= 0) {
                 last_log_ += ". " + target_id.name + " is down!";
               }
@@ -216,7 +236,9 @@ void BattleScene::HandlePlayerTurn(float dt) {
 
 void BattleScene::HandleEnemyAI() {
   auto active = turn_manager_.GetActiveCharacter();
-  EnemyAI::ProcessTurn(registry(), active);
+  EnemyAI::ProcessTurn(registry(), active,
+                       [this](const std::string& text, glm::vec2 pos,
+                              glm::vec4 color) { AddFloatingText(text, pos, color); });
 
   // Auto end turn
   turn_manager_.NextTurn(registry());
@@ -233,12 +255,45 @@ void BattleScene::OnRender() {
                        cursor_pos_);
   CharacterRenderer::Render(registry(), turn_manager_.GetActiveCharacter(),
                             grid_offset_, tile_visual_size_);
+
+  for (const auto& ft : floating_texts_) {
+    engine::graphics::TextRenderer::Get().DrawText(
+        "default", ft.text, ft.position, 0.0f, 0.5f, ft.color);
+  }
+
   RenderUI();
 }
 
 void BattleScene::RenderUI() {
   engine::graphics::TextRenderer::Get().DrawText(
       "default", last_log_, {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
+
+  // Tile Tooltip
+  TerrainType terrain = BattleGrid::GetTerrain(registry(), cursor_pos_.x, cursor_pos_.y);
+  std::string terrain_name = "Unknown";
+  std::string terrain_desc = "";
+  switch(terrain) {
+    case TerrainType::Normal:
+      terrain_name = "Grass";
+      terrain_desc = "Normal terrain.";
+      break;
+    case TerrainType::Slow:
+      terrain_name = "Thicket";
+      terrain_desc = "Slows movement.";
+      break;
+    case TerrainType::Damage:
+      terrain_name = "Lava";
+      terrain_desc = "Deals damage on enter.";
+      break;
+    case TerrainType::Impassible:
+      terrain_name = "Wall";
+      terrain_desc = "Cannot pass.";
+      break;
+  }
+  engine::graphics::TextRenderer::Get().DrawText(
+      "default", "Tile: " + terrain_name, {100, 600}, 0.0f, 0.6f, {0.7f, 0.7f, 1.0f, 1.0f});
+  engine::graphics::TextRenderer::Get().DrawText(
+      "default", terrain_desc, {100, 580}, 0.0f, 0.4f, {0.6f, 0.6f, 0.9f, 1.0f});
 
   auto active = turn_manager_.GetActiveCharacter();
   if (registry().IsAlive(active) &&
@@ -264,11 +319,34 @@ void BattleScene::RenderUI() {
       auto action_entity = actions[i];
       auto& action_data =
           registry().GetComponent<ActionDataComponent>(action_entity);
-      glm::vec4 color = (selected_action_index_ == i ? glm::vec4(1, 1, 0, 1)
-                                                     : glm::vec4(1, 1, 1, 1));
+      bool is_selected = (selected_action_index_ == i);
+      glm::vec4 color = (is_selected ? glm::vec4(1, 1, 0, 1)
+                                     : glm::vec4(1, 1, 1, 1));
       engine::graphics::TextRenderer::Get().DrawText(
           "default", std::to_string(i + 2) + ": " + action_data.name,
           {700, 400 - i * 40.0f}, 0.0f, 0.7f, color);
+
+      if (is_selected) {
+        std::string desc = action_data.description;
+        auto& effects =
+            registry().GetComponent<EffectsListComponent>(action_entity);
+        for (auto effect : effects.effects) {
+          if (registry().HasComponent<DamageEffectComponent>(effect)) {
+            auto& dmg = registry().GetComponent<DamageEffectComponent>(effect);
+            desc += " (Damage: " + std::to_string(dmg.num_dice) + "d" +
+                    std::to_string(dmg.dice_size) + "+" +
+                    std::to_string(dmg.modifier) + ")";
+          } else if (registry().HasComponent<HealEffectComponent>(effect)) {
+            auto& heal = registry().GetComponent<HealEffectComponent>(effect);
+            desc += " (Heal: " + std::to_string(heal.num_dice) + "d" +
+                    std::to_string(heal.dice_size) + "+" +
+                    std::to_string(heal.modifier) + ")";
+          }
+        }
+        engine::graphics::TextRenderer::Get().DrawText(
+            "default", desc, {700, 370 - i * 40.0f}, 0.0f, 0.5f,
+            {0.8f, 0.8f, 0.8f, 1.0f});
+      }
     }
 
     engine::graphics::TextRenderer::Get().DrawText(
@@ -281,6 +359,10 @@ void BattleScene::RenderUI() {
   }
 
   engine::graphics::Renderer::Get().Flush();
+}
+
+void BattleScene::AddFloatingText(const std::string& text, glm::vec2 pos, glm::vec4 color) {
+  floating_texts_.push_back({text, pos, 1.0f, color});
 }
 
 }  // namespace tactical_rpg
