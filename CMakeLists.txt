@@ -201,6 +201,8 @@ if(BUILD_TESTING)
 
     # Define individual tests
     add_engine_test(easing_test "${ENGINE_ROOT}/src/engine/util/easing_test.cpp")
+    add_engine_test(job_system_test "${ENGINE_ROOT}/src/engine/core/job_system_test.cpp")
+    add_engine_test(entity_manager_test "${ENGINE_ROOT}/src/engine/ecs/entity_manager_test.cpp")
 endif()
 
 # --- 8. Tools ---
