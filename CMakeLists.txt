@@ -199,10 +199,12 @@ if(BUILD_TESTING)
         )
     endfunction()
 
-    # Define individual tests
-    add_engine_test(easing_test "${ENGINE_ROOT}/src/engine/util/easing_test.cpp")
-    add_engine_test(job_system_test "${ENGINE_ROOT}/src/engine/core/job_system_test.cpp")
-    add_engine_test(entity_manager_test "${ENGINE_ROOT}/src/engine/ecs/entity_manager_test.cpp")
+    # Automatically discover and add tests
+    file(GLOB_RECURSE TEST_SOURCES "${ENGINE_ROOT}/src/*_test.cpp")
+    foreach(TEST_SOURCE ${TEST_SOURCES})
+        get_filename_component(TEST_NAME ${TEST_SOURCE} NAME_WE)
+        add_engine_test(${TEST_NAME} ${TEST_SOURCE})
+    endforeach()
 endif()
 
 # --- 8. Tools ---
