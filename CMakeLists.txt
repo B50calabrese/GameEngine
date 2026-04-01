@@ -179,7 +179,31 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/consoledemo)
 endif()
 
-# --- 7. Tools ---
+# --- 7. Testing ---
+option(BUILD_TESTING "Build tests" ON)
+if(BUILD_TESTING)
+    enable_testing()
+
+    # Add Google Test
+    add_subdirectory("${THIRD_PARTY_DIR}/googletest")
+
+    # Helper to add a test
+    function(add_engine_test TEST_NAME SOURCE_FILES)
+        add_executable(${TEST_NAME} ${SOURCE_FILES})
+        target_link_libraries(${TEST_NAME} PRIVATE GameEngine gtest_main)
+        add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+
+        # Set a consistent output directory for tests
+        set_target_properties(${TEST_NAME} PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests"
+        )
+    endfunction()
+
+    # Define individual tests
+    add_engine_test(easing_test "${ENGINE_ROOT}/src/engine/util/easing_test.cpp")
+endif()
+
+# --- 8. Tools ---
 add_executable(leveleditor "${ENGINE_ROOT}/src/tools/leveleditor/main.cpp")
 target_link_libraries(leveleditor PRIVATE GameEngine DemosCommon)
 target_compile_definitions(leveleditor PRIVATE ENGINE_ASSETS_PATH="${COMMON_ASSETS_BUILD_DIR}/")
