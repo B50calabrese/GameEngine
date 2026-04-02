@@ -30,7 +30,9 @@ void BattleGrid::Setup(engine::ecs::Registry& registry,
         terrain = TerrainType::Impassible;
 
       // Safety areas
-      if (y <= 1 || y >= kSize - 2) terrain = TerrainType::Normal;
+      if (y <= 1 || y >= kSize - 2) {
+        terrain = TerrainType::Normal;
+      }
 
       registry.AddComponent(tile_entity, TileComponent{terrain, {x, y}});
       grid_map.tiles[y][x] = tile_entity;

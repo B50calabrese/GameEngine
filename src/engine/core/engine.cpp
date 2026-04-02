@@ -3,21 +3,6 @@
  * @brief Engine class implementation.
  */
 
-/**
- * @dir src
- * @brief Root source directory.
- */
-
-/**
- * @dir src/engine
- * @brief Engine implementation.
- */
-
-/**
- * @dir src/engine/core
- * @brief Core engine implementation.
- */
-
 #include <engine/core/engine.h>
 
 // clang-format off
@@ -61,8 +46,8 @@ void Engine::Init(const EngineConfig& engine_config) {
   Engine::internal_window_ = std::make_unique<Window>(
       engine_config.window_width, engine_config.window_height,
       engine_config.window_title);
-  (graphics::Renderer::Get()).Init(*(Engine::internal_window_));
-  (graphics::Renderer::Get()).set_asset_root(engine_config.asset_path);
+  graphics::Renderer::Get().Init(*(Engine::internal_window_));
+  graphics::Renderer::Get().SetAssetRoot(engine_config.asset_path);
 
   core::JobSystem::Get().Init();
 
@@ -81,7 +66,7 @@ void Engine::Init(const EngineConfig& engine_config) {
 
 void Engine::Shutdown() {
   if (internal_window_) {
-    glfwSetWindowShouldClose(internal_window_->native_handle(), GLFW_TRUE);
+    glfwSetWindowShouldClose(internal_window_->GetNativeHandle(), GLFW_TRUE);
   }
   core::JobSystem::Get().Shutdown();
 }

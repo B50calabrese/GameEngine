@@ -65,7 +65,7 @@ class Scene {
   /**
    * @brief Returns the registry associated with this scene.
    */
-  ecs::Registry& registry() { return registry_; }
+  ecs::Registry& GetRegistry() { return registry_; }
 
  protected:
   /** @brief The debug name of the scene. */

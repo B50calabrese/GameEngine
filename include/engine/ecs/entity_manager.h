@@ -12,7 +12,7 @@
 namespace engine::ecs {
 
 using EntityID = uint32_t;
-constexpr EntityID INVALID_ENTITY = 0xFFFFFFFF;
+constexpr EntityID kInvalidEntity = 0xFFFFFFFF;
 
 /**
  * @brief Manages the entities for the user.
@@ -44,7 +44,7 @@ class EntityManager {
   /**
    * @brief Returns the next available ID.
    */
-  EntityID next_id() const { return next_id_; }
+  EntityID GetNextId() const { return next_id_; }
 
   /**
    * @brief Resets the manager to its initial state.

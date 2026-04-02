@@ -83,7 +83,9 @@ class MapSystem {
               break;
             }
           }
-          if (reachable) break;
+          if (reachable) {
+            break;
+          }
         }
         if (!reachable) {
           int random_last = last_floor_ids[std::uniform_int_distribution<int>(

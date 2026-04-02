@@ -30,19 +30,25 @@ class MapScene : public engine::Scene {
     for (int conn : map_[current_node_id_]->GetConnections()) {
       next_node_ids_.push_back(conn);
     }
-    if (!next_node_ids_.empty()) selected_node_index_ = 0;
+    if (!next_node_ids_.empty()) {
+      selected_node_index_ = 0;
+    }
   }
 
   void OnUpdate(float dt) override {
     auto& input = engine::InputManager::Get();
-    if (next_node_ids_.empty()) return;
+    if (next_node_ids_.empty()) {
+      return;
+    }
 
-    if (input.IsKeyPressed(engine::KeyCode::kA))
+    if (input.IsKeyPressed(engine::KeyCode::kA)) {
       selected_node_index_ =
           (selected_node_index_ - 1 + next_node_ids_.size()) %
           next_node_ids_.size();
-    if (input.IsKeyPressed(engine::KeyCode::kD))
+    }
+    if (input.IsKeyPressed(engine::KeyCode::kD)) {
       selected_node_index_ = (selected_node_index_ + 1) % next_node_ids_.size();
+    }
 
     if (input.IsKeyPressed(engine::KeyCode::kSpace)) {
       int next_id = next_node_ids_[selected_node_index_];
@@ -70,17 +76,18 @@ class MapScene : public engine::Scene {
 
     for (const auto& node : map_) {
       glm::vec4 color = {0.3f, 0.3f, 0.3f, 1.0f};
-      if (node->GetId() == current_node_id_)
+      if (node->GetId() == current_node_id_) {
         color = {1, 1, 0, 1};
-      else {
+      } else {
         auto it = std::find(next_node_ids_.begin(), next_node_ids_.end(),
                             node->GetId());
         if (it != next_node_ids_.end()) {
           if (selected_node_index_ != -1 &&
-              next_node_ids_[selected_node_index_] == node->GetId())
+              next_node_ids_[selected_node_index_] == node->GetId()) {
             color = {0, 1, 1, 1};
-          else
+          } else {
             color = {0, 1, 0, 1};
+          }
         }
       }
 

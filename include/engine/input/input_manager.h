@@ -150,7 +150,7 @@ class InputManager {
    *
    * @returns the screen position in pixel space.
    */
-  glm::vec2 mouse_screen_pos() const { return glm::vec2(mouse_x_, mouse_y_); }
+  glm::vec2 GetMouseScreenPos() const { return glm::vec2(mouse_x_, mouse_y_); }
 
   /**
    * @brief Returns true if the input has been consumed by the UI system.

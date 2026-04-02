@@ -8,12 +8,12 @@
 #include <engine/ecs/components/graphics_components.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/ecs/registry.h>
+#include <engine/graphics/ecs/lighting_system.h>
 #include <engine/graphics/lighting_effect.h>
 #include <engine/graphics/post_processor.h>
 #include <engine/graphics/renderer.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
-#include <engine/graphics/ecs/lighting_system.h>
 #include <engine/util/logger.h>
 
 #include "../common/demo_utils.h"
@@ -114,7 +114,7 @@ class LightingDemo : public demos::common::BaseDemoApp {
         registry_.GetComponent<engine::ecs::components::Transform>(
             light_entity_);
     // In a real app this would be: transform.position =
-    // engine::InputManager::Get().mouse_screen_pos(); For headless capture
+    // engine::InputManager::Get().GetMouseScreenPos(); For headless capture
     // we'll move it in a circle
     float time = static_cast<float>(glfwGetTime());
     transform.position =

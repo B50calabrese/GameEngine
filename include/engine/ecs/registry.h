@@ -241,7 +241,7 @@ class Registry {
       if (!registry_) {
         return;
       }
-      for (EntityID entity = 0; entity < registry_->entity_manager_.next_id();
+      for (EntityID entity = 0; entity < registry_->entity_manager_.GetNextId();
            ++entity) {
         if (registry_->entity_manager_.IsAlive(entity) &&
             (registry_->HasComponent<Components>(entity) && ...)) {

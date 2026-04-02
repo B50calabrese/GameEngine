@@ -3,21 +3,6 @@
  * @brief Main engine entry point and configuration.
  */
 
-/**
- * @dir include
- * @brief Root include directory.
- */
-
-/**
- * @dir include/engine
- * @brief Public engine headers.
- */
-
-/**
- * @dir include/engine/core
- * @brief Core engine functionality (application, window, engine lifecycle).
- */
-
 #ifndef INCLUDE_ENGINE_CORE_ENGINE_H_
 #define INCLUDE_ENGINE_CORE_ENGINE_H_
 
@@ -52,23 +37,18 @@ struct EngineConfig {
 };
 
 /**
- * @brief The static `Engine` class provides the core functionality of the game
- * engine, including initialization, shutdown, and access to engine-managed
- * systems.
+ * @brief The static `Engine` class provides core lifecycle management.
  */
 class Engine {
  public:
   /**
-   * @brief Initializes the engine, including the window, graphics context, and
-   * other core systems. This must be called before any other engine functions.
-   *
-   * @param config The `EngineConfig` struct containing initialization
-   * settings.
+   * @brief Initializes core systems.
+   * @param config The engine configuration.
    */
   static void Init(const EngineConfig& config);
 
   /**
-   * @brief Gracefully shuts down the engine and releases all resources.
+   * @brief Gracefully shuts down the engine.
    */
   static void Shutdown();
 
@@ -76,7 +56,7 @@ class Engine {
    * @brief Provides access to the main application window.
    * @return Reference to the main Window.
    */
-  static Window& window() { return *internal_window_; }
+  static Window& GetWindow() { return *internal_window_; }
 
  private:
   static std::unique_ptr<Window> internal_window_;

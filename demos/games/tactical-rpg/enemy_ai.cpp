@@ -19,7 +19,7 @@ void EnemyAI::ProcessTurn(
   auto& active_grid_pos = registry.GetComponent<GridPositionComponent>(active);
   auto& active_stats = registry.GetComponent<Stats>(active);
 
-  engine::ecs::EntityID closest_player = engine::ecs::INVALID_ENTITY;
+  engine::ecs::EntityID closest_player = engine::ecs::kInvalidEntity;
   int min_dist = 1000;
 
   auto view = registry.GetView<GridPositionComponent, IdentityComponent,
@@ -50,12 +50,16 @@ void EnemyAI::ProcessTurn(
 
     // Move as close as possible to the player within speed limits
     int move_x = std::min(total_speed, dist_x);
-    if (diff.x < 0) move_x = -move_x;
+    if (diff.x < 0) {
+      move_x = -move_x;
+    }
     active_grid_pos.pos.x += move_x;
     total_speed -= std::abs(move_x);
 
     int move_y = std::min(total_speed, dist_y);
-    if (diff.y < 0) move_y = -move_y;
+    if (diff.y < 0) {
+      move_y = -move_y;
+    }
     active_grid_pos.pos.y += move_y;
 
     auto& actions = registry.GetComponent<ActionListComponent>(active).actions;
@@ -70,13 +74,18 @@ void EnemyAI::ProcessTurn(
         int attack_roll = std::uniform_int_distribution<int>(1, 20)(gen) + 2;
         auto& target_stats = registry.GetComponent<Stats>(closest_player);
         if (attack_roll >= target_stats.ac) {
-          int result = CombatSystem::ApplyEffect(registry, action_entity, closest_player);
+          int result = CombatSystem::ApplyEffect(registry, action_entity,
+                                                 closest_player);
           if (on_effect_callback) {
-            auto& trans = registry.GetComponent<engine::ecs::components::Transform>(closest_player);
+            auto& trans =
+                registry.GetComponent<engine::ecs::components::Transform>(
+                    closest_player);
             if (result < 0) {
-              on_effect_callback(std::to_string(result), trans.position, {1, 0, 0, 1});
+              on_effect_callback(std::to_string(result), trans.position,
+                                 {1, 0, 0, 1});
             } else if (result > 0) {
-              on_effect_callback("+" + std::to_string(result), trans.position, {0, 1, 0, 1});
+              on_effect_callback("+" + std::to_string(result), trans.position,
+                                 {0, 1, 0, 1});
             }
           }
         }

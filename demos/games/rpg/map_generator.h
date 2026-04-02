@@ -93,7 +93,7 @@ class MapGenerator {
       data.tiles[last_y * width + last_x] = TileType::Stairs;
 
       // Place chests in random rooms (other than first and last if possible)
-      for (size_t i = 1; i < rooms.size() - 1; ++i) {
+      for (size_t i = 1; i < rooms.size() { -1; } ++i) {
         if (std::uniform_real_distribution<>(0.0, 1.0)(gen) < 0.5) {
           int cx = rooms[i].x +
                    std::uniform_int_distribution<>(0, rooms[i].w - 1)(gen);

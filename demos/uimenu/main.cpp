@@ -17,27 +17,27 @@ class MenuScene : public engine::Scene {
  public:
   MenuScene(const std::string& name) : engine::Scene(name) {
     // 1. Player
-    player_ = registry().CreateEntity();
+    player_ = GetRegistry().CreateEntity();
 
     // 2. HUD Root
-    hud_root_ = registry().CreateEntity();
+    hud_root_ = GetRegistry().CreateEntity();
     engine::ui::UITransform hud_trans;
     hud_trans.local_pos = {10.0f, 550.0f};  // Top left
     hud_trans.size = {200.0f, 50.0f};
-    registry().AddComponent(hud_root_, hud_trans);
-    registry().AddComponent(hud_root_, engine::ui::UIHierarchy{});
+    GetRegistry().AddComponent(hud_root_, hud_trans);
+    GetRegistry().AddComponent(hud_root_, engine::ui::UIHierarchy{});
 
     // 3. Gold Counter (Child of HUD)
-    gold_counter_ = registry().CreateEntity();
+    gold_counter_ = GetRegistry().CreateEntity();
     engine::ui::UITransform gold_trans;
     gold_trans.local_pos = {0.0f, 0.0f};
     gold_trans.size = {150.0f, 30.0f};
-    registry().AddComponent(gold_counter_, gold_trans);
+    GetRegistry().AddComponent(gold_counter_, gold_trans);
 
     engine::ui::UIHierarchy gold_hier;
     gold_hier.parent = hud_root_;
-    registry().AddComponent(gold_counter_, gold_hier);
-    registry()
+    GetRegistry().AddComponent(gold_counter_, gold_hier);
+    GetRegistry()
         .GetComponent<engine::ui::UIHierarchy>(hud_root_)
         .children.push_back(gold_counter_);
 
@@ -45,21 +45,21 @@ class MenuScene : public engine::Scene {
     gold_binding.get_text = [this]() {
       return "Gold: " + std::to_string(player_gold_);
     };
-    registry().AddComponent(gold_counter_, gold_binding);
-    registry().AddComponent(
+    GetRegistry().AddComponent(gold_counter_, gold_binding);
+    GetRegistry().AddComponent(
         gold_counter_,
         engine::ecs::components::Text{
             "Gold: 0", "default", 1.0f, {1.0f, 1.0f, 0.0f, 1.0f}});
 
     // 4. Pause Button
-    pause_button_ = registry().CreateEntity();
+    pause_button_ = GetRegistry().CreateEntity();
     engine::ui::UITransform btn_trans;
     btn_trans.local_pos = {700.0f, 550.0f};
     btn_trans.size = {80.0f, 40.0f};
-    registry().AddComponent(pause_button_, btn_trans);
-    registry().AddComponent(
+    GetRegistry().AddComponent(pause_button_, btn_trans);
+    GetRegistry().AddComponent(
         pause_button_, engine::ecs::components::Quad{{0.5f, 0.5f, 0.5f, 1.0f}});
-    registry().AddComponent(pause_button_, engine::ui::UIHierarchy{});
+    GetRegistry().AddComponent(pause_button_, engine::ui::UIHierarchy{});
 
     engine::ui::UIInteractable btn_inter;
     btn_inter.on_click = [this]() { ToggleMenu(); };
@@ -69,50 +69,50 @@ class MenuScene : public engine::Scene {
       engine::util::TweenManager::Get()
           .Tween<float>(start_scale, end_scale, 0.1f)
           .OnUpdate([this](const float& val, float progress) {
-            auto& t =
-                registry().GetComponent<engine::ui::UITransform>(pause_button_);
+            auto& t = GetRegistry().GetComponent<engine::ui::UITransform>(
+                pause_button_);
             t.size = {80.0f * val, 40.0f * val};
           })
           .Play();
     };
-    registry().AddComponent(pause_button_, btn_inter);
+    GetRegistry().AddComponent(pause_button_, btn_inter);
 
     // Button Text
-    engine::ecs::EntityID btn_text = registry().CreateEntity();
+    engine::ecs::EntityID btn_text = GetRegistry().CreateEntity();
     engine::ui::UITransform bt_trans;
     bt_trans.local_pos = {5.0f, 10.0f};
-    registry().AddComponent(btn_text, bt_trans);
-    registry().AddComponent(
+    GetRegistry().AddComponent(btn_text, bt_trans);
+    GetRegistry().AddComponent(
         btn_text, engine::ecs::components::Text{
                       "PAUSE", "default", 0.8f, {1.0f, 1.0f, 1.0f, 1.0f}});
     engine::ui::UIHierarchy bt_hier;
     bt_hier.parent = pause_button_;
-    registry().AddComponent(btn_text, bt_hier);
-    registry()
+    GetRegistry().AddComponent(btn_text, bt_hier);
+    GetRegistry()
         .GetComponent<engine::ui::UIHierarchy>(pause_button_)
         .children.push_back(btn_text);
 
     // 5. Menu Panel (Initially off-screen)
-    menu_panel_ = registry().CreateEntity();
+    menu_panel_ = GetRegistry().CreateEntity();
     engine::ui::UITransform menu_trans;
     menu_trans.local_pos = {800.0f, 150.0f};  // Off-screen right
     menu_trans.size = {300.0f, 300.0f};
-    registry().AddComponent(menu_panel_, menu_trans);
-    registry().AddComponent(
+    GetRegistry().AddComponent(menu_panel_, menu_trans);
+    GetRegistry().AddComponent(
         menu_panel_, engine::ecs::components::Quad{{0.2f, 0.2f, 0.2f, 0.9f}});
-    registry().AddComponent(menu_panel_, engine::ui::UIHierarchy{});
+    GetRegistry().AddComponent(menu_panel_, engine::ui::UIHierarchy{});
 
-    engine::ecs::EntityID menu_text = registry().CreateEntity();
+    engine::ecs::EntityID menu_text = GetRegistry().CreateEntity();
     engine::ui::UITransform mt_trans;
     mt_trans.local_pos = {50.0f, 250.0f};
-    registry().AddComponent(menu_text, mt_trans);
-    registry().AddComponent(
+    GetRegistry().AddComponent(menu_text, mt_trans);
+    GetRegistry().AddComponent(
         menu_text, engine::ecs::components::Text{
                        "PAUSED", "default", 1.5f, {1.0f, 1.0f, 1.0f, 1.0f}});
     engine::ui::UIHierarchy mt_hier;
     mt_hier.parent = menu_panel_;
-    registry().AddComponent(menu_text, mt_hier);
-    registry()
+    GetRegistry().AddComponent(menu_text, mt_hier);
+    GetRegistry()
         .GetComponent<engine::ui::UIHierarchy>(menu_panel_)
         .children.push_back(menu_text);
   }
@@ -134,9 +134,9 @@ class MenuScene : public engine::Scene {
     }
 
     auto& btn_inter =
-        registry().GetComponent<engine::ui::UIInteractable>(pause_button_);
-    auto& btn_quad =
-        registry().GetComponent<engine::ecs::components::Quad>(pause_button_);
+        GetRegistry().GetComponent<engine::ui::UIInteractable>(pause_button_);
+    auto& btn_quad = GetRegistry().GetComponent<engine::ecs::components::Quad>(
+        pause_button_);
     if (btn_inter.is_hovered) {
       btn_quad.color = {0.7f, 0.7f, 0.7f, 1.0f};
     } else {
@@ -161,14 +161,15 @@ class MenuScene : public engine::Scene {
   void ToggleMenu() {
     is_menu_open_ = !is_menu_open_;
     float target_x = is_menu_open_ ? 250.0f : 800.0f;
-    auto& trans = registry().GetComponent<engine::ui::UITransform>(menu_panel_);
+    auto& trans =
+        GetRegistry().GetComponent<engine::ui::UITransform>(menu_panel_);
     float start_x = trans.local_pos.x;
     engine::util::TweenManager::Get()
         .Tween<float>(start_x, target_x, 0.5f)
         .Ease(engine::util::EaseType::OutCubic)
         .OnUpdate([this](const float& val, float progress) {
           auto& t =
-              registry().GetComponent<engine::ui::UITransform>(menu_panel_);
+              GetRegistry().GetComponent<engine::ui::UITransform>(menu_panel_);
           t.local_pos.x = val;
           t.is_dirty = true;
         })

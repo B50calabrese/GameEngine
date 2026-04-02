@@ -16,7 +16,9 @@ void CharacterRenderer::Render(engine::ecs::Registry& registry,
     auto& identity = registry.GetComponent<IdentityComponent>(entity);
     auto& turn_state = registry.GetComponent<TurnStateComponent>(entity);
 
-    if (turn_state.is_downed) continue;
+    if (turn_state.is_downed) {
+      continue;
+    }
 
     glm::vec2 pos = offset + glm::vec2(grid_pos.pos.x * tile_size,
                                        grid_pos.pos.y * tile_size);

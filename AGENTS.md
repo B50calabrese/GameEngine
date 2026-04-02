@@ -1,50 +1,57 @@
 # Project: 2D Game Engine (AI Collaboration Layer)
 
-This repository is optimized for AI-driven development. As a Senior Systems Architect, I have established this context layer to guide agents based on their specific operational scope.
+This repository is optimized for AI-driven development. It follows a clean, modular architecture with strict adherence to Google C++ Style and single responsibility principles.
 
 ## Operational Contexts
 
-To maximize effectiveness, first identify your **Persona Context**:
-
 ### A. Engine Contributor (Core Development)
-*   **Goal**: Modify, optimize, or extend the engine's internal systems (`include/engine`, `src/engine`).
-*   **Mandate**: Maintain strict ABI/API stability. Follow internal memory management patterns (e.g., `ComponentStorage` reallocation rules).
-*   **Primary Skills**: `ecs-expert`, `renderer-guide`.
+*   **Goal**: Modify, optimize, or extend internal systems.
+*   **Mandate**: Maintain ABI/API stability. Follow internal patterns.
+*   **Key Systems**:
+    *   **Core**: Lifecycle management, windowing, job system (`engine::Application`, `engine::Engine`, `engine::Window`, `engine::core::JobSystem`).
+    *   **ECS**: Entity-Component-System framework (`engine::ecs::Registry`, `engine::ecs::EntityManager`).
+    *   **Graphics**: Low-level rendering, shaders, textures, batching (`engine::graphics::Renderer`, `engine::graphics::PrimitiveRenderer`).
 
 ### B. Game Developer (Application Logic)
-*   **Goal**: Build games or demos using the engine's public API (`demos/`, `include/engine`).
-*   **Mandate**: Use the high-level `Registry` and `RenderQueue` APIs. Do **not** touch internal buffers or low-level GL calls.
-*   **Primary Skills**: `input-mapper`, `ui-architect`, `asset-manager`.
+*   **Goal**: Build games or demos using the public API.
+*   **Mandate**: Use `SceneManager`, `Registry`, and `RenderQueue`. Avoid low-level GL calls.
+*   **Templates**: Use the games in `demos/games/` as templates for structure and best practices.
 
 ---
 
-## Project Map & Subsystem Directory
+## Subsystem Documentation
 
-| Subsystem | Directory | Scope | Skill Link |
-| :--- | :--- | :--- | :--- |
-| **Core** | `src/engine/core` | Internal | (TBD) |
-| **ECS** | `src/engine/ecs` | Core/App | [ecs-expert](.agents/skills/ecs-expert/SKILL.md) |
-| **Physics** | `src/engine/physics` | Core/App | [physics-specialist](.agents/skills/physics-specialist/SKILL.md) |
-| **Renderer** | `src/engine/graphics` | Core/App | [renderer-guide](.agents/skills/renderer-guide/SKILL.md) |
-| **Input** | `src/engine/input` | Application | [input-mapper](.agents/skills/input-mapper/SKILL.md) |
-| **Asset Mgmt** | `src/engine/util` | Application | [asset-manager](.agents/skills/asset-manager/SKILL.md) |
-| **UI** | `src/engine/ui` | Application | [ui-architect](.agents/skills/ui-architect/SKILL.md) |
+| Subsystem | Namespace | Description |
+| :--- | :--- | :--- |
+| **Core** | `engine` | Main application loop, windowing, and global engine state. |
+| **ECS** | `engine::ecs` | Entity management, component storage, and event dispatching. |
+| **Graphics** | `engine::graphics` | Rendering pipeline, including batching and post-processing. |
+| **Input** | `engine` | Keyboard and mouse input handling via `InputManager`. |
+| **Scene** | `engine` | Scene stack management via `SceneManager`. |
+| **UI** | `engine::ui` | Declarative UI system integrated with ECS. |
+| **Util** | `engine::util` | Scripting, logging, and common utilities. |
 
 ---
 
-## Ruthless Mandates for AI Collaborators
+## Technical Mandates
 
-1.  **Strict Google C++ Style**: No exceptions. Braces for all control structures. Pointers for output parameters.
-2.  **Naming Conventions**: PascalCase for types and functions. snake_case for local variables and parameters. Trailing underscores for private/protected class members (`member_variable_`). Constants and enumerators use `kPascalCase` (e.g., `kMaxBufferSize`).
-3.  **Directory Naming**: Use purely alphabetical characters for directory names (e.g., `uimenu` instead of `ui_menu` or `ui-menu`). No underscores or hyphens. Files can still use underscores.
-4.  **No `using namespace`**: Forbidden in headers. Avoid in source files; use explicit qualifiers or specific `using` declarations.
-5.  **Snapshot Iteration**: All ECS systems must assume the state is a snapshot. Never delete while iterating; use a `deferred_destruction` list.
-6.  **Queue-First Rendering**: Never call `Renderer` methods directly from game or system logic. All draw calls **must** pass through `RenderQueue`. This ensures proper Z-sorting and texture batching.
-4.  **Self-Evolution**: If you find a bug or a new 'Gotcha' (e.g., a specific OpenGL driver quirk or a threading race condition), you are **mandated** to update the relevant `SKILL.md` before submitting your fix.
-5.  **Validation**: Run the relevant `scripts/validate.sh` before submission. Failure to validate is a failure of the persona.
+1.  **Google C++ Style**: Mandatory. PascalCase for types/functions, snake_case for locals/parameters, trailing underscore for private members.
+2.  **Interface Design**: One header per C++ file. Keep interfaces minimal and cohesive.
+3.  **No `using namespace`**: Forbidden in headers. Discouraged in source files.
+4.  **Queue-First Rendering**: All draw calls must pass through `RenderQueue::Default().Submit()`.
+5.  **Single Responsibility**: Each class/system should do one thing well.
 
-## Build Instructions (C++17)
+---
 
-- **Standard Build**: `mkdir -p build && cd build && cmake .. && make -j$(nproc)`
-- **Headless Demos**: `xvfb-run -a ./build/demos/<demo_name>/<ExecutableName>`
-- **Formatting**: `find include src demos -name "*.h" -o -name "*.cpp" | xargs clang-format -i`
+## Testing
+
+Basic unit tests are located in `src/tests/`.
+- To run tests: `g++ -Iinclude -Ithird_party/include -Ithird_party/glm src/tests/test_ecs.cpp src/engine/ecs/entity_manager.cpp -o test_ecs && ./test_ecs`
+- Future agents should add tests for new core functionality.
+
+---
+
+## Build & Format
+
+- **Build**: `mkdir build && cd build && cmake .. && make`
+- **Format**: `find include src demos -name "*.h" -o -name "*.cpp" | xargs clang-format -i`

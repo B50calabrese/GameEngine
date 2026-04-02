@@ -17,65 +17,62 @@ class Application;
 
 /**
  * @brief Manages the application window and its associated context.
- *
- * This class is a wrapper around the underlying GLFW windowing library.
  */
 class Window {
  public:
   /**
-   * @brief Constructs a new `Window` with the specified dimensions and title.
-   *
-   * @param width The width of the window in pixels.
-   * @param height The height of the window in pixels.
-   * @param name The title of the window.
+   * @brief Constructs a new `Window`.
+   * @param width The width.
+   * @param height The height.
+   * @param name The title.
    */
   Window(int width, int height, std::string name);
 
   /**
-   * @brief Returns a pointer to the native GLFW window handle.
+   * @brief Gets the native GLFW window handle.
    * @return Pointer to the GLFWwindow.
    */
-  GLFWwindow* native_handle() const { return internal_window_; }
+  GLFWwindow* GetNativeHandle() const { return internal_window_; }
 
   /**
-   * @brief Checks if the window should remain open.
-   * @return `true` if the window should stay open, `false` otherwise.
+   * @brief Checks if the window is running.
+   * @return `true` if it's running.
    */
   bool IsRunning() const;
 
   /**
    * @brief Checks if the window should close.
-   * @return `true` if the window should close, `false` otherwise.
+   * @return `true` if it should close.
    */
   bool ShouldClose() const;
 
   /**
-   * @brief Swaps the front and back buffers.
+   * @brief Swaps buffers.
    */
   void SwapBuffers() const;
 
   /**
-   * @brief Processes all pending events, such as keyboard and mouse input.
+   * @brief Processes all pending events.
    */
   void PollEvents();
 
   /**
-   * @brief Calculates and returns the time elapsed since the last frame.
+   * @brief Gets the time elapsed since the last frame.
    * @return The delta time in seconds.
    */
-  double delta_time() const;
+  double GetDeltaTime() const;
 
   /**
    * @brief Gets the width of the window.
    * @return Width in pixels.
    */
-  int width() const { return width_; }
+  int GetWidth() const { return width_; }
 
   /**
    * @brief Gets the height of the window.
    * @return Height in pixels.
    */
-  int height() const { return height_; }
+  int GetHeight() const { return height_; }
 
  private:
   friend class Application;
@@ -87,11 +84,10 @@ class Window {
   double last_frame_time_;
 
   /**
-   * @brief Sets up GLFW callbacks for input events.
+   * @brief Sets up GLFW callbacks.
    */
   void SetupCallbacks();
 
-  // Prevent copy/move to enforce a single instance handled by Engine
   Window(const Window&) = delete;
   Window& operator=(const Window&) = delete;
 };

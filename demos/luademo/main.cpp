@@ -18,20 +18,20 @@ class LuaDemoScene : public engine::Scene {
     LOG_INFO("Entering Lua Demo Scene");
 
     // Create an entity controlled by Lua
-    auto player = registry().CreateEntity();
-    registry().AddComponent(player, engine::ecs::components::Transform{
-                                        {400.0f, 300.0f}, {64.0f, 64.0f}});
-    registry().AddComponent(
+    auto player = GetRegistry().CreateEntity();
+    GetRegistry().AddComponent(player, engine::ecs::components::Transform{
+                                           {400.0f, 300.0f}, {64.0f, 64.0f}});
+    GetRegistry().AddComponent(
         player, engine::ecs::components::Quad{{0.0f, 1.0f, 0.0f, 1.0f}});
-    registry().AddComponent(
+    GetRegistry().AddComponent(
         player, engine::ecs::components::Script{ENGINE_ASSETS_PATH
                                                 "scripts/player_control.lua"});
 
     // Create a static entity
-    auto wall = registry().CreateEntity();
-    registry().AddComponent(wall, engine::ecs::components::Transform{
-                                      {200.0f, 200.0f}, {100.0f, 100.0f}});
-    registry().AddComponent(
+    auto wall = GetRegistry().CreateEntity();
+    GetRegistry().AddComponent(wall, engine::ecs::components::Transform{
+                                         {200.0f, 200.0f}, {100.0f, 100.0f}});
+    GetRegistry().AddComponent(
         wall, engine::ecs::components::Quad{{1.0f, 0.0f, 0.0f, 1.0f}});
 
     LOG_INFO("Lua Demo Scene initialized");

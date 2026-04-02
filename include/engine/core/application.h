@@ -65,31 +65,52 @@ class Application {
   virtual ~Application() = default;
 
   /** @brief Gets the primary camera. */
-  engine::graphics::Camera& camera() { return *main_camera_; }
+  engine::graphics::Camera& GetCamera() { return *main_camera_; }
 
  protected:
   /**
    * @brief Provides access to the main application window.
    * @return Reference to the Window.
    */
-  Window& window() { return Engine::window(); }
+  Window& GetWindow() { return Engine::GetWindow(); }
 
   /**
    * @brief Provides access to the input manager for handling keyboard and mouse
    * events.
    * @return Reference to the InputManager.
    */
-  InputManager& input_manager() { return InputManager::Get(); }
+  InputManager& GetInputManager() { return InputManager::Get(); }
 
   /**
    * @brief Provides access to the primary camera used for rendering the scene.
    * @return Reference to the Camera.
    */
-  engine::graphics::Camera& main_camera() { return *main_camera_; }
+  engine::graphics::Camera& GetMainCamera() { return *main_camera_; }
 
  private:
+  /** @brief Initializes the ImGui library. */
+  void InitImGui();
+
+  /** @brief Shuts down the ImGui library. */
+  void ShutdownImGui();
+
+  /** @brief Performs one frame of updates and rendering. */
+  void ProcessFrame();
+
+  /**
+   * @brief Updates all engine-level systems.
+   * @param dt Delta time in seconds.
+   */
+  void UpdateSystems(float dt);
+
+  /** @brief Renders all engine-level systems. */
+  void RenderSystems();
+
   /** @brief The Application owns the primary camera. */
   std::unique_ptr<engine::graphics::Camera> main_camera_;
+
+  /** @brief Pointer to the global application instance. */
+  static Application* instance_;
 };
 
 }  // namespace engine
