@@ -13,7 +13,7 @@ class SpriteSheetApp : public demos::common::BaseDemoApp {
     // sheet. We'll use the AssetManager to load it with the new format.
 
     // First, let's get the texture to know its size for a more realistic demo.
-    auto tex = engine::graphics::Texture::Load("scifi/png/Tiles/Tile (2).png");
+    auto tex = engine::graphics::Texture::Load("textures/platform.png");
     if (tex) {
       sprite_sheet_ = engine::graphics::SpriteSheet::Create(tex, tex->width(), tex->height(), 1, 1);
     }

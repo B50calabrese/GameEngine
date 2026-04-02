@@ -48,7 +48,7 @@ void LevelLoader::Load(const std::string& path,
         switch (p_type) {
           case 'S':
             pc.type = PlatformType::Stationary;
-            registry.AddComponent(entity, engine::ecs::components::Sprite{"scifi/png/Tiles/Tile (2).png"});
+            registry.AddComponent(entity, engine::ecs::components::Sprite{"textures/platform.png"});
             break;
           case 'M': {
             pc.type = PlatformType::Moving;
@@ -60,11 +60,11 @@ void LevelLoader::Load(const std::string& path,
                 entity,
                 engine::ecs::components::Velocity{
                     glm::normalize(pc.end_pos - pc.start_pos) * 150.0f});
-            registry.AddComponent(entity, engine::ecs::components::Sprite{"scifi/png/Tiles/Tile (8).png"});
+            registry.AddComponent(entity, engine::ecs::components::Sprite{"textures/platform_moving.png"});
           } break;
           case 'T':
             pc.type = PlatformType::Temporary;
-            registry.AddComponent(entity, engine::ecs::components::Sprite{"scifi/png/Tiles/Tile (15).png"});
+            registry.AddComponent(entity, engine::ecs::components::Sprite{"textures/platform_temp.png"});
             break;
         }
         registry.AddComponent(entity, pc);
@@ -80,7 +80,7 @@ void LevelLoader::Load(const std::string& path,
         registry.AddComponent(
             entity, engine::ecs::components::Transform{{x, y}, {64.0f, 64.0f}});
         registry.AddComponent(
-            entity, engine::ecs::components::Sprite{"robot/png/Idle (1).png"});
+            entity, engine::ecs::components::Sprite{"textures/robot_idle.png"});
 
         EnemyComponent ec;
         switch (e_type) {
@@ -110,7 +110,7 @@ void LevelLoader::Load(const std::string& path,
         registry.AddComponent(
             entity, engine::ecs::components::Transform{{x, y}, {64.0f, 64.0f}});
         registry.AddComponent(
-            entity, engine::ecs::components::Sprite{"scifi/png/Objects/DoorUnlocked.png"});
+            entity, engine::ecs::components::Sprite{"textures/door.png"});
         registry.AddComponent(entity, GoalComponent{});
       } break;
     }

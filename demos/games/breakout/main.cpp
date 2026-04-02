@@ -48,7 +48,7 @@ class GameplayScene : public engine::Scene {
 
   void OnAttach() override {
       // Pre-load common textures
-      bg_tex_ = engine::graphics::Texture::Load("space/PNG/Backgrounds/background_0.png");
+      bg_tex_ = engine::graphics::Texture::Load("textures/breakout_bg.png");
 
       ResetGame();
   }
@@ -70,7 +70,7 @@ class GameplayScene : public engine::Scene {
         paddle_, engine::ecs::components::Collider{
                      {120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
     registry().AddComponent(paddle_, PaddleComponent{});
-    registry().AddComponent(paddle_, engine::ecs::components::Sprite{"space/PNG/Ships/ship_blue_0.png"});
+    registry().AddComponent(paddle_, engine::ecs::components::Sprite{"textures/paddle.png"});
 
     // Create Ball
     ball_ = registry().CreateEntity();
@@ -84,7 +84,7 @@ class GameplayScene : public engine::Scene {
                                 {24.0f, 24.0f}, {-12.0f, -12.0f}, false, true});
     registry().AddComponent(ball_, BallComponent{12.0f});
     registry().AddComponent(
-        ball_, engine::ecs::components::Sprite{"space/PNG/Power_ups/power_up_0.png"});
+        ball_, engine::ecs::components::Sprite{"textures/ball.png"});
 
     // Create Bricks
     float brick_width = 75.0f;
@@ -109,7 +109,7 @@ class GameplayScene : public engine::Scene {
             brick, engine::ecs::components::Collider{
                        {brick_width, brick_height}, {0, 0}, true, true});
         registry().AddComponent(brick, BrickComponent{false});
-        std::string brick_tex = "space/PNG/Ships/ship_red_" + std::to_string(r % 4) + ".png";
+        std::string brick_tex = "textures/brick_" + std::to_string(r % 4) + ".png";
         registry().AddComponent(brick, engine::ecs::components::Sprite{brick_tex});
       }
     }

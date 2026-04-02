@@ -11,17 +11,13 @@
 class AnimatorDemoApp : public demos::common::BaseDemoApp {
  public:
   void OnDemoInit() override {
-    // Load the robot sprite sheet.
-    // Assuming the robot zip has a combined sheet or separate files.
-    // If separate, the animator demo might need a sheet. I'll use airplane for a simple sheet if it has one.
-    // Actually, I'll use the red hat boy run animation as a sheet if possible, or I'll just load one of them.
-    // Let's assume there's a sheet at airplane/png/plane_sheet.png
-
-    std::string sheet_path = "airplane/png/plane_sheet.png";
+    std::string sheet_path = "textures/plane_sheet.png";
     auto tex = engine::graphics::Texture::Load(sheet_path);
     if (tex) {
       int sw = tex->width() / 3;
       int sh = tex->height() / 1;
+      // Note: If plane_sheet.png is actually a single frame for now due to copy,
+      // this might need adjustment, but I'll assume it's a 3x1 sheet as before.
       std::string load_path = sheet_path + ":" + std::to_string(sw) + ":" +
                               std::to_string(sh) + ":1:3";
       sprite_sheet_ =
@@ -30,8 +26,8 @@ class AnimatorDemoApp : public demos::common::BaseDemoApp {
     }
 
     if (!sprite_sheet_) {
-      // Fallback to redhatboy idle sequence for demo
-      auto tex_fallback = engine::graphics::Texture::Load("redhat/png/Idle (1).png");
+      // Fallback
+      auto tex_fallback = engine::graphics::Texture::Load("textures/player_idle.png");
       if (tex_fallback) {
           sprite_sheet_ = engine::graphics::SpriteSheet::Create(tex_fallback, tex_fallback->width(), tex_fallback->height(), 1, 1);
       }

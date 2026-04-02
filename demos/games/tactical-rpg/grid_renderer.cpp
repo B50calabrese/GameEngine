@@ -10,10 +10,10 @@ void GridRenderer::Render(engine::ecs::Registry& registry,
                           const glm::vec2& offset, float tile_size,
                           const glm::ivec2& cursor_pos) {
   // Optimization: Pre-resolve texture paths if not cached by engine
-  static auto floor_tex = engine::graphics::Texture::Load("dungeon/png/Tiles/Floor.png");
-  static auto slow_tex = engine::graphics::Texture::Load("dungeon/png/Tiles/Wall.png");
-  static auto dmg_tex = engine::graphics::Texture::Load("scifi/png/Tiles/Acid (1).png");
-  static auto wall_tex = engine::graphics::Texture::Load("dungeon/png/Tiles/Wall.png");
+  static auto floor_tex = engine::graphics::Texture::Load("textures/floor.png");
+  static auto slow_tex = engine::graphics::Texture::Load("textures/wall.png");
+  static auto dmg_tex = engine::graphics::Texture::Load("textures/acid.png");
+  static auto wall_tex = engine::graphics::Texture::Load("textures/wall.png");
 
   auto view = registry.GetView<GridMapComponent>();
   for (auto grid_entity : view) {

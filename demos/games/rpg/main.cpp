@@ -36,11 +36,11 @@ class MapScene : public engine::Scene {
   MapScene(const std::string& name) : engine::Scene(name) {}
 
   void OnAttach() override {
-      tile_textures_[TileType::Floor] = engine::graphics::Texture::Load("dungeon/png/Tiles/Floor.png");
-      tile_textures_[TileType::Wall] = engine::graphics::Texture::Load("dungeon/png/Tiles/Wall.png");
-      tile_textures_[TileType::Chest] = engine::graphics::Texture::Load("dungeon/png/Objects/Chest_Closed.png");
-      tile_textures_[TileType::Stairs] = engine::graphics::Texture::Load("dungeon/png/Tiles/Stairs.png");
-      player_tex_ = engine::graphics::Texture::Load("knight/png/Idle (1).png");
+      tile_textures_[TileType::Floor] = engine::graphics::Texture::Load("textures/floor.png");
+      tile_textures_[TileType::Wall] = engine::graphics::Texture::Load("textures/wall.png");
+      tile_textures_[TileType::Chest] = engine::graphics::Texture::Load("textures/chest.png");
+      tile_textures_[TileType::Stairs] = engine::graphics::Texture::Load("textures/stairs.png");
+      player_tex_ = engine::graphics::Texture::Load("textures/knight_idle.png");
       GenerateLevel();
   }
   void OnUpdate(float dt) override;
@@ -91,9 +91,9 @@ class VictoryOverlay : public engine::Scene {
 class BattleScene : public engine::Scene {
  public:
   BattleScene(const std::string& name) : engine::Scene(name) {
-    bg_tex_ = engine::graphics::Texture::Load("dungeon/png/Background.png");
-    enemy_tex_ = engine::graphics::Texture::Load("robot/png/Idle (1).png");
-    player_tex_ = engine::graphics::Texture::Load("knight/png/Idle (1).png");
+    bg_tex_ = engine::graphics::Texture::Load("textures/rpg_bg.png");
+    enemy_tex_ = engine::graphics::Texture::Load("textures/robot_idle.png");
+    player_tex_ = engine::graphics::Texture::Load("textures/knight_idle.png");
 
     enemy_stats_ = {0, 0, 0, 0};
     enemy_stats_.max_hp = 5 + GameState::Get().current_floor * 2;
