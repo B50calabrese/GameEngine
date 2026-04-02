@@ -46,7 +46,12 @@ class GameplayScene : public engine::Scene {
  public:
   GameplayScene(const std::string& name) : engine::Scene(name) {}
 
-  void OnAttach() override { ResetGame(); }
+  void OnAttach() override {
+      // Pre-load common textures
+      bg_tex_ = engine::graphics::Texture::Load("textures/breakout_bg.png");
+
+      ResetGame();
+  }
 
   void ResetGame() {
     registry().Clear();
@@ -65,22 +70,21 @@ class GameplayScene : public engine::Scene {
         paddle_, engine::ecs::components::Collider{
                      {120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
     registry().AddComponent(paddle_, PaddleComponent{});
-    registry().AddComponent(
-        paddle_, engine::ecs::components::Quad{{0.0f, 0.8f, 1.0f, 1.0f}});
+    registry().AddComponent(paddle_, engine::ecs::components::Sprite{"textures/paddle.png"});
 
     // Create Ball
     ball_ = registry().CreateEntity();
     registry().AddComponent(ball_, engine::ecs::components::Transform{
-                                       {400.0f, 500.0f}, {20.0f, 20.0f}});
+                                       {400.0f, 500.0f}, {24.0f, 24.0f}});
     registry().AddComponent(
         ball_, engine::ecs::components::Velocity{{300.0f, -300.0f}});
     // Ball is also a trigger to handle its custom "bounce" resolution.
     registry().AddComponent(ball_,
                             engine::ecs::components::Collider{
-                                {20.0f, 20.0f}, {-10.0f, -10.0f}, false, true});
-    registry().AddComponent(ball_, BallComponent{});
+                                {24.0f, 24.0f}, {-12.0f, -12.0f}, false, true});
+    registry().AddComponent(ball_, BallComponent{12.0f});
     registry().AddComponent(
-        ball_, engine::ecs::components::Quad{{1.0f, 1.0f, 0.0f, 1.0f}});
+        ball_, engine::ecs::components::Sprite{"textures/ball.png"});
 
     // Create Bricks
     float brick_width = 75.0f;
@@ -105,7 +109,8 @@ class GameplayScene : public engine::Scene {
             brick, engine::ecs::components::Collider{
                        {brick_width, brick_height}, {0, 0}, true, true});
         registry().AddComponent(brick, BrickComponent{false});
-        registry().AddComponent(brick, engine::ecs::components::Quad{color});
+        std::string brick_tex = "textures/brick_" + std::to_string(r % 4) + ".png";
+        registry().AddComponent(brick, engine::ecs::components::Sprite{brick_tex});
       }
     }
 
@@ -225,9 +230,7 @@ class GameplayScene : public engine::Scene {
                                     b.size)) {
           vel.velocity.y *= -1;
           bricks_hit_++;
-          auto& color = registry()
-                            .GetComponent<engine::ecs::components::Quad>(b.id)
-                            .color;
+          glm::vec4 color = {1, 1, 1, 1};
           EmitParticles(b.pos + b.size / 2.0f, color);
           registry().DeleteEntity(b.id);
           it = bricks_.erase(it);
@@ -249,8 +252,11 @@ class GameplayScene : public engine::Scene {
   }
 
   void OnRender() override {
-    engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
-                                               {0.05f, 0.05f, 0.1f, 1.0f});
+    if (bg_tex_) {
+      engine::graphics::Renderer::Get().DrawTexturedQuad({400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
+    } else {
+      engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f}, {0.05f, 0.05f, 0.1f, 1.0f});
+    }
 
     if (is_game_over_) {
       engine::graphics::Renderer::Get().DrawText("default", "GAME OVER",
@@ -279,6 +285,8 @@ class GameplayScene : public engine::Scene {
   int bricks_hit_ = 0;
   bool is_game_over_ = false;
   float shake_time_ = 0.0f;
+
+  std::shared_ptr<engine::graphics::Texture> bg_tex_;
 };
 
 class BreakoutApp : public demos::common::BaseDemoApp {

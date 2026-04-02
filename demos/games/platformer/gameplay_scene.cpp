@@ -3,7 +3,9 @@
 #include <engine/ecs/components/physics_components.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/sprite_sheet.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/graphics/utils/sprite_animator.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
@@ -17,7 +19,10 @@ namespace platformer {
 GameplayScene::GameplayScene(const std::string& name, int level)
     : engine::Scene(name), level_(level) {}
 
-void GameplayScene::OnAttach() { LoadLevel(level_); }
+void GameplayScene::OnAttach() {
+  bg_tex_ = engine::graphics::Texture::Load("textures/platformer_bg.png");
+  LoadLevel(level_);
+}
 
 void GameplayScene::LoadLevel(int level) {
   registry().Clear();
@@ -26,15 +31,15 @@ void GameplayScene::LoadLevel(int level) {
   // Create Player
   player_entity_ = registry().CreateEntity();
   registry().AddComponent(player_entity_, engine::ecs::components::Transform{
-                                              {50.0f, 100.0f}, {30.0f, 30.0f}});
+                                              {50.0f, 100.0f}, {64.0f, 64.0f}});
   registry().AddComponent(player_entity_, engine::ecs::components::Velocity{});
   registry().AddComponent(player_entity_, engine::ecs::components::Gravity{});
   // Player is a physics-resolved object
   registry().AddComponent(
       player_entity_,
-      engine::ecs::components::Collider{{30.0f, 30.0f}, {0, 0}, false, false});
+      engine::ecs::components::Collider{{40.0f, 50.0f}, {0, 0}, false, false});
   registry().AddComponent(
-      player_entity_, engine::ecs::components::Quad{{1.0f, 1.0f, 1.0f, 1.0f}});
+      player_entity_, engine::ecs::components::Sprite{"textures/player_idle.png"});
   registry().AddComponent(player_entity_, PlayerComponent{});
 
   std::string level_path = engine::graphics::Renderer::Get().ResolveAssetPath(
@@ -98,12 +103,17 @@ void GameplayScene::UpdatePlayer(float dt) {
   auto& vel = registry().GetComponent<engine::ecs::components::Velocity>(
       player_entity_);
 
+  auto& sprite = registry().GetComponent<engine::ecs::components::Sprite>(player_entity_);
+
   if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kLeft)) {
     vel.velocity.x = -player.move_speed;
+    sprite.texture_name = "textures/player_run.png";
   } else if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kRight)) {
     vel.velocity.x = player.move_speed;
+    sprite.texture_name = "textures/player_run.png";
   } else {
     vel.velocity.x = 0;
+    sprite.texture_name = "textures/player_idle.png";
   }
 
   // We check if grounded by looking at velocity (simplified)
@@ -194,8 +204,13 @@ void GameplayScene::OnRender() {
   engine::graphics::Camera& cam = engine::Application::Get().camera();
   cam.set_position({camera_x_, 0.0f, 0.0f});
 
-  engine::graphics::Renderer::Get().DrawQuad(
-      {camera_x_, 0.0f}, {800.0f, 600.0f}, {0.1f, 0.1f, 0.2f, 1.0f});
+  if (bg_tex_) {
+    engine::graphics::Renderer::Get().DrawTexturedQuad(
+        {camera_x_ + 400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
+  } else {
+    engine::graphics::Renderer::Get().DrawQuad({camera_x_, 0.0f}, {800.0f, 600.0f},
+                                               {0.1f, 0.1f, 0.2f, 1.0f});
+  }
 
   engine::graphics::Renderer::Get().DrawText(
       "default", "Level: " + std::to_string(level_),

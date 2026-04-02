@@ -8,6 +8,7 @@
 #include <glm/vec2.hpp>
 
 #include <engine/ecs/registry.h>
+#include <engine/graphics/texture.h>
 #include <engine/scene/scene.h>
 
 #include "components.h"
@@ -48,6 +49,7 @@ class GameplayScene : public engine::Scene {
   int level_;
   engine::ecs::EntityID player_entity_;
   float camera_x_ = 0.0f;
+  std::shared_ptr<engine::graphics::Texture> bg_tex_;
 };
 
 class LevelCompleteScene : public engine::Scene {
