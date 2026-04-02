@@ -57,12 +57,6 @@ class PrimitiveRenderer {
   /**
    * @brief Submits a colored rectangle (quad) to be drawn at the specified
    * position and size.
-   *
-   * @param position The position of the rectangle's top-left corner.
-   * @param size The size of the rectangle.
-   * @param color The RGBA color of the rectangle.
-   * @param rotation The amount to rotate the quad in degrees.
-   * @param origin The origin point for rotation (relative to size, 0-1).
    */
   static void SubmitQuad(const glm::vec2& position, const glm::vec2& size,
                          const glm::vec4& color, float rotation = 0.0f,
@@ -71,14 +65,6 @@ class PrimitiveRenderer {
   /**
    * @brief Submits a textured rectangle (quad) to be drawn at the specified
    * position and size.
-   *
-   * @param position The position of the rectangle's top-left corner.
-   * @param size The size of the rectangle.
-   * @param texture_id The OpenGL texture ID to use.
-   * @param color The RGBA color (tint) of the rectangle.
-   * @param rotation The amount to rotate the quad in degrees.
-   * @param origin The origin point for rotation (relative to size, 0-1).
-   * @param flip_uv Whether to flip the way the textured quad is rendered.
    */
   static void SubmitTexturedQuad(const glm::vec2& position,
                                  const glm::vec2& size, unsigned int texture_id,
@@ -87,25 +73,53 @@ class PrimitiveRenderer {
                                  bool flip_uv = false);
 
   /**
-   * @brief Submits a textured rectangle (quad) with custom UV coordinates.
-   *
-   * @param position The world-space position.
-   * @param size The width and height.
-   * @param texture_id The OpenGL ID of the texture.
-   * @param uv_min The bottom-left UV coordinate.
-   * @param uv_max The top-right UV coordinate.
-   * @param color The RGBA tint color.
-   * @param rotation The rotation in degrees.
-   * @param origin The origin point for rotation.
-   * @param is_font Whether this quad represents a font glyph.
+   * @brief Submits a textured rectangle (quad) with custom UV coordinates and styles.
    */
-  static void SubmitTexturedQuad(const glm::vec2& position,
-                                 const glm::vec2& size, unsigned int texture_id,
-                                 const glm::vec2& uv_min,
-                                 const glm::vec2& uv_max,
-                                 const glm::vec4& color, float rotation = 0.0f,
-                                 const glm::vec2& origin = {0.0f, 0.0f},
-                                 bool is_font = false);
+  static void SubmitTexturedQuad(
+      const glm::vec2& position, const glm::vec2& size, unsigned int texture_id,
+      const glm::vec2& uv_min, const glm::vec2& uv_max, const glm::vec4& color,
+      float rotation = 0.0f, const glm::vec2& origin = {0.0f, 0.0f},
+      bool is_font = false, float thickness = 0.0f, float roundness = 0.0f,
+      const glm::vec4& color2 = glm::vec4(1.0f), int gradient_type = 0);
+
+  /**
+   * @brief Submits a circle to be drawn.
+   */
+  static void SubmitCircle(const glm::vec2& position, float radius,
+                           const glm::vec4& color, float thickness = 0.0f,
+                           const glm::vec4& color2 = glm::vec4(1.0f),
+                           int gradient_type = 0);
+
+  /**
+   * @brief Submits a triangle to be drawn.
+   */
+  static void SubmitTriangle(const glm::vec2& position, const glm::vec2& size,
+                             const glm::vec4& color, float rotation = 0.0f,
+                             const glm::vec2& origin = {0.0f, 0.0f},
+                             float thickness = 0.0f,
+                             const glm::vec4& color2 = glm::vec4(1.0f),
+                             int gradient_type = 0);
+
+  /**
+   * @brief Submits a line to be drawn between two points.
+   */
+  static void SubmitLine(const glm::vec2& start, const glm::vec2& end,
+                         const glm::vec4& color, float thickness = 1.0f,
+                         bool is_dashed = false);
+
+  /**
+   * @brief Submits a single point to be drawn.
+   */
+  static void SubmitPoint(const glm::vec2& position, const glm::vec4& color,
+                          float size = 1.0f);
+
+  /**
+   * @brief Submits a convex polygon to be drawn.
+   * @param vertices List of vertices in world space.
+   * @param color Fill color.
+   */
+  static void SubmitPolygon(const std::vector<glm::vec2>& vertices,
+                            const glm::vec4& color);
 
  private:
   // OpenGL buffers.
