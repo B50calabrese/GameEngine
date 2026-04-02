@@ -12,12 +12,14 @@ namespace platformer {
 LevelCompleteScene::LevelCompleteScene(const std::string& name, int level)
     : engine::Scene(name), level_(level) {}
 
-void LevelCompleteScene::OnAttach() {}
+void LevelCompleteScene::OnAttach() {
+  engine::graphics::TextRenderer::Get().LoadFont("default", "arial.ttf", 24);
+}
 
 void LevelCompleteScene::OnUpdate(float dt) {
   if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace) ||
       engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kEnter)) {
-    if (level_ < 2) {
+    if (level_ < 2) {  // We only have 2 levels
       engine::SceneManager::Get().SetScene(
           std::make_unique<GameplayScene>("Gameplay", level_ + 1));
     } else {
@@ -41,16 +43,16 @@ void LevelCompleteScene::OnUpdate(float dt) {
 }
 
 void LevelCompleteScene::OnRender() {
-  engine::graphics::Camera& cam = engine::Application::Get().GetCamera();
-  glm::vec3 cam_pos = cam.GetPosition();
+  engine::graphics::Camera& cam = engine::Application::Get().camera();
+  glm::vec3 cam_pos = cam.position();
 
   engine::graphics::Renderer::Get().DrawQuad(
       {cam_pos.x, cam_pos.y}, {800.0f, 600.0f}, {0.0f, 0.0f, 0.0f, 0.8f});
   std::string msg = "LEVEL " + std::to_string(level_) + " COMPLETE!";
-  engine::graphics::Renderer::Get().DrawQuad(
+  engine::graphics::Renderer::Get().DrawText(
       "default", msg, {cam_pos.x + 200.0f, cam_pos.y + 400.0f}, 0.0f, 2.0f,
       {1.0f, 1.0f, 0.0f, 1.0f});
-  engine::graphics::Renderer::Get().DrawQuad(
+  engine::graphics::Renderer::Get().DrawText(
       "default", "Press SPACE to Continue",
       {cam_pos.x + 250.0f, cam_pos.y + 300.0f}, 0.0f, 1.0f,
       {1.0f, 1.0f, 1.0f, 1.0f});

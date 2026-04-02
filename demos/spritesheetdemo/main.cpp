@@ -15,8 +15,8 @@ class SpriteSheetApp : public demos::common::BaseDemoApp {
     // First, let's get the texture to know its size for a more realistic demo.
     auto tex = engine::graphics::Texture::Load("card_back.png");
     if (tex) {
-      int sw = tex->GetWidth() / 2;
-      int sh = tex->GetHeight() / 2;
+      int sw = tex->width() / 2;
+      int sh = tex->height() / 2;
       std::string load_path = "card_back.png:" + std::to_string(sw) + ":" +
                               std::to_string(sh) + ":2:2";
       sprite_sheet_ =

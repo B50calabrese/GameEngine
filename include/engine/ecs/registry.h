@@ -28,7 +28,7 @@ class IComponentStorage {
   virtual ~IComponentStorage() = default;
   virtual void Remove(EntityID entity) = 0;
   virtual void Clear() = 0;
-  virtual bool Has(EntityID entity) const = 0;
+  virtual bool Has(EntityID entity) = 0;
   virtual void NotifyRemoved(EntityID entity, Registry* registry) = 0;
 
  protected:
@@ -41,20 +41,41 @@ class IComponentStorage {
 template <typename T>
 class ComponentStorage : public IComponentStorage {
  public:
-  void Add(EntityID entity, T component) {
-    data_[entity] = std::move(component);
-  }
+  /**
+   * @brief Stores the component for the given entity.
+   * @param entity The entity to store the component on.
+   * @param component The component being added.
+   */
+  void Add(EntityID entity, T component) { data_[entity] = component; }
 
+  /**
+   * @brief Returns the component for the given entity.
+   * @returns the component.
+   */
   T& Get(EntityID entity) { return data_.at(entity); }
 
+  /**
+   * @brief Removes the entity from this given storage.
+   * @param entity The entity to remove.
+   */
   void Remove(EntityID entity) override { data_.erase(entity); }
 
-  bool Has(EntityID entity) const override {
+  /**
+   * @brief Returns if the entity is in the storage.
+   * @returns whether or not the entity is found in this storage.
+   */
+  bool Has(EntityID entity) override {
     return data_.find(entity) != data_.end();
   }
 
+  /**
+   * @brief Clears all components from this storage.
+   */
   void Clear() override { data_.clear(); }
 
+  /**
+   * @brief Triggers a notification that a component is being removed.
+   */
   void NotifyRemoved(EntityID entity, Registry* registry) override;
 
  private:
@@ -62,7 +83,8 @@ class ComponentStorage : public IComponentStorage {
 };
 
 /**
- * @brief Orchestrates entities and components.
+ * @brief Orchestrates the entities and components associated with those
+ * entities.
  */
 class Registry {
   struct ListenerEntry {
@@ -128,14 +150,20 @@ class Registry {
   };
 
  public:
-  /** @brief Creates an entity. */
+  /**
+   * @brief Creates an entity in the registry.
+   * @returns the ID of the entity created.
+   */
   EntityID CreateEntity() {
     EntityID entity = entity_manager_.CreateEntity();
     Publish<events::EntityCreatedEvent>({entity, this});
     return entity;
   }
 
-  /** @brief Deletes an entity. */
+  /**
+   * @brief Deletes the entity and associated data.
+   * @param entity the ID of the entity to delete.
+   */
   void DeleteEntity(EntityID entity) {
     Publish<events::EntityDestroyedEvent>({entity, this});
     for (auto& [type, storage] : storages_) {
@@ -149,48 +177,70 @@ class Registry {
     entity_manager_.DestroyEntity(entity);
   }
 
-  /** @brief Returns true if an entity is alive. */
+  /**
+   * @brief Indicates if an entity is alive.
+   * @param entity the ID of the entity to check
+   * @returns `true` if the entity is alive.
+   */
   bool IsAlive(EntityID entity) const {
     return entity_manager_.IsAlive(entity);
   }
 
-  /** @brief Adds a component. */
+  /**
+   * @brief Adds a component to the given entity.
+   * @param entity the ID of the entity to add to.
+   * @param component the component to add to the entity.
+   */
   template <typename T>
   void AddComponent(EntityID entity, T component) {
-    GetOrCreateStorage<T>()->Add(entity, std::move(component));
+    GetStorage<T>()->Add(entity, component);
     Publish<events::ComponentAddedEvent<T>>(
         {entity, GetComponent<T>(entity), this});
   }
 
-  /** @brief Removes a component. */
+  /**
+   * @brief Removes a component from the given entity.
+   * @param entity the ID of the entity to remove.
+   */
   template <typename T>
   void RemoveComponent(EntityID entity) {
     if (HasComponent<T>(entity)) {
       Publish<events::ComponentRemovedEvent<T>>(
           {entity, GetComponent<T>(entity), this});
-      GetOrCreateStorage<T>()->Remove(entity);
+      GetStorage<T>()->Remove(entity);
     }
   }
 
-  /** @brief Retrieves a component. */
+  /**
+   * @brief Retrieves the component for the entity.
+   * @param entity the ID of the entity to fetch the component for.
+   * @returns the component of the given type.
+   */
   template <typename T>
   T& GetComponent(EntityID entity) {
-    return GetOrCreateStorage<T>()->Get(entity);
+    return GetStorage<T>()->Get(entity);
   }
 
-  /** @brief Returns true if a component exists. */
+  /**
+   * @brief Returns `true` if the component exists on the entity.
+   * @param entity the ID of the entity to check.
+   * @returns `true` if the component exists.
+   */
   template <typename T>
-  bool HasComponent(EntityID entity) const {
-    const auto* storage = GetStorage<T>();
-    return storage && storage->Has(entity);
+  bool HasComponent(EntityID entity) {
+    return GetStorage<T>()->Has(entity);
   }
 
-  /** @brief Returns a view of entities with specific components. */
+  /**
+   * @brief A view of entities that have a specific set of components.
+   */
   template <typename... Components>
   class View {
    public:
     View(Registry* registry) : registry_(registry) {
-      if (!registry_) return;
+      if (!registry_) {
+        return;
+      }
       for (EntityID entity = 0; entity < registry_->entity_manager_.GetNextId();
            ++entity) {
         if (registry_->entity_manager_.IsAlive(entity) &&
@@ -201,6 +251,22 @@ class Registry {
     }
 
     View() : registry_(nullptr) {}
+
+    template <typename Func>
+    std::vector<EntityID> Filter(Func&& predicate) {
+      std::vector<EntityID> result;
+      if (!registry_) {
+        return result;
+      }
+      for (auto entity : entities_) {
+        if (registry_->entity_manager_.IsAlive(entity) &&
+            (registry_->HasComponent<Components>(entity) && ...) &&
+            predicate(registry_->GetComponent<Components>(entity)...)) {
+          result.push_back(entity);
+        }
+      }
+      return result;
+    }
 
     auto begin() { return entities_.begin(); }
     auto end() { return entities_.end(); }
@@ -226,25 +292,42 @@ class Registry {
     }
   }
 
-  /** @brief Subscribes a listener to events. */
+  /**
+   * @brief Subscribes a listener to events of type T.
+   * @param listener The listener to subscribe.
+   * @param one_shot If true, the listener will be automatically unsubscribed
+   * after one event.
+   */
   template <typename T>
   void Subscribe(events::IEventListener<T>* listener, bool one_shot = false) {
-    GetOrCreateDispatcher<T>()->Subscribe(listener, one_shot);
+    GetDispatcher<T>()->Subscribe(listener, one_shot);
   }
 
-  /** @brief Unsubscribes a listener. */
+  /**
+   * @brief Unsubscribes a listener from events of type T.
+   * @param listener The listener to unsubscribe.
+   */
   template <typename T>
   void Unsubscribe(events::IEventListener<T>* listener) {
-    GetOrCreateDispatcher<T>()->Unsubscribe(listener);
+    GetDispatcher<T>()->Unsubscribe(listener);
   }
 
-  /** @brief Publishes an event. */
+  /**
+   * @brief Publishes an event of type T.
+   * @param event The event data.
+   * @param immediate If true, listeners are notified immediately. If false, the
+   * event is queued for the next Update() call.
+   */
   template <typename T>
   void Publish(const T& event, bool immediate = true) {
-    GetOrCreateDispatcher<T>()->Publish(event, immediate);
+    GetDispatcher<T>()->Publish(event, immediate);
   }
 
-  /** @brief Modifies a component and triggers a modified event. */
+  /**
+   * @brief Modifies a component and triggers a events::ComponentModifiedEvent.
+   * @param entity The entity whose component to modify.
+   * @param func A function that receives a reference to the component.
+   */
   template <typename T, typename Func>
   void PatchComponent(EntityID entity, Func&& func) {
     if (HasComponent<T>(entity)) {
@@ -254,14 +337,18 @@ class Registry {
     }
   }
 
-  /** @brief Processes queued asynchronous events. */
+  /**
+   * @brief Processes any queued asynchronous events.
+   */
   void Update() {
     for (auto& [type, dispatcher] : dispatchers_) {
       dispatcher->ProcessQueue();
     }
   }
 
-  /** @brief Clears all entities and components. */
+  /**
+   * @brief Clears all entities and components from the registry.
+   */
   void Clear() {
     for (auto& [type, storage] : storages_) {
       storage->Clear();
@@ -273,8 +360,12 @@ class Registry {
   }
 
  private:
+  /**
+   * @brief Gets the appropriate ComponentStorage for the given type.
+   * @returns the ComponentStorage for the template type.
+   */
   template <typename T>
-  ComponentStorage<T>* GetOrCreateStorage() {
+  ComponentStorage<T>* GetStorage() {
     auto type = std::type_index(typeid(T));
     if (storages_.find(type) == storages_.end()) {
       storages_[type] = std::make_unique<ComponentStorage<T>>();
@@ -282,16 +373,12 @@ class Registry {
     return static_cast<ComponentStorage<T>*>(storages_[type].get());
   }
 
+  /**
+   * @brief Gets the appropriate EventDispatcher for the given type.
+   * @returns the EventDispatcher for the template type.
+   */
   template <typename T>
-  const ComponentStorage<T>* GetStorage() const {
-    auto type = std::type_index(typeid(T));
-    auto it = storages_.find(type);
-    if (it == storages_.end()) return nullptr;
-    return static_cast<const ComponentStorage<T>*>(it->second.get());
-  }
-
-  template <typename T>
-  EventDispatcher<T>* GetOrCreateDispatcher() {
+  EventDispatcher<T>* GetDispatcher() {
     auto type = std::type_index(typeid(T));
     if (dispatchers_.find(type) == dispatchers_.end()) {
       dispatchers_[type] = std::make_unique<EventDispatcher<T>>();

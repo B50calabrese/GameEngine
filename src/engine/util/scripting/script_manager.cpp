@@ -147,7 +147,7 @@ void ScriptManager::BindInput() {
   input["is_key_released"] = [](KeyCode key) {
     return InputManager::Get().IsKeyReleased(key);
   };
-  input["mouse_pos"] = []() { return InputManager::Get().mouse_screen_pos(); };
+  input["mouse_pos"] = []() { return InputManager::Get().GetMouseScreenPos(); };
 }
 
 void ScriptManager::BindScene() {

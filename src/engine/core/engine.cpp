@@ -26,7 +26,7 @@ constexpr int kGlfwVersionMajor = 3;
 constexpr int kGlfwVersionMinor = 3;
 }  // namespace
 
-std::unique_ptr<Window> Engine::window_ = nullptr;
+std::unique_ptr<Window> Engine::internal_window_ = nullptr;
 
 void Engine::Init(const EngineConfig& engine_config) {
   if (!util::Logger::Get().IsInitialized()) {
@@ -43,28 +43,30 @@ void Engine::Init(const EngineConfig& engine_config) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, kGlfwVersionMinor);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window_ = std::make_unique<Window>(engine_config.window_width,
-                                     engine_config.window_height,
-                                     engine_config.window_title);
-  graphics::Renderer::Get().Init(*window_);
+  Engine::internal_window_ = std::make_unique<Window>(
+      engine_config.window_width, engine_config.window_height,
+      engine_config.window_title);
+  graphics::Renderer::Get().Init(*(Engine::internal_window_));
   graphics::Renderer::Get().SetAssetRoot(engine_config.asset_path);
 
   core::JobSystem::Get().Init();
 
+  // Configure scripting
   bool hot_reload = engine_config.hot_reload_enabled;
   const char* hot_reload_env = std::getenv("ENGINE_HOT_RELOAD");
   if (hot_reload_env && std::string(hot_reload_env) == "1") {
     hot_reload = true;
   }
-  util::ScriptManager::Get().SetHotReloadEnabled(hot_reload);
-  util::ScriptManager::Get().SetAssetPath(engine_config.asset_path);
+  util::ScriptManager::Get().set_hot_reload_enabled(hot_reload);
+  util::ScriptManager::Get().set_asset_path(engine_config.asset_path);
 
+  // Configure console
   util::Console::Get().SetToggleKey(engine_config.console_toggle_key);
 }
 
 void Engine::Shutdown() {
-  if (window_) {
-    glfwSetWindowShouldClose(window_->GetNativeHandle(), GLFW_TRUE);
+  if (internal_window_) {
+    glfwSetWindowShouldClose(internal_window_->GetNativeHandle(), GLFW_TRUE);
   }
   core::JobSystem::Get().Shutdown();
 }

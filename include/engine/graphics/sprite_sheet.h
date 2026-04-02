@@ -60,10 +60,10 @@ class SpriteSheet {
   const Texture* texture() const { return texture_.get(); }
 
   /** @brief Gets the sprite width. */
-  int sprite_GetWidth() const { return sprite_width_; }
+  int sprite_width() const { return sprite_width_; }
 
   /** @brief Gets the sprite height. */
-  int sprite_GetHeight() const { return sprite_height_; }
+  int sprite_height() const { return sprite_height_; }
 
   /** @brief Gets the number of rows. */
   int rows() const { return rows_; }

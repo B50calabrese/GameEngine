@@ -268,7 +268,7 @@ void BattleScene::OnRender() {
                             grid_offset_, tile_visual_size_);
 
   for (const auto& ft : floating_texts_) {
-    engine::graphics::utils::RenderQueue::Default().Submit(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", ft.text, ft.position, 0.0f, 0.5f, ft.color);
   }
 
@@ -276,7 +276,7 @@ void BattleScene::OnRender() {
 }
 
 void BattleScene::RenderUI() {
-  engine::graphics::utils::RenderQueue::Default().Submit(
+  engine::graphics::TextRenderer::Get().DrawText(
       "default", last_log_, {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
   // Tile Tooltip
@@ -302,12 +302,12 @@ void BattleScene::RenderUI() {
       terrain_desc = "Cannot pass.";
       break;
   }
-  engine::graphics::utils::RenderQueue::Default().Submit(
+  engine::graphics::TextRenderer::Get().DrawText(
       "default", "Tile: " + terrain_name, {100, 600}, 0.0f, 0.6f,
       {0.7f, 0.7f, 1.0f, 1.0f});
-  engine::graphics::utils::RenderQueue::Default().Submit(
-      "default", terrain_desc, {100, 580}, 0.0f, 0.4f,
-      {0.6f, 0.6f, 0.9f, 1.0f});
+  engine::graphics::TextRenderer::Get().DrawText("default", terrain_desc,
+                                                 {100, 580}, 0.0f, 0.4f,
+                                                 {0.6f, 0.6f, 0.9f, 1.0f});
 
   auto active = turn_manager_.GetActiveCharacter();
   if (GetRegistry().IsAlive(active) &&
@@ -321,10 +321,10 @@ void BattleScene::RenderUI() {
     std::string move_info =
         "Movement: " + std::to_string(turn_state.movement_remaining) + "/" +
         std::to_string(stats.speed);
-    engine::graphics::utils::RenderQueue::Default().Submit(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", move_info, {700, 500}, 0.0f, 0.7f, {1, 1, 1, 1});
 
-    engine::graphics::utils::RenderQueue::Default().Submit(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", "1: Move Mode", {700, 450}, 0.0f, 0.7f,
         (selected_action_index_ == -1 ? glm::vec4(1, 1, 0, 1)
                                       : glm::vec4(1, 1, 1, 1)));
@@ -336,7 +336,7 @@ void BattleScene::RenderUI() {
       bool is_selected = (selected_action_index_ == i);
       glm::vec4 color =
           (is_selected ? glm::vec4(1, 1, 0, 1) : glm::vec4(1, 1, 1, 1));
-      engine::graphics::utils::RenderQueue::Default().Submit(
+      engine::graphics::TextRenderer::Get().DrawText(
           "default", std::to_string(i + 2) + ": " + action_data.name,
           {700, 400 - i * 40.0f}, 0.0f, 0.7f, color);
 
@@ -359,15 +359,15 @@ void BattleScene::RenderUI() {
                     std::to_string(heal.modifier) + ")";
           }
         }
-        engine::graphics::utils::RenderQueue::Default().Submit(
+        engine::graphics::TextRenderer::Get().DrawText(
             "default", desc, {700, 370 - i * 40.0f}, 0.0f, 0.5f,
             {0.8f, 0.8f, 0.8f, 1.0f});
       }
     }
 
-    engine::graphics::utils::RenderQueue::Default().Submit(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", "ENTER: End Turn", {700, 100}, 0.0f, 0.7f, {1, 1, 1, 1});
-    engine::graphics::utils::RenderQueue::Default().Submit(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default",
         id.name + " HP: " + std::to_string(stats.current_hp) + "/" +
             std::to_string(stats.max_hp),

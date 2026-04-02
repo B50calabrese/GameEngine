@@ -39,7 +39,7 @@ void GridRenderer::Render(engine::ecs::Registry& registry,
           color += glm::vec4(0.3f, 0.3f, 0.3f, 0.0f);
         }
 
-        engine::graphics::utils::RenderQueue::Default().Submit(
+        engine::graphics::Renderer::Get().DrawQuad(
             pos, {tile_size - 2, tile_size - 2}, color);
       }
     }

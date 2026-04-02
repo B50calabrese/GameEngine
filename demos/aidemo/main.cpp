@@ -65,7 +65,7 @@ class AIDemoScene : public engine::Scene {
 
           // In Patrol state, we let the BT handle movement.
           // But we check for "combat" trigger (e.g., proximity to mouse)
-          glm::vec2 mouse_pos = engine::InputManager::Get().mouse_screen_pos();
+          glm::vec2 mouse_pos = engine::InputManager::Get().GetMouseScreenPos();
           if (glm::distance(transform.position, mouse_pos) < 100.0f) {
             registry_
                 .GetComponent<engine::ecs::components::StateMachine>(entity)
@@ -85,7 +85,7 @@ class AIDemoScene : public engine::Scene {
           auto& npc = registry_.GetComponent<NPCComponent>(entity);
           npc.status_text = "State: Combat (Aggressive)";
 
-          glm::vec2 mouse_pos = engine::InputManager::Get().mouse_screen_pos();
+          glm::vec2 mouse_pos = engine::InputManager::Get().GetMouseScreenPos();
           glm::vec2 dir = glm::normalize(mouse_pos - transform.position);
           transform.position += dir * npc.speed * 1.5f * dt;
 
@@ -117,7 +117,7 @@ class AIDemoScene : public engine::Scene {
 
       glm::vec2 center = {400, 300};
       glm::vec2 dir = glm::normalize(transform.position - center);
-      if (glm::length(dir) < 0.01f) dir = {1, 0};
+      if (glm::length(dir) { < 0.01f) dir = {1, 0}; }
       transform.position += dir * npc.speed * 2.0f * dt;
 
       npc.health += 10.0f * dt;  // Regenerate while fleeing
@@ -212,12 +212,12 @@ class AIDemoScene : public engine::Scene {
                                                color);
 
     // Draw UI
-    engine::graphics::Renderer::Get().DrawQuad(
+    engine::graphics::Renderer::Get().DrawText(
         "default", npc.status_text, {10, 570}, 0.0f, 0.7f, {1, 1, 1, 1});
-    engine::graphics::Renderer::Get().DrawQuad(
+    engine::graphics::Renderer::Get().DrawText(
         "default", "Health: " + std::to_string((int)npc.health), {10, 540},
         0.0f, 0.7f, {1, 1, 1, 1});
-    engine::graphics::Renderer::Get().DrawQuad(
+    engine::graphics::Renderer::Get().DrawText(
         "default", "Move mouse close to NPC to trigger Combat", {10, 20}, 0.0f,
         0.5f, {0.7f, 0.7f, 0.7f, 1.0f});
 

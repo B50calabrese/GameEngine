@@ -4,6 +4,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <glm/geometric.hpp>
+
 #include <engine/ecs/components/graphics_components.h>
 #include <engine/ecs/components/physics_components.h>
 #include <engine/ecs/components/transform.h>
@@ -22,7 +24,9 @@ void LevelLoader::Load(const std::string& path,
 
   std::string line;
   while (std::getline(file, line)) {
-    if (line.empty() || line[0] == '#') continue;
+    if (line.empty() || line[0] == '#') {
+      continue;
+    }
 
     std::stringstream ss(line);
     char type;
@@ -72,7 +76,8 @@ void LevelLoader::Load(const std::string& path,
       case 'E': {
         float x, y;
         char e_type;
-        ss >> x >> y >> e_type;
+        ss >> x >> y;
+        ss >> e_type;
 
         auto entity = registry.CreateEntity();
         registry.AddComponent(

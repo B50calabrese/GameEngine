@@ -19,18 +19,18 @@ class Camera {
   /** @brief Constructs a camera. */
   Camera(float left, float right, float bottom, float top);
 
-  /** @brief Updates the projection boundaries. */
+  /** @brief Updates the boundaries. */
   void SetProjection(float left, float right, float bottom, float top);
 
-  /** @brief Sets the camera position. */
+  /** @brief Moves the camera. */
   void SetPosition(const glm::vec3& position);
 
-  /** @brief Gets the camera position. */
+  /** @brief Gets the position. */
   const glm::vec3& GetPosition() const { return position_; }
 
   /** @brief Gets the view-projection matrix. */
   const glm::mat4& GetViewProjectionMatrix() const {
-    return view_projection_matrix_;
+    return GetViewProjectionMatrix_;
   }
 
  private:
@@ -38,7 +38,7 @@ class Camera {
 
   glm::mat4 projection_matrix_;
   glm::mat4 view_matrix_;
-  glm::mat4 view_projection_matrix_;
+  glm::mat4 GetViewProjectionMatrix_;
   glm::vec3 position_;
 };
 

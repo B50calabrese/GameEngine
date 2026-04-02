@@ -8,11 +8,11 @@
 #include <engine/scene/scene_manager.h>
 
 namespace engine {
-
 void SceneManager::SetScene(std::unique_ptr<Scene> new_scene) {
-  while (!scene_stack_.empty()) {
-    PopScene();
+  for (auto it = scene_stack_.rbegin(); it != scene_stack_.rend(); ++it) {
+    (*it)->OnDetach();
   }
+  scene_stack_.clear();
   if (new_scene) {
     scene_stack_.push_back(std::move(new_scene));
     scene_stack_.back()->OnAttach();
@@ -27,10 +27,11 @@ void SceneManager::PushScene(std::unique_ptr<Scene> overlay) {
 }
 
 void SceneManager::PopScene() {
-  if (!scene_stack_.empty()) {
-    scene_stack_.back()->OnDetach();
-    scene_stack_.pop_back();
+  if (scene_stack_.empty()) {
+    return;
   }
+  scene_stack_.back()->OnDetach();
+  scene_stack_.pop_back();
 }
 
 void SceneManager::UpdateActiveScene(float delta_time) {

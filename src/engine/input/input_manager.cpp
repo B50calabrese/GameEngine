@@ -3,17 +3,16 @@
  * @brief InputManager class implementation.
  */
 
-#include <map>
+#include <iostream>
 
 #include <GLFW/glfw3.h>
 
 #include <engine/input/input_manager.h>
 
 namespace engine {
-
 namespace {
-const std::map<int, KeyCode>& GetKeyCodeMap() {
-  static const std::map<int, KeyCode> kKeyCodeMap = {
+static const std::map<int, KeyCode>& GetKeyCodeMap() {
+  static const std::map<int, KeyCode> s_KeyCodeMap = {
       {GLFW_MOUSE_BUTTON_LEFT, KeyCode::kMouseLeft},
       {GLFW_MOUSE_BUTTON_RIGHT, KeyCode::kMouseRight},
       {GLFW_MOUSE_BUTTON_MIDDLE, KeyCode::kMouseMiddle},
@@ -83,7 +82,7 @@ const std::map<int, KeyCode>& GetKeyCodeMap() {
       {GLFW_KEY_PAGE_UP, KeyCode::kPageUp},
       {GLFW_KEY_PAGE_DOWN, KeyCode::kPageDown},
       {GLFW_KEY_GRAVE_ACCENT, KeyCode::kTilde}};
-  return kKeyCodeMap;
+  return s_KeyCodeMap;
 }
 }  // namespace
 
@@ -94,7 +93,10 @@ InputManager& InputManager::Get() {
 
 bool InputManager::IsKeyDown(KeyCode key_code) const {
   auto it = current_key_state_.find(key_code);
-  return it != current_key_state_.end() && it->second;
+  if (it == current_key_state_.end()) {
+    return false;
+  }
+  return it->second;
 }
 
 bool InputManager::IsKeyPressed(KeyCode key_code) const {
@@ -124,8 +126,9 @@ void InputManager::UpdateState() {
 
 void InputManager::HandleKey(int raw_key_code, int action) {
   KeyCode key = MapRawCode(raw_key_code);
-  if (static_cast<int>(key) == -1) return;
-
+  if (key == static_cast<KeyCode>(-1)) {
+    return;
+  }
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
     current_key_state_[key] = true;
   } else if (action == GLFW_RELEASE) {
@@ -135,8 +138,9 @@ void InputManager::HandleKey(int raw_key_code, int action) {
 
 void InputManager::HandleMouseButton(int raw_button_code, int action) {
   KeyCode key = MapRawCode(raw_button_code);
-  if (static_cast<int>(key) == -1) return;
-
+  if (key == static_cast<KeyCode>(-1)) {
+    return;
+  }
   if (action == GLFW_PRESS) {
     current_key_state_[key] = true;
   } else if (action == GLFW_RELEASE) {

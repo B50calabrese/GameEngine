@@ -53,6 +53,12 @@ void Renderer::DrawRect(float x, float y, float width, float height,
   PrimitiveRenderer::SubmitQuad({x, y}, {width, height}, color);
 }
 
+void Renderer::DrawRect(float x, float y, float width, float height, float r,
+                        float g, float b) {
+  ASSERT_MAIN_THREAD();
+  PrimitiveRenderer::SubmitQuad({x, y}, {width, height}, {r, g, b, 1.0f});
+}
+
 void Renderer::DrawQuad(const glm::vec2& position, const glm::vec2& size,
                         const glm::vec4& color, float rotation,
                         const glm::vec2& origin) {
@@ -98,8 +104,8 @@ void Renderer::DrawText(const std::string& font_name, const std::string& text,
                         const glm::vec2& position, float rotation, float scale,
                         const glm::vec4& color, float z_index) {
   ASSERT_MAIN_THREAD();
-  Textengine::graphics::Renderer::Get().DrawText(
-      font_name, text, position, rotation, scale, color, z_index);
+  TextRenderer::Get().DrawText(font_name, text, position, rotation, scale,
+                               color, z_index);
 }
 
 std::string Renderer::ResolveAssetPath(const std::string& relative_path) const {

@@ -1,16 +1,15 @@
-#ifndef RPG_MAP_GENERATOR_H_
-#define RPG_MAP_GENERATOR_H_
+#ifndef DEMOS_GAMES_RPG_MAP_GENERATOR_H_
+#define DEMOS_GAMES_RPG_MAP_GENERATOR_H_
 
 #include <algorithm>
 #include <random>
 #include <vector>
 
-namespace rpg {
-
-enum class TileType { kFloor, kWall, kStairs, kChest };
+enum class TileType { Floor, Wall, Stairs, Chest };
 
 struct Room {
   int x, y, w, h;
+
   bool Intersects(const Room& other) const {
     return (x < other.x + other.w && x + w > other.x && y < other.y + other.h &&
             y + h > other.y);
@@ -31,7 +30,7 @@ class MapGenerator {
     MapData data;
     data.width = width;
     data.height = height;
-    data.tiles.resize(width * height, TileType::kWall);
+    data.tiles.resize(width * height, TileType::Wall);
 
     std::mt19937 gen(seed);
     std::vector<Room> rooms;
@@ -56,9 +55,10 @@ class MapGenerator {
       }
 
       if (!intersect) {
+        // Carve room
         for (int ry = y; ry < y + h; ++ry) {
           for (int rx = x; rx < x + w; ++rx) {
-            data.tiles[ry * width + rx] = TileType::kFloor;
+            data.tiles[ry * width + rx] = TileType::Floor;
           }
         }
 
@@ -66,37 +66,41 @@ class MapGenerator {
           data.start_x = x + w / 2;
           data.start_y = y + h / 2;
         } else {
+          // Connect to previous room
           int prev_x = rooms.back().x + rooms.back().w / 2;
           int prev_y = rooms.back().y + rooms.back().h / 2;
           int curr_x = x + w / 2;
           int curr_y = y + h / 2;
 
+          // Horizontal then vertical
           for (int cx = std::min(prev_x, curr_x);
                cx <= std::max(prev_x, curr_x); ++cx) {
-            data.tiles[prev_y * width + cx] = TileType::kFloor;
+            data.tiles[prev_y * width + cx] = TileType::Floor;
           }
           for (int cy = std::min(prev_y, curr_y);
                cy <= std::max(prev_y, curr_y); ++cy) {
-            data.tiles[cy * width + curr_x] = TileType::kFloor;
+            data.tiles[cy * width + curr_x] = TileType::Floor;
           }
         }
         rooms.push_back(new_room);
       }
     }
 
+    // Place stairs in last room
     if (!rooms.empty()) {
       int last_x = rooms.back().x + rooms.back().w / 2;
       int last_y = rooms.back().y + rooms.back().h / 2;
-      data.tiles[last_y * width + last_x] = TileType::kStairs;
+      data.tiles[last_y * width + last_x] = TileType::Stairs;
 
-      for (size_t i = 1; i < rooms.size() - 1; ++i) {
+      // Place chests in random rooms (other than first and last if possible)
+      for (size_t i = 1; i < rooms.size() { -1; } ++i) {
         if (std::uniform_real_distribution<>(0.0, 1.0)(gen) < 0.5) {
           int cx = rooms[i].x +
                    std::uniform_int_distribution<>(0, rooms[i].w - 1)(gen);
           int cy = rooms[i].y +
                    std::uniform_int_distribution<>(0, rooms[i].h - 1)(gen);
-          if (data.tiles[cy * width + cx] == TileType::kFloor) {
-            data.tiles[cy * width + cx] = TileType::kChest;
+          if (data.tiles[cy * width + cx] == TileType::Floor) {
+            data.tiles[cy * width + cx] = TileType::Chest;
           }
         }
       }
@@ -106,6 +110,4 @@ class MapGenerator {
   }
 };
 
-}  // namespace rpg
-
-#endif  // RPG_MAP_GENERATOR_H_
+#endif  // DEMOS_GAMES_RPG_MAP_GENERATOR_H_

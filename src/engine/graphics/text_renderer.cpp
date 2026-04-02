@@ -72,7 +72,7 @@ void TextRenderer::DrawText(const std::string& font_name,
     cmd.uv_min = {0.0f, 1.0f};
     cmd.uv_max = {1.0f, 0.0f};
     cmd.is_font = true;
-    graphics::utils::RenderQueue::Default().Submit(cmd);
+    utils::RenderQueue::Default().Submit(cmd);
 
     x_cursor += (ch.advance >> 6);
   }

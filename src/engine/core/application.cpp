@@ -96,7 +96,7 @@ void Application::ProcessFrame() {
 
   util::Console::Get().Update();
 
-  bool input_handled = false;
+  [[maybe_unused]] bool input_handled = false;
   if (util::Console::Get().IsVisible()) {
     input_handled = true;
   } else {
@@ -104,6 +104,7 @@ void Application::ProcessFrame() {
   }
 
   graphics::utils::RenderQueue::Default().Clear();
+
   graphics::Renderer::Get().BeginFrame(*main_camera_);
   graphics::Renderer::Get().Clear();
 
@@ -163,6 +164,7 @@ void Application::RenderSystems() {
   }
 
   core::JobSystem::Get().Wait();
+
   graphics::utils::RenderQueue::Default().Flush();
   graphics::Renderer::Get().Flush();
 

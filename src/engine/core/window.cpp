@@ -21,11 +21,11 @@ namespace engine {
 
 Window::Window(int width, int height, std::string name)
     : width_(width), height_(height) {
-  native_window_ =
+  internal_window_ =
       glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 
-  glfwMakeContextCurrent(native_window_);
-  glfwSwapInterval(1);
+  glfwMakeContextCurrent(internal_window_);
+  glfwSwapInterval(1);  // Enable V-Sync
 
   last_frame_time_ = glfwGetTime();
 
@@ -41,20 +41,20 @@ void Window::PollEvents() {
 double Window::GetDeltaTime() const { return glfwGetTime() - last_frame_time_; }
 
 bool Window::IsRunning() const {
-  return !glfwWindowShouldClose(native_window_);
+  return !glfwWindowShouldClose(internal_window_);
 }
 
 bool Window::ShouldClose() const {
-  return glfwWindowShouldClose(native_window_);
+  return glfwWindowShouldClose(internal_window_);
 }
 
-void Window::SwapBuffers() const { glfwSwapBuffers(native_window_); }
+void Window::SwapBuffers() const { glfwSwapBuffers(internal_window_); }
 
 void Window::SetupCallbacks() {
-  glfwSetWindowUserPointer(native_window_, this);
+  glfwSetWindowUserPointer(internal_window_, this);
 
   glfwSetFramebufferSizeCallback(
-      native_window_, [](GLFWwindow* window, int width, int height) {
+      internal_window_, [](GLFWwindow* window, int width, int height) {
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
         if (win) {
           win->width_ = width;
@@ -64,8 +64,8 @@ void Window::SetupCallbacks() {
         }
       });
 
-  glfwSetKeyCallback(native_window_, [](GLFWwindow* window, int key,
-                                        int scancode, int action, int mods) {
+  glfwSetKeyCallback(internal_window_, [](GLFWwindow* window, int key,
+                                          int scancode, int action, int mods) {
     if (ImGui::GetCurrentContext() != nullptr &&
         ImGui::GetIO().WantCaptureKeyboard) {
       return;
@@ -74,7 +74,8 @@ void Window::SetupCallbacks() {
   });
 
   glfwSetMouseButtonCallback(
-      native_window_, [](GLFWwindow* window, int button, int action, int mods) {
+      internal_window_,
+      [](GLFWwindow* window, int button, int action, int mods) {
         if (ImGui::GetCurrentContext() != nullptr &&
             ImGui::GetIO().WantCaptureMouse) {
           return;
@@ -83,11 +84,11 @@ void Window::SetupCallbacks() {
       });
 
   glfwSetCursorPosCallback(
-      native_window_, [](GLFWwindow* window, double xpos, double ypos) {
+      internal_window_, [](GLFWwindow* window, double xpos, double ypos) {
         InputManager::Get().HandleCursorPosition(xpos, ypos);
       });
 
-  glfwSetCharCallback(native_window_,
+  glfwSetCharCallback(internal_window_,
                       [](GLFWwindow* window, unsigned int codepoint) {
                         if (ImGui::GetCurrentContext() != nullptr &&
                             ImGui::GetIO().WantCaptureKeyboard) {

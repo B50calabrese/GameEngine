@@ -25,7 +25,9 @@ class CombatRules {
     // Occupied by another character
     auto view = registry.GetView<GridPositionComponent, TurnStateComponent>();
     for (auto entity : view) {
-      if (entity == character_entity) continue;
+      if (entity == character_entity) {
+        continue;
+      }
       auto& other_grid_pos =
           registry.GetComponent<GridPositionComponent>(entity);
       auto& other_turn_state =

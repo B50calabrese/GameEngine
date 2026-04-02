@@ -1,10 +1,11 @@
 /**
  * @file render_queue.h
+ * @dir include/engine/graphics
  * @brief Sorting and batching of render commands.
  */
 
-#ifndef INCLUDE_ENGINE_GRAPHICS_UTILS_RENDER_QUEUE_H_
-#define INCLUDE_ENGINE_GRAPHICS_UTILS_RENDER_QUEUE_H_
+#ifndef INCLUDE_ENGINE_GRAPHICS_RENDER_QUEUE_H_
+#define INCLUDE_ENGINE_GRAPHICS_RENDER_QUEUE_H_
 
 #include <algorithm>
 #include <vector>
@@ -12,10 +13,11 @@
 #include <glm/glm.hpp>
 
 #include <engine/graphics/primitive_renderer.h>
+#include <engine/graphics/renderer.h>
 
 namespace engine::graphics::utils {
 
-/** @brief A single drawing command. */
+/** @brief Represents a single drawing command stored in the queue. */
 struct RenderCommand {
   float z_order = 0.0f;
   unsigned int texture_id = 0;
@@ -30,21 +32,29 @@ struct RenderCommand {
 };
 
 /**
- * @brief Sorts and optimizes draw calls.
+ * @brief A high-level utility to sort and optimize draw calls
+ * before sending them to the core Renderer.
  */
 class RenderQueue {
  public:
-  /** @brief Gets the default global instance. */
+  /**
+   * @brief Returns the default global RenderQueue instance.
+   * @return Reference to the default RenderQueue.
+   */
   static RenderQueue& Default() {
     static RenderQueue instance;
     return instance;
   }
 
-  /** @brief Submits a command. */
+  /** @brief Adds a command to the queue without executing it immediately. */
   void Submit(const RenderCommand& command) { commands_.push_back(command); }
 
-  /** @brief Sorts and executes commands. */
+  /**
+   * @brief Sorts commands by Z-order and TextureID, then executes them
+   * via the singleton Renderer.
+   */
   void Flush() {
+    // Stable sort to preserve submission order for identical Z/Texture
     std::stable_sort(commands_.begin(), commands_.end(),
                      [](const RenderCommand& a, const RenderCommand& b) {
                        if (a.z_order != b.z_order) {
@@ -61,14 +71,13 @@ class RenderQueue {
     Clear();
   }
 
-  /** @brief Clears the queue. */
+  /** @brief Clears the queue for the next frame. */
   void Clear() { commands_.clear(); }
 
  private:
-  RenderQueue() = default;
   std::vector<RenderCommand> commands_;
 };
 
 }  // namespace engine::graphics::utils
 
-#endif  // INCLUDE_ENGINE_GRAPHICS_UTILS_RENDER_QUEUE_H_
+#endif  // INCLUDE_ENGINE_GRAPHICS_RENDER_QUEUE_H_

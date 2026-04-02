@@ -50,12 +50,16 @@ void EnemyAI::ProcessTurn(
 
     // Move as close as possible to the player within speed limits
     int move_x = std::min(total_speed, dist_x);
-    if (diff.x < 0) move_x = -move_x;
+    if (diff.x < 0) {
+      move_x = -move_x;
+    }
     active_grid_pos.pos.x += move_x;
     total_speed -= std::abs(move_x);
 
     int move_y = std::min(total_speed, dist_y);
-    if (diff.y < 0) move_y = -move_y;
+    if (diff.y < 0) {
+      move_y = -move_y;
+    }
     active_grid_pos.pos.y += move_y;
 
     auto& actions = registry.GetComponent<ActionListComponent>(active).actions;

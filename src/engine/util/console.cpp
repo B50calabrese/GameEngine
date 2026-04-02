@@ -116,7 +116,7 @@ void Console::Execute(const std::string& line) {
     it->second(args);
   } else {
     // Try Lua
-    sol::state& lua = ScriptManager::Get().GetState();
+    sol::state& lua = ScriptManager::Get().state();
     auto result = lua.safe_script(line, sol::script_pass_on_error);
     if (!result.valid()) {
       sol::error err = result;

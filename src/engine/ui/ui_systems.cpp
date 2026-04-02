@@ -20,15 +20,12 @@ void UILayoutSystem::Update(ecs::Registry& reg, int window_width,
   auto roots = reg.GetView<UITransform, UIHierarchy>().Filter(
       [&](auto& t, auto& h) { return h.parent == ecs::kInvalidEntity; });
 
-  // If no roots with UIHierarchy, try entities with just UITransform but no
-  // UIHierarchy
   auto all_transforms = reg.GetView<UITransform>();
   std::vector<ecs::EntityID> all_roots = roots;
   for (auto entity : all_transforms) {
     bool has_hierarchy = reg.HasComponent<UIHierarchy>(entity);
     if (!has_hierarchy ||
         reg.GetComponent<UIHierarchy>(entity).parent == ecs::kInvalidEntity) {
-      // Check if already in all_roots
       if (std::find(all_roots.begin(), all_roots.end(), entity) ==
           all_roots.end()) {
         all_roots.push_back(entity);
@@ -41,9 +38,6 @@ void UILayoutSystem::Update(ecs::Registry& reg, int window_width,
   for (auto entity : all_roots) {
     UpdateBranch(reg, entity, glm::vec2(0.0f, 0.0f), screen_size);
   }
-
-  // Mark all as dirty if root moved
-  // (This is a simplified layout system)
 }
 
 void UILayoutSystem::UpdateBranch(ecs::Registry& reg, ecs::EntityID entity,
@@ -54,15 +48,8 @@ void UILayoutSystem::UpdateBranch(ecs::Registry& reg, ecs::EntityID entity,
   }
   auto& ui = reg.GetComponent<UITransform>(entity);
 
-  // Calculate anchor position
   glm::vec2 anchor_pos = parent_global_pos + ui.anchor_min * parent_size;
-
-  // Global position is anchor + local offset
   ui.global_pos = anchor_pos + ui.local_pos;
-
-  // Clamp to window bounds for safety
-  // ui.global_pos = glm::clamp(ui.global_pos, glm::vec2(0.0f),
-  // glm::vec2(800.0f, 600.0f));
   ui.is_dirty = false;
 
   if (reg.HasComponent<UIHierarchy>(entity)) {
@@ -95,7 +82,7 @@ void UISyncSystem::Update(ecs::Registry& reg) {
 
 void UIInputSystem::Update(ecs::Registry& reg) {
   auto& input = InputManager::Get();
-  glm::vec2 mouse_pos = input.mouse_screen_pos();
+  glm::vec2 mouse_pos = input.GetMouseScreenPos();
   bool mouse_pressed = input.IsKeyDown(KeyCode::kMouseLeft);
 
   auto view = reg.GetView<UITransform, UIInteractable>();
@@ -157,9 +144,9 @@ void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
 
     if (reg.HasComponent<engine::ecs::components::Text>(entity)) {
       auto& text = reg.GetComponent<engine::ecs::components::Text>(entity);
-      graphics::graphics::utils::RenderQueue::Default().Submit(
-          text.font_name, text.content, transform.global_pos, 0.0f, text.scale,
-          text.color);
+      graphics::Renderer::Get().DrawText(text.font_name, text.content,
+                                         transform.global_pos, 0.0f, text.scale,
+                                         text.color);
     }
 
     if (reg.HasComponent<engine::ecs::components::Quad>(entity)) {

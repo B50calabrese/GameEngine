@@ -3,6 +3,11 @@
  * @brief EntityManager class implementation.
  */
 
+/**
+ * @dir src/engine/ecs
+ * @brief ECS internal logic.
+ */
+
 #include <algorithm>
 
 #include <engine/ecs/entity_manager.h>
@@ -10,10 +15,11 @@
 namespace engine::ecs {
 
 EntityID EntityManager::CreateEntity() {
-  if (!free_entities_.empty()) {
-    EntityID entity = free_entities_.back();
-    free_entities_.pop_back();
-    return entity;
+  // Pop a free entity.
+  if (free_entities_.size() > 0) {
+    int ret = free_entities_[0];
+    free_entities_.erase(free_entities_.begin());
+    return ret;
   }
   return next_id_++;
 }
@@ -23,14 +29,12 @@ void EntityManager::DestroyEntity(EntityID entity) {
 }
 
 bool EntityManager::IsAlive(EntityID entity) const {
-  if (entity >= next_id_) return false;
   auto it = std::find(free_entities_.begin(), free_entities_.end(), entity);
-  return it == free_entities_.end();
+  return entity < next_id_ && it == free_entities_.end();
 }
 
 void EntityManager::Clear() {
   next_id_ = 0;
   free_entities_.clear();
 }
-
 }  // namespace engine::ecs

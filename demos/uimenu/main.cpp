@@ -147,11 +147,11 @@ class MenuScene : public engine::Scene {
   void OnRender() override {
     engine::graphics::Renderer::Get().DrawQuad(player_pos_, {32.0f, 32.0f},
                                                {0.0f, 1.0f, 0.0f, 1.0f});
-    engine::graphics::Renderer::Get().DrawQuad(
+    engine::graphics::Renderer::Get().DrawText(
         "default", "Use WASD to move, Space to get gold", {10.0f, 10.0f}, 0.0f,
         0.7f, {1.0f, 1.0f, 1.0f, 1.0f});
     if (engine::ActionManager::Get().IsConsumed()) {
-      engine::graphics::Renderer::Get().DrawQuad(
+      engine::graphics::Renderer::Get().DrawText(
           "default", "INPUT CONSUMED BY UI", {300.0f, 550.0f}, 0.0f, 0.8f,
           {1.0f, 0.0f, 0.0f, 1.0f});
     }

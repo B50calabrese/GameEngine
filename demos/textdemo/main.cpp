@@ -13,15 +13,15 @@ class MyApp : public demos::common::BaseDemoApp {
   void OnDemoShutdown() override { LOG_INFO("Shutting down Application"); }
 
   void OnDemoUpdate(double delta_time_seconds) override {
-    engine::graphics::utils::RenderQueue::Default().Submit(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", "HELLO WORLD!", glm::vec2(50.0f), /*rotation=*/0.0f,
         /*scale=*/1.0f, glm::vec4(1.0f));
 
-    engine::graphics::utils::RenderQueue::Default().Submit(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", "I am rotated!", glm::vec2(100.0f), /*rotation=*/45.0f,
         /*scale=*/1.0f, glm::vec4(1.0f));
 
-    engine::graphics::utils::RenderQueue::Default().Submit(
+    engine::graphics::TextRenderer::Get().DrawText(
         "default", "I am rotated and scaled!", glm::vec2(200.0f),
         /*rotation=*/45.0f,
         /*scale=*/3.0f, glm::vec4(1.0f));

@@ -69,7 +69,7 @@ void ParticleSystem::Render(float z_index) const {
     cmd.position = p.position;
     cmd.size = {p.size, p.size};
     cmd.color = p.color;
-    graphics::utils::RenderQueue::Default().Submit(cmd);
+    utils::RenderQueue::Default().Submit(cmd);
   }
 }
 

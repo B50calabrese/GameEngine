@@ -114,7 +114,7 @@ class LightingDemo : public demos::common::BaseDemoApp {
         registry_.GetComponent<engine::ecs::components::Transform>(
             light_entity_);
     // In a real app this would be: transform.position =
-    // engine::InputManager::Get().mouse_screen_pos(); For headless capture
+    // engine::InputManager::Get().GetMouseScreenPos(); For headless capture
     // we'll move it in a circle
     float time = static_cast<float>(glfwGetTime());
     transform.position =

@@ -11,15 +11,20 @@
 
 #include <glm/glm.hpp>
 
+class Window;
+
 namespace engine {
 
 /**
- * @brief Key and mouse button codes.
+ * @brief An enumeration of all supported keyboard and mouse button codes.
  */
 enum class KeyCode {
+  // --- Mouse Buttons ---
   kMouseLeft = 0,
   kMouseRight = 1,
   kMouseMiddle = 2,
+
+  // --- Alphabet Keys (Essential for Debug/Cheats/Chat) ---
   kA,
   kB,
   kC,
@@ -46,6 +51,8 @@ enum class KeyCode {
   kX,
   kY,
   kZ,
+
+  // --- Number Keys (Top Row) ---
   k0,
   k1,
   k2,
@@ -56,19 +63,25 @@ enum class KeyCode {
   k7,
   k8,
   k9,
-  kEscape,
-  kEnter,
-  kSpace,
-  kTab,
-  kLeftShift,
+
+  // --- Functional Keys (Essential Game Controls) ---
+  kEscape,     // Crucial for menus, pausing, or quitting
+  kEnter,      // Confirming actions
+  kSpace,      // Common action key (e.g., end turn, skip dialog)
+  kTab,        // Toggling UI panels/map view
+  kLeftShift,  // Holding for multiple selection or speed
   kLeftControl,
   kLeftAlt,
-  kBackspace,
+  kBackspace,  // Text input cleanup
   kDelete,
+
+  // --- Navigation/Movement Keys (Even for 2D map movement) ---
   kUp,
   kDown,
   kLeft,
   kRight,
+
+  // --- System Keys (Useful for debugging) ---
   kF1,
   kF2,
   kF3,
@@ -81,61 +94,122 @@ enum class KeyCode {
   kF10,
   kF11,
   kF12,
+
+  // --- Utility Keys ---
   kHome,
   kEnd,
   kPageUp,
   kPageDown,
-  kTilde,
+
+  kTilde,  // For console toggle
 };
 
 /**
- * @brief Manages keyboard and mouse input.
+ * @brief A singleton class that manages all keyboard and mouse input.
+ *
+ * It provides a simple interface for checking the state of keys and the mouse.
  */
 class InputManager {
  public:
-  /** @brief Gets the singleton instance. */
+  /**
+   * @brief Returns a reference to the singleton `InputManager` instance.
+   * @return Reference to the InputManager.
+   */
   static InputManager& Get();
 
-  /** @brief Returns true if a key is down. */
+  /**
+   * @brief Checks if a key is currently being held down.
+   *
+   * @param key_code The `KeyCode` to check.
+   * @return `true` if the key is currently pressed, `false` otherwise.
+   */
   bool IsKeyDown(KeyCode key_code) const;
 
-  /** @brief Returns true if a key was pressed this frame. */
+  /**
+   * @brief Checks if a key was pressed during the current frame.
+   *
+   * This is a single-frame event.
+   *
+   * @param key_code The `KeyCode` to check.
+   * @return `true` if the key was pressed in this frame, `false` otherwise.
+   */
   bool IsKeyPressed(KeyCode key_code) const;
 
-  /** @brief Returns true if a key was released this frame. */
+  /**
+   * @brief Checks if a key was released during the current frame.
+   *
+   * This is a single-frame event.
+   *
+   * @param key_code The `KeyCode` to check.
+   * @return `true` if the key was released in this frame, `false` otherwise.
+   */
   bool IsKeyReleased(KeyCode key_code) const;
 
-  /** @brief Gets mouse position in screen coordinates. */
-  glm::vec2 GetMouseScreenPos() const { return {mouse_x_, mouse_y_}; }
+  /**
+   * @brief Retrieves the mouse position in screen coordinates.
+   *
+   * @returns the screen position in pixel space.
+   */
+  glm::vec2 GetMouseScreenPos() const { return glm::vec2(mouse_x_, mouse_y_); }
 
-  /** @brief Returns true if input was consumed by UI. */
+  /**
+   * @brief Returns true if the input has been consumed by the UI system.
+   * @return `true` if consumed.
+   */
   bool IsConsumed() const { return is_consumed_; }
 
-  /** @brief Consumes input for the current frame. */
+  /**
+   * @brief Marks the input as consumed for the current frame.
+   */
   void Consume() { is_consumed_ = true; }
 
-  /** @brief Updates key states. Called every frame. */
+  /**
+   * @brief Updates the key states for the current frame.
+   *
+   * This should be called once per frame by the main application loop.
+   */
   void UpdateState();
 
-  /** @brief Gets typed characters. */
-  const std::string& GetTextInput() const { return text_input_; }
+  /**
+   * @brief Retrieves the characters typed in the current frame.
+   *
+   * @return A string containing the characters.
+   */
+  const std::string& text_input() const { return text_input_; }
 
-  /** @brief Clears text input buffer. */
+  /**
+   * @brief Clears the text input buffer.
+   */
   void ClearTextInput() { text_input_.clear(); }
 
- private:
   friend class Window;
 
+ private:
+  // Private Constructor/Deleters for Singleton pattern
   InputManager() = default;
   ~InputManager() = default;
-
   InputManager(const InputManager&) = delete;
   InputManager& operator=(const InputManager&) = delete;
 
+  /**
+   * @brief Raw event handler called by GLFW callbacks for key events.
+   */
   void HandleKey(int raw_key_code, int action);
+  /**
+   * @brief Raw event handler called by GLFW callbacks for mouse button events.
+   */
   void HandleMouseButton(int raw_button_code, int action);
+  /**
+   * @brief Raw event handler called by GLFW callbacks for cursor position
+   * events.
+   */
   void HandleCursorPosition(double xpos, double ypos);
+
+  /**
+   * @brief Raw event handler called by GLFW callbacks for character input.
+   */
   void HandleChar(unsigned int codepoint);
+
   void HandleResize(int width, int height) {
     window_height_ = static_cast<float>(height);
   }
@@ -148,6 +222,9 @@ class InputManager {
   std::map<KeyCode, bool> current_key_state_;
   std::map<KeyCode, bool> previous_key_state_;
 
+  /**
+   * @brief Utility function to map GLFW codes to our internal KeyCode.
+   */
   KeyCode MapRawCode(int raw_code) const;
 };
 

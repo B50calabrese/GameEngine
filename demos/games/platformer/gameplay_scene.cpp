@@ -3,6 +3,9 @@
 #include <engine/ecs/components/physics_components.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/text_renderer.h>
+#include <engine/input/action_manager.h>
+#include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
 #include <engine/util/collision.h>
 
@@ -20,6 +23,7 @@ void GameplayScene::LoadLevel(int level) {
   GetRegistry().Clear();
   camera_x_ = 0.0f;
 
+  // Create Player
   player_entity_ = GetRegistry().CreateEntity();
   GetRegistry().AddComponent(
       player_entity_,
@@ -28,6 +32,7 @@ void GameplayScene::LoadLevel(int level) {
                              engine::ecs::components::Velocity{});
   GetRegistry().AddComponent(player_entity_,
                              engine::ecs::components::Gravity{});
+  // Player is a physics-resolved object
   GetRegistry().AddComponent(
       player_entity_,
       engine::ecs::components::Collider{{30.0f, 30.0f}, {0, 0}, false, false});
@@ -66,7 +71,9 @@ void GameplayScene::UpdatePlatforms(float dt) {
                engine::ecs::components::Velocity>(
           [dt](PlatformComponent& pc, engine::ecs::components::Transform& tc,
                engine::ecs::components::Velocity& vc) {
-            if (!pc.active) return;
+            if (!pc.active) {
+              return;
+            }
             if (pc.type == PlatformType::Moving) {
               if (glm::distance(tc.position, pc.start_pos) < 5.0f) {
                 vc.velocity =
@@ -102,6 +109,8 @@ void GameplayScene::UpdatePlayer(float dt) {
     vel.velocity.x = 0;
   }
 
+  // We check if grounded by looking at velocity (simplified)
+  // In a real engine we'd check if the collider is resting on something.
   player.is_grounded = (vel.velocity.y == 0);
 
   if (engine::InputManager::Get().IsKeyPressed(engine::KeyCode::kSpace) &&
@@ -109,6 +118,8 @@ void GameplayScene::UpdatePlayer(float dt) {
     vel.velocity.y = player.jump_force;
   }
 
+  // Handle temporary platform touch (as they are triggers/stat-less resolved
+  // objects)
   GetRegistry().ForEach<PlatformComponent, engine::ecs::components::Transform>(
       [&](PlatformComponent& pc, engine::ecs::components::Transform& tc) {
         if (pc.type == PlatformType::Temporary && pc.active) {
@@ -119,8 +130,12 @@ void GameplayScene::UpdatePlayer(float dt) {
         }
       });
 
-  if (trans.position.x < camera_x_) trans.position.x = camera_x_;
-  if (trans.position.y < -100.0f) ResetPlayer();
+  if (trans.position.x < camera_x_) {
+    trans.position.x = camera_x_;
+  }
+  if (trans.position.y < -100.0f) {
+    ResetPlayer();
+  }
 }
 
 void GameplayScene::UpdateEnemies(float dt) {
@@ -130,9 +145,9 @@ void GameplayScene::UpdateEnemies(float dt) {
   GetRegistry()
       .ForEach<EnemyComponent, engine::ecs::components::Transform,
                engine::ecs::components::Velocity>(
-          [this, &player_trans](EnemyComponent& ec,
-                                engine::ecs::components::Transform& tc,
-                                engine::ecs::components::Velocity& vc) {
+          [this, dt, &player_trans](EnemyComponent& ec,
+                                    engine::ecs::components::Transform& tc,
+                                    engine::ecs::components::Velocity& vc) {
             if (ec.is_patrolling) {
               if (glm::distance(tc.position, ec.start_pos) < 5.0f) {
                 vc.velocity =
@@ -179,13 +194,13 @@ void GameplayScene::ResetPlayer() {
 }
 
 void GameplayScene::OnRender() {
-  engine::graphics::Camera& cam = engine::Application::Get().GetCamera();
-  cam.SetPosition({camera_x_, 0.0f, 0.0f});
+  engine::graphics::Camera& cam = engine::Application::Get().camera();
+  cam.set_position({camera_x_, 0.0f, 0.0f});
 
   engine::graphics::Renderer::Get().DrawQuad(
       {camera_x_, 0.0f}, {800.0f, 600.0f}, {0.1f, 0.1f, 0.2f, 1.0f});
 
-  engine::graphics::Renderer::Get().DrawQuad(
+  engine::graphics::Renderer::Get().DrawText(
       "default", "Level: " + std::to_string(level_),
       {camera_x_ + 10.0f, 570.0f}, 0.0f, 0.8f, {1.0f, 1.0f, 1.0f, 1.0f});
 

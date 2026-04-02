@@ -23,19 +23,28 @@ namespace engine::core {
  */
 class JobSystem {
  public:
-  /** @brief Returns the singleton instance. */
+  /**
+   * @brief Returns the singleton instance.
+   * @return Reference to the JobSystem.
+   */
   static JobSystem& Get() {
     static JobSystem instance;
     return instance;
   }
 
-  /** @brief Initializes the job system. */
+  /**
+   * @brief Initializes the job system.
+   */
   void Init();
 
-  /** @brief Shuts down the job system. */
+  /**
+   * @brief Shuts down the job system.
+   */
   void Shutdown();
 
-  /** @brief Submits a task to be executed asynchronously. */
+  /**
+   * @brief Submits a task to be executed asynchronously.
+   */
   template <typename F>
   auto Execute(F&& f) -> std::future<decltype(f())> {
     using ReturnType = decltype(f());
@@ -62,10 +71,15 @@ class JobSystem {
     return res;
   }
 
-  /** @brief Blocks until all tasks have completed. */
+  /**
+   * @brief Blocks until all submitted tasks have completed.
+   */
   void Wait();
 
-  /** @brief Returns true if the current thread is the main thread. */
+  /**
+   * @brief Checks if the current thread is the main thread.
+   * @return True if the current thread is the main thread.
+   */
   [[nodiscard]] bool IsMainThread() const;
 
  private:
@@ -75,7 +89,9 @@ class JobSystem {
   JobSystem(const JobSystem&) = delete;
   JobSystem& operator=(const JobSystem&) = delete;
 
-  /** @brief The main loop for worker threads. */
+  /**
+   * @brief The main loop for worker threads.
+   */
   void WorkerLoop();
 
   std::vector<std::thread> workers_;

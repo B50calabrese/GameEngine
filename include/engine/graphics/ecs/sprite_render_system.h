@@ -3,8 +3,8 @@
  * @brief Automated sprite rendering system.
  */
 
-#ifndef INCLUDE_ENGINE_GRAPHICS_SPRITE_RENDER_SYSTEM_H_
-#define INCLUDE_ENGINE_GRAPHICS_SPRITE_RENDER_SYSTEM_H_
+#ifndef INCLUDE_ENGINE_GRAPHICS_ECS_SPRITE_RENDER_SYSTEM_H_
+#define INCLUDE_ENGINE_GRAPHICS_ECS_SPRITE_RENDER_SYSTEM_H_
 
 #include <engine/ecs/registry.h>
 
@@ -24,4 +24,4 @@ class SpriteRenderSystem {
 
 }  // namespace engine::graphics::ecs
 
-#endif  // INCLUDE_ENGINE_GRAPHICS_SPRITE_RENDER_SYSTEM_H_
+#endif  // INCLUDE_ENGINE_GRAPHICS_ECS_SPRITE_RENDER_SYSTEM_H_

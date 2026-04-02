@@ -1,1 +1,1 @@
-add_engine_demo(Rpg "main.cpp;scenes.cpp")
+add_engine_demo(RpgDemo "main.cpp")

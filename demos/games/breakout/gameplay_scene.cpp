@@ -23,7 +23,6 @@ void GameplayScene::ResetGame() {
   bricks_hit_ = 0;
   bricks_.clear();
 
-  // Create Paddle
   paddle_ = GetRegistry().CreateEntity();
   GetRegistry().AddComponent(paddle_, engine::ecs::components::Transform{
                                           {400.0f, 550.0f}, {120.0f, 20.0f}});
@@ -35,7 +34,6 @@ void GameplayScene::ResetGame() {
   GetRegistry().AddComponent(
       paddle_, engine::ecs::components::Quad{{0.0f, 0.8f, 1.0f, 1.0f}});
 
-  // Create Ball
   ball_ = GetRegistry().CreateEntity();
   GetRegistry().AddComponent(ball_, engine::ecs::components::Transform{
                                         {400.0f, 500.0f}, {20.0f, 20.0f}});
@@ -48,7 +46,6 @@ void GameplayScene::ResetGame() {
   GetRegistry().AddComponent(
       ball_, engine::ecs::components::Quad{{1.0f, 1.0f, 0.0f, 1.0f}});
 
-  // Create Bricks
   float brick_width = 75.0f;
   float brick_height = 25.0f;
   float padding = 5.0f;
@@ -210,10 +207,10 @@ void GameplayScene::OnRender() {
                                              {0.05f, 0.05f, 0.1f, 1.0f});
 
   if (is_game_over_) {
-    engine::graphics::Renderer::Get().DrawQuad("default", "GAME OVER",
+    engine::graphics::Renderer::Get().DrawText("default", "GAME OVER",
                                                {250.0f, 350.0f}, 0.0f, 2.0f,
                                                {1.0f, 0.0f, 0.0f, 1.0f});
-    engine::graphics::Renderer::Get().DrawQuad(
+    engine::graphics::Renderer::Get().DrawText(
         "default", "Press SPACE to Restart", {280.0f, 300.0f}, 0.0f, 1.0f,
         {1.0f, 1.0f, 1.0f, 1.0f});
   }

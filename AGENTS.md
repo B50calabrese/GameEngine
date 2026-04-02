@@ -46,7 +46,7 @@ This repository is optimized for AI-driven development. It follows a clean, modu
 ## Testing
 
 Basic unit tests are located in `src/tests/`.
-- To run tests: `g++ -Iinclude -Ithird_party/include src/tests/test_ecs.cpp src/engine/ecs/entity_manager.cpp -o test_ecs && ./test_ecs`
+- To run tests: `g++ -Iinclude -Ithird_party/include -Ithird_party/glm src/tests/test_ecs.cpp src/engine/ecs/entity_manager.cpp -o test_ecs && ./test_ecs`
 - Future agents should add tests for new core functionality.
 
 ---

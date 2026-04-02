@@ -49,6 +49,10 @@ class Renderer {
   void DrawRect(float x, float y, float width, float height,
                 const glm::vec4& color = glm::vec4(1.0f));
 
+  /** @brief Draws a solid colored rectangle using RGB values. */
+  void DrawRect(float x, float y, float width, float height, float r, float g,
+                float b);
+
   /** @brief Draws a colored quad with full transformation support. */
   void DrawQuad(const glm::vec2& position, const glm::vec2& size,
                 const glm::vec4& color, float rotation = 0.0f,
