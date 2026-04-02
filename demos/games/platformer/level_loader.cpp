@@ -48,8 +48,7 @@ void LevelLoader::Load(const std::string& path,
         switch (p_type) {
           case 'S':
             pc.type = PlatformType::Stationary;
-            registry.AddComponent(entity, engine::ecs::components::Quad{
-                                              {0.4f, 0.4f, 0.4f, 1.0f}});
+            registry.AddComponent(entity, engine::ecs::components::Sprite{"scifi/png/Tiles/Tile (2).png"});
             break;
           case 'M': {
             pc.type = PlatformType::Moving;
@@ -61,13 +60,11 @@ void LevelLoader::Load(const std::string& path,
                 entity,
                 engine::ecs::components::Velocity{
                     glm::normalize(pc.end_pos - pc.start_pos) * 150.0f});
-            registry.AddComponent(entity, engine::ecs::components::Quad{
-                                              {0.2f, 0.6f, 0.8f, 1.0f}});
+            registry.AddComponent(entity, engine::ecs::components::Sprite{"scifi/png/Tiles/Tile (8).png"});
           } break;
           case 'T':
             pc.type = PlatformType::Temporary;
-            registry.AddComponent(entity, engine::ecs::components::Quad{
-                                              {0.8f, 0.4f, 0.2f, 1.0f}});
+            registry.AddComponent(entity, engine::ecs::components::Sprite{"scifi/png/Tiles/Tile (15).png"});
             break;
         }
         registry.AddComponent(entity, pc);
@@ -81,9 +78,9 @@ void LevelLoader::Load(const std::string& path,
 
         auto entity = registry.CreateEntity();
         registry.AddComponent(
-            entity, engine::ecs::components::Transform{{x, y}, {30.0f, 30.0f}});
+            entity, engine::ecs::components::Transform{{x, y}, {64.0f, 64.0f}});
         registry.AddComponent(
-            entity, engine::ecs::components::Quad{{1.0f, 0.0f, 0.0f, 1.0f}});
+            entity, engine::ecs::components::Sprite{"robot/png/Idle (1).png"});
 
         EnemyComponent ec;
         switch (e_type) {
@@ -111,9 +108,9 @@ void LevelLoader::Load(const std::string& path,
 
         auto entity = registry.CreateEntity();
         registry.AddComponent(
-            entity, engine::ecs::components::Transform{{x, y}, {40.0f, 40.0f}});
+            entity, engine::ecs::components::Transform{{x, y}, {64.0f, 64.0f}});
         registry.AddComponent(
-            entity, engine::ecs::components::Quad{{1.0f, 1.0f, 0.0f, 1.0f}});
+            entity, engine::ecs::components::Sprite{"scifi/png/Objects/DoorUnlocked.png"});
         registry.AddComponent(entity, GoalComponent{});
       } break;
     }

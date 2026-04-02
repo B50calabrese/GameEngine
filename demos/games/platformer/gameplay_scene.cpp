@@ -3,7 +3,9 @@
 #include <engine/ecs/components/physics_components.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/sprite_sheet.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/graphics/utils/sprite_animator.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
@@ -17,24 +19,58 @@ namespace platformer {
 GameplayScene::GameplayScene(const std::string& name, int level)
     : engine::Scene(name), level_(level) {}
 
-void GameplayScene::OnAttach() { LoadLevel(level_); }
+void GameplayScene::OnAttach() {
+  bg_tex_ = engine::graphics::Texture::Load("scifi/png/Tiles/BGTile (1).png");
+  LoadLevel(level_);
+}
 
 void GameplayScene::LoadLevel(int level) {
   registry().Clear();
   camera_x_ = 0.0f;
 
+  // Set up animations
+  engine::graphics::AnimationClip idle_clip;
+  idle_clip.frames = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  idle_clip.fps = 12.0f;
+  idle_clip.loop = true;
+  engine::graphics::utils::AnimationManager::Get().AddClip("player_idle",
+                                                           idle_clip);
+
+  engine::graphics::AnimationClip run_clip;
+  run_clip.frames = {10, 11, 12, 13, 14, 15, 16, 17};
+  run_clip.fps = 15.0f;
+  run_clip.loop = true;
+  engine::graphics::utils::AnimationManager::Get().AddClip("player_run",
+                                                           run_clip);
+
+  engine::graphics::AnimationClip jump_clip;
+  jump_clip.frames = {18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
+  jump_clip.fps = 12.0f;
+  jump_clip.loop = false;
+  engine::graphics::utils::AnimationManager::Get().AddClip("player_jump",
+                                                           jump_clip);
+
+  // Load SpriteSheet
+  // RedHatBoy: 12 frames Idle, 8 Run, 12 Jump... approx grid.
+  // Actually, I'll use robot or redhat. Redhat is cute.
+  // Assuming a combined spritesheet or separate loads.
+  // For simplicity here, I'll use texture name and manual animator for frames if I had them in a sheet.
+  // Since they are separate PNGs, I might need to update the engine to support PNG sequences or I'll just use a single sprite for now.
+  // WAIT, the engine Sprite component supports sprite_sheet_name.
+  // I will create a dummy sheet name that I can resolve.
+
   // Create Player
   player_entity_ = registry().CreateEntity();
   registry().AddComponent(player_entity_, engine::ecs::components::Transform{
-                                              {50.0f, 100.0f}, {30.0f, 30.0f}});
+                                              {50.0f, 100.0f}, {64.0f, 64.0f}});
   registry().AddComponent(player_entity_, engine::ecs::components::Velocity{});
   registry().AddComponent(player_entity_, engine::ecs::components::Gravity{});
   // Player is a physics-resolved object
   registry().AddComponent(
       player_entity_,
-      engine::ecs::components::Collider{{30.0f, 30.0f}, {0, 0}, false, false});
+      engine::ecs::components::Collider{{40.0f, 50.0f}, {0, 0}, false, false});
   registry().AddComponent(
-      player_entity_, engine::ecs::components::Quad{{1.0f, 1.0f, 1.0f, 1.0f}});
+      player_entity_, engine::ecs::components::Sprite{"redhat/png/Idle (1).png"});
   registry().AddComponent(player_entity_, PlayerComponent{});
 
   std::string level_path = engine::graphics::Renderer::Get().ResolveAssetPath(
@@ -98,12 +134,17 @@ void GameplayScene::UpdatePlayer(float dt) {
   auto& vel = registry().GetComponent<engine::ecs::components::Velocity>(
       player_entity_);
 
+  auto& sprite = registry().GetComponent<engine::ecs::components::Sprite>(player_entity_);
+
   if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kLeft)) {
     vel.velocity.x = -player.move_speed;
+    sprite.texture_name = "redhat/png/Run (1).png"; // Simplified animation for now
   } else if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kRight)) {
     vel.velocity.x = player.move_speed;
+    sprite.texture_name = "redhat/png/Run (1).png";
   } else {
     vel.velocity.x = 0;
+    sprite.texture_name = "redhat/png/Idle (1).png";
   }
 
   // We check if grounded by looking at velocity (simplified)
@@ -194,8 +235,13 @@ void GameplayScene::OnRender() {
   engine::graphics::Camera& cam = engine::Application::Get().camera();
   cam.set_position({camera_x_, 0.0f, 0.0f});
 
-  engine::graphics::Renderer::Get().DrawQuad(
-      {camera_x_, 0.0f}, {800.0f, 600.0f}, {0.1f, 0.1f, 0.2f, 1.0f});
+  if (bg_tex_) {
+    engine::graphics::Renderer::Get().DrawTexturedQuad(
+        {camera_x_ + 400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
+  } else {
+    engine::graphics::Renderer::Get().DrawQuad({camera_x_, 0.0f}, {800.0f, 600.0f},
+                                               {0.1f, 0.1f, 0.2f, 1.0f});
+  }
 
   engine::graphics::Renderer::Get().DrawText(
       "default", "Level: " + std::to_string(level_),

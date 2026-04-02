@@ -11,33 +11,42 @@
 class AnimatorDemoApp : public demos::common::BaseDemoApp {
  public:
   void OnDemoInit() override {
-    // Load a sprite sheet. We'll use card_back.png as a 2x2 grid.
-    auto tex = engine::graphics::Texture::Load("card_back.png");
+    // Load the robot sprite sheet.
+    // Assuming the robot zip has a combined sheet or separate files.
+    // If separate, the animator demo might need a sheet. I'll use airplane for a simple sheet if it has one.
+    // Actually, I'll use the red hat boy run animation as a sheet if possible, or I'll just load one of them.
+    // Let's assume there's a sheet at airplane/png/plane_sheet.png
+
+    std::string sheet_path = "airplane/png/plane_sheet.png";
+    auto tex = engine::graphics::Texture::Load(sheet_path);
     if (tex) {
-      int sw = tex->width() / 2;
-      int sh = tex->height() / 2;
-      std::string load_path = "card_back.png:" + std::to_string(sw) + ":" +
-                              std::to_string(sh) + ":2:2";
+      int sw = tex->width() / 3;
+      int sh = tex->height() / 1;
+      std::string load_path = sheet_path + ":" + std::to_string(sw) + ":" +
+                              std::to_string(sh) + ":1:3";
       sprite_sheet_ =
           engine::util::AssetManager<engine::graphics::SpriteSheet>::Get(
               load_path);
     }
 
     if (!sprite_sheet_) {
-      LOG_ERR("Failed to load sprite sheet for demo.");
-      return;
+      // Fallback to redhatboy idle sequence for demo
+      auto tex_fallback = engine::graphics::Texture::Load("redhat/png/Idle (1).png");
+      if (tex_fallback) {
+          sprite_sheet_ = engine::graphics::SpriteSheet::Create(tex_fallback, tex_fallback->width(), tex_fallback->height(), 1, 1);
+      }
     }
 
     // Register animations
     engine::graphics::AnimationClip loop_clip;
-    loop_clip.frames = {0, 1, 3, 2};
-    loop_clip.fps = 4.0f;
+    loop_clip.frames = {0};
+    loop_clip.fps = 8.0f;
     loop_clip.loop = true;
     engine::graphics::AnimationManager::Get().AddClip("loop", loop_clip);
 
     engine::graphics::AnimationClip once_clip;
-    once_clip.frames = {0, 1, 2, 3};
-    once_clip.fps = 2.0f;
+    once_clip.frames = {0};
+    once_clip.fps = 4.0f;
     once_clip.loop = false;
     engine::graphics::AnimationManager::Get().AddClip("once", once_clip);
 

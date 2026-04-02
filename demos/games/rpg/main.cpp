@@ -35,7 +35,14 @@ class MapScene : public engine::Scene {
  public:
   MapScene(const std::string& name) : engine::Scene(name) {}
 
-  void OnAttach() override;
+  void OnAttach() override {
+      tile_textures_[TileType::Floor] = engine::graphics::Texture::Load("dungeon/png/Tiles/Floor.png");
+      tile_textures_[TileType::Wall] = engine::graphics::Texture::Load("dungeon/png/Tiles/Wall.png");
+      tile_textures_[TileType::Chest] = engine::graphics::Texture::Load("dungeon/png/Objects/Chest_Closed.png");
+      tile_textures_[TileType::Stairs] = engine::graphics::Texture::Load("dungeon/png/Tiles/Stairs.png");
+      player_tex_ = engine::graphics::Texture::Load("knight/png/Idle (1).png");
+      GenerateLevel();
+  }
   void OnUpdate(float dt) override;
   void OnRender() override;
   void GenerateLevel();
@@ -44,6 +51,8 @@ class MapScene : public engine::Scene {
  private:
   MapGenerator::MapData map_;
   glm::ivec2 player_pos_;
+  std::unordered_map<TileType, std::shared_ptr<engine::graphics::Texture>> tile_textures_;
+  std::shared_ptr<engine::graphics::Texture> player_tex_;
 };
 
 class VictoryOverlay : public engine::Scene {
@@ -82,6 +91,10 @@ class VictoryOverlay : public engine::Scene {
 class BattleScene : public engine::Scene {
  public:
   BattleScene(const std::string& name) : engine::Scene(name) {
+    bg_tex_ = engine::graphics::Texture::Load("dungeon/png/Background.png");
+    enemy_tex_ = engine::graphics::Texture::Load("robot/png/Idle (1).png");
+    player_tex_ = engine::graphics::Texture::Load("knight/png/Idle (1).png");
+
     enemy_stats_ = {0, 0, 0, 0};
     enemy_stats_.max_hp = 5 + GameState::Get().current_floor * 2;
     enemy_stats_.hp = enemy_stats_.max_hp;
@@ -167,12 +180,17 @@ class BattleScene : public engine::Scene {
   }
 
   void OnRender() override {
-    engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
+    if (bg_tex_) {
+      engine::graphics::Renderer::Get().DrawTexturedQuad({400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
+    } else {
+      engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
                                                {0.2f, 0.1f, 0.1f, 1.0f});
+    }
 
     // Enemy
-    engine::graphics::Renderer::Get().DrawQuad({500, 300}, {100, 100},
-                                               {1, 0, 0, 1});
+    if (enemy_tex_) {
+      engine::graphics::Renderer::Get().DrawTexturedQuad({500, 300}, {128, 128}, enemy_tex_.get());
+    }
     engine::graphics::Renderer::Get().DrawText(
         "default",
         "Enemy HP: " + std::to_string(enemy_stats_.hp) + "/" +
@@ -180,8 +198,9 @@ class BattleScene : public engine::Scene {
         {500, 420}, 0.0f, 0.8f, {1, 1, 1, 1});
 
     // Player
-    engine::graphics::Renderer::Get().DrawQuad({150, 150}, {80, 80},
-                                               {0, 1, 0, 1});
+    if (player_tex_) {
+      engine::graphics::Renderer::Get().DrawTexturedQuad({150, 150}, {128, 128}, player_tex_.get());
+    }
     engine::graphics::Renderer::Get().DrawText(
         "default",
         "Player HP: " + std::to_string(GameState::Get().player_stats.hp) + "/" +
@@ -219,6 +238,10 @@ class BattleScene : public engine::Scene {
   int selected_index_ = 0;
   int options_count_ = 0;
   std::string last_log_ = "Your Turn";
+
+  std::shared_ptr<engine::graphics::Texture> bg_tex_;
+  std::shared_ptr<engine::graphics::Texture> enemy_tex_;
+  std::shared_ptr<engine::graphics::Texture> player_tex_;
 };
 
 class LevelUpOverlay : public engine::Scene {
@@ -305,8 +328,6 @@ class LevelUpOverlay : public engine::Scene {
 };
 
 // --- Map engine::Scene Implementation ---
-void MapScene::OnAttach() { GenerateLevel(); }
-
 void MapScene::GenerateLevel() {
   map_ = MapGenerator::Generate(MAP_WIDTH, MAP_HEIGHT, std::random_device{}());
   player_pos_ = {map_.start_x, map_.start_y};
@@ -371,30 +392,22 @@ void MapScene::OnRender() {
   for (int y = 0; y < MAP_HEIGHT; ++y) {
     for (int x = 0; x < MAP_WIDTH; ++x) {
       glm::vec2 pos = {x * TILE_SIZE, y * TILE_SIZE};
-      glm::vec4 color;
-      switch (map_.tiles[y * MAP_WIDTH + x]) {
-        case TileType::Floor:
-          color = {0.3f, 0.3f, 0.3f, 1.0f};
-          break;
-        case TileType::Wall:
-          color = {0.1f, 0.1f, 0.1f, 1.0f};
-          break;
-        case TileType::Chest:
-          color = {1.0f, 0.8f, 0.0f, 1.0f};
-          break;
-        case TileType::Stairs:
-          color = {0.0f, 0.5f, 1.0f, 1.0f};
-          break;
+      TileType type = map_.tiles[y * MAP_WIDTH + x];
+      if (tile_textures_.count(type) && tile_textures_[type]) {
+          engine::graphics::Renderer::Get().DrawTexturedQuad(
+              pos + glm::vec2(TILE_SIZE/2), {TILE_SIZE, TILE_SIZE},
+              tile_textures_[type].get());
       }
-      engine::graphics::Renderer::Get().DrawQuad(
-          pos, {TILE_SIZE - 2, TILE_SIZE - 2}, color);
     }
   }
 
   // Draw Player
-  engine::graphics::Renderer::Get().DrawQuad(
-      {player_pos_.x * TILE_SIZE, player_pos_.y * TILE_SIZE},
-      {TILE_SIZE - 2, TILE_SIZE - 2}, {0.0f, 1.0f, 0.0f, 1.0f});
+  if (player_tex_) {
+      engine::graphics::Renderer::Get().DrawTexturedQuad(
+          {player_pos_.x * TILE_SIZE + TILE_SIZE/2, player_pos_.y * TILE_SIZE + TILE_SIZE/2},
+          {TILE_SIZE * 1.5f, TILE_SIZE * 1.5f},
+          player_tex_.get());
+  }
 
   // Draw HUD
   engine::graphics::Renderer::Get().DrawText(
