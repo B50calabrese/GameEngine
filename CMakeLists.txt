@@ -147,6 +147,9 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     # Copy common assets once to the build directory
     file(COPY "${COMMON_ASSETS_DIR}/" DESTINATION "${COMMON_ASSETS_BUILD_DIR}")
 
+    # Copy engine shaders to the build directory
+    file(COPY "${ENGINE_ROOT}/src/engine/graphics/shaders/" DESTINATION "${CMAKE_BINARY_DIR}/shaders")
+
     # Helper function to add a demo executable
     function(add_engine_demo DEMO_NAME SOURCE_FILES)
         add_executable(${DEMO_NAME} ${SOURCE_FILES})
@@ -177,6 +180,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/luademo)
     add_subdirectory(demos/games)
     add_subdirectory(demos/consoledemo)
+    add_subdirectory(demos/shapedemo)
 endif()
 
 # --- 7. Testing ---
