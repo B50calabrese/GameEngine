@@ -67,7 +67,8 @@ class GameplayScene : public engine::Scene {
                      {120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
     registry().AddComponent(paddle_, PaddleComponent{});
     registry().AddComponent(
-        paddle_, engine::ecs::components::Sprite{"textures/paddle.png"});
+        paddle_, engine::ecs::components::Sprite{
+                     "textures/paddle.png", "", 0, {1, 1, 1, 1}, {0.5f, 0.5f}});
 
     // Create Ball
     ball_ = registry().CreateEntity();
@@ -81,7 +82,8 @@ class GameplayScene : public engine::Scene {
                                 {24.0f, 24.0f}, {-12.0f, -12.0f}, false, true});
     registry().AddComponent(ball_, BallComponent{12.0f});
     registry().AddComponent(
-        ball_, engine::ecs::components::Sprite{"textures/ball.png"});
+        ball_, engine::ecs::components::Sprite{
+                   "textures/ball.png", "", 0, {1, 1, 1, 1}, {0.5f, 0.5f}});
 
     // Create Bricks
     float brick_width = 75.0f;
@@ -89,8 +91,9 @@ class GameplayScene : public engine::Scene {
     float padding = 5.0f;
     int cols = 9;
     int rows = 5;
-    float start_x = (800.0f - (cols * (brick_width + padding))) / 2.0f;
-    float start_y = 100.0f;
+    float start_x =
+        (800.0f - (cols * (brick_width + padding))) / 2.0f + brick_width / 2.0f;
+    float start_y = 100.0f + brick_height / 2.0f;
 
     for (int r = 0; r < rows; ++r) {
       for (int c = 0; c < cols; ++c) {
@@ -102,14 +105,18 @@ class GameplayScene : public engine::Scene {
         registry().AddComponent(brick, engine::ecs::components::Transform{
                                            pos, {brick_width, brick_height}});
         // Bricks are static triggers
-        registry().AddComponent(
-            brick, engine::ecs::components::Collider{
-                       {brick_width, brick_height}, {0, 0}, true, true});
+        registry().AddComponent(brick,
+                                engine::ecs::components::Collider{
+                                    {brick_width, brick_height},
+                                    {-brick_width / 2.0f, -brick_height / 2.0f},
+                                    true,
+                                    true});
         registry().AddComponent(brick, BrickComponent{false});
         std::string brick_tex =
             "textures/brick_" + std::to_string(r % 4) + ".png";
-        registry().AddComponent(brick,
-                                engine::ecs::components::Sprite{brick_tex});
+        registry().AddComponent(
+            brick, engine::ecs::components::Sprite{
+                       brick_tex, "", 0, {1, 1, 1, 1}, {0.5f, 0.5f}});
       }
     }
 
@@ -225,12 +232,12 @@ class GameplayScene : public engine::Scene {
       auto& b = *it;
       if (registry().IsAlive(b.id)) {
         if (engine::util::CheckAABB(trans.position - glm::vec2(ball.radius),
-                                    glm::vec2(ball.radius * 2), b.pos,
-                                    b.size)) {
+                                    glm::vec2(ball.radius * 2),
+                                    b.pos - b.size / 2.0f, b.size)) {
           vel.velocity.y *= -1;
           bricks_hit_++;
           glm::vec4 color = {1, 1, 1, 1};
-          EmitParticles(b.pos + b.size / 2.0f, color);
+          EmitParticles(b.pos, color);
           registry().DeleteEntity(b.id);
           it = bricks_.erase(it);
           continue;
@@ -251,8 +258,9 @@ class GameplayScene : public engine::Scene {
   }
 
   void OnRender() override {
-    engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
-                                               {0.05f, 0.05f, 0.1f, 1.0f});
+    engine::graphics::Renderer::Get().DrawQuad(
+        {400.0f, 300.0f}, {800.0f, 600.0f}, {0.05f, 0.05f, 0.1f, 1.0f}, 0.0f,
+        {0.5f, 0.5f});
 
     if (is_game_over_) {
       engine::graphics::Renderer::Get().DrawText("default", "GAME OVER",

@@ -1,28 +1,24 @@
 #include <gtest/gtest.h>
-#include <engine/core/job_system.h>
+
 #include <atomic>
 #include <chrono>
-#include <vector>
 #include <future>
 #include <thread>
+#include <vector>
+
+#include <engine/core/job_system.h>
 
 namespace engine::core {
 
 class JobSystemTest : public ::testing::Test {
  protected:
-  void SetUp() override {
-    JobSystem::Get().Init();
-  }
+  void SetUp() override { JobSystem::Get().Init(); }
 
-  void TearDown() override {
-    JobSystem::Get().Shutdown();
-  }
+  void TearDown() override { JobSystem::Get().Shutdown(); }
 };
 
 TEST_F(JobSystemTest, ExecuteSingleTask) {
-  auto future = JobSystem::Get().Execute([]() {
-    return 42;
-  });
+  auto future = JobSystem::Get().Execute([]() { return 42; });
   EXPECT_EQ(future.get(), 42);
 }
 
@@ -32,9 +28,7 @@ TEST_F(JobSystemTest, ExecuteMultipleTasks) {
   std::vector<std::future<void>> futures;
 
   for (int i = 0; i < num_tasks; ++i) {
-    futures.push_back(JobSystem::Get().Execute([&counter]() {
-      counter++;
-    }));
+    futures.push_back(JobSystem::Get().Execute([&counter]() { counter++; }));
   }
 
   for (auto& f : futures) {
@@ -60,13 +54,12 @@ TEST_F(JobSystemTest, WaitFunctionality) {
 }
 
 TEST_F(JobSystemTest, IsMainThread) {
-  // Since the test runs on the thread that initialized the JobSystem (in SetUp),
-  // IsMainThread() should return true.
+  // Since the test runs on the thread that initialized the JobSystem (in
+  // SetUp), IsMainThread() should return true.
   EXPECT_TRUE(JobSystem::Get().IsMainThread());
 
-  auto future = JobSystem::Get().Execute([]() {
-    return JobSystem::Get().IsMainThread();
-  });
+  auto future = JobSystem::Get().Execute(
+      []() { return JobSystem::Get().IsMainThread(); });
   // Inside a worker thread, IsMainThread() should return false.
   EXPECT_FALSE(future.get());
 }

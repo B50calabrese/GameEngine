@@ -216,18 +216,28 @@ void PrimitiveRenderer::Init() {
   glBindBuffer(GL_ARRAY_BUFFER, vbo_);
 
   // Layout Setup
-  BufferUtils::SetAttribute(0, 2, sizeof(Vertex2D), offsetof(Vertex2D, position));
+  BufferUtils::SetAttribute(0, 2, sizeof(Vertex2D),
+                            offsetof(Vertex2D, position));
   BufferUtils::SetAttribute(1, 4, sizeof(Vertex2D), offsetof(Vertex2D, color));
   BufferUtils::SetAttribute(2, 4, sizeof(Vertex2D), offsetof(Vertex2D, color2));
-  BufferUtils::SetAttribute(3, 2, sizeof(Vertex2D), offsetof(Vertex2D, tex_coords));
-  BufferUtils::SetAttribute(4, 2, sizeof(Vertex2D), offsetof(Vertex2D, local_pos));
-  BufferUtils::SetAttribute(5, 1, sizeof(Vertex2D), offsetof(Vertex2D, tex_index));
-  BufferUtils::SetAttribute(6, 1, sizeof(Vertex2D), offsetof(Vertex2D, shape_type));
-  BufferUtils::SetAttribute(7, 1, sizeof(Vertex2D), offsetof(Vertex2D, thickness));
-  BufferUtils::SetAttribute(8, 1, sizeof(Vertex2D), offsetof(Vertex2D, roundness));
-  BufferUtils::SetAttribute(9, 1, sizeof(Vertex2D), offsetof(Vertex2D, gradient_type));
-  BufferUtils::SetAttribute(10, 1, sizeof(Vertex2D), offsetof(Vertex2D, is_font));
-  BufferUtils::SetAttribute(11, 1, sizeof(Vertex2D), offsetof(Vertex2D, is_dashed));
+  BufferUtils::SetAttribute(3, 2, sizeof(Vertex2D),
+                            offsetof(Vertex2D, tex_coords));
+  BufferUtils::SetAttribute(4, 2, sizeof(Vertex2D),
+                            offsetof(Vertex2D, local_pos));
+  BufferUtils::SetAttribute(5, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, tex_index));
+  BufferUtils::SetAttribute(6, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, shape_type));
+  BufferUtils::SetAttribute(7, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, thickness));
+  BufferUtils::SetAttribute(8, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, roundness));
+  BufferUtils::SetAttribute(9, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, gradient_type));
+  BufferUtils::SetAttribute(10, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, is_font));
+  BufferUtils::SetAttribute(11, 1, sizeof(Vertex2D),
+                            offsetof(Vertex2D, is_dashed));
 
   std::vector<unsigned int> indices(kMaxIndices);
   unsigned int offset = 0;
@@ -256,7 +266,8 @@ void PrimitiveRenderer::Init() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   texture_slots_[0] = whiteTex;
 
-  default_shader_ = Shader::CreateFromSource(kUberVertexSource, kUberFragmentSource);
+  default_shader_ =
+      Shader::CreateFromSource(kUberVertexSource, kUberFragmentSource);
 
   if (default_shader_) {
     default_shader_->Bind();
@@ -318,9 +329,9 @@ int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
     if (texture_slots_[i] == texture_id) return static_cast<int>(i);
   }
   if (texture_slot_index_ >= 32) {
-      FinalizeBatch();
-      RenderBatch();
-      StartBatch(current_view_projection_);
+    FinalizeBatch();
+    RenderBatch();
+    StartBatch(current_view_projection_);
   }
   texture_slots_[texture_slot_index_] = texture_id;
   return static_cast<int>(texture_slot_index_++);
@@ -328,7 +339,8 @@ int PrimitiveRenderer::GetTextureSlot(unsigned int texture_id) {
 
 // --- Submission API ---
 
-void PrimitiveRenderer::SubmitQuad(const glm::vec2& position, const glm::vec2& size,
+void PrimitiveRenderer::SubmitQuad(const glm::vec2& position,
+                                   const glm::vec2& size,
                                    const glm::vec4& color, float rotation,
                                    const glm::vec2& origin) {
   SubmitTexturedQuad(position, size, 0, color, rotation, origin, false);
@@ -340,7 +352,10 @@ void PrimitiveRenderer::SubmitTexturedQuad(
     bool flip_uv) {
   glm::vec2 uv_min(0.0f, 0.0f);
   glm::vec2 uv_max(1.0f, 1.0f);
-  if (flip_uv) { uv_min.y = 1.0f; uv_max.y = 0.0f; }
+  if (flip_uv) {
+    uv_min.y = 1.0f;
+    uv_max.y = 0.0f;
+  }
   SubmitTexturedQuad(position, size, texture_id, uv_min, uv_max, color,
                      rotation, origin, false);
 }
@@ -357,33 +372,46 @@ void PrimitiveRenderer::SubmitTexturedQuad(
   }
 
   float tex_index = static_cast<float>(GetTextureSlot(texture_id));
-  float w = size.x; float h = size.y;
-  float offset_x = origin.x * w; float offset_y = origin.y * h;
+  float w = size.x;
+  float h = size.y;
+  float offset_x = origin.x * w;
+  float offset_y = origin.y * h;
 
-  glm::vec4 local_vertices[4] = {
-      {-offset_x, -offset_y, 0.0f, 1.0f},
-      {w - offset_x, -offset_y, 0.0f, 1.0f},
-      {w - offset_x, h - offset_y, 0.0f, 1.0f},
-      {-offset_x, h - offset_y, 0.0f, 1.0f}};
+  glm::vec4 local_vertices[4] = {{-offset_x, -offset_y, 0.0f, 1.0f},
+                                 {w - offset_x, -offset_y, 0.0f, 1.0f},
+                                 {w - offset_x, h - offset_y, 0.0f, 1.0f},
+                                 {-offset_x, h - offset_y, 0.0f, 1.0f}};
 
-  glm::vec2 local_coords[4] = {{-1.0f, -1.0f}, {1.0f, -1.0f}, {1.0f, 1.0f}, {-1.0f, 1.0f}};
+  glm::vec2 local_coords[4] = {
+      {-1.0f, -1.0f}, {1.0f, -1.0f}, {1.0f, 1.0f}, {-1.0f, 1.0f}};
 
   if (rotation != 0.0f) {
-    glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0, 0, 1));
+    glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(rotation),
+                                glm::vec3(0, 0, 1));
     for (int i = 0; i < 4; i++) local_vertices[i] = rot * local_vertices[i];
   }
 
-  float uvs[4][2] = {
-      {uv_min.x, uv_min.y}, {uv_max.x, uv_min.y}, {uv_max.x, uv_max.y}, {uv_min.x, uv_max.y}};
+  float uvs[4][2] = {{uv_min.x, uv_min.y},
+                     {uv_max.x, uv_min.y},
+                     {uv_max.x, uv_max.y},
+                     {uv_min.x, uv_max.y}};
 
   for (int i = 0; i < 4; i++) {
     Vertex2D v;
     v.position[0] = position.x + local_vertices[i].x;
     v.position[1] = position.y + local_vertices[i].y;
-    v.color[0] = color.r; v.color[1] = color.g; v.color[2] = color.b; v.color[3] = color.a;
-    v.color2[0] = color2.r; v.color2[1] = color2.g; v.color2[2] = color2.b; v.color2[3] = color2.a;
-    v.tex_coords[0] = uvs[i][0]; v.tex_coords[1] = uvs[i][1];
-    v.local_pos[0] = local_coords[i].x; v.local_pos[1] = local_coords[i].y;
+    v.color[0] = color.r;
+    v.color[1] = color.g;
+    v.color[2] = color.b;
+    v.color[3] = color.a;
+    v.color2[0] = color2.r;
+    v.color2[1] = color2.g;
+    v.color2[2] = color2.b;
+    v.color2[3] = color2.a;
+    v.tex_coords[0] = uvs[i][0];
+    v.tex_coords[1] = uvs[i][1];
+    v.local_pos[0] = local_coords[i].x;
+    v.local_pos[1] = local_coords[i].y;
     v.tex_index = tex_index;
     v.shape_type = 0.0f;
     v.thickness = thickness;
@@ -397,19 +425,22 @@ void PrimitiveRenderer::SubmitTexturedQuad(
 
 void PrimitiveRenderer::SubmitCircle(const glm::vec2& position, float radius,
                                      const glm::vec4& color, float thickness,
-                                     const glm::vec4& color2, int gradient_type) {
+                                     const glm::vec4& color2,
+                                     int gradient_type) {
   SubmitTexturedQuad(position - glm::vec2(radius), glm::vec2(radius * 2.0f), 0,
-                     {0, 0}, {1, 1}, color, 0.0f, {0, 0}, false, thickness, 0.0f,
-                     color2, gradient_type);
+                     {0, 0}, {1, 1}, color, 0.0f, {0, 0}, false, thickness,
+                     0.0f, color2, gradient_type);
   for (int i = 0; i < 4; i++) {
     vertex_batch_[vertex_batch_.size() - 1 - i].shape_type = 1.0f;
   }
 }
 
-void PrimitiveRenderer::SubmitTriangle(const glm::vec2& position, const glm::vec2& size,
+void PrimitiveRenderer::SubmitTriangle(const glm::vec2& position,
+                                       const glm::vec2& size,
                                        const glm::vec4& color, float rotation,
                                        const glm::vec2& origin, float thickness,
-                                       const glm::vec4& color2, int gradient_type) {
+                                       const glm::vec4& color2,
+                                       int gradient_type) {
   SubmitTexturedQuad(position, size, 0, {0, 0}, {1, 1}, color, rotation, origin,
                      false, thickness, 0.0f, color2, gradient_type);
   for (int i = 0; i < 4; i++) {
@@ -423,16 +454,17 @@ void PrimitiveRenderer::SubmitLine(const glm::vec2& start, const glm::vec2& end,
   glm::vec2 dir = end - start;
   float length = glm::length(dir);
   float angle = glm::degrees(atan2(dir.y, dir.x));
-  SubmitTexturedQuad(start, {length, thickness}, 0, {0, 0}, {1, 1}, color, angle,
-                     {0.0f, 0.5f}, false, 0.0f, 0.0f);
+  SubmitTexturedQuad(start, {length, thickness}, 0, {0, 0}, {1, 1}, color,
+                     angle, {0.0f, 0.5f}, false, 0.0f, 0.0f);
   for (int i = 0; i < 4; i++) {
     vertex_batch_[vertex_batch_.size() - 1 - i].shape_type = 3.0f;
-    vertex_batch_[vertex_batch_.size() - 1 - i].is_dashed = is_dashed ? 1.0f : 0.0f;
+    vertex_batch_[vertex_batch_.size() - 1 - i].is_dashed =
+        is_dashed ? 1.0f : 0.0f;
   }
 }
 
-void PrimitiveRenderer::SubmitPoint(const glm::vec2& position, const glm::vec4& color,
-                                    float size) {
+void PrimitiveRenderer::SubmitPoint(const glm::vec2& position,
+                                    const glm::vec4& color, float size) {
   SubmitCircle(position, size * 0.5f, color);
   for (int i = 0; i < 4; i++) {
     vertex_batch_[vertex_batch_.size() - 1 - i].shape_type = 4.0f;
@@ -445,33 +477,42 @@ void PrimitiveRenderer::SubmitPolygon(const std::vector<glm::vec2>& vertices,
   // Submit as triangle fan
   for (size_t i = 1; i < vertices.size() - 1; i++) {
     if (vertex_batch_.size() + 4 > kMaxVertices) {
-        FinalizeBatch();
-        RenderBatch();
-        StartBatch(current_view_projection_);
+      FinalizeBatch();
+      RenderBatch();
+      StartBatch(current_view_projection_);
     }
     glm::vec2 p0 = vertices[0];
     glm::vec2 p1 = vertices[i];
-    glm::vec2 p2 = vertices[i+1];
+    glm::vec2 p2 = vertices[i + 1];
 
     // We must submit 4 vertices for our index buffer to work properly
     // or we change our index buffer. Since we use a fixed pattern of 6 indices
     // per 4 vertices, we submit a degenerate quad.
     glm::vec2 quad[4] = {p0, p1, p2, p2};
     for (int j = 0; j < 4; j++) {
-        Vertex2D v;
-        v.position[0] = quad[j].x; v.position[1] = quad[j].y;
-        v.color[0] = color.r; v.color[1] = color.g; v.color[2] = color.b; v.color[3] = color.a;
-        v.color2[0] = 0; v.color2[1] = 0; v.color2[2] = 0; v.color2[3] = 0;
-        v.tex_coords[0] = 0; v.tex_coords[1] = 0;
-        v.local_pos[0] = 0; v.local_pos[1] = 0;
-        v.tex_index = 0.0f;
-        v.shape_type = 5.0f;
-        v.thickness = 0.0f;
-        v.roundness = 0.0f;
-        v.gradient_type = 0.0f;
-        v.is_font = 0.0f;
-        v.is_dashed = 0.0f;
-        vertex_batch_.push_back(v);
+      Vertex2D v;
+      v.position[0] = quad[j].x;
+      v.position[1] = quad[j].y;
+      v.color[0] = color.r;
+      v.color[1] = color.g;
+      v.color[2] = color.b;
+      v.color[3] = color.a;
+      v.color2[0] = 0;
+      v.color2[1] = 0;
+      v.color2[2] = 0;
+      v.color2[3] = 0;
+      v.tex_coords[0] = 0;
+      v.tex_coords[1] = 0;
+      v.local_pos[0] = 0;
+      v.local_pos[1] = 0;
+      v.tex_index = 0.0f;
+      v.shape_type = 5.0f;
+      v.thickness = 0.0f;
+      v.roundness = 0.0f;
+      v.gradient_type = 0.0f;
+      v.is_font = 0.0f;
+      v.is_dashed = 0.0f;
+      vertex_batch_.push_back(v);
     }
   }
 }

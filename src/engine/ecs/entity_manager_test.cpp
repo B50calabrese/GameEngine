@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <engine/ecs/entity_manager.h>
 
 namespace engine::ecs {

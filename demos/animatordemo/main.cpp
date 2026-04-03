@@ -16,8 +16,9 @@ class AnimatorDemoApp : public demos::common::BaseDemoApp {
     if (tex) {
       int sw = tex->width() / 3;
       int sh = tex->height() / 1;
-      // Note: If plane_sheet.png is actually a single frame for now due to copy,
-      // this might need adjustment, but I'll assume it's a 3x1 sheet as before.
+      // Note: If plane_sheet.png is actually a single frame for now due to
+      // copy, this might need adjustment, but I'll assume it's a 3x1 sheet as
+      // before.
       std::string load_path = sheet_path + ":" + std::to_string(sw) + ":" +
                               std::to_string(sh) + ":1:3";
       sprite_sheet_ =

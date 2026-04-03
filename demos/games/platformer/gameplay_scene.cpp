@@ -39,9 +39,8 @@ void GameplayScene::LoadLevel(int level) {
   registry().AddComponent(
       player_entity_,
       engine::ecs::components::Collider{{40.0f, 50.0f}, {0, 0}, false, false});
-  registry().AddComponent(
-      player_entity_,
-      engine::ecs::components::Sprite{"textures/player_idle.png"});
+  registry().AddComponent(player_entity_, engine::ecs::components::Sprite{
+                                              "textures/player_idle.png"});
   registry().AddComponent(player_entity_, PlayerComponent{});
 
   std::string level_path = engine::graphics::Renderer::Get().ResolveAssetPath(
@@ -211,8 +210,8 @@ void GameplayScene::OnRender() {
     engine::graphics::Renderer::Get().DrawTexturedQuad(
         {camera_x_ + 400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
   } else {
-    engine::graphics::Renderer::Get().DrawQuad({camera_x_, 0.0f}, {800.0f, 600.0f},
-                                               {0.1f, 0.1f, 0.2f, 1.0f});
+    engine::graphics::Renderer::Get().DrawQuad(
+        {camera_x_, 0.0f}, {800.0f, 600.0f}, {0.1f, 0.1f, 0.2f, 1.0f});
   }
 
   engine::graphics::Renderer::Get().DrawText(

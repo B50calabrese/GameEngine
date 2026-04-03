@@ -73,7 +73,8 @@ class PrimitiveRenderer {
                                  bool flip_uv = false);
 
   /**
-   * @brief Submits a textured rectangle (quad) with custom UV coordinates and styles.
+   * @brief Submits a textured rectangle (quad) with custom UV coordinates and
+   * styles.
    */
   static void SubmitTexturedQuad(
       const glm::vec2& position, const glm::vec2& size, unsigned int texture_id,

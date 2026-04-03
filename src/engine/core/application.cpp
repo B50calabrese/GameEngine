@@ -135,10 +135,11 @@ void Application::Run() {
     // Render ECS-driven graphics
     if (active_scene) {
       graphics::ecs::SpriteRenderSystem::Render(&active_scene->registry());
-      active_scene->registry().ForEach<engine::ecs::components::ParticleEmitter>(
-          [](engine::ecs::components::ParticleEmitter& pec) {
-            pec.system.Render(pec.z_index);
-          });
+      active_scene->registry()
+          .ForEach<engine::ecs::components::ParticleEmitter>(
+              [](engine::ecs::components::ParticleEmitter& pec) {
+                pec.system.Render(pec.z_index);
+              });
     }
 
     core::JobSystem::Get().Wait();

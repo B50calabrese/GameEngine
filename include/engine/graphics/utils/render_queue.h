@@ -43,11 +43,11 @@ struct RenderCommand {
 
   // New fields for advanced shapes and styles
   ShapeType shape_type = ShapeType::kQuad;
-  float thickness = 0.0f;     // 0 = Fill, >0 = Outline/Line Width
-  float roundness = 0.0f;     // For rounded rectangles/corners
-  int gradient_type = 0;      // 0 = None, 1 = Linear, 2 = Radial
-  bool is_dashed = false;     // For lines
-  std::vector<glm::vec2> polygon_vertices; // For kPolygon
+  float thickness = 0.0f;                   // 0 = Fill, >0 = Outline/Line Width
+  float roundness = 0.0f;                   // For rounded rectangles/corners
+  int gradient_type = 0;                    // 0 = None, 1 = Linear, 2 = Radial
+  bool is_dashed = false;                   // For lines
+  std::vector<glm::vec2> polygon_vertices;  // For kPolygon
 };
 
 /**
@@ -100,7 +100,8 @@ class RenderQueue {
                                         cmd.thickness, cmd.is_dashed);
           break;
         case ShapeType::kPoint:
-          PrimitiveRenderer::SubmitPoint(cmd.position, cmd.color, cmd.thickness);
+          PrimitiveRenderer::SubmitPoint(cmd.position, cmd.color,
+                                         cmd.thickness);
           break;
         case ShapeType::kPolygon:
           PrimitiveRenderer::SubmitPolygon(cmd.polygon_vertices, cmd.color);

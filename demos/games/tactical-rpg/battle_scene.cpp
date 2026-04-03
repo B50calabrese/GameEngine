@@ -150,7 +150,9 @@ void BattleScene::HandlePlayerTurn(float dt) {
             TerrainType::Damage) {
           active_stats.current_hp -= 2;
           last_log_ = active_id.name + " took damage!";
-          auto& trans = registry().GetComponent<engine::ecs::components::Transform>(active);
+          auto& trans =
+              registry().GetComponent<engine::ecs::components::Transform>(
+                  active);
           AddFloatingText("-2", trans.position, {1, 0, 0, 1});
         }
       }
@@ -198,12 +200,17 @@ void BattleScene::HandlePlayerTurn(float dt) {
 
             if (is_heal || roll + 5 >= target_stats.ac) {
               last_log_ = active_id.name + " used " + action_data.name;
-              int result = CombatSystem::ApplyEffect(registry(), action_entity, target);
-              auto& trans = registry().GetComponent<engine::ecs::components::Transform>(target);
+              int result =
+                  CombatSystem::ApplyEffect(registry(), action_entity, target);
+              auto& trans =
+                  registry().GetComponent<engine::ecs::components::Transform>(
+                      target);
               if (result < 0) {
-                AddFloatingText(std::to_string(result), trans.position, {1, 0, 0, 1});
+                AddFloatingText(std::to_string(result), trans.position,
+                                {1, 0, 0, 1});
               } else if (result > 0) {
-                AddFloatingText("+" + std::to_string(result), trans.position, {0, 1, 0, 1});
+                AddFloatingText("+" + std::to_string(result), trans.position,
+                                {0, 1, 0, 1});
               }
 
               if (target_stats.current_hp <= 0) {
@@ -236,9 +243,11 @@ void BattleScene::HandlePlayerTurn(float dt) {
 
 void BattleScene::HandleEnemyAI() {
   auto active = turn_manager_.GetActiveCharacter();
-  EnemyAI::ProcessTurn(registry(), active,
-                       [this](const std::string& text, glm::vec2 pos,
-                              glm::vec4 color) { AddFloatingText(text, pos, color); });
+  EnemyAI::ProcessTurn(
+      registry(), active,
+      [this](const std::string& text, glm::vec2 pos, glm::vec4 color) {
+        AddFloatingText(text, pos, color);
+      });
 
   // Auto end turn
   turn_manager_.NextTurn(registry());
@@ -269,10 +278,11 @@ void BattleScene::RenderUI() {
       "default", last_log_, {100, 650}, 0.0f, 1.0f, {1, 1, 1, 1});
 
   // Tile Tooltip
-  TerrainType terrain = BattleGrid::GetTerrain(registry(), cursor_pos_.x, cursor_pos_.y);
+  TerrainType terrain =
+      BattleGrid::GetTerrain(registry(), cursor_pos_.x, cursor_pos_.y);
   std::string terrain_name = "Unknown";
   std::string terrain_desc = "";
-  switch(terrain) {
+  switch (terrain) {
     case TerrainType::Normal:
       terrain_name = "Grass";
       terrain_desc = "Normal terrain.";
@@ -291,9 +301,11 @@ void BattleScene::RenderUI() {
       break;
   }
   engine::graphics::TextRenderer::Get().DrawText(
-      "default", "Tile: " + terrain_name, {100, 600}, 0.0f, 0.6f, {0.7f, 0.7f, 1.0f, 1.0f});
-  engine::graphics::TextRenderer::Get().DrawText(
-      "default", terrain_desc, {100, 580}, 0.0f, 0.4f, {0.6f, 0.6f, 0.9f, 1.0f});
+      "default", "Tile: " + terrain_name, {100, 600}, 0.0f, 0.6f,
+      {0.7f, 0.7f, 1.0f, 1.0f});
+  engine::graphics::TextRenderer::Get().DrawText("default", terrain_desc,
+                                                 {100, 580}, 0.0f, 0.4f,
+                                                 {0.6f, 0.6f, 0.9f, 1.0f});
 
   auto active = turn_manager_.GetActiveCharacter();
   if (registry().IsAlive(active) &&
@@ -320,8 +332,8 @@ void BattleScene::RenderUI() {
       auto& action_data =
           registry().GetComponent<ActionDataComponent>(action_entity);
       bool is_selected = (selected_action_index_ == i);
-      glm::vec4 color = (is_selected ? glm::vec4(1, 1, 0, 1)
-                                     : glm::vec4(1, 1, 1, 1));
+      glm::vec4 color =
+          (is_selected ? glm::vec4(1, 1, 0, 1) : glm::vec4(1, 1, 1, 1));
       engine::graphics::TextRenderer::Get().DrawText(
           "default", std::to_string(i + 2) + ": " + action_data.name,
           {700, 400 - i * 40.0f}, 0.0f, 0.7f, color);
@@ -361,7 +373,8 @@ void BattleScene::RenderUI() {
   engine::graphics::Renderer::Get().Flush();
 }
 
-void BattleScene::AddFloatingText(const std::string& text, glm::vec2 pos, glm::vec4 color) {
+void BattleScene::AddFloatingText(const std::string& text, glm::vec2 pos,
+                                  glm::vec4 color) {
   floating_texts_.push_back({text, pos, 1.0f, color});
 }
 

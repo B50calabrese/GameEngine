@@ -27,8 +27,8 @@ void SyncTransformSystem::Update(engine::ecs::Registry& registry,
 }
 
 int CombatSystem::ApplyEffect(engine::ecs::Registry& registry,
-                               engine::ecs::EntityID action_entity,
-                               engine::ecs::EntityID target_entity) {
+                              engine::ecs::EntityID action_entity,
+                              engine::ecs::EntityID target_entity) {
   if (!registry.IsAlive(action_entity) || !registry.IsAlive(target_entity))
     return 0;
 
@@ -55,7 +55,8 @@ int CombatSystem::ApplyEffect(engine::ecs::Registry& registry,
       for (int i = 0; i < heal.num_dice; ++i)
         amt += std::uniform_int_distribution<int>(1, heal.dice_size)(gen);
       amt += heal.modifier;
-      int actual_heal = std::min(target_stats.max_hp - target_stats.current_hp, amt);
+      int actual_heal =
+          std::min(target_stats.max_hp - target_stats.current_hp, amt);
       target_stats.current_hp += actual_heal;
       total_result += actual_heal;
     }
