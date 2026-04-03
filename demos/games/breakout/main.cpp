@@ -47,12 +47,7 @@ class GameplayScene : public engine::Scene {
  public:
   GameplayScene(const std::string& name) : engine::Scene(name) {}
 
-  void OnAttach() override {
-    // Pre-load common textures
-    bg_tex_ = engine::graphics::Texture::Load("textures/breakout_bg.png");
-
-    ResetGame();
-  }
+  void OnAttach() override { ResetGame(); }
 
   void ResetGame() {
     registry().Clear();
@@ -230,7 +225,8 @@ class GameplayScene : public engine::Scene {
       auto& b = *it;
       if (registry().IsAlive(b.id)) {
         if (engine::util::CheckAABB(trans.position - glm::vec2(ball.radius),
-                                    glm::vec2(ball.radius * 2), b.pos, b.size)) {
+                                    glm::vec2(ball.radius * 2), b.pos,
+                                    b.size)) {
           vel.velocity.y *= -1;
           bricks_hit_++;
           glm::vec4 color = {1, 1, 1, 1};
@@ -255,13 +251,8 @@ class GameplayScene : public engine::Scene {
   }
 
   void OnRender() override {
-    if (bg_tex_) {
-      engine::graphics::Renderer::Get().DrawTexturedQuad(
-          {400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
-    } else {
-      engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
-                                                 {0.05f, 0.05f, 0.1f, 1.0f});
-    }
+    engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
+                                               {0.05f, 0.05f, 0.1f, 1.0f});
 
     if (is_game_over_) {
       engine::graphics::Renderer::Get().DrawText("default", "GAME OVER",
@@ -290,8 +281,6 @@ class GameplayScene : public engine::Scene {
   int bricks_hit_ = 0;
   bool is_game_over_ = false;
   float shake_time_ = 0.0f;
-
-  std::shared_ptr<engine::graphics::Texture> bg_tex_;
 };
 
 class BreakoutApp : public demos::common::BaseDemoApp {
