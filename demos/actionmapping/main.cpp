@@ -1,3 +1,4 @@
+#include <engine/input/action_manager.h>
 #include <engine/util/logger.h>
 
 #include "../common/demo_utils.h"

@@ -5,6 +5,7 @@
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_sheet.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/graphics/texture.h>
 #include <engine/graphics/utils/sprite_animator.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
@@ -39,7 +40,8 @@ void GameplayScene::LoadLevel(int level) {
       player_entity_,
       engine::ecs::components::Collider{{40.0f, 50.0f}, {0, 0}, false, false});
   registry().AddComponent(
-      player_entity_, engine::ecs::components::Sprite{"textures/player_idle.png"});
+      player_entity_,
+      engine::ecs::components::Sprite{"textures/player_idle.png"});
   registry().AddComponent(player_entity_, PlayerComponent{});
 
   std::string level_path = engine::graphics::Renderer::Get().ResolveAssetPath(
@@ -103,7 +105,8 @@ void GameplayScene::UpdatePlayer(float dt) {
   auto& vel = registry().GetComponent<engine::ecs::components::Velocity>(
       player_entity_);
 
-  auto& sprite = registry().GetComponent<engine::ecs::components::Sprite>(player_entity_);
+  auto& sprite =
+      registry().GetComponent<engine::ecs::components::Sprite>(player_entity_);
 
   if (engine::InputManager::Get().IsKeyDown(engine::KeyCode::kLeft)) {
     vel.velocity.x = -player.move_speed;

@@ -9,6 +9,8 @@
 #include <engine/ecs/components/graphics_components.h>
 #include <engine/ecs/components/physics_components.h>
 #include <engine/ecs/components/transform.h>
+#include <engine/graphics/renderer.h>
+#include <engine/graphics/texture.h>
 
 #include "components.h"
 
@@ -48,7 +50,9 @@ void LevelLoader::Load(const std::string& path,
         switch (p_type) {
           case 'S':
             pc.type = PlatformType::Stationary;
-            registry.AddComponent(entity, engine::ecs::components::Sprite{"textures/platform.png"});
+            registry.AddComponent(
+                entity,
+                engine::ecs::components::Sprite{"textures/platform.png"});
             break;
           case 'M': {
             pc.type = PlatformType::Moving;
@@ -60,11 +64,15 @@ void LevelLoader::Load(const std::string& path,
                 entity,
                 engine::ecs::components::Velocity{
                     glm::normalize(pc.end_pos - pc.start_pos) * 150.0f});
-            registry.AddComponent(entity, engine::ecs::components::Sprite{"textures/platform_moving.png"});
+            registry.AddComponent(
+                entity,
+                engine::ecs::components::Sprite{"textures/platform_moving.png"});
           } break;
           case 'T':
             pc.type = PlatformType::Temporary;
-            registry.AddComponent(entity, engine::ecs::components::Sprite{"textures/platform_temp.png"});
+            registry.AddComponent(
+                entity,
+                engine::ecs::components::Sprite{"textures/platform_temp.png"});
             break;
         }
         registry.AddComponent(entity, pc);
