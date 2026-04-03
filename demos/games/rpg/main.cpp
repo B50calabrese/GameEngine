@@ -8,6 +8,7 @@
 #include <engine/ecs/registry.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/graphics/texture.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>
@@ -36,12 +37,14 @@ class MapScene : public engine::Scene {
   MapScene(const std::string& name) : engine::Scene(name) {}
 
   void OnAttach() override {
-      tile_textures_[TileType::Floor] = engine::graphics::Texture::Load("textures/floor.png");
-      tile_textures_[TileType::Wall] = engine::graphics::Texture::Load("textures/wall.png");
-      tile_textures_[TileType::Chest] = engine::graphics::Texture::Load("textures/chest.png");
-      tile_textures_[TileType::Stairs] = engine::graphics::Texture::Load("textures/stairs.png");
-      player_tex_ = engine::graphics::Texture::Load("textures/knight_idle.png");
-      GenerateLevel();
+    tile_textures_[TileType::Floor] =
+        engine::graphics::Texture::Load("textures/floor.png");
+    tile_textures_[TileType::Chest] =
+        engine::graphics::Texture::Load("textures/chest.png");
+    tile_textures_[TileType::Stairs] =
+        engine::graphics::Texture::Load("textures/stairs.png");
+    player_tex_ = engine::graphics::Texture::Load("textures/knight_idle.png");
+    GenerateLevel();
   }
   void OnUpdate(float dt) override;
   void OnRender() override;
@@ -51,7 +54,8 @@ class MapScene : public engine::Scene {
  private:
   MapGenerator::MapData map_;
   glm::ivec2 player_pos_;
-  std::unordered_map<TileType, std::shared_ptr<engine::graphics::Texture>> tile_textures_;
+  std::unordered_map<TileType, std::shared_ptr<engine::graphics::Texture>>
+      tile_textures_;
   std::shared_ptr<engine::graphics::Texture> player_tex_;
 };
 
@@ -181,15 +185,17 @@ class BattleScene : public engine::Scene {
 
   void OnRender() override {
     if (bg_tex_) {
-      engine::graphics::Renderer::Get().DrawTexturedQuad({400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
+      engine::graphics::Renderer::Get().DrawTexturedQuad(
+          {400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
     } else {
       engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
-                                               {0.2f, 0.1f, 0.1f, 1.0f});
+                                                 {0.2f, 0.1f, 0.1f, 1.0f});
     }
 
     // Enemy
     if (enemy_tex_) {
-      engine::graphics::Renderer::Get().DrawTexturedQuad({500, 300}, {128, 128}, enemy_tex_.get());
+      engine::graphics::Renderer::Get().DrawTexturedQuad({500, 300}, {128, 128},
+                                                         enemy_tex_.get());
     }
     engine::graphics::Renderer::Get().DrawText(
         "default",
@@ -199,7 +205,8 @@ class BattleScene : public engine::Scene {
 
     // Player
     if (player_tex_) {
-      engine::graphics::Renderer::Get().DrawTexturedQuad({150, 150}, {128, 128}, player_tex_.get());
+      engine::graphics::Renderer::Get().DrawTexturedQuad({150, 150}, {128, 128},
+                                                         player_tex_.get());
     }
     engine::graphics::Renderer::Get().DrawText(
         "default",
@@ -393,20 +400,24 @@ void MapScene::OnRender() {
     for (int x = 0; x < MAP_WIDTH; ++x) {
       glm::vec2 pos = {x * TILE_SIZE, y * TILE_SIZE};
       TileType type = map_.tiles[y * MAP_WIDTH + x];
-      if (tile_textures_.count(type) && tile_textures_[type]) {
-          engine::graphics::Renderer::Get().DrawTexturedQuad(
-              pos + glm::vec2(TILE_SIZE/2), {TILE_SIZE, TILE_SIZE},
-              tile_textures_[type].get());
+      if (type == TileType::Wall) {
+        engine::graphics::Renderer::Get().DrawQuad(
+            pos + glm::vec2(TILE_SIZE / 2), {TILE_SIZE, TILE_SIZE},
+            {0.3f, 0.3f, 0.3f, 1.0f});
+      } else if (tile_textures_.count(type) && tile_textures_[type]) {
+        engine::graphics::Renderer::Get().DrawTexturedQuad(
+            pos + glm::vec2(TILE_SIZE / 2), {TILE_SIZE, TILE_SIZE},
+            tile_textures_[type].get());
       }
     }
   }
 
   // Draw Player
   if (player_tex_) {
-      engine::graphics::Renderer::Get().DrawTexturedQuad(
-          {player_pos_.x * TILE_SIZE + TILE_SIZE/2, player_pos_.y * TILE_SIZE + TILE_SIZE/2},
-          {TILE_SIZE * 1.5f, TILE_SIZE * 1.5f},
-          player_tex_.get());
+    engine::graphics::Renderer::Get().DrawTexturedQuad(
+        {player_pos_.x * TILE_SIZE + TILE_SIZE / 2,
+         player_pos_.y * TILE_SIZE + TILE_SIZE / 2},
+        {TILE_SIZE * 1.5f, TILE_SIZE * 1.5f}, player_tex_.get());
   }
 
   // Draw HUD

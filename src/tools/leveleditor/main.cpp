@@ -33,5 +33,6 @@ class LevelEditorDemo : public demos::common::BaseDemoApp {
 int main() {
   engine::EngineConfig config;
   config.window_title = "Level Editor Demo";
+  config.asset_path = ENGINE_ASSETS_PATH;
   return demos::common::DemoRunner::Run<LevelEditorDemo>(config);
 }

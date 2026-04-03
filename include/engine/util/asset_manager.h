@@ -26,16 +26,15 @@ namespace engine::util {
  * @brief Centralized, templated utility for managing the lifecycle of engine
  * resources.
  *
- * Uses reference counting (std::shared_ptr/std::weak_ptr) to automatically free
- * assets when they are no longer in use.
+ * Uses shared pointers to cache assets once they are loaded.
  */
 template <typename T>
 class AssetManager {
  public:
   /**
-   * @brief Retrieves a reference-counted asset.
+   * @brief Retrieves a cached asset.
    *
-   * If the asset is already in the cache and still alive, it returns it.
+   * If the asset is already in the cache, it returns it.
    * Otherwise, it calls T::Load(path) to create it.
    *
    * @param path The path to the asset.
@@ -45,8 +44,8 @@ class AssetManager {
     std::lock_guard<std::mutex> lock(GetMutex());
     auto& cache = GetCache();
 
-    if (cache.count(path) && !cache[path].expired()) {
-      return cache[path].lock();
+    if (cache.count(path)) {
+      return cache[path];
     }
 
     // T must implement a static Load method returning std::shared_ptr<T>
@@ -58,27 +57,20 @@ class AssetManager {
   }
 
   /**
-   * @brief Clears references to assets that are no longer in use.
+   * @brief Clears the entire asset cache.
    */
-  static void GarbageCollect() {
+  static void ClearCache() {
     std::lock_guard<std::mutex> lock(GetMutex());
-    auto& cache = GetCache();
-    for (auto it = cache.begin(); it != cache.end();) {
-      if (it->second.expired()) {
-        it = cache.erase(it);
-      } else {
-        ++it;
-      }
-    }
+    GetCache().clear();
   }
 
  private:
   /**
-   * @brief Static cache of weak pointers to assets.
+   * @brief Static cache of shared pointers to assets.
    * @return Reference to the cache.
    */
-  static std::unordered_map<std::string, std::weak_ptr<T>>& GetCache() {
-    static std::unordered_map<std::string, std::weak_ptr<T>> cache;
+  static std::unordered_map<std::string, std::shared_ptr<T>>& GetCache() {
+    static std::unordered_map<std::string, std::shared_ptr<T>> cache;
     return cache;
   }
 

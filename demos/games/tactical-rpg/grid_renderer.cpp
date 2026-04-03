@@ -1,6 +1,7 @@
 #include "grid_renderer.h"
 
 #include <engine/graphics/renderer.h>
+#include <engine/graphics/texture.h>
 
 #include "components.h"
 
@@ -27,23 +28,31 @@ void GridRenderer::Render(engine::ecs::Registry& registry,
         glm::vec2 pos = offset + glm::vec2(x * tile_size, y * tile_size);
         engine::graphics::Texture* tex = floor_tex.get();
         switch (tile.terrain) {
-          case TerrainType::Normal: tex = floor_tex.get(); break;
-          case TerrainType::Slow: tex = slow_tex.get(); break;
-          case TerrainType::Damage: tex = dmg_tex.get(); break;
-          case TerrainType::Impassible: tex = wall_tex.get(); break;
+          case TerrainType::Normal:
+            tex = floor_tex.get();
+            break;
+          case TerrainType::Slow:
+            tex = slow_tex.get();
+            break;
+          case TerrainType::Damage:
+            tex = dmg_tex.get();
+            break;
+          case TerrainType::Impassible:
+            tex = wall_tex.get();
+            break;
         }
 
         if (tex) {
           engine::graphics::Renderer::Get().DrawTexturedQuad(
-              pos + glm::vec2(tile_size/2), {tile_size, tile_size}, tex);
+              pos + glm::vec2(tile_size / 2), {tile_size, tile_size}, tex);
         } else {
-           engine::graphics::Renderer::Get().DrawQuad(
-            pos, {tile_size - 2, tile_size - 2}, {0.2f, 0.2f, 0.2f, 1.0f});
+          engine::graphics::Renderer::Get().DrawQuad(
+              pos, {tile_size - 2, tile_size - 2}, {0.2f, 0.2f, 0.2f, 1.0f});
         }
 
         if (x == cursor_pos.x && y == cursor_pos.y) {
-           engine::graphics::Renderer::Get().DrawQuad(
-            pos, {tile_size - 2, tile_size - 2}, {1.0f, 1.0f, 1.0f, 0.3f});
+          engine::graphics::Renderer::Get().DrawQuad(
+              pos, {tile_size - 2, tile_size - 2}, {1.0f, 1.0f, 1.0f, 0.3f});
         }
       }
     }
