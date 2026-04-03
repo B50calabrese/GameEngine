@@ -9,8 +9,8 @@
 namespace tactical_rpg {
 
 int CombatSystem::ApplyEffect(engine::ecs::Registry& registry,
-                               engine::ecs::EntityID action_entity,
-                               engine::ecs::EntityID target_entity) {
+                              engine::ecs::EntityID action_entity,
+                              engine::ecs::EntityID target_entity) {
   if (!registry.IsAlive(action_entity) || !registry.IsAlive(target_entity))
     return 0;
 

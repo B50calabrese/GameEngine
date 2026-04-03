@@ -77,6 +77,7 @@ void SpriteRenderSystem::Render(engine::ecs::Registry* registry) {
       cmd.size = transform.scale;
       cmd.rotation = transform.rotation;
       cmd.color = quad.color;
+      cmd.origin = quad.origin;
       utils::RenderQueue::Default().Submit(cmd);
     }
 

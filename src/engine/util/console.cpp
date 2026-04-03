@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <sstream>
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #include <engine/core/engine.h>
 #include <engine/graphics/renderer.h>

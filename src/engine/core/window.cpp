@@ -10,12 +10,12 @@
 #include <GLFW/glfw3.h>
 // clang-format on
 
+#include <imgui.h>
+
 #include <string>
 
 #include <engine/graphics/renderer.h>
 #include <engine/input/input_manager.h>
-
-#include <imgui.h>
 
 namespace engine {
 

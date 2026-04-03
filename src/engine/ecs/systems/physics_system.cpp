@@ -19,8 +19,8 @@ void PhysicsSystem::Update(Registry* registry, float dt) {
   }
   // 1. Apply Gravity
   auto gravity_view = registry->GetView<engine::ecs::components::Transform,
-                                         engine::ecs::components::Velocity,
-                                         engine::ecs::components::Gravity>();
+                                        engine::ecs::components::Velocity,
+                                        engine::ecs::components::Gravity>();
   for (auto entity : gravity_view) {
     auto& velocity =
         registry->GetComponent<engine::ecs::components::Velocity>(entity);

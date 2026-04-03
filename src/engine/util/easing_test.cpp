@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
-#include <engine/util/easing.h>
+
 #include <cmath>
+
+#include <engine/util/easing.h>
 
 namespace engine::util {
 

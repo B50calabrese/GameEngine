@@ -15,7 +15,8 @@ class SpriteSheetApp : public demos::common::BaseDemoApp {
     // First, let's get the texture to know its size for a more realistic demo.
     auto tex = engine::graphics::Texture::Load("textures/platform.png");
     if (tex) {
-      sprite_sheet_ = engine::graphics::SpriteSheet::Create(tex, tex->width(), tex->height(), 1, 1);
+      sprite_sheet_ = engine::graphics::SpriteSheet::Create(
+          tex, tex->width(), tex->height(), 1, 1);
     }
 
     time_ = 0.0;
@@ -27,9 +28,9 @@ class SpriteSheetApp : public demos::common::BaseDemoApp {
     if (sprite_sheet_) {
       // Draw the sprite in the center
       engine::graphics::Renderer::Get().DrawSprite(
-          sprite_sheet_.get(), 0, {400.0f, 300.0f},
-          {200.0f, 200.0f}, static_cast<float>(time_ * 45.0),
-          {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+          sprite_sheet_.get(), 0, {400.0f, 300.0f}, {200.0f, 200.0f},
+          static_cast<float>(time_ * 45.0), {1.0f, 1.0f, 1.0f, 1.0f},
+          {0.5f, 0.5f});
     }
   }
 
