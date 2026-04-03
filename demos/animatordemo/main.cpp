@@ -27,24 +27,26 @@ class AnimatorDemoApp : public demos::common::BaseDemoApp {
 
     if (!sprite_sheet_) {
       // Fallback
-      auto tex_fallback = engine::graphics::Texture::Load("textures/player_idle.png");
+      auto tex_fallback =
+          engine::graphics::Texture::Load("textures/player_idle.png");
       if (tex_fallback) {
-          sprite_sheet_ = engine::graphics::SpriteSheet::Create(tex_fallback, tex_fallback->width(), tex_fallback->height(), 1, 1);
+        sprite_sheet_ = engine::graphics::SpriteSheet::Create(
+            tex_fallback, tex_fallback->width(), tex_fallback->height(), 1, 1);
       }
     }
 
     // Register animations
-    engine::graphics::AnimationClip loop_clip;
+    engine::graphics::utils::AnimationClip loop_clip;
     loop_clip.frames = {0};
     loop_clip.fps = 8.0f;
     loop_clip.loop = true;
-    engine::graphics::AnimationManager::Get().AddClip("loop", loop_clip);
+    engine::graphics::utils::AnimationManager::Get().AddClip("loop", loop_clip);
 
-    engine::graphics::AnimationClip once_clip;
+    engine::graphics::utils::AnimationClip once_clip;
     once_clip.frames = {0};
     once_clip.fps = 4.0f;
     once_clip.loop = false;
-    engine::graphics::AnimationManager::Get().AddClip("once", once_clip);
+    engine::graphics::utils::AnimationManager::Get().AddClip("once", once_clip);
 
     // Initialize animators
     loop_animator_.Play("loop");

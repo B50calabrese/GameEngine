@@ -11,6 +11,7 @@
 #include <engine/graphics/post_processor.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/graphics/texture.h>
 #include <engine/graphics/utils/particle_system.h>
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
@@ -47,10 +48,10 @@ class GameplayScene : public engine::Scene {
   GameplayScene(const std::string& name) : engine::Scene(name) {}
 
   void OnAttach() override {
-      // Pre-load common textures
-      bg_tex_ = engine::graphics::Texture::Load("textures/breakout_bg.png");
+    // Pre-load common textures
+    bg_tex_ = engine::graphics::Texture::Load("textures/breakout_bg.png");
 
-      ResetGame();
+    ResetGame();
   }
 
   void ResetGame() {
@@ -70,7 +71,8 @@ class GameplayScene : public engine::Scene {
         paddle_, engine::ecs::components::Collider{
                      {120.0f, 20.0f}, {-60.0f, -10.0f}, false, true});
     registry().AddComponent(paddle_, PaddleComponent{});
-    registry().AddComponent(paddle_, engine::ecs::components::Sprite{"textures/paddle.png"});
+    registry().AddComponent(
+        paddle_, engine::ecs::components::Sprite{"textures/paddle.png"});
 
     // Create Ball
     ball_ = registry().CreateEntity();
@@ -109,8 +111,10 @@ class GameplayScene : public engine::Scene {
             brick, engine::ecs::components::Collider{
                        {brick_width, brick_height}, {0, 0}, true, true});
         registry().AddComponent(brick, BrickComponent{false});
-        std::string brick_tex = "textures/brick_" + std::to_string(r % 4) + ".png";
-        registry().AddComponent(brick, engine::ecs::components::Sprite{brick_tex});
+        std::string brick_tex =
+            "textures/brick_" + std::to_string(r % 4) + ".png";
+        registry().AddComponent(brick,
+                                engine::ecs::components::Sprite{brick_tex});
       }
     }
 
@@ -226,8 +230,7 @@ class GameplayScene : public engine::Scene {
       auto& b = *it;
       if (registry().IsAlive(b.id)) {
         if (engine::util::CheckAABB(trans.position - glm::vec2(ball.radius),
-                                    glm::vec2(ball.radius * 2), b.pos,
-                                    b.size)) {
+                                    glm::vec2(ball.radius * 2), b.pos, b.size)) {
           vel.velocity.y *= -1;
           bricks_hit_++;
           glm::vec4 color = {1, 1, 1, 1};
@@ -253,9 +256,11 @@ class GameplayScene : public engine::Scene {
 
   void OnRender() override {
     if (bg_tex_) {
-      engine::graphics::Renderer::Get().DrawTexturedQuad({400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
+      engine::graphics::Renderer::Get().DrawTexturedQuad(
+          {400.0f, 300.0f}, {800.0f, 600.0f}, bg_tex_.get());
     } else {
-      engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f}, {0.05f, 0.05f, 0.1f, 1.0f});
+      engine::graphics::Renderer::Get().DrawQuad({0.0f, 0.0f}, {800.0f, 600.0f},
+                                                 {0.05f, 0.05f, 0.1f, 1.0f});
     }
 
     if (is_game_over_) {
