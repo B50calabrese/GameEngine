@@ -11,7 +11,8 @@
 namespace engine::ecs::systems {
 
 /**
- * @brief System that updates the main camera based on entities with CameraComponent.
+ * @brief System that updates the main camera based on entities with
+ * CameraComponent.
  */
 class CameraSystem {
  public:
@@ -19,7 +20,7 @@ class CameraSystem {
    * @brief Updates the main camera.
    * @param registry The ECS registry.
    */
-  static void Update(Registry* registry);
+  static void Update(engine::ecs::Registry* registry);
 };
 
 }  // namespace engine::ecs::systems

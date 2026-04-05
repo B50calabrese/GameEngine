@@ -22,15 +22,15 @@ void CameraSystem::Update(Registry* registry) {
           registry->GetComponent<engine::ecs::components::Transform>(entity);
 
       auto& main_camera = Application::Get().camera();
-      main_camera.set_position(
-          {transform.position.x + camera_comp.offset_x,
-           transform.position.y + camera_comp.offset_y, 0.0f});
+      main_camera.set_position({transform.position.x + camera_comp.offset_x,
+                                transform.position.y + camera_comp.offset_y,
+                                0.0f});
 
       // Note: Camera class doesn't currently support zoom in its public API
       // in a simple way without recalculating projection.
       // For now we just sync position.
 
-      break; // Only use the first active camera
+      break;  // Only use the first active camera
     }
   }
 }
