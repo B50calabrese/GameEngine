@@ -23,10 +23,10 @@
 
 using namespace engine::ecs::components;
 
-class NewComponentsDemo : public demos::common::BaseDemoApp {
+class ComponentsDemo : public demos::common::BaseDemoApp {
  public:
   void OnDemoInit() override {
-    LOG_INFO("New Components Demo Initialized");
+    LOG_INFO("Components Demo Initialized");
 
     auto* scene = engine::SceneManager::Get().GetActiveScene();
     if (!scene) return;
@@ -85,8 +85,8 @@ class NewComponentsDemo : public demos::common::BaseDemoApp {
 
 int main(int argc, char** argv) {
   engine::EngineConfig config;
-  config.window_title = "New ECS Components Demo";
+  config.window_title = "ECS Components Demo";
   config.window_width = 800;
   config.window_height = 600;
-  return demos::common::DemoRunner::Run<NewComponentsDemo>(config);
+  return demos::common::DemoRunner::Run<ComponentsDemo>(config);
 }

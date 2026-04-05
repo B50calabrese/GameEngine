@@ -1,1 +1,0 @@
-add_engine_demo(newcomponentsdemo main.cpp)
