@@ -1,30 +1,12 @@
 /**
  * @file ai_components.h
- * @brief ECS components for AI (FSM and Behavior Tree).
+ * @brief ECS components for AI (Legacy wrapper).
  */
 
 #ifndef INCLUDE_ENGINE_ECS_COMPONENTS_AI_COMPONENTS_H_
 #define INCLUDE_ENGINE_ECS_COMPONENTS_AI_COMPONENTS_H_
 
-#include <engine/util/behavior_tree.h>
-#include <engine/util/fsm.h>
-
-namespace engine::ecs::components {
-
-/**
- * @brief Component that holds a StateMachine.
- */
-struct StateMachine {
-  util::StateMachine fsm;
-};
-
-/**
- * @brief Component that holds a BehaviorTree.
- */
-struct BehaviorTree {
-  util::BehaviorTree tree;
-};
-
-}  // namespace engine::ecs::components
+#include <engine/ecs/components/behavior_tree.h>
+#include <engine/ecs/components/state_machine.h>
 
 #endif  // INCLUDE_ENGINE_ECS_COMPONENTS_AI_COMPONENTS_H_

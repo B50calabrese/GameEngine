@@ -3,8 +3,15 @@
  * @brief Implementation of the sprite render system.
  */
 
-#include <engine/ecs/components/graphics_components.h>
+#include <engine/ecs/components/circle.h>
+#include <engine/ecs/components/line.h>
+#include <engine/ecs/components/point.h>
+#include <engine/ecs/components/polygon.h>
+#include <engine/ecs/components/quad.h>
+#include <engine/ecs/components/sprite.h>
+#include <engine/ecs/components/text.h>
 #include <engine/ecs/components/transform.h>
+#include <engine/ecs/components/triangle.h>
 #include <engine/graphics/ecs/sprite_render_system.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_sheet.h>
@@ -78,6 +85,80 @@ void SpriteRenderSystem::Render(engine::ecs::Registry* registry) {
       cmd.rotation = transform.rotation;
       cmd.color = quad.color;
       cmd.origin = quad.origin;
+      cmd.shape_type = utils::ShapeType::kQuad;
+      utils::RenderQueue::Default().Submit(cmd);
+    }
+    // Circle Component
+    else if (registry->HasComponent<engine::ecs::components::Circle>(entity)) {
+      auto& circle =
+          registry->GetComponent<engine::ecs::components::Circle>(entity);
+      utils::RenderCommand cmd;
+      cmd.z_order = circle.z_index;
+      cmd.shape_type = utils::ShapeType::kCircle;
+      cmd.position = transform.position;
+      cmd.size = {circle.radius, circle.radius};
+      cmd.color = circle.color;
+      cmd.thickness = circle.thickness;
+      cmd.color2 = circle.color2;
+      cmd.gradient_type = circle.gradient_type;
+      utils::RenderQueue::Default().Submit(cmd);
+    }
+    // Triangle Component
+    else if (registry->HasComponent<engine::ecs::components::Triangle>(entity)) {
+      auto& triangle =
+          registry->GetComponent<engine::ecs::components::Triangle>(entity);
+      utils::RenderCommand cmd;
+      cmd.z_order = triangle.z_index;
+      cmd.shape_type = utils::ShapeType::kTriangle;
+      cmd.position = transform.position;
+      cmd.size = triangle.size * transform.scale;
+      cmd.color = triangle.color;
+      cmd.rotation = transform.rotation;
+      cmd.origin = triangle.origin;
+      cmd.thickness = triangle.thickness;
+      cmd.color2 = triangle.color2;
+      cmd.gradient_type = triangle.gradient_type;
+      utils::RenderQueue::Default().Submit(cmd);
+    }
+    // Line Component
+    else if (registry->HasComponent<engine::ecs::components::Line>(entity)) {
+      auto& line =
+          registry->GetComponent<engine::ecs::components::Line>(entity);
+      utils::RenderCommand cmd;
+      cmd.z_order = line.z_index;
+      cmd.shape_type = utils::ShapeType::kLine;
+      cmd.position = transform.position;
+      cmd.size = line.dest;
+      cmd.color = line.color;
+      cmd.thickness = line.thickness;
+      cmd.is_dashed = line.is_dashed;
+      utils::RenderQueue::Default().Submit(cmd);
+    }
+    // Point Component
+    else if (registry->HasComponent<engine::ecs::components::Point>(entity)) {
+      auto& point =
+          registry->GetComponent<engine::ecs::components::Point>(entity);
+      utils::RenderCommand cmd;
+      cmd.z_order = point.z_index;
+      cmd.shape_type = utils::ShapeType::kPoint;
+      cmd.position = transform.position;
+      cmd.color = point.color;
+      cmd.thickness = point.size;
+      utils::RenderQueue::Default().Submit(cmd);
+    }
+    // Polygon Component
+    else if (registry->HasComponent<engine::ecs::components::Polygon>(entity)) {
+      auto& polygon =
+          registry->GetComponent<engine::ecs::components::Polygon>(entity);
+      utils::RenderCommand cmd;
+      cmd.z_order = polygon.z_index;
+      cmd.shape_type = utils::ShapeType::kPolygon;
+      cmd.color = polygon.color;
+      cmd.polygon_vertices = polygon.vertices;
+      // Transform polygon vertices to world space
+      for (auto& v : cmd.polygon_vertices) {
+        v += transform.position;
+      }
       utils::RenderQueue::Default().Submit(cmd);
     }
 
