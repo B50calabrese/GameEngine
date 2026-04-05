@@ -3,7 +3,11 @@
  * @brief Implementation of UI systems.
  */
 
-#include <engine/ecs/components/graphics_components.h>
+#include <engine/ecs/components/light.h>
+#include <engine/ecs/components/occluder.h>
+#include <engine/ecs/components/quad.h>
+#include <engine/ecs/components/sprite.h>
+#include <engine/ecs/components/text.h>
 #include <engine/graphics/primitive_renderer.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_sheet.h>

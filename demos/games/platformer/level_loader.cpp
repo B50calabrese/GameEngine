@@ -6,8 +6,14 @@
 
 #include <glm/geometric.hpp>
 
-#include <engine/ecs/components/graphics_components.h>
-#include <engine/ecs/components/physics_components.h>
+#include <engine/ecs/components/light.h>
+#include <engine/ecs/components/occluder.h>
+#include <engine/ecs/components/quad.h>
+#include <engine/ecs/components/sprite.h>
+#include <engine/ecs/components/text.h>
+#include <engine/ecs/components/collider.h>
+#include <engine/ecs/components/gravity.h>
+#include <engine/ecs/components/velocity.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/texture.h>

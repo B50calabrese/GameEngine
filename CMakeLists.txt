@@ -181,6 +181,7 @@ if(PROJECT_NAME STREQUAL "GameEngine")
     add_subdirectory(demos/games)
     add_subdirectory(demos/consoledemo)
     add_subdirectory(demos/shapedemo)
+    add_subdirectory(demos/componentsdemo)
 endif()
 
 # --- 7. Testing ---

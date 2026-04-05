@@ -1,0 +1,1 @@
+add_engine_demo(componentsdemo main.cpp)

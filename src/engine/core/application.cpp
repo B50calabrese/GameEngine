@@ -12,6 +12,8 @@
 #include <engine/core/job_system.h>
 #include <engine/core/window.h>
 #include <engine/ecs/components/particle_emitter.h>
+#include <engine/ecs/systems/ai_system.h>
+#include <engine/ecs/systems/camera_system.h>
 #include <engine/ecs/systems/physics_system.h>
 #include <engine/ecs/systems/script_system.h>
 #include <engine/graphics/camera.h>
@@ -106,9 +108,15 @@ void Application::Run() {
         ecs::systems::ScriptSystem::Update(&reg,
                                            static_cast<float>(delta_time));
 
+        // AI System (Animations, Lifetime, Pathing)
+        ecs::systems::AISystem::Update(&reg, static_cast<float>(delta_time));
+
         // Engine Core Systems
         ecs::systems::PhysicsSystem::Update(&reg,
                                             static_cast<float>(delta_time));
+
+        // Sync Camera
+        ecs::systems::CameraSystem::Update(&reg);
 
         // Particle Systems
         reg.ForEach<engine::ecs::components::ParticleEmitter>(

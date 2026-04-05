@@ -4,7 +4,8 @@
 
 #include <glm/glm.hpp>
 
-#include <engine/ecs/components/ai_components.h>
+#include <engine/ecs/components/behavior_tree.h>
+#include <engine/ecs/components/state_machine.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/ecs/registry.h>
 #include <engine/ecs/systems/ai_system.h>

@@ -6,7 +6,9 @@
 #include <algorithm>
 #include <vector>
 
-#include <engine/ecs/components/physics_components.h>
+#include <engine/ecs/components/collider.h>
+#include <engine/ecs/components/gravity.h>
+#include <engine/ecs/components/velocity.h>
 #include <engine/ecs/components/transform.h>
 #include <engine/ecs/systems/physics_system.h>
 #include <engine/util/collision.h>

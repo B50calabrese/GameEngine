@@ -40,7 +40,7 @@ The rendering pipeline is designed for high-performance 2D drawing:
 
 - **Lighting Pass Performance**: Raymarching shadows in the `LightingEffect` is per-pixel and GPU-intensive. Keep `MAX_LIGHTS` low and consider using lower `steps` for performance-critical scenarios.
 - **Occluder Rendering**: The `LightingEffect` renders occluders in its own pass. Ensure all objects intended to cast shadows have an `OccluderComponent`.
-- **Sprite Component visibility**: The `SpriteComponent` (graphics/graphics_components.h) has a `visible` flag. Always check this in custom systems to prevent rendering hidden entities.
+- **Sprite Component visibility**: The `SpriteComponent` (engine/ecs/components/sprite.h) has a `visible` flag. Always check this in custom systems to prevent rendering hidden entities.
 - **Context Dependency**: Any `Renderer` call made before `Window` initialization (OpenGL context creation) or after `Shutdown` will trigger an OpenGL driver crash or undefined behavior.
 - **Batch Breaking**: Mixing `DrawRect` and `DrawTexturedQuad` with inconsistent Z-ordering can force redundant `Flush` calls, significantly degrading performance due to texture swaps.
 - **Z-Fighting**: Transparent overlays require distinct Z-order increments. Identical Z-values for overlapping textures lead to non-deterministic flickering (z-fighting).
