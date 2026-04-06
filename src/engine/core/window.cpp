@@ -27,6 +27,9 @@ Window::Window(int width, int height, std::string name)
   glfwMakeContextCurrent(internal_window_);
   glfwSwapInterval(1);  // Enable V-Sync (swap interval 1)
 
+  // Ensure InputManager knows the initial window size for mouse Y calculations
+  InputManager::Get().HandleResize(width, height);
+
   last_frame_time_ = glfwGetTime();
 
   SetupCallbacks();
