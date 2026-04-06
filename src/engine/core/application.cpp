@@ -169,6 +169,9 @@ void Application::Run() {
 
     graphics::utils::RenderQueue::Default().Flush();
     graphics::Renderer::Get().EndFrame();
+
+    SceneManager::Get().ProcessPendingChanges();
+
     win.SwapBuffers();
   }
   OnShutdown();
