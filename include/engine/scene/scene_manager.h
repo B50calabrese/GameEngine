@@ -38,12 +38,21 @@ class SceneManager {
   void UpdateActiveScene(float delta_time);
   void RenderActiveScene();
   bool DispatchInput();
+  void ProcessPendingChanges();
 
  private:
+  enum class SceneAction { kSet, kPush, kPop };
+
+  struct PendingChange {
+    SceneAction action;
+    std::unique_ptr<Scene> scene;
+  };
+
   SceneManager() = default;
   ~SceneManager() = default;
 
   std::vector<std::unique_ptr<Scene>> scene_stack_;
+  std::vector<PendingChange> pending_changes_;
 };
 }  // namespace engine
 
