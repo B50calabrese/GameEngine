@@ -12,15 +12,37 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(ENGINE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 set(THIRD_PARTY_DIR "${ENGINE_ROOT}/third_party")
 set(THIRD_PARTY_INCLUDE "${THIRD_PARTY_DIR}/include")
-set(THIRD_PARTY_LIBS "${THIRD_PARTY_DIR}/libs")
 set(LUA_DIR "${THIRD_PARTY_DIR}/lua")
+set(GLFW_DIR "${THIRD_PARTY_DIR}/glfw")
+set(FREETYPE_DIR "${THIRD_PARTY_DIR}/freetype")
+set(GLAD_DIR "${THIRD_PARTY_DIR}/glad")
 set(IMGUI_DIR "${THIRD_PARTY_DIR}/imgui")
 set(JSON_DIR "${THIRD_PARTY_DIR}/json")
 
-# Inform the linker where to find the library files (e.g., glfw3.lib)
-link_directories("${THIRD_PARTY_LIBS}")
+# 3. Dependencies Build from Source
+# ---------------------------------
 
-# 3. Sources
+# GLFW Configuration
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+if(NOT WIN32 AND NOT APPLE)
+    set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_X11 ON CACHE BOOL "" FORCE)
+endif()
+add_subdirectory("${GLFW_DIR}")
+
+# FreeType Configuration
+set(FT_DISABLE_ZLIB TRUE CACHE BOOL "" FORCE)
+set(FT_DISABLE_BZIP2 TRUE CACHE BOOL "" FORCE)
+set(FT_DISABLE_PNG TRUE CACHE BOOL "" FORCE)
+set(FT_DISABLE_HARFBUZZ TRUE CACHE BOOL "" FORCE)
+set(FT_DISABLE_BROTLI TRUE CACHE BOOL "" FORCE)
+set(SKIP_INSTALL_ALL TRUE CACHE BOOL "" FORCE)
+add_subdirectory("${FREETYPE_DIR}")
+
+# 4. Sources
 # ----------
 
 # Lua Sources
@@ -76,7 +98,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/util/console.cpp"
     "${ENGINE_ROOT}/src/tools/leveleditor/component_registry.cpp"
     "${ENGINE_ROOT}/src/tools/leveleditor/level_editor.cpp"
-    "${ENGINE_ROOT}/third_party/libs/glad.c"
+    "${GLAD_DIR}/src/glad.c"
     ${IMGUI_SOURCES}
 )
 
@@ -99,7 +121,9 @@ target_include_directories(GameEngine
     PUBLIC  "${ENGINE_ROOT}/include"
     PRIVATE "${ENGINE_ROOT}/src"
     PUBLIC  "${THIRD_PARTY_INCLUDE}"
-    PUBLIC  "${THIRD_PARTY_INCLUDE}/freetype"
+    PUBLIC  "${GLAD_DIR}/include"
+    PUBLIC  "${FREETYPE_DIR}/include"
+    PUBLIC  "${GLFW_DIR}/include"
     PUBLIC  "${LUA_DIR}/include"
     PUBLIC  "${IMGUI_DIR}"
     PUBLIC  "${IMGUI_DIR}/backends"
@@ -110,32 +134,26 @@ target_compile_definitions(GameEngine PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_compile_definitions(GameEngine PUBLIC GLFW_INCLUDE_NONE)
 target_compile_definitions(GameEngine PRIVATE IMGUI_IMPL_GLFW_DISABLE_WAYLAND)
 
-# Link the GLFW library and all necessary system libraries.
+# Link the dependencies
+target_link_libraries(GameEngine PUBLIC
+    Lua
+    glfw
+    freetype
+)
+
 if(WIN32)
     target_link_libraries(GameEngine PRIVATE
-        Lua
-        "${THIRD_PARTY_LIBS}/glfw3.lib"
-        "${THIRD_PARTY_LIBS}/freetype.lib"
         opengl32
         gdi32
         shell32
         user32
     )
 else()
-    find_package(PkgConfig)
-    if(PKG_CONFIG_FOUND)
-        pkg_check_modules(GLFW glfw3)
-        pkg_check_modules(FREETYPE freetype2)
-    endif()
-
-    if(GLFW_FOUND AND FREETYPE_FOUND)
-        target_link_libraries(GameEngine PUBLIC Lua ${GLFW_LIBRARIES} ${FREETYPE_LIBRARIES} GL dl)
-        target_include_directories(GameEngine PUBLIC ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
-    else()
-        # Fallback for missing pkg-config or headless environments
-        message(STATUS "Using fallback linking for GLFW/Freetype")
-        target_link_libraries(GameEngine PUBLIC Lua glfw3 freetype GL dl)
-    endif()
+    target_link_libraries(GameEngine PRIVATE
+        GL
+        dl
+        pthread
+    )
 endif()
 
 # --- 6. Add Demos (Optional when building as a library) ---
