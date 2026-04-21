@@ -216,7 +216,7 @@ class InputManager {
 
   float mouse_x_ = 0.0f;
   float mouse_y_ = 0.0f;
-  float window_height_ = 600.0f;
+  float window_height_ = 0.0f;
   bool is_consumed_ = false;
   std::string text_input_;
   std::map<KeyCode, bool> current_key_state_;
