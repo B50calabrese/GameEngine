@@ -77,12 +77,26 @@ class Window {
    */
   int height() const { return height_; }
 
+  /**
+   * @brief Gets the horizontal content scale.
+   * @return The X content scale.
+   */
+  float content_scale_x() const { return content_scale_x_; }
+
+  /**
+   * @brief Gets the vertical content scale.
+   * @return The Y content scale.
+   */
+  float content_scale_y() const { return content_scale_y_; }
+
  private:
   friend class Application;
 
   GLFWwindow* internal_window_;
-  int width_;
-  int height_;
+  int width_;   // Framebuffer width
+  int height_;  // Framebuffer height
+  float content_scale_x_ = 1.0f;
+  float content_scale_y_ = 1.0f;
 
   double last_frame_time_;
 

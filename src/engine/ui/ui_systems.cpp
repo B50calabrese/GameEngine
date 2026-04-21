@@ -142,7 +142,7 @@ void UIInputSystem::Update(ecs::Registry& reg) {
 }
 
 UIRenderSystem::UIRenderSystem() {
-  ui_camera_ = std::make_unique<graphics::Camera>(0, 800, 0, 600);
+  ui_camera_ = std::make_unique<graphics::Camera>(0, 0, 0, 0);
 }
 
 void UIRenderSystem::Render(ecs::Registry& reg, int window_width,
