@@ -19,16 +19,27 @@
 
 namespace engine {
 
-Window::Window(int width, int height, std::string name)
-    : width_(width), height_(height) {
+Window::Window(int width, int height, std::string name) {
   internal_window_ =
       glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 
   glfwMakeContextCurrent(internal_window_);
   glfwSwapInterval(1);  // Enable V-Sync (swap interval 1)
 
+  // Retrieve actual framebuffer size (it might differ from requested window
+  // size on High-DPI screens)
+  glfwGetFramebufferSize(internal_window_, &width_, &height_);
+
+  // Compute content scale
+  int win_w, win_h;
+  glfwGetWindowSize(internal_window_, &win_w, &win_h);
+  if (win_w > 0 && win_h > 0) {
+    content_scale_x_ = static_cast<float>(width_) / static_cast<float>(win_w);
+    content_scale_y_ = static_cast<float>(height_) / static_cast<float>(win_h);
+  }
+
   // Ensure InputManager knows the initial window size for mouse Y calculations
-  InputManager::Get().HandleResize(width, height);
+  InputManager::Get().HandleResize(width_, height_);
 
   last_frame_time_ = glfwGetTime();
 
@@ -65,6 +76,17 @@ void Window::SetupCallbacks() {
         if (win) {
           win->width_ = width;
           win->height_ = height;
+
+          // Recompute content scale
+          int win_w, win_h;
+          glfwGetWindowSize(window, &win_w, &win_h);
+          if (win_w > 0 && win_h > 0) {
+            win->content_scale_x_ =
+                static_cast<float>(width) / static_cast<float>(win_w);
+            win->content_scale_y_ =
+                static_cast<float>(height) / static_cast<float>(win_h);
+          }
+
           graphics::Renderer::Get().HandleResize(width, height);
           InputManager::Get().HandleResize(width, height);
         }
@@ -95,7 +117,12 @@ void Window::SetupCallbacks() {
   // 3. GLFW Cursor Position Callback
   glfwSetCursorPosCallback(
       internal_window_, [](GLFWwindow* window, double xpos, double ypos) {
-        InputManager::Get().HandleCursorPosition(xpos, ypos);
+        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+        if (win) {
+          InputManager::Get().HandleCursorPosition(
+              xpos * static_cast<double>(win->content_scale_x_),
+              ypos * static_cast<double>(win->content_scale_y_));
+        }
       });
 
   // 4. GLFW Char Callback
