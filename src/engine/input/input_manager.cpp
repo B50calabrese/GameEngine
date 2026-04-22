@@ -149,8 +149,8 @@ void InputManager::HandleMouseButton(int raw_button_code, int action) {
 }
 
 void InputManager::HandleCursorPosition(double xpos, double ypos) {
-  mouse_x_ = static_cast<float>(xpos);
-  mouse_y_ = window_height_ - static_cast<float>(ypos);
+  mouse_x_ = static_cast<float>(xpos) * content_scale_x_;
+  mouse_y_ = window_height_ - (static_cast<float>(ypos) * content_scale_y_);
 }
 
 void InputManager::HandleChar(unsigned int codepoint) {

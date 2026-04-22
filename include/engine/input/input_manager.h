@@ -183,6 +183,8 @@ class InputManager {
   void ClearTextInput() { text_input_.clear(); }
 
   friend class Window;
+  friend class InputManagerTest;
+  friend class InputManagerTest_HandleResizeAndCursorPosition_Test;
 
  private:
   // Private Constructor/Deleters for Singleton pattern
@@ -210,13 +212,18 @@ class InputManager {
    */
   void HandleChar(unsigned int codepoint);
 
-  void HandleResize(int width, int height) {
+  void HandleResize(int width, int height, float scale_x = 1.0f,
+                    float scale_y = 1.0f) {
     window_height_ = static_cast<float>(height);
+    content_scale_x_ = scale_x;
+    content_scale_y_ = scale_y;
   }
 
   float mouse_x_ = 0.0f;
   float mouse_y_ = 0.0f;
-  float window_height_ = 600.0f;
+  float window_height_ = 0.0f;
+  float content_scale_x_ = 1.0f;
+  float content_scale_y_ = 1.0f;
   bool is_consumed_ = false;
   std::string text_input_;
   std::map<KeyCode, bool> current_key_state_;

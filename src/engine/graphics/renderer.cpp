@@ -158,9 +158,7 @@ void Renderer::Init(Window& window) {
   glDisable(GL_DEPTH_TEST);
 
   // Set viewport to window dimensions
-  int width, height;
-  glfwGetWindowSize(window.native_handle(), &width, &height);
-  set_viewport(width, height);
+  set_viewport(window.width(), window.height());
 
   // Initialize renderers.
   graphics::PrimitiveRenderer::Init();
