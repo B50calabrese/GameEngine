@@ -19,16 +19,28 @@
 
 namespace engine {
 
-Window::Window(int width, int height, std::string name)
-    : width_(width), height_(height) {
+Window::Window(int width, int height, std::string name) {
   internal_window_ =
       glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 
   glfwMakeContextCurrent(internal_window_);
   glfwSwapInterval(1);  // Enable V-Sync (swap interval 1)
 
+  // Use framebuffer size for actual pixel dimensions
+  int fb_width, fb_height;
+  glfwGetFramebufferSize(internal_window_, &fb_width, &fb_height);
+  width_ = fb_width;
+  height_ = fb_height;
+
+  // Calculate content scale (framebuffer size / window size)
+  int win_width, win_height;
+  glfwGetWindowSize(internal_window_, &win_width, &win_height);
+  content_scale_x_ = static_cast<float>(fb_width) / static_cast<float>(win_width);
+  content_scale_y_ = static_cast<float>(fb_height) / static_cast<float>(win_height);
+
   // Ensure InputManager knows the initial window size for mouse Y calculations
-  InputManager::Get().HandleResize(width, height);
+  InputManager::Get().HandleResize(width_, height_, content_scale_x_,
+                                   content_scale_y_);
 
   last_frame_time_ = glfwGetTime();
 
@@ -65,8 +77,18 @@ void Window::SetupCallbacks() {
         if (win) {
           win->width_ = width;
           win->height_ = height;
+
+          // Re-calculate content scale
+          int win_width, win_height;
+          glfwGetWindowSize(window, &win_width, &win_height);
+          win->content_scale_x_ =
+              static_cast<float>(width) / static_cast<float>(win_width);
+          win->content_scale_y_ =
+              static_cast<float>(height) / static_cast<float>(win_height);
+
           graphics::Renderer::Get().HandleResize(width, height);
-          InputManager::Get().HandleResize(width, height);
+          InputManager::Get().HandleResize(width, height, win->content_scale_x_,
+                                           win->content_scale_y_);
         }
       });
 
