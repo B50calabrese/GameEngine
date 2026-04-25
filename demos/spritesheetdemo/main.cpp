@@ -1,32 +1,33 @@
+#include <algorithm>
+#include <string>
+
 #include <engine/graphics/renderer.h>
 #include <engine/graphics/sprite_sheet.h>
-#include <engine/graphics/texture.h>
 #include <engine/graphics/text_renderer.h>
+#include <engine/graphics/texture.h>
 #include <engine/input/input_manager.h>
 #include <engine/util/asset_manager.h>
 
 #include "../common/demo_utils.h"
 
-#include <string>
-#include <algorithm>
-
 class SpriteSheetApp : public demos::common::BaseDemoApp {
  public:
   void OnDemoInit() override {
-    // Load the wolf sprite sheet
+    // Load the demo sprite sheet
     // 1408 / 11 = 128px per frame width
     // 768 / 4 = 192px per frame height
-    auto tex = engine::graphics::Texture::Load("textures/sprite_sheet_demo.png");
+    auto tex =
+        engine::graphics::Texture::Load("textures/sprite_sheet_demo.png");
     if (tex) {
-      sprite_sheet_ = engine::graphics::SpriteSheet::Create(
-          tex, 128, 192, 4, 11);
-      total_frames_ = 4 * 11;
+      sprite_sheet_ =
+          engine::graphics::SpriteSheet::Create(tex, 140, 192, 4, 10);
+      total_frames_ = 4 * 10;
     } else {
       total_frames_ = 0;
     }
 
     range_start_ = 0;
-    range_end_ = total_frames_ - 1;
+    range_end_ = 2;
     current_frame_ = 0;
     timer_ = 0.0;
     fps_ = 12.0;
@@ -51,8 +52,8 @@ class SpriteSheetApp : public demos::common::BaseDemoApp {
       // Draw the current sprite in the center at native size
       if (sprite_sheet_) {
         engine::graphics::Renderer::Get().DrawSprite(
-            sprite_sheet_.get(), current_frame_, {400.0f, 300.0f}, {128.0f, 192.0f},
-            0.0f, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+            sprite_sheet_.get(), current_frame_, {400.0f, 300.0f},
+            {128.0f, 192.0f}, 0.0f, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
       }
     }
 
@@ -85,12 +86,15 @@ class SpriteSheetApp : public demos::common::BaseDemoApp {
 
   void RenderUI() {
     std::string info = "Frame: " + std::to_string(current_frame_) +
-                       " | Range: [" + std::to_string(range_start_) + ", " + std::to_string(range_end_) + "]";
+                       " | Range: [" + std::to_string(range_start_) + ", " +
+                       std::to_string(range_end_) + "]";
     std::string controls = "Controls: W/S (Start), A/D (End)";
 
     auto& text_renderer = engine::graphics::TextRenderer::Get();
-    text_renderer.DrawText("default", info, {10.0f, 580.0f}, 0.0f, 0.5f, {1.0f, 1.0f, 1.0f, 1.0f});
-    text_renderer.DrawText("default", controls, {10.0f, 550.0f}, 0.0f, 0.4f, {0.8f, 0.8f, 0.8f, 1.0f});
+    text_renderer.DrawText("default", info, {10.0f, 580.0f}, 0.0f, 0.5f,
+                           {1.0f, 1.0f, 1.0f, 1.0f});
+    text_renderer.DrawText("default", controls, {10.0f, 550.0f}, 0.0f, 0.4f,
+                           {0.8f, 0.8f, 0.8f, 1.0f});
   }
 
   std::shared_ptr<engine::graphics::SpriteSheet> sprite_sheet_;
