@@ -3,7 +3,7 @@ project(GameEngine VERSION 1.0)
 
 # 1. Configuration
 # ----------------
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # 2. Define Paths using CURRENT_SOURCE_DIR
