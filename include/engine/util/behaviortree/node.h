@@ -16,7 +16,7 @@ namespace engine::util {
 /**
  * @brief Status of a behavior tree node.
  */
-enum class NodeStatus { SUCCESS, FAILURE, RUNNING };
+enum class NodeStatus { kSuccess, kFailure, kRunning };
 
 /**
  * @brief Blackboard for shared data between nodes.

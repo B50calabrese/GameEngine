@@ -62,7 +62,7 @@ void PhysicsSystem::Update(Registry* registry, float dt) {
       auto& col_b =
           registry->GetComponent<engine::ecs::components::Collider>(b);
 
-      if (util::CheckAABB(trans_a.position + col_a.offset, col_a.size,
+      if (util::CheckAabb(trans_a.position + col_a.offset, col_a.size,
                           trans_b.position + col_b.offset, col_b.size)) {
         // Notify both parties of the collision (if callbacks are present)
         if (col_a.on_collision) {
@@ -115,7 +115,7 @@ void PhysicsSystem::Update(Registry* registry, float dt) {
       auto& col_b =
           registry->GetComponent<engine::ecs::components::Collider>(b);
 
-      if (util::CheckAABB(trans_a.position + col_a.offset, col_a.size,
+      if (util::CheckAabb(trans_a.position + col_a.offset, col_a.size,
                           trans_b.position + col_b.offset, col_b.size)) {
         // Horizontal already called the on_collision callback if there was an
         // overlap initially. However, if movement in Y creates a *new* overlap,

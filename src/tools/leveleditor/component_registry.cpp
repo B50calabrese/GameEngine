@@ -1,5 +1,5 @@
 #include <imgui.h>
-#include <leveleditor/component_registry.h>
+#include <tools/leveleditor/component_registry.h>
 
 #include <cstring>
 

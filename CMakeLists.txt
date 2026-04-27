@@ -28,13 +28,13 @@ file(GLOB LUA_SOURCES "${LUA_DIR}/src/*.c")
 
 # ImGui Sources
 set(IMGUI_SOURCES
+    "${IMGUI_DIR}/backends/imgui_impl_glfw.cpp"
+    "${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp"
     "${IMGUI_DIR}/imgui.cpp"
+    "${IMGUI_DIR}/imgui_demo.cpp"
     "${IMGUI_DIR}/imgui_draw.cpp"
     "${IMGUI_DIR}/imgui_tables.cpp"
     "${IMGUI_DIR}/imgui_widgets.cpp"
-    "${IMGUI_DIR}/imgui_demo.cpp"
-    "${IMGUI_DIR}/backends/imgui_impl_glfw.cpp"
-    "${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp"
 )
 
 # We prefix these with ENGINE_ROOT to ensure they are found correctly
@@ -43,37 +43,37 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/core/engine.cpp"
     "${ENGINE_ROOT}/src/engine/core/job_system.cpp"
     "${ENGINE_ROOT}/src/engine/core/window.cpp"
-    "${ENGINE_ROOT}/src/engine/ecs/systems/physics_system.cpp"
-    "${ENGINE_ROOT}/src/engine/ecs/systems/camera_system.cpp"
-    "${ENGINE_ROOT}/src/engine/input/input_manager.cpp"
-    "${ENGINE_ROOT}/src/engine/input/action_manager.cpp"
-    "${ENGINE_ROOT}/src/engine/ui/ui_systems.cpp"
-    "${ENGINE_ROOT}/src/engine/scene/scene_manager.cpp"
-    "${ENGINE_ROOT}/src/engine/util/logger.cpp"
-    "${ENGINE_ROOT}/src/engine/util/easing.cpp"
-    "${ENGINE_ROOT}/src/engine/util/tween_manager.cpp"
-    "${ENGINE_ROOT}/src/engine/ecs/systems/ai_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/ecs_bindings.cpp"
     "${ENGINE_ROOT}/src/engine/ecs/entity_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/systems/ai_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/systems/camera_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/systems/physics_system.cpp"
+    "${ENGINE_ROOT}/src/engine/ecs/systems/script_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/buffer_utils.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/camera.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/ecs/lighting_system.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/ecs/sprite_render_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/font.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/framebuffer.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/utils/particle_system.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/post_processor.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/lighting_effect.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/ecs/lighting_system.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/post_processor.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/primitive_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/shader.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/utils/sprite_animator.cpp"
-    "${ENGINE_ROOT}/src/engine/graphics/ecs/sprite_render_system.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/sprite_sheet.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/text_renderer.cpp"
     "${ENGINE_ROOT}/src/engine/graphics/texture.cpp"
-    "${ENGINE_ROOT}/src/engine/util/scripting/script_manager.cpp"
-    "${ENGINE_ROOT}/src/engine/ecs/systems/script_system.cpp"
-    "${ENGINE_ROOT}/src/engine/ecs/ecs_bindings.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/utils/particle_system.cpp"
+    "${ENGINE_ROOT}/src/engine/graphics/utils/sprite_animator.cpp"
+    "${ENGINE_ROOT}/src/engine/input/action_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/input/input_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/scene/scene_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/ui/ui_systems.cpp"
     "${ENGINE_ROOT}/src/engine/util/console.cpp"
+    "${ENGINE_ROOT}/src/engine/util/easing.cpp"
+    "${ENGINE_ROOT}/src/engine/util/logger.cpp"
+    "${ENGINE_ROOT}/src/engine/util/scripting/script_manager.cpp"
+    "${ENGINE_ROOT}/src/engine/util/tween_manager.cpp"
     "${ENGINE_ROOT}/src/tools/leveleditor/component_registry.cpp"
     "${ENGINE_ROOT}/src/tools/leveleditor/level_editor.cpp"
     "${ENGINE_ROOT}/third_party/libs/glad.c"
@@ -165,24 +165,24 @@ if(PROJECT_NAME STREQUAL "GameEngine")
         )
     endfunction()
 
-    add_subdirectory(demos/common)
-    add_subdirectory(demos/ecs-notifications)
-    add_subdirectory(demos/scenedemo)
-    add_subdirectory(demos/textdemo)
     add_subdirectory(demos/actionmapping)
-    add_subdirectory(demos/tweendemo)
-    add_subdirectory(demos/spritesheetdemo)
-    add_subdirectory(demos/animatordemo)
-    add_subdirectory(demos/posteffects)
-    add_subdirectory(demos/lightingdemo)
-    add_subdirectory(demos/jobsystemdemo)
-    add_subdirectory(demos/uimenu)
     add_subdirectory(demos/aidemo)
-    add_subdirectory(demos/luademo)
-    add_subdirectory(demos/games)
-    add_subdirectory(demos/consoledemo)
-    add_subdirectory(demos/shapedemo)
+    add_subdirectory(demos/animatordemo)
+    add_subdirectory(demos/common)
     add_subdirectory(demos/componentsdemo)
+    add_subdirectory(demos/consoledemo)
+    add_subdirectory(demos/ecsnotifications)
+    add_subdirectory(demos/games)
+    add_subdirectory(demos/jobsystemdemo)
+    add_subdirectory(demos/lightingdemo)
+    add_subdirectory(demos/luademo)
+    add_subdirectory(demos/posteffects)
+    add_subdirectory(demos/scenedemo)
+    add_subdirectory(demos/shapedemo)
+    add_subdirectory(demos/spritesheetdemo)
+    add_subdirectory(demos/textdemo)
+    add_subdirectory(demos/tweendemo)
+    add_subdirectory(demos/uimenu)
 endif()
 
 # --- 7. Testing ---

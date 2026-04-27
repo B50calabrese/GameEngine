@@ -23,7 +23,7 @@ class BehaviorTree {
 
   NodeStatus Tick(float dt) {
     if (!root_) {
-      return NodeStatus::FAILURE;
+      return NodeStatus::kFailure;
     }
     return root_->Tick(dt, blackboard_);
   }

@@ -16,76 +16,93 @@ namespace engine {
 class Application;
 
 /**
- * @brief Manages the application window and its associated context.
+ * @brief Manages the application window and its associated OpenGL context.
  *
- * This class is a wrapper around the underlying GLFW windowing library.
+ * The `Window` class provides a high-level interface for creating and
+ * managing a window using GLFW. It handles window creation, event polling,
+ * buffer swapping, and maintains information about window dimensions and
+ * content scale.
  */
 class Window {
  public:
   /**
    * @brief Constructs a new `Window` with the specified dimensions and title.
    *
-   * @param width The width of the window in pixels.
-   * @param height The height of the window in pixels.
-   * @param name The title of the window.
+   * @param width The initial width of the window in pixels.
+   * @param height The initial height of the window in pixels.
+   * @param name The title of the window displayed in the title bar.
    */
   Window(int width, int height, std::string name);
 
   /**
    * @brief Returns a pointer to the native GLFW window handle.
-   * @return Pointer to the GLFWwindow.
+   *
+   * Use this when interfacing directly with GLFW or other libraries that
+   * require the raw GLFW window pointer.
+   *
+   * @return Pointer to the underlying GLFWwindow.
    */
   GLFWwindow* native_handle() const { return internal_window_; }
 
   /**
-   * @brief Checks if the window should remain open.
-   * @return `true` if the window should stay open, `false` otherwise.
+   * @brief Checks if the window is currently running and should remain open.
+   * @return True if the window is open and not requested to close.
    */
   bool IsRunning() const;
 
   /**
-   * @brief Checks if the window should close.
-   * @return `true` if the window should close, `false` otherwise.
+   * @brief Checks if the window has been requested to close.
+   * @return True if the window should close.
    */
   bool ShouldClose() const;
 
   /**
-   * @brief Swaps the front and back buffers.
+   * @brief Swaps the front and back buffers to display the rendered frame.
    */
   void SwapBuffers() const;
 
   /**
-   * @brief Processes all pending events, such as keyboard and mouse input.
+   * @brief Processes all pending events (input, window resize, etc.).
+   *
+   * This should be called once per frame in the main loop.
    */
   void PollEvents();
 
   /**
-   * @brief Calculates and returns the time elapsed since the last frame.
+   * @brief Returns the time elapsed since the last frame was processed.
    * @return The delta time in seconds.
    */
   double delta_time() const;
 
   /**
-   * @brief Gets the width of the window.
+   * @brief Gets the current width of the window's framebuffer.
    * @return Width in pixels.
    */
   int width() const { return width_; }
 
   /**
-   * @brief Gets the height of the window.
+   * @brief Gets the current height of the window's framebuffer.
    * @return Height in pixels.
    */
   int height() const { return height_; }
 
   /**
    * @brief Gets the horizontal content scale factor.
-   * @return The scale factor.
+   *
+   * This is useful for High-DPI displays where screen coordinates may differ
+   * from pixel coordinates.
+   *
+   * @return The horizontal scale factor.
    */
   float content_scale_x() const { return content_scale_x_; }
 
   /**
    * @brief Gets the vertical content scale factor.
-   * @return The scale factor.
+   *
+   * This is useful for High-DPI displays where screen coordinates may differ
+   * from pixel coordinates.
+   *
+   * @return The vertical scale factor.
    */
   float content_scale_y() const { return content_scale_y_; }
 

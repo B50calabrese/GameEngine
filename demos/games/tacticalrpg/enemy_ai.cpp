@@ -19,7 +19,7 @@ void EnemyAI::ProcessTurn(
   auto& active_grid_pos = registry.GetComponent<GridPositionComponent>(active);
   auto& active_stats = registry.GetComponent<Stats>(active);
 
-  engine::ecs::EntityID closest_player = engine::ecs::INVALID_ENTITY;
+  engine::ecs::EntityID closest_player = engine::ecs::kInvalidEntity;
   int min_dist = 1000;
 
   auto view = registry.GetView<GridPositionComponent, IdentityComponent,

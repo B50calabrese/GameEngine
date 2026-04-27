@@ -19,7 +19,7 @@ namespace engine::util {
  * @param size2 Size of the second box (width, height).
  * @return True if the boxes intersect, false otherwise.
  */
-[[nodiscard]] inline bool CheckAABB(const glm::vec2& pos1,
+[[nodiscard]] inline bool CheckAabb(const glm::vec2& pos1,
                                     const glm::vec2& size1,
                                     const glm::vec2& pos2,
                                     const glm::vec2& size2) {

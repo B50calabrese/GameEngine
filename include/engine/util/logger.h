@@ -14,7 +14,7 @@ namespace engine::util {
 /**
  * @brief Severity levels for logging.
  */
-enum class LogLevel { INFO, WARNING, ERROR };
+enum class LogLevel { kInfo, kWarning, kError };
 
 /**
  * @brief A simple logger utility for the engine and client.
@@ -76,13 +76,13 @@ class Logger {
 
 // Macros for easier logging with file and line information
 #define LOG_INFO(...)                                                     \
-  engine::util::Logger::Get().Log(engine::util::LogLevel::INFO, __FILE__, \
+  engine::util::Logger::Get().Log(engine::util::LogLevel::kInfo, __FILE__, \
                                   __LINE__, __VA_ARGS__)
 #define LOG_WARN(...)                                                        \
-  engine::util::Logger::Get().Log(engine::util::LogLevel::WARNING, __FILE__, \
+  engine::util::Logger::Get().Log(engine::util::LogLevel::kWarning, __FILE__, \
                                   __LINE__, __VA_ARGS__)
 #define LOG_ERR(...)                                                       \
-  engine::util::Logger::Get().Log(engine::util::LogLevel::ERROR, __FILE__, \
+  engine::util::Logger::Get().Log(engine::util::LogLevel::kError, __FILE__, \
                                   __LINE__, __VA_ARGS__)
 
 #endif  // INCLUDE_ENGINE_UTIL_LOGGER_H_
