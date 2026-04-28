@@ -66,7 +66,7 @@ void GameplayScene::OnUpdate(float dt) {
   registry().ForEach<GoalComponent, engine::ecs::components::Transform>(
       [this, &player_trans](GoalComponent& gc,
                             engine::ecs::components::Transform& gt) {
-        if (engine::util::CheckAabb(player_trans.position, player_trans.scale,
+        if (engine::util::CheckAABB(player_trans.position, player_trans.scale,
                                     gt.position, gt.scale)) {
           engine::SceneManager::Get().PushScene(
               std::make_unique<LevelCompleteScene>("Complete", level_));
@@ -138,7 +138,7 @@ void GameplayScene::UpdatePlayer(float dt) {
   registry().ForEach<PlatformComponent, engine::ecs::components::Transform>(
       [&](PlatformComponent& pc, engine::ecs::components::Transform& tc) {
         if (pc.type == PlatformType::Temporary && pc.active) {
-          if (engine::util::CheckAabb(trans.position, trans.scale, tc.position,
+          if (engine::util::CheckAABB(trans.position, trans.scale, tc.position,
                                       tc.scale)) {
             pc.touched = true;
           }
@@ -173,7 +173,7 @@ void GameplayScene::UpdateEnemies(float dt) {
                     glm::normalize(ec.start_pos - ec.end_pos) * 100.0f;
               }
             }
-            if (engine::util::CheckAabb(player_trans.position,
+            if (engine::util::CheckAABB(player_trans.position,
                                         player_trans.scale, tc.position,
                                         tc.scale)) {
               ResetPlayer();

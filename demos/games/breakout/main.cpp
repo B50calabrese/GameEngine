@@ -218,7 +218,7 @@ class GameplayScene : public engine::Scene {
     // Paddle collision
     auto& p_trans =
         registry().GetComponent<engine::ecs::components::Transform>(paddle_);
-    if (engine::util::CheckAabb(
+    if (engine::util::CheckAABB(
             trans.position - glm::vec2(ball.radius), glm::vec2(ball.radius * 2),
             p_trans.position - p_trans.scale / 2.0f, p_trans.scale)) {
       vel.velocity.y *= -1;
@@ -237,7 +237,7 @@ class GameplayScene : public engine::Scene {
     for (auto it = bricks_.begin(); it != bricks_.end();) {
       auto& b = *it;
       if (registry().IsAlive(b.id)) {
-        if (engine::util::CheckAabb(trans.position - glm::vec2(ball.radius),
+        if (engine::util::CheckAABB(trans.position - glm::vec2(ball.radius),
                                     glm::vec2(ball.radius * 2),
                                     b.pos - b.size / 2.0f, b.size)) {
           vel.velocity.y *= -1;
