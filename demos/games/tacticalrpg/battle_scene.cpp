@@ -169,7 +169,7 @@ void BattleScene::HandlePlayerTurn(float dt) {
 
         if (can_use) {
           // Find target
-          engine::ecs::EntityID target = engine::ecs::INVALID_ENTITY;
+          engine::ecs::EntityID target = engine::ecs::kInvalidEntity;
           auto view =
               registry().GetView<GridPositionComponent, TurnStateComponent>();
           for (auto entity : view) {

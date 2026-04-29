@@ -1,6 +1,6 @@
 #include <imgui.h>
-#include <leveleditor/component_registry.h>
-#include <leveleditor/level_editor.h>
+#include <tools/leveleditor/component_registry.h>
+#include <tools/leveleditor/level_editor.h>
 
 #include <filesystem>
 #include <fstream>

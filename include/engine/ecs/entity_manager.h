@@ -1,6 +1,6 @@
 /**
  * @file entity_manager.h
- * @brief Manages entity lifecycle and IDs.
+ * @brief Defines the EntityManager for handling entity lifecycle.
  */
 
 #ifndef INCLUDE_ENGINE_ECS_ENTITY_MANAGER_H_
@@ -9,45 +9,57 @@
 #include <cstdint>
 #include <vector>
 
+/**
+ * @namespace engine::ecs
+ * @brief Namespace for the Entity Component System.
+ */
 namespace engine::ecs {
 
+/** @brief Type used to uniquely identify an entity. */
 using EntityID = uint32_t;
-constexpr EntityID INVALID_ENTITY = 0xFFFFFFFF;
+
+/** @brief Constant representing an invalid or null entity. */
+constexpr EntityID kInvalidEntity = 0xFFFFFFFF;
 
 /**
- * @brief Manages the entities for the user.
+ * @brief Manages the allocation and deallocation of entity IDs.
  *
- * Manages the creation, and
- * destruction of entity IDs for the user.
+ * The EntityManager keeps track of active entities and reuses IDs of destroyed
+ * entities to keep the ID space compact.
  */
 class EntityManager {
  public:
   /**
-   * @brief Creates an entity, returning a free one when possible.
+   * @brief Creates a new entity ID.
+   *
+   * If any entity IDs have been previously destroyed, one of them will be
+   * reused. Otherwise, a new ID is generated.
+   *
+   * @return The newly created EntityID.
    */
   EntityID CreateEntity();
 
   /**
-   * @brief Marks the given entity as 'free'.
+   * @brief Destroys an entity, making its ID available for reuse.
+   * @param entity The ID of the entity to destroy.
    */
   void DestroyEntity(EntityID entity);
 
   /**
-   * @brief Returns true if the entity is allocated.
-   * @param entity
-   * the entity ID to check.
-   * @return `true` if the entity is being used.
-
+   * @brief Checks if an entity ID is currently in use.
+   * @param entity The entity ID to check.
+   * @return True if the entity is active, false otherwise.
    */
   bool IsAlive(EntityID entity) const;
 
   /**
-   * @brief Returns the next available ID.
+   * @brief Returns the high-water mark for entity IDs.
+   * @return The next ID that would be allocated if no IDs were being reused.
    */
   EntityID next_id() const { return next_id_; }
 
   /**
-   * @brief Resets the manager to its initial state.
+   * @brief Resets the EntityManager, destroying all entities.
    */
   void Clear();
 

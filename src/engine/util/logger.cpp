@@ -53,13 +53,13 @@ void Logger::LogInternal(LogLevel level, const char* file, int line,
                          const char* format, va_list args) {
   const char* level_str = "INFO";
   switch (level) {
-    case LogLevel::INFO:
+    case LogLevel::kInfo:
       level_str = "INFO";
       break;
-    case LogLevel::WARNING:
+    case LogLevel::kWarning:
       level_str = "WARNING";
       break;
-    case LogLevel::ERROR:
+    case LogLevel::kError:
       level_str = "ERROR";
       break;
   }
@@ -81,7 +81,7 @@ void Logger::LogInternal(LogLevel level, const char* file, int line,
            time_buffer, level_str, file, line, buffer);
 
   // Output to console
-  if (level == LogLevel::ERROR) {
+  if (level == LogLevel::kError) {
     std::cerr << final_buffer << std::endl;
   } else {
     std::cout << final_buffer << std::endl;

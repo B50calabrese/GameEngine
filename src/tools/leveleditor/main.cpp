@@ -1,4 +1,4 @@
-#include <leveleditor/level_editor.h>
+#include <tools/leveleditor/level_editor.h>
 
 #include <engine/scene/scene_manager.h>
 #include <engine/util/console.h>

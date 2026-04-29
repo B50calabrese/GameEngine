@@ -20,11 +20,11 @@ class InverterNode : public Node {
 
   NodeStatus Tick(float dt, Blackboard& blackboard) override {
     NodeStatus status = child_->Tick(dt, blackboard);
-    if (status == NodeStatus::SUCCESS) {
-      return NodeStatus::FAILURE;
+    if (status == NodeStatus::kSuccess) {
+      return NodeStatus::kFailure;
     }
-    if (status == NodeStatus::FAILURE) {
-      return NodeStatus::SUCCESS;
+    if (status == NodeStatus::kFailure) {
+      return NodeStatus::kSuccess;
     }
     return status;
   }

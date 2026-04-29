@@ -9,12 +9,12 @@ To maximize effectiveness, first identify your **Persona Context**:
 ### A. Engine Contributor (Core Development)
 *   **Goal**: Modify, optimize, or extend the engine's internal systems (`include/engine`, `src/engine`).
 *   **Mandate**: Maintain strict ABI/API stability. Follow internal memory management patterns (e.g., `ComponentStorage` reallocation rules).
-*   **Primary Skills**: `ecs-expert`, `renderer-guide`.
+*   **Primary Skills**: `ecsexpert`, `rendererguide`.
 
 ### B. Game Developer (Application Logic)
 *   **Goal**: Build games or demos using the engine's public API (`demos/`, `include/engine`).
 *   **Mandate**: Use the high-level `Registry` and `RenderQueue` APIs. Do **not** touch internal buffers or low-level GL calls.
-*   **Primary Skills**: `input-mapper`, `ui-architect`, `asset-manager`.
+*   **Primary Skills**: `inputmapper`, `uiarchitect`, `assetmanager`.
 
 ---
 
@@ -23,12 +23,12 @@ To maximize effectiveness, first identify your **Persona Context**:
 | Subsystem | Directory | Scope | Skill Link |
 | :--- | :--- | :--- | :--- |
 | **Core** | `src/engine/core` | Internal | (TBD) |
-| **ECS** | `src/engine/ecs` | Core/App | [ecs-expert](.agents/skills/ecs-expert/SKILL.md) |
-| **Physics** | `src/engine/physics` | Core/App | [physics-specialist](.agents/skills/physics-specialist/SKILL.md) |
-| **Renderer** | `src/engine/graphics` | Core/App | [renderer-guide](.agents/skills/renderer-guide/SKILL.md) |
-| **Input** | `src/engine/input` | Application | [input-mapper](.agents/skills/input-mapper/SKILL.md) |
-| **Asset Mgmt** | `src/engine/util` | Application | [asset-manager](.agents/skills/asset-manager/SKILL.md) |
-| **UI** | `src/engine/ui` | Application | [ui-architect](.agents/skills/ui-architect/SKILL.md) |
+| **ECS** | `src/engine/ecs` | Core/App | [ecsexpert](.agents/skills/ecsexpert/SKILL.md) |
+| **Physics** | `src/engine/physics` | Core/App | [physicsspecialist](.agents/skills/physicsspecialist/SKILL.md) |
+| **Renderer** | `src/engine/graphics` | Core/App | [rendererguide](.agents/skills/rendererguide/SKILL.md) |
+| **Input** | `src/engine/input` | Application | [inputmapper](.agents/skills/inputmapper/SKILL.md) |
+| **Asset Mgmt** | `src/engine/util` | Application | [assetmanager](.agents/skills/assetmanager/SKILL.md) |
+| **UI** | `src/engine/ui` | Application | [uiarchitect](.agents/skills/uiarchitect/SKILL.md) |
 
 ---
 

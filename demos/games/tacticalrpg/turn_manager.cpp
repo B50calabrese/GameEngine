@@ -82,7 +82,7 @@ void TurnManager::NextTurn(engine::ecs::Registry& registry) {
 
 engine::ecs::EntityID TurnManager::GetActiveCharacter() const {
   if (current_index_ < 0 || current_index_ >= (int)turn_order_.size())
-    return engine::ecs::INVALID_ENTITY;
+    return engine::ecs::kInvalidEntity;
   return turn_order_[current_index_];
 }
 

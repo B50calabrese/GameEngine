@@ -46,7 +46,7 @@ engine::ecs::EntityID ClassRegistry::CreateCharacter(
   for (const auto& action_name : def.base_actions) {
     auto action_entity =
         ActionRegistry::Get().GetOrCreateAction(registry, action_name);
-    if (action_entity != engine::ecs::INVALID_ENTITY) {
+    if (action_entity != engine::ecs::kInvalidEntity) {
       action_list.actions.push_back(action_entity);
     }
   }

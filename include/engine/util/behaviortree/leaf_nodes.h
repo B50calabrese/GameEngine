@@ -38,7 +38,7 @@ class ConditionNode : public Node {
       : condition_(std::move(condition)) {}
 
   NodeStatus Tick(float dt, Blackboard& blackboard) override {
-    return condition_(blackboard) ? NodeStatus::SUCCESS : NodeStatus::FAILURE;
+    return condition_(blackboard) ? NodeStatus::kSuccess : NodeStatus::kFailure;
   }
 
  private:

@@ -25,8 +25,8 @@ class SequenceNode : public Node {
   NodeStatus Tick(float dt, Blackboard& blackboard) override {
     for (size_t i = current_child_; i < children_.size(); ++i) {
       NodeStatus status = children_[i]->Tick(dt, blackboard);
-      if (status != NodeStatus::SUCCESS) {
-        if (status == NodeStatus::RUNNING) {
+      if (status != NodeStatus::kSuccess) {
+        if (status == NodeStatus::kRunning) {
           current_child_ = i;
         } else {
           Reset();
@@ -35,7 +35,7 @@ class SequenceNode : public Node {
       }
     }
     Reset();
-    return NodeStatus::SUCCESS;
+    return NodeStatus::kSuccess;
   }
 
   void Reset() override {
@@ -63,8 +63,8 @@ class SelectorNode : public Node {
   NodeStatus Tick(float dt, Blackboard& blackboard) override {
     for (size_t i = current_child_; i < children_.size(); ++i) {
       NodeStatus status = children_[i]->Tick(dt, blackboard);
-      if (status != NodeStatus::FAILURE) {
-        if (status == NodeStatus::RUNNING) {
+      if (status != NodeStatus::kFailure) {
+        if (status == NodeStatus::kRunning) {
           current_child_ = i;
         } else {
           Reset();
@@ -73,7 +73,7 @@ class SelectorNode : public Node {
       }
     }
     Reset();
-    return NodeStatus::FAILURE;
+    return NodeStatus::kFailure;
   }
 
   void Reset() override {

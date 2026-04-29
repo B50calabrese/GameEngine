@@ -156,9 +156,9 @@ class AIDemoScene : public engine::Scene {
             float rx = static_cast<float>(rand() % 600 + 100);
             float ry = static_cast<float>(rand() % 400 + 100);
             bb.Set<glm::vec2>("target", {rx, ry});
-            return engine::util::NodeStatus::SUCCESS;
+            return engine::util::NodeStatus::kSuccess;
           }
-          return engine::util::NodeStatus::SUCCESS;
+          return engine::util::NodeStatus::kSuccess;
         });
 
     auto move_to_target = std::make_shared<engine::util::ActionNode>(
@@ -171,12 +171,12 @@ class AIDemoScene : public engine::Scene {
 
           if (glm::distance(transform.position, target) < 5.0f) {
             bb.Remove("target");
-            return engine::util::NodeStatus::SUCCESS;
+            return engine::util::NodeStatus::kSuccess;
           }
 
           glm::vec2 dir = glm::normalize(target - transform.position);
           transform.position += dir * npc.speed * dt;
-          return engine::util::NodeStatus::RUNNING;
+          return engine::util::NodeStatus::kRunning;
         });
 
     move_sequence->AddChild(find_target);

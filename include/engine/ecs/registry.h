@@ -83,8 +83,11 @@ class ComponentStorage : public IComponentStorage {
 };
 
 /**
- * @brief Orchestrates the entities and components associated with those
- * entities.
+ * @brief The Registry acts as the central coordinator for all ECS activities.
+ *
+ * It manages the lifecycle of entities, provides storage for components,
+ * and facilitates communication through an internal event system. Most
+ * high-level engine operations will interact with a `Registry` instance.
  */
 class Registry {
   struct ListenerEntry {
@@ -151,8 +154,12 @@ class Registry {
 
  public:
   /**
-   * @brief Creates an entity in the registry.
-   * @returns the ID of the entity created.
+   * @brief Creates a new entity within this registry.
+   *
+   * This will allocate a new ID from the internal EntityManager and publish
+   * an EntityCreatedEvent.
+   *
+   * @return The unique ID of the newly created entity.
    */
   EntityID CreateEntity() {
     EntityID entity = entity_manager_.CreateEntity();
@@ -161,8 +168,13 @@ class Registry {
   }
 
   /**
-   * @brief Deletes the entity and associated data.
-   * @param entity the ID of the entity to delete.
+   * @brief Deletes an entity and all its associated components.
+   *
+   * This will trigger ComponentRemovedEvents for all components attached to the
+   * entity, followed by an EntityDestroyedEvent, and finally release the
+   * entity ID.
+   *
+   * @param entity The ID of the entity to delete.
    */
   void DeleteEntity(EntityID entity) {
     Publish<events::EntityDestroyedEvent>({entity, this});
@@ -187,9 +199,14 @@ class Registry {
   }
 
   /**
-   * @brief Adds a component to the given entity.
-   * @param entity the ID of the entity to add to.
-   * @param component the component to add to the entity.
+   * @brief Attaches a component to an entity.
+   *
+   * If the entity already has a component of this type, it will be replaced.
+   * Triggers a ComponentAddedEvent.
+   *
+   * @tparam T The type of the component.
+   * @param entity The ID of the entity.
+   * @param component The component instance to add.
    */
   template <typename T>
   void AddComponent(EntityID entity, T component) {
@@ -212,9 +229,14 @@ class Registry {
   }
 
   /**
-   * @brief Retrieves the component for the entity.
-   * @param entity the ID of the entity to fetch the component for.
-   * @returns the component of the given type.
+   * @brief Retrieves a reference to a component attached to an entity.
+   *
+   * @note Behavior is undefined if the entity does not have the component.
+   * Use HasComponent<T>() to check beforehand if unsure.
+   *
+   * @tparam T The type of the component.
+   * @param entity The ID of the entity.
+   * @return A reference to the component.
    */
   template <typename T>
   T& GetComponent(EntityID entity) {
@@ -232,7 +254,13 @@ class Registry {
   }
 
   /**
-   * @brief A view of entities that have a specific set of components.
+   * @brief Represents a filtered subset of entities that possess a specific
+   * set of component types.
+   *
+   * Views are the primary way to iterate over entities in systems. They are
+   * lazy-evaluated upon creation.
+   *
+   * @tparam Components The pack of component types to filter for.
    */
   template <typename... Components>
   class View {
@@ -281,6 +309,25 @@ class Registry {
     return View<Components...>(this);
   }
 
+  /**
+   * @brief Executes a function for every entity that matches the given
+   * component requirements.
+   *
+   * This is a convenience wrapper around creating a View and iterating over it.
+   * The function should accept references to each of the requested component
+   * types.
+   *
+   * Example:
+   * @code
+   * registry.ForEach<Transform, Sprite>([](Transform& t, Sprite& s) {
+   *     // Update logic
+   * });
+   * @endcode
+   *
+   * @tparam Components The component types to filter for.
+   * @tparam Func The type of the callback function.
+   * @param func The callback function to execute.
+   */
   template <typename... Components, typename Func>
   void ForEach(Func&& func) {
     auto view = GetView<Components...>();
@@ -338,7 +385,10 @@ class Registry {
   }
 
   /**
-   * @brief Processes any queued asynchronous events.
+   * @brief Processes all queued asynchronous events.
+   *
+   * This should be called once per frame, typically before or after the main
+   * systems update, to ensure all deferred events are dispatched to listeners.
    */
   void Update() {
     for (auto& [type, dispatcher] : dispatchers_) {
