@@ -26,6 +26,7 @@
 #include <engine/scene/scene_manager.h>
 #include <engine/ui/ui_systems.h>
 #include <engine/util/console.h>
+#include <engine/util/performance_overlay.h>
 #include <engine/util/scripting/script_manager.h>
 
 namespace engine {
@@ -80,7 +81,12 @@ void Application::Run() {
       util::Console::Get().Toggle();
     }
 
+    if (input.IsKeyPressed(util::PerformanceOverlay::Get().GetToggleKey())) {
+      util::PerformanceOverlay::Get().Toggle();
+    }
+
     util::Console::Get().Update();
+    util::PerformanceOverlay::Get().Update(delta_time);
 
     [[maybe_unused]] bool input_handled = false;
     if (util::Console::Get().IsVisible()) {
@@ -162,6 +168,7 @@ void Application::Run() {
     }
 
     util::Console::Get().Render();
+    util::PerformanceOverlay::Get().Render();
 
     // Render ImGui
     ImGui::Render();

@@ -33,6 +33,7 @@
 #include <engine/graphics/renderer.h>
 #include <engine/util/console.h>
 #include <engine/util/logger.h>
+#include <engine/util/performance_overlay.h>
 #include <engine/util/scripting/script_manager.h>
 
 namespace engine {
@@ -77,6 +78,9 @@ void Engine::Init(const EngineConfig& engine_config) {
 
   // Configure console
   util::Console::Get().SetToggleKey(engine_config.console_toggle_key);
+
+  // Configure performance overlay
+  util::PerformanceOverlay::Get().SetToggleKey(engine_config.stats_toggle_key);
 }
 
 void Engine::Shutdown() {

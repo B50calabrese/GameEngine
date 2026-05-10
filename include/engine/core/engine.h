@@ -49,6 +49,8 @@ struct EngineConfig {
   bool hot_reload_enabled = false;
   /** @brief The key used to toggle the developer console. */
   KeyCode console_toggle_key = KeyCode::kTilde;
+  /** @brief The key used to toggle the performance overlay. */
+  KeyCode stats_toggle_key = KeyCode::kF1;
 };
 
 /**

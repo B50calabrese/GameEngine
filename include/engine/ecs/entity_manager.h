@@ -59,6 +59,12 @@ class EntityManager {
   EntityID next_id() const { return next_id_; }
 
   /**
+   * @brief Returns the total number of active entities.
+   * @return The number of active entities.
+   */
+  size_t GetEntityCount() const;
+
+  /**
    * @brief Resets the EntityManager, destroying all entities.
    */
   void Clear();

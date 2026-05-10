@@ -49,4 +49,16 @@ TEST(EntityManagerTest, IsAlive) {
   EXPECT_FALSE(manager.IsAlive(e1));
 }
 
+TEST(EntityManagerTest, GetEntityCount) {
+  EntityManager manager;
+  EXPECT_EQ(manager.GetEntityCount(), 0);
+  EntityID e1 = manager.CreateEntity();
+  EntityID e2 = manager.CreateEntity();
+  EXPECT_EQ(manager.GetEntityCount(), 2);
+  manager.DestroyEntity(e1);
+  EXPECT_EQ(manager.GetEntityCount(), 1);
+  manager.DestroyEntity(e2);
+  EXPECT_EQ(manager.GetEntityCount(), 0);
+}
+
 }  // namespace engine::ecs
