@@ -17,8 +17,6 @@
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
-#include <engine/ui/ui_components.h>
-#include <engine/ui/ui_systems.h>
 #include <engine/util/tween_manager.h>
 
 #include "../../common/demo_utils.h"

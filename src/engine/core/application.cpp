@@ -24,7 +24,10 @@
 #include <engine/input/action_manager.h>
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene_manager.h>
-#include <engine/ui/ui_systems.h>
+#include <engine/ui/input_system.h>
+#include <engine/ui/layout_system.h>
+#include <engine/ui/render_system.h>
+#include <engine/ui/sync_system.h>
 #include <engine/util/console.h>
 #include <engine/util/performance_overlay.h>
 #include <engine/util/scripting/script_manager.h>
@@ -134,9 +137,9 @@ void Application::Run() {
             });
 
         // UI Systems
-        ui::UISyncSystem::Update(reg);
-        ui::UIInputSystem::Update(reg);
-        ui::UILayoutSystem::Update(reg, win.width(), win.height());
+        ui::UiSyncSystem::Update(reg);
+        ui::UiInputSystem::Update(reg);
+        ui::UiLayoutSystem::Update(reg, win.width(), win.height());
       }
     }
 
@@ -162,7 +165,7 @@ void Application::Run() {
     graphics::Renderer::Get().Flush();
 
     if (active_scene) {
-      static ui::UIRenderSystem ui_render_system;
+      static ui::UiRenderSystem ui_render_system;
       ui_render_system.Render(active_scene->registry(), win.width(),
                               win.height());
     }

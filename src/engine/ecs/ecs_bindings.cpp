@@ -7,6 +7,10 @@
 #include <engine/ecs/components/gravity.h>
 #include <engine/ecs/components/velocity.h>
 #include <engine/ecs/components/transform.h>
+#include <engine/ecs/components/ui_binding.h>
+#include <engine/ecs/components/ui_hierarchy.h>
+#include <engine/ecs/components/ui_interactable.h>
+#include <engine/ecs/components/ui_transform.h>
 #include <engine/ecs/ecs_bindings.h>
 #include <engine/ecs/registry.h>
 
@@ -80,6 +84,34 @@ void ECSBindings::BindComponents(sol::state& lua) {
   lua["add_velocity"] = [&lua](EntityID entity, float vx, float vy) {
     Registry* reg = lua["registry"];
     reg->AddComponent(entity, engine::ecs::components::Velocity{{vx, vy}});
+  };
+
+  // Bind UI Components
+  lua.new_usertype<engine::ecs::components::UiTransform>(
+      "UiTransformComponent", "local_pos",
+      &engine::ecs::components::UiTransform::local_pos, "size",
+      &engine::ecs::components::UiTransform::size, "anchor_min",
+      &engine::ecs::components::UiTransform::anchor_min, "anchor_max",
+      &engine::ecs::components::UiTransform::anchor_max, "z_index",
+      &engine::ecs::components::UiTransform::z_index);
+
+  lua.new_usertype<engine::ecs::components::UiInteractable>(
+      "UiInteractableComponent", "is_hovered",
+      &engine::ecs::components::UiInteractable::is_hovered, "is_pressed",
+      &engine::ecs::components::UiInteractable::is_pressed);
+
+  lua["get_ui_transform"] =
+      [&lua](EntityID entity) -> engine::ecs::components::UiTransform& {
+    Registry* reg = lua["registry"];
+    return reg->GetComponent<engine::ecs::components::UiTransform>(entity);
+  };
+  lua["has_ui_transform"] = [&lua](EntityID entity) {
+    Registry* reg = lua["registry"];
+    return reg->HasComponent<engine::ecs::components::UiTransform>(entity);
+  };
+  lua["add_ui_transform"] = [&lua](EntityID entity) {
+    Registry* reg = lua["registry"];
+    reg->AddComponent(entity, engine::ecs::components::UiTransform{});
   };
 }
 
