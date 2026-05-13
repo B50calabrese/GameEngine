@@ -33,6 +33,10 @@ bool EntityManager::IsAlive(EntityID entity) const {
   return entity < next_id_ && it == free_entities_.end();
 }
 
+size_t EntityManager::GetEntityCount() const {
+  return static_cast<size_t>(next_id_) - free_entities_.size();
+}
+
 void EntityManager::Clear() {
   next_id_ = 0;
   free_entities_.clear();

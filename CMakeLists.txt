@@ -72,6 +72,7 @@ set(SOURCE_FILES
     "${ENGINE_ROOT}/src/engine/util/console.cpp"
     "${ENGINE_ROOT}/src/engine/util/easing.cpp"
     "${ENGINE_ROOT}/src/engine/util/logger.cpp"
+    "${ENGINE_ROOT}/src/engine/util/performance_overlay.cpp"
     "${ENGINE_ROOT}/src/engine/util/scripting/script_manager.cpp"
     "${ENGINE_ROOT}/src/engine/util/tween_manager.cpp"
     "${ENGINE_ROOT}/src/tools/leveleditor/component_registry.cpp"

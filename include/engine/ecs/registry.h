@@ -397,6 +397,12 @@ class Registry {
   }
 
   /**
+   * @brief Returns the total number of active entities in the registry.
+   * @return The number of active entities.
+   */
+  size_t GetEntityCount() const { return entity_manager_.GetEntityCount(); }
+
+  /**
    * @brief Clears all entities and components from the registry.
    */
   void Clear() {
