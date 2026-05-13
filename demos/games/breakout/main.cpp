@@ -23,8 +23,8 @@
 #include <engine/input/input_manager.h>
 #include <engine/scene/scene.h>
 #include <engine/scene/scene_manager.h>
-#include <engine/ui/ui_components.h>
-#include <engine/ui/ui_systems.h>
+#include <engine/ecs/components/ui_binding.h>
+#include <engine/ecs/components/ui_transform.h>
 #include <engine/util/collision.h>
 #include <engine/util/easing.h>
 #include <engine/util/tween_manager.h>
@@ -133,10 +133,10 @@ class GameplayScene : public engine::Scene {
 
     // UI
     score_label_ = registry().CreateEntity();
-    engine::ui::UITransform score_trans;
+    engine::ecs::components::UiTransform score_trans;
     score_trans.local_pos = {10.0f, 570.0f};
     registry().AddComponent(score_label_, score_trans);
-    engine::ui::UIBinding score_binding;
+    engine::ecs::components::UiBinding score_binding;
     score_binding.get_text = [this]() {
       return "Bricks Hit: " + std::to_string(bricks_hit_);
     };
